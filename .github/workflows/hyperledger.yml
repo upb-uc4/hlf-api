@@ -39,7 +39,7 @@ jobs:
         echo "##########################"
         echo "#   copied dev_network   #"
         echo "##########################"
-        pushd ./dev_network
+        pushd ./hyperledger_dev_network
         echo "##########################"
         echo "#  start network script  #"
         echo "##########################"
