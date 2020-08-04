@@ -1,2 +1,8 @@
 *.class
 *.log
+.idea
+.vs
+/target
+/project/project
+/project/target
+/dev_network
