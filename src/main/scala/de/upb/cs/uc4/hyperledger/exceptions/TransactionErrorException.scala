@@ -5,4 +5,6 @@ case class TransactionErrorException(transactionId: String, errorCode: Integer, 
   override def toString(): String = {
     "The provided transaction: \"" + transactionId + "\" failed with an error: " + errorCode + " : " + errorDetail
   }
+
+
 }
