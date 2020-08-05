@@ -1,11 +1,14 @@
-import java.nio.file.Paths
+import java.nio.file.{Path, Paths}
 
-import de.upb.cs.uc4.hyperledger.ConnectionManager
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class ConnectionTests extends AnyWordSpec with Matchers {
 
+  val connection_profile_path: Path = Paths.get(getClass.getResource("/connection_profile.yaml").toURI)
+  val wallet_path: Path = Paths.get(getClass.getResource("/wallet/").toURI)
+
+  /*
   val connectionManager = ConnectionManager(
     Paths.get(getClass.getResource("/connection_profile.yaml").toURI),
     Paths.get(getClass.getResource("/wallet/").toURI))
@@ -15,7 +18,7 @@ class ConnectionTests extends AnyWordSpec with Matchers {
 
       "provide gateway connection" in {
         // retrieve possible identities
-        val wallet = connectionManager.getWallet()
+        val wallet = WalletManager.getWallet(wallet_path)
         wallet should not be null
 
         // prepare Network Builder
@@ -64,4 +67,5 @@ class ConnectionTests extends AnyWordSpec with Matchers {
       }
     }
   }
+   */
 }

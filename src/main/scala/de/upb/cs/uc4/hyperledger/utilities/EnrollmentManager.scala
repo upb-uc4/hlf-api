@@ -9,6 +9,8 @@ import org.hyperledger.fabric_ca.sdk.{EnrollmentRequest, HFCAClient}
 
 object EnrollmentManager{
 
+  System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true")
+
   def enroll(ca_url : String, tlsCert : Path, walletPath : Path, username : String, password : String, organisationId : String): Unit = {
     // wallet is target for admin certificate
     val wallet = WalletManager.getWallet(walletPath)
@@ -21,7 +23,7 @@ object EnrollmentManager{
 
     // Create a CA client for interacting with the CA
     val props = new Properties
-    props.put("pemFile", tlsCert.toAbsolutePath)
+    props.put("pemFile", tlsCert.toAbsolutePath.toString)
     props.put("allowAllHostNames", "true")
     val caClient = HFCAClient.createNewInstance(ca_url, props)
     val cryptoSuite = CryptoSuiteFactory.getDefault.getCryptoSuite
@@ -37,5 +39,4 @@ object EnrollmentManager{
     System.out.println(s"Successfully enrolled user ${username} and imported it into the wallet")
   }
 
-  // System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true")
 }

@@ -9,5 +9,5 @@ trait ConnectionManagerTrait {
    *
    * @return returns the connection object created.
    */
-  def createConnection(): ChaincodeActionsTrait
+  def createConnection(username: String = "cli", channel: String = "myc", chaincode: String = "mycc"): ChaincodeActionsTrait
 }
