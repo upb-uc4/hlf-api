@@ -10,26 +10,27 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
 
   def contract_course: Contract
 
+
   /**
-    * Submits any transaction specified by transactionId.
-    *
-    * @param transactionId transactionId to submit
-    * @param params        parameters to pass to the transaction
-    * @throws Exception if chaincode throws an exception.
-    * @return success_state
-    */
+   * Submits any transaction specified by transactionId.
+   *
+   * @param transactionId transactionId to submit
+   * @param params        parameters to pass to the transaction
+   * @throws Exception if chaincode throws an exception.
+   * @return success_state
+   */
   @throws[Exception]
   private def internalSubmitTransaction(transactionId: String, params: String*): Array[Byte] =
     this.internalSubmitTransaction(contract_course, transactionId, params: _*)
 
   /**
-    * Evaluates the transaction specified by transactionId.
-    *
-    * @param transactionId transactionId to evaluate
-    * @param params        parameters to pass to the transaction
-    * @throws Exception if chaincode throws an exception.
-    * @return success_state
-    */
+   * Evaluates the transaction specified by transactionId.
+   *
+   * @param transactionId transactionId to evaluate
+   * @param params        parameters to pass to the transaction
+   * @throws Exception if chaincode throws an exception.
+   * @return success_state
+   */
   @throws[Exception]
   private def internalEvaluateTransaction(transactionId: String, params: String*): Array[Byte] =
     this.internalEvaluateTransaction(contract_course, transactionId, params: _*)
@@ -100,5 +101,42 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
     // check specific error
     if (result == "null") throw TransactionErrorException("getCourseById", 0, "Returned null.")
     else return result
+  }
+
+  /**
+   * Wraps the chaincode query result bytes.
+   * Translates the byte-array to a string and throws an error if said string is not empty
+   * Overridden due to specific errors occuring in courses
+   *
+   * @param result input byte-array to translate
+   * @return result as a string
+   */
+  override def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
+    val resultString = convertTransactionResult(result)
+    if (containsError(resultString)) throw extractErrorFromResult(transactionId, resultString)
+    else resultString
+  }
+
+  private def extractErrorFromResult(transactionId: String, result: String): TransactionErrorException = {
+    // retrieve error code
+    var id = result.substring(result.indexOf("\"name\":\"") + 8)
+    id = id.substring(0, id.indexOf("\""))
+
+    // retrieve detail
+    var detail = result.substring(result.indexOf("\"detail\":\"") + 10)
+    detail = detail.substring(0, detail.indexOf("\""))
+
+    // create Exception
+    TransactionErrorException(transactionId, Integer.parseInt(id), detail)
+  }
+
+  /**
+   * Evaluates whether a transaction was valid or invalid
+   *
+   * @param result result of a chaincode transaction
+   * @return true if the result contains error information
+   */
+  private def containsError(result: String): Boolean = {
+    result.contains("{\"name\":") && result.contains("\"detail\":")
   }
 }
