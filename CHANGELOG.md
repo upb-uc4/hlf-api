@@ -1,3 +1,17 @@
+# [v.0.5.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.1...v0.5.2) (2020-08-07)
+
+## Feature
+- Adjust contractName from *.student to *.MatriculationData
+
+## Bug Fixes
+- 
+
+## Refactor
+- 
+
+### Usability
+- 
+
 # [v.0.5.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.5...v0.5.1) (2020-08-04)
 
 ## Feature
