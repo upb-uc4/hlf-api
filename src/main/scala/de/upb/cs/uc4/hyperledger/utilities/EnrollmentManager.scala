@@ -17,7 +17,7 @@ object EnrollmentManager{
 
     // check if user already exists in my wallet
     if (wallet.list.contains(username)) {
-      System.out.println("An identity for the admin user \"admin\" already exists in the wallet")
+      System.out.println(s"An identity for the admin user $username already exists in the wallet")
       return
     }
 
