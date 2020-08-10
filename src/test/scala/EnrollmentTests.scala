@@ -34,7 +34,7 @@ class EnrollmentTests extends AnyWordSpec with Matchers {
 
         val connection = ConnectionManager(connection_profile_path, wallet_path).createConnection(username, channel, chaincode)
 
-        val result = connection.getAllCourses()
+        val result = connection.addCourse("{\"courseId\":\"" + "1" + "\",\"courseName\":\"IQC\",\"courseType\":\"Lecture\",\"startDate\":\"1998-01-01\",\"endDate\":\"1999-01-01\",\"ects\":7,\"lecturerId\":\"Mustermann\",\"maxParticipants\":80,\"currentParticipants\":20,\"courseLanguage\":\"English\",\"courseDescription\":\"Fun new course\"}")
         result should ===("[]")
       }
     }
