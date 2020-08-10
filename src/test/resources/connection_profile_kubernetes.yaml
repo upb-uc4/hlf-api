@@ -64,66 +64,28 @@ channels:
         # produce events but the app typically only needs to connect to one to listen to events.
         # Default: true
         eventSource: true
+        discover: true
 
       peer2-org1:
-        # [Optional]. will this peer be sent transaction proposals for endorsement? The peer must
-        # have the chaincode installed. The app can also use this property to decide which peers
-        # to send the chaincode install request. Default: true
         endorsingPeer: true
-
-        # [Optional]. will this peer be sent query proposals? The peer must have the chaincode
-        # installed. The app can also use this property to decide which peers to send the
-        # chaincode install request. Default: true
         chaincodeQuery: true
-
-        # [Optional]. will this peer be sent query proposals that do not require chaincodes, like
-        # queryBlock(), queryTransaction(), etc. Default: true
         ledgerQuery: true
-
-        # [Optional]. will this peer be the target of the SDK's listener registration? All peers can
-        # produce events but the app typically only needs to connect to one to listen to events.
-        # Default: true
         eventSource: true
+        discover: true
 
       peer1-org2:
-        # [Optional]. will this peer be sent transaction proposals for endorsement? The peer must
-        # have the chaincode installed. The app can also use this property to decide which peers
-        # to send the chaincode install request. Default: true
         endorsingPeer: true
-
-        # [Optional]. will this peer be sent query proposals? The peer must have the chaincode
-        # installed. The app can also use this property to decide which peers to send the
-        # chaincode install request. Default: true
         chaincodeQuery: true
-
-        # [Optional]. will this peer be sent query proposals that do not require chaincodes, like
-        # queryBlock(), queryTransaction(), etc. Default: true
         ledgerQuery: true
-
-        # [Optional]. will this peer be the target of the SDK's listener registration? All peers can
-        # produce events but the app typically only needs to connect to one to listen to events.
-        # Default: true
         eventSource: true
+        discover: true
 
       peer2-org2:
-        # [Optional]. will this peer be sent transaction proposals for endorsement? The peer must
-        # have the chaincode installed. The app can also use this property to decide which peers
-        # to send the chaincode install request. Default: true
         endorsingPeer: true
-
-        # [Optional]. will this peer be sent query proposals? The peer must have the chaincode
-        # installed. The app can also use this property to decide which peers to send the
-        # chaincode install request. Default: true
         chaincodeQuery: true
-
-        # [Optional]. will this peer be sent query proposals that do not require chaincodes, like
-        # queryBlock(), queryTransaction(), etc. Default: true
         ledgerQuery: true
-
-        # [Optional]. will this peer be the target of the SDK's listener registration? All peers can
-        # produce events but the app typically only needs to connect to one to listen to events.
-        # Default: true
         eventSource: true
+        discover: true
 
 #
 # list of participating organizations in this network
@@ -134,7 +96,7 @@ organizations:
 
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
     # cryptoPath:  peerOrganizations/org1.example.com/users/{username}@org1.example.com/msp
-    cryptoPath: /tmp/hyperledger/org1/msp
+    # cryptoPath: "/tmp/hyperledger/org1/msp"
 
     peers:
       - peer1-org1
@@ -149,7 +111,7 @@ organizations:
     mspid: org2MSP
 
     # This org's MSP store (absolute path or relative to client.cryptoconfig)
-    cryptoPath: /tmp/hyperledger/org2/msp
+    # cryptoPath: "/tmp/hyperledger/org2/msp"
 
     peers:
       - peer1-org2
@@ -158,10 +120,10 @@ organizations:
   # Orderer Org name
   org0:
     # Membership Service Provider ID for this organization
-    mspID: "org0MSP"
+    mspID: org0MSP
 
     # Needed to load users crypto keys and certs for this org (absolute path or relative to global crypto path, DEV mode)
-    cryptoPath: /tmp/hyperledger/org0/msp
+    # cryptoPath: "/tmp/hyperledger/org0/msp"
 
 
 #
@@ -202,16 +164,12 @@ peers:
     url: grpcs://172.17.0.2:30111
 
     grpcOptions:
-      # ssl-target-name-override: peer0.org1.example.com
-      # These parameters should be set in coordination with the keepalive policy on the server,
-      # as incompatible settings can result in closing of connection.
-      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
-      allow-insecure: false
+      ssl-target-name-override: peer1-org1
+      grpc.http2.keepalive_time: 15
+      negotiationType: TLS
+      sslProvider: openSSL
+      hostnameOverride: peer1-org1
+
 
     tlsCACerts:
       # Certificate location absolute path
@@ -221,17 +179,15 @@ peers:
     # this URL is used to send endorsement and query requests
     url: grpcs://172.17.0.2:30121
 
+
     grpcOptions:
-      # ssl-target-name-override: peer0.org1.example.com
-      # These parameters should be set in coordination with the keepalive policy on the server,
-      # as incompatible settings can result in closing of connection.
-      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
-      allow-insecure: false
+      ssl-target-name-override: peer2-org1
+      grpc.http2.keepalive_time: 15
+      negotiationType: TLS
+      sslProvider: openSSL
+      hostnameOverride: peer2-org1
+
+
 
     tlsCACerts:
       # Certificate location absolute path
@@ -242,16 +198,11 @@ peers:
     url: grpcs://172.17.0.2:30211
 
     grpcOptions:
-      # ssl-target-name-override: peer0.org1.example.com
-      # These parameters should be set in coordination with the keepalive policy on the server,
-      # as incompatible settings can result in closing of connection.
-      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
-      allow-insecure: false
+      ssl-target-name-override: peer1-org2
+      grpc.http2.keepalive_time: 15
+      negotiationType: TLS
+      sslProvider: openSSL
+      hostnameOverride: peer1-org2
 
     tlsCACerts:
       # Certificate location absolute path
@@ -262,16 +213,11 @@ peers:
     url: grpcs://172.17.0.2:30221
 
     grpcOptions:
-      # ssl-target-name-override: peer0.org1.example.com
-      # These parameters should be set in coordination with the keepalive policy on the server,
-      # as incompatible settings can result in closing of connection.
-      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
-      allow-insecure: false
+      ssl-target-name-override: peer2-org2
+      grpc.http2.keepalive_time: 15
+      negotiationType: TLS
+      sslProvider: openSSL
+      hostnameOverride: peer2-org2
 
     tlsCACerts:
       # Certificate location absolute path
