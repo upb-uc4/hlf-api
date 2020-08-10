@@ -15,8 +15,10 @@ object GatewayManager {
 
   def getBuilder(wallet: Wallet, networkConfigPath: Path, name: String): Builder = {
     // load a CCP
-    val builder = Gateway.createBuilder
-    builder.identity(wallet, name).networkConfig(networkConfigPath).discovery(true)
+    var builder = Gateway.createBuilder
+    builder = builder.identity(wallet, name)
+    builder = builder.networkConfig(networkConfigPath)
+    builder = builder.discovery(true)
 
     builder
   }
