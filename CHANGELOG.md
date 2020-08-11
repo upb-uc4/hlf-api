@@ -1,3 +1,23 @@
+# [v.0.5.4] WIP (https://github.com/upb-uc4/hyperledger_api/compare/v0.5.3...develop) (2020-08-11)
+
+## Feature
+
+- Incorporated Production Network
+- EnrollmentManager to provide enrollment functionality
+
+## Bug Fixes
+
+- 
+
+## Refactor
+
+- Outsource Wallet-utilities and Gateway-utilities from ConnectionManager
+- Parameterize ConnectionManager
+
+## Usability
+
+- Updated Pipelines to run multiple jobs in parallel
+
 # [v.0.5.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.2...v0.5.3) (2020-08-11)
 
 ## Feature
