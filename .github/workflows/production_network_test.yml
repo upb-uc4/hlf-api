@@ -20,47 +20,52 @@ jobs:
 
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: check out source repository
+    - name: Check out source repository
       uses: actions/checkout@v2
-    
-    # Set up JDK
+
+    - name : Check out production network
+      uses: actions/checkout@v2
+      with:
+        repository: 'https://github.com/upb-uc4/hlf-network.git'
+        ref: 'feature/update-chaincode-repository'
+        path: 'hlf-network'
+
+    - name: Check structure
+      run: |
+        ls
+        pushd hlf-network
+        ls
+        popd
+
+      # Set up JDK
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    
-    # set up Dev_network
-    - name: Set up prod network
-      run: |
-        echo "##########################"
-        echo "#   clone dev_network    #"
-        echo "##########################"
-        ./fetch_prod_network.sh
-        echo "##########################"
-        echo "#   copied dev_network   #"
-        echo "##########################"
-        pushd ./hlf-network
-        echo "##########################"
-        echo "#  start network script  #"
-        echo "##########################"
-        ./start_network.sh &
-        echo "##########################"
-        echo "# started network script #"
-        echo "##########################"
-        echo "#    begin sleep         #"
-        echo "##########################"
-        sleep 180
-        echo "#    finish sleep        #"
-        echo "##########################"
+
+    # Set up minikube
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+
+    - name: Start Network
+      run:
+        pushd hlf-network
+        ./startNetwork.sh
         popd
-    
-    
+
+    - name: Install Chaincode
+      run: |
+        pushd hlf-network
+        ./installChaincode.sh
+        popd
+
     # run enrollmentTests tests
     - name: Run enrollmentTests tests
       run: |
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
+        pushd
         sbt "testOnly *EnrollmentTests"
         echo "##########################"
         echo "#    finished test       #"
