@@ -69,7 +69,7 @@ jobs:
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        pushd
+        ./setup_minikube_ip.sh
         sbt "testOnly *EnrollmentTests"
         echo "##########################"
         echo "#    finished test       #"

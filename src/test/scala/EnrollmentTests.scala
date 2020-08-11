@@ -9,8 +9,8 @@ class EnrollmentTests extends AnyWordSpec with Matchers {
 
   val connection_profile_path: Path = Paths.get(getClass.getResource("/connection_profile_kubernetes.yaml").toURI)
   val wallet_path: Path = Paths.get(getClass.getResource("/wallet/").toURI)
-  val minikubeIP = "172.17.0.2" // TODO:
-  val ca_url = s"https://${minikubeIP}:30907" // TODO:
+  val minikubeIP: String = sys.env.getOrElse("MINIKUBE_IP", "172.17.0.2")
+  val ca_url = s"https://${minikubeIP}:30907"
   val tlsCert: Path = Paths.get("/tmp/hyperledger/org1/msp/cacerts/org1-ca-cert.pem")
   val username: String = "scala-admin-org1"
   val password: String = "scalaAdminPW"
