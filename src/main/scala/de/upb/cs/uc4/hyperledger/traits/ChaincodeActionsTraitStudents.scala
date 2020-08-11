@@ -1,6 +1,7 @@
 package de.upb.cs.uc4.hyperledger.traits
 
-import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerExceptionTrait, TransactionErrorException, TransactionExceptionTrait}
+import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
+import de.upb.cs.uc4.hyperledger.exceptions.TransactionErrorException
 import org.hyperledger.fabric.gateway.Contract
 
 /**

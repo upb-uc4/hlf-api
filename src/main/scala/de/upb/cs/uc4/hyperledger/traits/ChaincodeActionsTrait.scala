@@ -1,6 +1,7 @@
 package de.upb.cs.uc4.hyperledger.traits
 
-import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerExceptionTrait, InvalidCallException, TransactionErrorException, TransactionException}
+import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
+import de.upb.cs.uc4.hyperledger.exceptions.{InvalidCallException, TransactionErrorException, TransactionException}
 
 /**
  * Trait to provide general access to all chaincode transactions.

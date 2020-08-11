@@ -1,5 +1,7 @@
 package de.upb.cs.uc4.hyperledger.exceptions
 
+import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
+
 case class InvalidCallException(transactionId: String, jsonError: String) extends TransactionExceptionTrait {
   override def toString: String =
     s"The transaction: '${this.transactionId}' could not be invoked.\nDetails: ${this.jsonError}"

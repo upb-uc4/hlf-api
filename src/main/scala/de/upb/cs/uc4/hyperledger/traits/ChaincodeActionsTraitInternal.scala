@@ -3,7 +3,8 @@ package de.upb.cs.uc4.hyperledger.traits
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
-import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerExceptionTrait, HyperledgerInnerException, InvalidCallException, TransactionException, UnhandledException}
+import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
+import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerInnerException, InvalidCallException, TransactionException, UnhandledException}
 import org.hyperledger.fabric.gateway.{Contract, ContractException, GatewayRuntimeException}
 
 /**
