@@ -8,7 +8,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class HyperledgerErrorTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
+class CourseErrorTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   val connectionManager = ConnectionManager(
     Paths.get(getClass.getResource("/connection_profile.yaml").toURI),

@@ -1,5 +1,7 @@
 package de.upb.cs.uc4.hyperledger.traits
 
+import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
+import de.upb.cs.uc4.hyperledger.exceptions.TransactionErrorException
 import org.hyperledger.fabric.gateway.Contract
 
 /**
@@ -17,7 +19,7 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return success_state
    */
-  @throws[Exception]
+  @throws[HyperledgerExceptionTrait]
   private def internalSubmitTransaction(transactionId: String, params: String*): Array[Byte] =
     this.internalSubmitTransaction(contract_student, transactionId, params: _*)
 
@@ -29,7 +31,7 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return success_state
    */
-  @throws[Exception]
+  @throws[HyperledgerExceptionTrait]
   private def internalEvaluateTransaction(transactionId: String, params: String*): Array[Byte] =
     this.internalEvaluateTransaction(contract_student, transactionId, params: _*)
 
@@ -40,7 +42,8 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return Success_state
    */
-  @throws[Exception]
+  @throws[HyperledgerExceptionTrait]
+  @throws[TransactionExceptionTrait]
   final def addMatriculationData(jSonMatriculationData: String): String = {
     wrapTransactionResult("addMatriculationData",
       this.internalSubmitTransaction("addMatriculationData", jSonMatriculationData))
@@ -55,7 +58,8 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return success_state
    */
-  @throws[Exception]
+  @throws[HyperledgerExceptionTrait]
+  @throws[TransactionExceptionTrait]
   final def addEntryToMatriculationData(matriculationId: String, fieldOfStudy: String, semester: String): String = {
     wrapTransactionResult("addEntryToMatriculationData",
       this.internalSubmitTransaction("addEntryToMatriculationData", matriculationId, fieldOfStudy, semester))
@@ -68,7 +72,8 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return success_state
    */
-  @throws[Exception]
+  @throws[HyperledgerExceptionTrait]
+  @throws[TransactionExceptionTrait]
   final def updateMatriculationData(jSonMatriculationData: String): String = {
     wrapTransactionResult("updateMatriculationData",
       this.internalSubmitTransaction("updateMatriculationData", jSonMatriculationData))
@@ -81,7 +86,8 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return JSon Course Object
    */
-  @throws[Exception]
+  @throws[HyperledgerExceptionTrait]
+  @throws[TransactionExceptionTrait]
   final def getMatriculationData(matId: String): String = {
     wrapTransactionResult("getMatriculationData",
       this.internalEvaluateTransaction("getMatriculationData", matId))

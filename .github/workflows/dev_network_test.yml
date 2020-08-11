@@ -1,4 +1,4 @@
-name: Hyperledger Scala Test Pipeline
+name: Hyperledger_Scala_With_Dev_Network
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
 
 jobs:
 
-  DeployAndTestScalaAccess:
+  DeployAndTestConnection:
 
     runs-on: ubuntu-latest
 
@@ -28,72 +28,71 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+      
+    - name: setupAndTest
+      uses: ./.github/actions/dev_network_test
+      with:
+        what-to-test: 'ConnectionTests'
+
+  
+  DeployAndTestCourseAccess:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: check out source repository
+      uses: actions/checkout@v2
     
-    # set up Dev_network
-    - name: Set up dev_network - dockers
-      run: |
-        echo "##########################"
-        echo "#   clone dev_network    #"
-        echo "##########################"
-        ./fetch_dev_network.sh
-        echo "##########################"
-        echo "#   copied dev_network   #"
-        echo "##########################"
-        pushd ./hyperledger_dev_network
-        echo "##########################"
-        echo "#  start network script  #"
-        echo "##########################"
-        ./network.sh &
-        echo "##########################"
-        echo "# started network script #"
-        echo "##########################"
-        echo "#    begin sleep         #"
-        echo "##########################"
-        sleep 180
-        echo "#    finish sleep        #"
-        echo "##########################"
-        popd
+    # Set up JDK
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+      
+    - name: setupAndTest
+      uses: ./.github/actions/dev_network_test
+      with:
+        what-to-test: 'CourseAccessTests'
+
+        
+  DeployAndTestCourseError:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: check out source repository
+      uses: actions/checkout@v2
     
-    # run connection tests
-    - name: Run connection tests
-      run: |
-        echo "##########################"
-        echo "#    starting test       #"
-        echo "##########################"
-        sbt "testOnly *ConnectionTests"
-        echo "##########################"
-        echo "#    finished test       #"
-        echo "##########################"
+    # Set up JDK
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+      
+    - name: setupAndTest
+      uses: ./.github/actions/dev_network_test
+      with:
+        what-to-test: 'CourseErrorTests'
+
+
+  DeployAndTestInvalidCall:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: check out source repository
+      uses: actions/checkout@v2
     
-    # run chaincodeConnection tests
-    - name: Run chaincodeConnection tests
-      run: |
-        echo "##########################"
-        echo "#    starting test       #"
-        echo "##########################"
-        sbt "testOnly *ChaincodeConnectionObjectTests"
-        echo "##########################"
-        echo "#    finished test       #"
-        echo "##########################"
-    
-    # run HyperledgerError tests
-    - name: Run HyperledgerError tests
-      run: |
-        echo "##########################"
-        echo "#    starting test       #"
-        echo "##########################"
-        sbt "testOnly *HyperledgerErrorTests"
-        echo "##########################"
-        echo "#    finished test       #"
-        echo "##########################"
-    
-    # run invalidCallTests tests
-    - name: Run invalidCallTests tests
-      run: |
-        echo "##########################"
-        echo "#    starting test       #"
-        echo "##########################"
-        sbt "testOnly *InvalidCallTests"
-        echo "##########################"
-        echo "#    finished test       #"
-        echo "##########################"
+    # Set up JDK
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+      
+    - name: setupAndTest
+      uses: ./.github/actions/dev_network_test
+      with:
+        what-to-test: 'InvalidCallTests'

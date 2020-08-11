@@ -30,19 +30,19 @@ class InvalidCallTests extends AnyWordSpec with Matchers with BeforeAndAfterEach
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.submitTransaction(""))
         result.transactionId should ===("")
-        result.detail should ===("The transaction is not defined.")
+        result.jsonError should be (InvalidCallException.jSonUnknown)
       }
       "throw InvalidTrasactionException for undefined transactionId " in {
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.submitTransaction("undefined"))
         result.transactionId should ===("undefined")
-        result.detail should ===("The transaction is not defined.")
+        result.jsonError should be (InvalidCallException.jSonUnknown)
       }
       "throw InvalidTrasactionException for evaluation transactionId " in {
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.submitTransaction("getAllCourses"))
         result.transactionId should ===("getAllCourses")
-        result.detail should ===("The transaction is not defined.")
+        result.jsonError should be (InvalidCallException.jSonUnknown)
       }
     }
 
@@ -51,13 +51,13 @@ class InvalidCallTests extends AnyWordSpec with Matchers with BeforeAndAfterEach
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.submitTransaction("addCourse"))
         result.transactionId should ===("addCourse")
-        result.detail should ===("The transaction was invoked with the wrong amount of parameters. Expected: " + 1 + " Actual: " + 0)
+        result.jsonError should be (InvalidCallException.jSonWrongInvoke("addCourse", 1, 0))
       }
       "throw InvalidTrasactionException for to many parameters" in {
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.submitTransaction("addCourse", TestData.exampleCourseData("1"), TestData.exampleCourseData("2")))
         result.transactionId should ===("addCourse")
-        result.detail should ===("The transaction was invoked with the wrong amount of parameters. Expected: " + 1 + " Actual: " + 2)
+        result.jsonError should be (InvalidCallException.jSonWrongInvoke("addCourse", 1, 2))
       }
     }
   }
@@ -68,19 +68,19 @@ class InvalidCallTests extends AnyWordSpec with Matchers with BeforeAndAfterEach
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.evaluateTransaction(""))
         result.transactionId should ===("")
-        result.detail should ===("The transaction is not defined.")
+        result.jsonError should be (InvalidCallException.jSonUnknown)
       }
       "throw InvalidTrasactionException for undefined transactionId " in {
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.evaluateTransaction("undefined"))
         result.transactionId should ===("undefined")
-        result.detail should ===("The transaction is not defined.")
+        result.jsonError should be (InvalidCallException.jSonUnknown)
       }
       "throw InvalidTrasactionException for evaluation transactionId " in {
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.evaluateTransaction("addCourse"))
         result.transactionId should ===("addCourse")
-        result.detail should ===("The transaction is not defined.")
+        result.jsonError should be (InvalidCallException.jSonUnknown)
       }
     }
 
@@ -89,13 +89,13 @@ class InvalidCallTests extends AnyWordSpec with Matchers with BeforeAndAfterEach
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.evaluateTransaction("getCourseById"))
         result.transactionId should ===("getCourseById")
-        result.detail should ===("The transaction was invoked with the wrong amount of parameters. Expected: " + 1 + " Actual: " + 0)
+        result.jsonError should be (InvalidCallException.jSonWrongInvoke("getCourseById", 1, 0))
       }
       "throw InvalidTrasactionException for to many parameters" in {
         // test action
         val result = intercept[InvalidCallException](() -> chaincodeConnection.evaluateTransaction("getAllCourses", TestData.exampleCourseData("1")))
         result.transactionId should ===("getAllCourses")
-        result.detail should ===("The transaction was invoked with the wrong amount of parameters. Expected: " + 0 + " Actual: " + 1)
+        result.jsonError should be (InvalidCallException.jSonWrongInvoke("getAllCourses", 0, 1))
       }
     }
   }
