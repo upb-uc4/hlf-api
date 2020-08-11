@@ -1,23 +1,15 @@
-name: Hyperledger Scala Test Pipeline
+name: 'UC4 Dev_Network Setup'
+description: 'Sets up the UC4 Dev-Network'
 
-on:
-  push:
-    branches:
-      - '**feature**'
-      - '**fix**'
-      - develop
-      - master
-  pull_request:
-    branches: 
-      - develop
-      - master
+inputs:
+  what-to-test:  # name of testClass
+    description: 'Name of Test Class'
+    required: true
+    default: '*'
 
-jobs:
-
-  DeployAndTestScalaAccess:
-
-    runs-on: ubuntu-latest
-
+runs:
+    using: "composite"
+    
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: check out source repository
@@ -53,14 +45,13 @@ jobs:
         echo "#    finish sleep        #"
         echo "##########################"
         popd
-    
-    # run sbt tests
+        
+    # run tests
     - name: Run tests
       run: |
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt test
+        sbt "testOnly *${{ inputs.what-to-test }}"
         echo "##########################"
         echo "#    finished test       #"
-        echo "##########################"
