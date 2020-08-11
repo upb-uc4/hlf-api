@@ -26,7 +26,7 @@ jobs:
     - name : Check out production network
       uses: actions/checkout@v2
       with:
-        repository: 'https://github.com/upb-uc4/hlf-network.git'
+        repository: 'upb-uc4/hlf-network'
         ref: 'feature/update-chaincode-repository'
         path: 'hlf-network'
 
