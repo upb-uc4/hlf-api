@@ -1,4 +1,4 @@
-name: Hyperledger  Production Scala Test Pipeline
+name: Hyperledger_Scala_With_Production_Network
 
 on:
   push:
@@ -7,6 +7,10 @@ on:
       - '**fix**'
       - develop
       - master
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - CHANGELOG.md
   pull_request:
     branches: 
       - develop
