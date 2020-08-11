@@ -61,7 +61,7 @@ jobs:
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt test:testOnly *EnrollmentTests
+        sbt "testOnly *EnrollmentTests"
         echo "##########################"
         echo "#    finished test       #"
         echo "##########################"

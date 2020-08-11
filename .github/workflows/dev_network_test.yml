@@ -60,7 +60,7 @@ jobs:
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt test:testOnly *ConnectionTests
+        sbt "testOnly *ConnectionTests"
         echo "##########################"
         echo "#    finished test       #"
         echo "##########################"
@@ -71,7 +71,7 @@ jobs:
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt test:testOnly *ChaincodeConnectionObjectTests
+        sbt "testOnly *ChaincodeConnectionObjectTests"
         echo "##########################"
         echo "#    finished test       #"
         echo "##########################"
@@ -82,7 +82,7 @@ jobs:
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt test:testOnly *HyperledgerErrorTests
+        sbt "testOnly *HyperledgerErrorTests"
         echo "##########################"
         echo "#    finished test       #"
         echo "##########################"
@@ -93,7 +93,7 @@ jobs:
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt test:testOnly *InvalidCallTests
+        sbt "testOnly *InvalidCallTests"
         echo "##########################"
         echo "#    finished test       #"
         echo "##########################"
