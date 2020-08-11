@@ -1,5 +1,8 @@
 # Scala Hyperleger API
 
+## Current Status
+https://github.com/upb-uc4/hyperledger_api/workflows/Hyperledger_Scala_With_Dev_Network/badge.svg
+
 ## Prerequesites
 
 1. Have a working UC4-chaincode-network running 
