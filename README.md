@@ -2,6 +2,7 @@
 
 ## Current Status
 ![Dev_Network_Pipeline](https://github.com/upb-uc4/hyperledger_api/workflows/Hyperledger_Scala_With_Dev_Network/badge.svg)
+
 ![ProductionNetwork_Pipeline](https://github.com/upb-uc4/hyperledger_api/workflows/Hyperledger_Scala_With_Production_Network/badge.svg)
 
 ## Prerequesites
