@@ -54,13 +54,46 @@ jobs:
         echo "##########################"
         popd
     
-    # run sbt tests
-    - name: Run tests
+    # run connection tests
+    - name: Run connection tests
       run: |
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt test
+        sbt test:testOnly *ConnectionTests
+        echo "##########################"
+        echo "#    finished test       #"
+        echo "##########################"
+    
+    # run chaincodeConnection tests
+    - name: Run chaincodeConnection tests
+      run: |
+        echo "##########################"
+        echo "#    starting test       #"
+        echo "##########################"
+        sbt test:testOnly *ChaincodeConnectionObjectTests
+        echo "##########################"
+        echo "#    finished test       #"
+        echo "##########################"
+    
+    # run HyperledgerError tests
+    - name: Run HyperledgerError tests
+      run: |
+        echo "##########################"
+        echo "#    starting test       #"
+        echo "##########################"
+        sbt test:testOnly *HyperledgerErrorTests
+        echo "##########################"
+        echo "#    finished test       #"
+        echo "##########################"
+    
+    # run invalidCallTests tests
+    - name: Run invalidCallTests tests
+      run: |
+        echo "##########################"
+        echo "#    starting test       #"
+        echo "##########################"
+        sbt test:testOnly *InvalidCallTests
         echo "##########################"
         echo "#    finished test       #"
         echo "##########################"

@@ -54,13 +54,14 @@ jobs:
         echo "##########################"
         popd
     
-    # run sbt tests
-    - name: Run tests
+    
+    # run enrollmentTests tests
+    - name: Run enrollmentTests tests
       run: |
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt test
+        sbt test:testOnly *EnrollmentTests
         echo "##########################"
         echo "#    finished test       #"
         echo "##########################"
