@@ -19,7 +19,7 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return success_state
    */
-  @throws[Exception]
+  @throws[TransactionErrorException]
   private def internalSubmitTransaction(transactionId: String, params: String*): Array[Byte] =
     this.internalSubmitTransaction(contract_course, transactionId, params: _*)
 
@@ -31,7 +31,7 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return success_state
    */
-  @throws[Exception]
+  @throws[TransactionErrorException]
   private def internalEvaluateTransaction(transactionId: String, params: String*): Array[Byte] =
     this.internalEvaluateTransaction(contract_course, transactionId, params: _*)
 
@@ -42,7 +42,7 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return Success_state
    */
-  @throws[Exception]
+  @throws[TransactionErrorException]
   final def addCourse(jSonCourse: String): String = {
     wrapTransactionResult("addCourse", this.internalSubmitTransaction("addCourse", jSonCourse))
   }
@@ -54,7 +54,7 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return success_state
    */
-  @throws[Exception]
+  @throws[TransactionErrorException]
   final def deleteCourseById(courseId: String): String = {
     wrapTransactionResult("deleteCourseById", this.internalSubmitTransaction("deleteCourseById", courseId))
   }
@@ -67,7 +67,7 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return success_state
    */
-  @throws[Exception]
+  @throws[TransactionErrorException]
   final def updateCourseById(courseId: String, jSonCourse: String): String = {
     wrapTransactionResult("updateCourseById", this.internalSubmitTransaction("updateCourseById", courseId, jSonCourse))
   }
@@ -78,7 +78,7 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return List of courses represented by their json value.
    */
-  @throws[Exception]
+  @throws[TransactionErrorException]
   final def getAllCourses(): String = {
     val result = wrapTransactionResult("getAllCourses", this.internalEvaluateTransaction("getAllCourses"))
 
@@ -94,7 +94,7 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @throws Exception if chaincode throws an exception.
    * @return JSon Course Object
    */
-  @throws[Exception]
+  @throws[TransactionErrorException]
   final def getCourseById(courseId: String): String = {
     val result = wrapTransactionResult("getCourseById", this.internalEvaluateTransaction("getCourseById", courseId))
 
@@ -111,6 +111,7 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @param result input byte-array to translate
    * @return result as a string
    */
+  @throws[TransactionErrorException]
   override def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
     val resultString = convertTransactionResult(result)
     if (containsError(resultString)) throw extractErrorFromResult(transactionId, resultString)

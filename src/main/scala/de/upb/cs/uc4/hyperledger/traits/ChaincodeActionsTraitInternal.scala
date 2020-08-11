@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.traits
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
-import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerInnerException, InvalidCallException, TransactionException, UnhandledException}
+import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerExceptionTrait, HyperledgerInnerException, InvalidCallException, TransactionException, UnhandledException}
 import org.hyperledger.fabric.gateway.{Contract, ContractException, GatewayRuntimeException}
 
 /**
@@ -11,7 +11,7 @@ import org.hyperledger.fabric.gateway.{Contract, ContractException, GatewayRunti
  */
 protected trait ChaincodeActionsTraitInternal extends AutoCloseable {
 
-  @throws[Exception]
+  @throws[HyperledgerExceptionTrait]
   protected final def internalSubmitTransaction(chaincode: Contract, transactionId: String, params: String*): Array[Byte] = {
     try {
       chaincode.submitTransaction(transactionId, params: _*)
@@ -24,7 +24,7 @@ protected trait ChaincodeActionsTraitInternal extends AutoCloseable {
     }
   }
 
-  @throws[Exception]
+  @throws[HyperledgerExceptionTrait]
   protected final def internalEvaluateTransaction(chaincode: Contract, transactionId: String, params: String*): Array[Byte] = {
     try {
       chaincode.evaluateTransaction(transactionId, params: _*)
