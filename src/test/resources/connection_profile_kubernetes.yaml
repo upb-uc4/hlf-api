@@ -64,28 +64,24 @@ channels:
         # produce events but the app typically only needs to connect to one to listen to events.
         # Default: true
         eventSource: true
-        discover: true
 
       peer2-org1:
         endorsingPeer: true
         chaincodeQuery: true
         ledgerQuery: true
         eventSource: true
-        discover: true
 
       peer1-org2:
         endorsingPeer: true
         chaincodeQuery: true
         ledgerQuery: true
         eventSource: true
-        discover: true
 
       peer2-org2:
         endorsingPeer: true
         chaincodeQuery: true
         ledgerQuery: true
         eventSource: true
-        discover: true
 
 #
 # list of participating organizations in this network
@@ -135,19 +131,12 @@ orderers:
   orderer-org0:
     url: grpcs://172.17.0.2:30010
 
-    # these are standard properties defined by the gRPC library
-    # they will be passed in as-is to gRPC client constructor
     grpcOptions:
-      # ssl-target-name-override: orderer.example.com
-      # These parameters should be set in coordination with the keepalive policy on the server,
-      # as incompatible settings can result in closing of connection.
-      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
-      keep-alive-time: 0s
-      keep-alive-timeout: 20s
-      keep-alive-permit: false
-      fail-fast: false
-      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
-      allow-insecure: false
+      ssl-target-name-override: orderer-org0
+      grpc.http2.keepalive_time: 15
+      negotiationType: TLS
+      sslProvider: openSSL
+      hostnameOverride: orderer-org0
 
     tlsCACerts:
       # Certificate location absolute path

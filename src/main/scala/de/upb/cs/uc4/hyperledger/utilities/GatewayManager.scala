@@ -18,7 +18,7 @@ object GatewayManager {
     var builder = Gateway.createBuilder
     builder = builder.identity(wallet, name)
     builder = builder.networkConfig(networkConfigPath)
-    builder = builder.discovery(true)
+    builder = builder.discovery(false)
 
     builder
   }
