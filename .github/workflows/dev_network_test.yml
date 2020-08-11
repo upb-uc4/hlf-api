@@ -24,6 +24,6 @@ jobs:
       uses: actions/checkout@v2
       
     - name: setupAndTest
-      uses: ./.github/actions/dev_network_setup
+      uses: ./.github/actions/dev_network_test
       with:
         what-to-test: 'ConnectionTests'
