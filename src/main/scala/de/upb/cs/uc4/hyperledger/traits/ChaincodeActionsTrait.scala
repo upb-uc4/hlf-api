@@ -1,6 +1,7 @@
 package de.upb.cs.uc4.hyperledger.traits
 
-import de.upb.cs.uc4.hyperledger.exceptions.{InvalidCallException, TransactionErrorException}
+import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
+import de.upb.cs.uc4.hyperledger.exceptions.{InvalidCallException, TransactionErrorException, TransactionException}
 
 /**
  * Trait to provide general access to all chaincode transactions.
@@ -13,12 +14,14 @@ trait ChaincodeActionsTrait extends ChaincodeActionsTraitCourses with ChaincodeA
    *
    * @param transactionId transactionId to submit
    * @param params        parameters to pass to the transaction
-   * @throws InvalidCallException      if transactionId could not be mapped
    * @throws TransactionErrorException if an error occured during transaction
+   * @throws TransactionException      if transactionId could not be mapped, wrong amount of parameters or some validation error
+   * @throws HyperledgerExceptionTrait if hyperledgerFramework threw any error internally
    * @return success_state
    */
-  @throws[InvalidCallException]
   @throws[TransactionErrorException]
+  @throws[TransactionException]
+  @throws[HyperledgerExceptionTrait]
   final def submitTransaction(transactionId: String, params: String*): String = {
     transactionId match {
       case "addCourse" => {
@@ -58,8 +61,9 @@ trait ChaincodeActionsTrait extends ChaincodeActionsTraitCourses with ChaincodeA
    * @throws TransactionErrorException if an error occured during transaction
    * @return success_state
    */
-  @throws[InvalidCallException]
   @throws[TransactionErrorException]
+  @throws[TransactionException]
+  @throws[HyperledgerExceptionTrait]
   final def evaluateTransaction(transactionId: String, params: String*): String = {
     transactionId match {
       case "getCourseById" => {
