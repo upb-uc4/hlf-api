@@ -12,9 +12,7 @@ class ConnectionTests extends AnyWordSpec with Matchers {
   val contained_id: String = "cli"
   val channel_name: String = "myc"
   val chaincode: String = "mycc"
-  val contract_name_course = "UC4.course"
-
-  val connectionManager: ConnectionManager = ConnectionManager(connection_profile_path, wallet_path)
+  val contract_name_course: String = "UC4.course"
 
   "The WalletManager" when {
     "asked for a wallet" should {
@@ -23,10 +21,11 @@ class ConnectionTests extends AnyWordSpec with Matchers {
         val wallet = WalletManager.getWallet(wallet_path)
         wallet should not be null
       }
-      "contain cli" in {
+      "contain expected id" in {
         // retrieve possible identities
         val wallet = WalletManager.getWallet(wallet_path)
-        wallet.list().contains(contained_id) should be true
+        val contained = wallet.list.contains(contained_id)
+        contained should equal (true)
       }
     }
   }
@@ -104,9 +103,11 @@ class ConnectionTests extends AnyWordSpec with Matchers {
   "The Connection Manager" when {
     "asked for a connection" should {
       "provide network connection" in {
+        val connectionManager: ConnectionManager = ConnectionManager(connection_profile_path, wallet_path)
         val connection = connectionManager.createConnection()
         connection should not be null
       }
     }
   }
+
 }
