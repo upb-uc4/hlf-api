@@ -11,7 +11,7 @@ class EnrollmentTests extends AnyWordSpec with Matchers {
   val wallet_path: Path = Paths.get(getClass.getResource("/wallet/").toURI)
   val minikubeIP = "172.17.0.2" // TODO:
   val ca_url = s"https://${minikubeIP}:30907" // TODO:
-  val tlsCert: Path = Paths.get("/tmp/hyperledger/ca-cert.pem")
+  val tlsCert: Path = Paths.get("/tmp/hyperledger/org1/msp/cacerts/org1-ca-cert.pem")
   val username: String = "scala-admin-org1"
   val password: String = "scalaAdminPW"
   val organisationId: String = "org1MSP"
