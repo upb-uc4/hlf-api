@@ -31,7 +31,7 @@ jobs:
         path: 'hlf-network'
 
     - name: Check structure
-      run:
+      run: |
         ls
         pushd hlf-network
         ls
@@ -50,13 +50,13 @@ jobs:
       uses: medyagh/setup-minikube@master
 
     - name: Start Network
-      run:
+      run: |
         pushd hlf-network
         ./startNetwork.sh
         popd
 
     - name: Install Chaincode
-      run:
+      run: |
         pushd hlf-network
         ./installChaincode.sh
         popd
