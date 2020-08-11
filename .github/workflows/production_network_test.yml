@@ -27,7 +27,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-network'
-        ref: 'feature/update-chaincode-repository'
+        ref: 'develop'
         path: 'hlf-network'
 
     - name: Check structure
