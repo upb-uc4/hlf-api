@@ -35,6 +35,7 @@ runs:
         echo "#    finish sleep        #"
         echo "##########################"
         popd
+      shell: bash
         
     # run tests
     - name: Run tests
@@ -45,3 +46,4 @@ runs:
         sbt "testOnly *${{ inputs.what-to-test }}"
         echo "##########################"
         echo "#    finished test       #"
+      shell: bash
