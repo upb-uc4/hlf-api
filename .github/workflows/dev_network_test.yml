@@ -24,21 +24,6 @@ jobs:
       uses: actions/checkout@v2
       
     - name: setupAndTest
-      uses: actions/dev_network_setup
+      uses: upb-uc4/hyperledger_api/dev_network_setup
       with:
         what-to-test: 'ConnectionTests'
-        
-  
-  DeployAndTestConnectionObject:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: check out source repository
-      uses: actions/checkout@v2
-      
-    - name: setupAndTest
-      uses: actions/dev_network_setup
-      with:
-        what-to-test: 'ChaincodeConnectionObjectTests'
