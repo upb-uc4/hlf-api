@@ -16,7 +16,7 @@ case class ConnectionManager(connection_profile_path: Path, wallet_path: Path)
   extends ConnectionManagerTrait {
 
   private val contract_name_course = "UC4.course"
-  private val contract_name_student = "UC4.student"
+  private val contract_name_student = "UC4.MatriculationData"
 
   override def createConnection(username: String = "cli", channel: String = "myc", chaincode: String = "mycc"): ChaincodeActionsTrait = {
     val (gateway: Gateway, contract_course: Contract, contract_student: Contract) = this.initializeConnection(username, channel, chaincode)
