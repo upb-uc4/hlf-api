@@ -1,4 +1,4 @@
-# [v.0.5.4] WIP (https://github.com/upb-uc4/hyperledger_api/compare/v0.5.3...develop) (2020-08-11)
+# [v.0.5.4 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.3...develop) (2020-08-11)
 
 ## Feature
 
