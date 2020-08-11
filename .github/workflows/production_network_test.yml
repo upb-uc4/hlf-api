@@ -31,11 +31,13 @@ jobs:
         path: 'hlf-network'
 
     - name: Check structure
-      run: |
+      run:
         ls
         pushd hlf-network
         ls
         popd
+      shell:
+        bash
 
       # Set up JDK
     - name: Set up JDK 1.8
@@ -54,10 +56,12 @@ jobs:
         popd
 
     - name: Install Chaincode
-      run: |
+      run:
         pushd hlf-network
         ./installChaincode.sh
         popd
+      shell:
+        bash
 
     # run enrollmentTests tests
     - name: Run enrollmentTests tests
@@ -70,3 +74,5 @@ jobs:
         echo "##########################"
         echo "#    finished test       #"
         echo "##########################"
+      shell:
+        bash
