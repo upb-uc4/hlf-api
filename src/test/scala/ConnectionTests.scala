@@ -26,7 +26,7 @@ class ConnectionTests extends AnyWordSpec with Matchers {
       "contain cli" in {
         // retrieve possible identities
         val wallet = WalletManager.getWallet(wallet_path)
-        wallet.list() should contain this.contained_id
+        wallet.list().contains(contained_id) should be true
       }
     }
   }
