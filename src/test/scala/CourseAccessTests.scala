@@ -9,7 +9,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import scala.util.{Success, Using}
 
-class ChaincodeConnectionObjectTests extends AnyWordSpec with Matchers {
+class CourseAccessTests extends AnyWordSpec with Matchers {
 
   val connectionManager = ConnectionManager(
     Paths.get(getClass.getResource("/connection_profile.yaml").toURI),
