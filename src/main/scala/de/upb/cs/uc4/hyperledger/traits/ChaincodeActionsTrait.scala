@@ -14,7 +14,7 @@ trait ChaincodeActionsTrait extends ChaincodeActionsTraitCourses with ChaincodeA
    *
    * @param transactionId transactionId to submit
    * @param params        parameters to pass to the transaction
-   * @throws TransactionErrorException if an error occured during transaction
+   * @throws TransactionErrorException if an error occurred during transaction
    * @throws TransactionException      if transactionId could not be mapped, wrong amount of parameters or some validation error
    * @throws HyperledgerExceptionTrait if hyperledgerFramework threw any error internally
    * @return success_state
@@ -58,7 +58,7 @@ trait ChaincodeActionsTrait extends ChaincodeActionsTraitCourses with ChaincodeA
    * @param transactionId transactionId to evaluate
    * @param params        parameters to pass to the transaction
    * @throws InvalidCallException      if transactionId could not be mapped
-   * @throws TransactionErrorException if an error occured during transaction
+   * @throws TransactionErrorException if an error occurred during transaction
    * @return success_state
    */
   @throws[TransactionErrorException]
@@ -72,7 +72,7 @@ trait ChaincodeActionsTrait extends ChaincodeActionsTraitCourses with ChaincodeA
       }
       case "getAllCourses" => {
         this.validateParameterCount(transactionId, 0, params.toArray)
-        this.getAllCourses()
+        this.getAllCourses
       }
       case "getMatriculationData" => {
         this.validateParameterCount(transactionId, 1, params.toArray)

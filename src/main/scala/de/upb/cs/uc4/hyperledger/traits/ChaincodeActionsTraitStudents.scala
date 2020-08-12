@@ -1,7 +1,6 @@
 package de.upb.cs.uc4.hyperledger.traits
 
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
-import de.upb.cs.uc4.hyperledger.exceptions.TransactionErrorException
 import org.hyperledger.fabric.gateway.Contract
 
 /**
@@ -53,7 +52,7 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    * Submits the "deleteCourseById" query.
    *
    * @param matriculationId courseId to add entry to
-   * @param fieldOfStudy    field of study the student enroled in
+   * @param fieldOfStudy    field of study the student enrolled in
    * @param semester        the semester the student enrolled for
    * @throws Exception if chaincode throws an exception.
    * @return success_state
