@@ -41,21 +41,21 @@ protected trait ChaincodeActionsTraitInternal extends AutoCloseable {
    * @param result Bytes containing a result from a chaincode transaction.
    * @return Result as a String.
    */
-  protected def convertTransactionResult(result: Array[Byte]): String = {
+  final protected def convertTransactionResult(result: Array[Byte]): String = {
     new String(result, StandardCharsets.UTF_8)
   }
 
   /**
    * Used to validate the parameter count.
-   * Will throw an exception if parametercount not as expected.
+   * Will throw an exception if parameter count not as expected.
    *
-   * @param transactionId
-   * @param expected
-   * @param params
+   * @param transactionId transaction to test
+   * @param expected      expected amount of parameters
+   * @param params        actual used parameters when trying to invoke transaction
    */
   @throws[InvalidCallException]
-  protected def validateParameterCount(transactionId: String, expected: Integer, params: Array[String]): Unit = {
-    if (params.size != expected) throw InvalidCallException.CreateInvalidParameterCountException(transactionId, expected, params.size)
+  final protected def validateParameterCount(transactionId: String, expected: Integer, params: Array[String]): Unit = {
+    if (params.length != expected) throw InvalidCallException.CreateInvalidParameterCountException(transactionId, expected, params.length)
   }
 
   /**
@@ -66,7 +66,7 @@ protected trait ChaincodeActionsTraitInternal extends AutoCloseable {
    * @return result as a string
    */
   @throws[TransactionException]
-  def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
+  final def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
     val resultString = convertTransactionResult(result)
     if (containsError(resultString)) throw TransactionException(transactionId, resultString)
     else resultString
