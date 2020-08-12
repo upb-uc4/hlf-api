@@ -10,7 +10,6 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
 
   def contract_course: Contract
 
-
   /**
    * Submits any transaction specified by transactionId.
    *
@@ -43,9 +42,8 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @return Success_state
    */
   @throws[TransactionErrorException]
-  final def addCourse(jSonCourse: String): String = {
-    wrapTransactionResult("addCourse", this.internalSubmitTransaction("addCourse", jSonCourse))
-  }
+  final def addCourse(jSonCourse: String): String =
+    this.customWrapTransactionResult("addCourse", this.internalSubmitTransaction("addCourse", jSonCourse))
 
   /**
    * Submits the "deleteCourseById" query.
@@ -55,9 +53,8 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @return success_state
    */
   @throws[TransactionErrorException]
-  final def deleteCourseById(courseId: String): String = {
-    wrapTransactionResult("deleteCourseById", this.internalSubmitTransaction("deleteCourseById", courseId))
-  }
+  final def deleteCourseById(courseId: String): String =
+    this.customWrapTransactionResult("deleteCourseById", this.internalSubmitTransaction("deleteCourseById", courseId))
 
   /**
    * Submits the "updateCourseById" query.
@@ -68,9 +65,8 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @return success_state
    */
   @throws[TransactionErrorException]
-  final def updateCourseById(courseId: String, jSonCourse: String): String = {
-    wrapTransactionResult("updateCourseById", this.internalSubmitTransaction("updateCourseById", courseId, jSonCourse))
-  }
+  final def updateCourseById(courseId: String, jSonCourse: String): String =
+    this.customWrapTransactionResult("updateCourseById", this.internalSubmitTransaction("updateCourseById", courseId, jSonCourse))
 
   /**
    * Executes the "getCourses" query.
@@ -79,12 +75,12 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    * @return List of courses represented by their json value.
    */
   @throws[TransactionErrorException]
-  final def getAllCourses(): String = {
-    val result = wrapTransactionResult("getAllCourses", this.internalEvaluateTransaction("getAllCourses"))
+  final def getAllCourses: String = {
+    val result = this.customWrapTransactionResult("getAllCourses", this.internalEvaluateTransaction("getAllCourses"))
 
     // check specific error
     if (!result.startsWith("[") || !result.endsWith("]")) throw TransactionErrorException("getAllCourses", 0, "Returned invalid structure: " + result)
-    else return result
+    else result
   }
 
   /**
@@ -96,23 +92,23 @@ trait ChaincodeActionsTraitCourses extends ChaincodeActionsTraitInternal {
    */
   @throws[TransactionErrorException]
   final def getCourseById(courseId: String): String = {
-    val result = wrapTransactionResult("getCourseById", this.internalEvaluateTransaction("getCourseById", courseId))
+    val result = this.customWrapTransactionResult("getCourseById", this.internalEvaluateTransaction("getCourseById", courseId))
 
     // check specific error
     if (result == "null") throw TransactionErrorException("getCourseById", 0, "Returned null.")
-    else return result
+    else result
   }
 
   /**
    * Wraps the chaincode query result bytes.
    * Translates the byte-array to a string and throws an error if said string is not empty
-   * Overridden due to specific errors occuring in courses
+   * Overridden due to specific errors occurring in courses
    *
    * @param result input byte-array to translate
    * @return result as a string
    */
   @throws[TransactionErrorException]
-  override def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
+  private def customWrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
     val resultString = convertTransactionResult(result)
     if (containsError(resultString)) throw extractErrorFromResult(transactionId, resultString)
     else resultString
