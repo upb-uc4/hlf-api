@@ -32,7 +32,6 @@ class MatriculationErrorTests extends AnyWordSpec with Matchers with BeforeAndAf
         val result = intercept[TransactionException](() -> chaincodeConnection.evaluateTransaction("getMatriculationData", "1"))
         result.transactionId should ===("getMatriculationData")
         println(result.jsonError)
-        result.jsonError should contain "type"
       }
     }
   }
