@@ -24,20 +24,20 @@ class CourseAccessTests extends AnyWordSpec with Matchers {
         // perform action
         try {
           //retrieve result on query
-          val courses = chaincodeConnection.getAllCourses()
+          val courses = chaincodeConnection.getAllCourses
 
           // test result
           courses should not be null
         } finally {
           // close connection
-          chaincodeConnection.close();
+          chaincodeConnection.close()
         }
       }
 
       "allow a full walkthrough" in {
         val testResult = Using(connectionManager.createConnection()) { chaincodeConnection: ChaincodeActionsTrait =>
           // initial courses
-          val getAllCourses = chaincodeConnection.getAllCourses()
+          val getAllCourses = chaincodeConnection.getAllCourses
           getAllCourses should not be null
           println("Courses: " + getAllCourses)
 
@@ -62,7 +62,7 @@ class CourseAccessTests extends AnyWordSpec with Matchers {
           try {
             val tryGetRemovedCourse = chaincodeConnection.getCourseById(testCourseId)
             println("removeResult: " + tryGetRemovedCourse)
-            assert(false, "The removec course did not throw an exception when trying to retrieve it.")
+            assert(false, "The remove course did not throw an exception when trying to retrieve it.")
           } catch {
             case _: Throwable => println("Correctly threw an exception when getting deleted course.")
           }
