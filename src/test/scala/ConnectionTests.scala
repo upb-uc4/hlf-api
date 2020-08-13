@@ -1,6 +1,4 @@
-import java.nio.file.{Path, Paths}
-
-import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionManager
+import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCourses
 import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
 import de.upb.cs.uc4.hyperledger.utilities.{GatewayManager, WalletManager}
 
@@ -97,8 +95,7 @@ class ConnectionTests extends TestBaseDevNetwork {
   "The Connection Manager" when {
     "asked for a connection" should {
       "provide network connection" in {
-        val connection = ConnectionManager.createCourseConnection(
-          id, channel, chaincode, contract_name_course, network_description_path, wallet_path)
+        val connection = ConnectionCourses.initialize(id, channel, chaincode, contract_name_course, network_description_path, wallet_path)
         connection should not be null
       }
     }

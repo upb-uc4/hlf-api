@@ -1,4 +1,5 @@
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCourseTrait
+import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
 import org.scalatest.Succeeded
 
@@ -50,13 +51,9 @@ class CourseAccessTests extends TestBaseDevNetwork {
           val deleteCourseResult = chaincodeConnection.deleteCourseById(testCourseId)
           deleteCourseResult should not equal null
           println("deleteCourseResult: " + deleteCourseResult)
-          try {
-            val tryGetRemovedCourse = chaincodeConnection.getCourseById(testCourseId)
-            println("removeResult: " + tryGetRemovedCourse)
-            assert(false, "The remove course did not throw an exception when trying to retrieve it.")
-          } catch {
-            case _: Throwable => println("Correctly threw an exception when getting deleted course.")
-          }
+
+          // access deleted course shall throw an exception
+          intercept[TransactionException](() -> chaincodeConnection.getCourseById(testCourseId))
 
           // update new course
           // add new course
