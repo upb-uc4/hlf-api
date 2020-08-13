@@ -95,7 +95,7 @@ class ConnectionTests extends TestBaseDevNetwork {
   "The Connection Manager" when {
     "asked for a connection" should {
       "provide network connection" in {
-        val connection = ConnectionCourses.initialize(id, channel, chaincode, contract_name_course, network_description_path, wallet_path)
+        val connection = ConnectionCourses.initialize(id, channel, chaincode, network_description_path, wallet_path)
         connection should not be null
       }
     }
