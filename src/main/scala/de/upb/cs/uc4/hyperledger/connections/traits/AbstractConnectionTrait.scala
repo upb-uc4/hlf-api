@@ -1,37 +1,36 @@
-package de.upb.cs.uc4.hyperledger.traits
+package de.upb.cs.uc4.hyperledger.connections.traits
 
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
+import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerInnerException, HyperledgerUnhandledException, TransactionException}
 import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
-import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerInnerException, InvalidCallException, TransactionException, UnhandledException}
-import org.hyperledger.fabric.gateway.{Contract, ContractException, GatewayRuntimeException}
+import org.hyperledger.fabric.gateway.{Contract, ContractException, Gateway, GatewayRuntimeException}
 
-/**
- * Trait to provide basic functionality for all chaincode transactions.
- */
-protected trait ChaincodeActionsTraitInternal extends AutoCloseable {
+trait AbstractConnectionTrait extends AutoCloseable{
+  val contract: Contract
+  val gateway: Gateway
 
   @throws[HyperledgerExceptionTrait]
-  protected final def internalSubmitTransaction(chaincode: Contract, transactionId: String, params: String*): Array[Byte] = {
+  protected final def internalSubmitTransaction(transactionId: String, params: String*): Array[Byte] = {
     try {
-      chaincode.submitTransaction(transactionId, params: _*)
+      contract.submitTransaction(transactionId, params: _*)
     } catch {
       case ex: ContractException => throw HyperledgerInnerException(transactionId, ex)
       case ex: TimeoutException => throw HyperledgerInnerException(transactionId, ex)
       case ex: java.lang.InterruptedException => throw HyperledgerInnerException(transactionId, ex)
       case ex: GatewayRuntimeException => throw HyperledgerInnerException(transactionId, ex)
-      case ex: Exception => throw UnhandledException(transactionId, ex)
+      case ex: Exception => throw HyperledgerUnhandledException(transactionId, ex)
     }
   }
 
   @throws[HyperledgerExceptionTrait]
-  protected final def internalEvaluateTransaction(chaincode: Contract, transactionId: String, params: String*): Array[Byte] = {
+  protected final def internalEvaluateTransaction(transactionId: String, params: String*): Array[Byte] = {
     try {
-      chaincode.evaluateTransaction(transactionId, params: _*)
+      contract.evaluateTransaction(transactionId, params: _*)
     } catch {
       case ex: ContractException => throw HyperledgerInnerException(transactionId, ex)
-      case ex: Exception => throw UnhandledException(transactionId, ex)
+      case ex: Exception => throw HyperledgerUnhandledException(transactionId, ex)
     }
   }
 
@@ -43,19 +42,6 @@ protected trait ChaincodeActionsTraitInternal extends AutoCloseable {
    */
   final protected def convertTransactionResult(result: Array[Byte]): String = {
     new String(result, StandardCharsets.UTF_8)
-  }
-
-  /**
-   * Used to validate the parameter count.
-   * Will throw an exception if parameter count not as expected.
-   *
-   * @param transactionId transaction to test
-   * @param expected      expected amount of parameters
-   * @param params        actual used parameters when trying to invoke transaction
-   */
-  @throws[InvalidCallException]
-  final protected def validateParameterCount(transactionId: String, expected: Integer, params: Array[String]): Unit = {
-    if (params.length != expected) throw InvalidCallException.CreateInvalidParameterCountException(transactionId, expected, params.length)
   }
 
   /**
@@ -81,4 +67,6 @@ protected trait ChaincodeActionsTraitInternal extends AutoCloseable {
   private def containsError(result: String): Boolean = {
     result.contains("{\"type\":") && result.contains("\"title\":")
   }
+
+  final override def close(): Unit = gateway.close()
 }

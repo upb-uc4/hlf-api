@@ -1,17 +1,11 @@
 import java.nio.file.{Path, Paths}
 
-import de.upb.cs.uc4.hyperledger.ConnectionManager
+import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionManager
+import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
 import de.upb.cs.uc4.hyperledger.utilities.{GatewayManager, WalletManager}
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
-class ConnectionTests extends AnyWordSpec with Matchers {
+class ConnectionTests extends TestBaseDevNetwork {
 
-  val connection_profile_path: Path = Paths.get(getClass.getResource("/connection_profile.yaml").toURI)
-  val wallet_path: Path = Paths.get(getClass.getResource("/wallet/").toURI)
-  val contained_id: String = "cli"
-  val channel_name: String = "myc"
-  val chaincode: String = "mycc"
   val contract_name_course: String = "UC4.course"
 
   "The WalletManager" when {
@@ -24,7 +18,7 @@ class ConnectionTests extends AnyWordSpec with Matchers {
       "contain expected id" in {
         // retrieve possible identities
         val wallet = WalletManager.getWallet(wallet_path)
-        val contained = wallet.list.contains(contained_id)
+        val contained = wallet.list.contains(id)
         contained should equal (true)
       }
     }
@@ -37,7 +31,7 @@ class ConnectionTests extends AnyWordSpec with Matchers {
         val wallet = WalletManager.getWallet(wallet_path)
 
         // prepare Network Builder
-        val builder = GatewayManager.getBuilder(wallet, connection_profile_path, contained_id)
+        val builder = GatewayManager.getBuilder(wallet, network_description_path, id)
         builder should not be null
       }
 
@@ -46,11 +40,11 @@ class ConnectionTests extends AnyWordSpec with Matchers {
         val wallet = WalletManager.getWallet(wallet_path)
 
         // prepare Network Builder
-        val builder = GatewayManager.getBuilder(wallet, connection_profile_path, contained_id)
+        val builder = GatewayManager.getBuilder(wallet, network_description_path, id)
         builder should not be null
 
         // get gateway object
-        val gateway = GatewayManager.createGateway(wallet, connection_profile_path, contained_id)
+        val gateway = GatewayManager.createGateway(wallet, network_description_path, id)
         gateway should not be null
 
         // cleanup
@@ -61,15 +55,15 @@ class ConnectionTests extends AnyWordSpec with Matchers {
         val wallet = WalletManager.getWallet(wallet_path)
 
         // prepare Network Builder
-        val builder = GatewayManager.getBuilder(wallet, connection_profile_path, contained_id)
+        val builder = GatewayManager.getBuilder(wallet, network_description_path, id)
         builder should not be null
 
         // get gateway object
-        val gateway = GatewayManager.createGateway(wallet, connection_profile_path, contained_id)
+        val gateway = GatewayManager.createGateway(wallet, network_description_path, id)
         gateway should not be null
 
         try {
-          val network = gateway.getNetwork(channel_name)
+          val network = gateway.getNetwork(channel)
           network should not be null
         } finally {
           // cleanup
@@ -81,15 +75,15 @@ class ConnectionTests extends AnyWordSpec with Matchers {
         val wallet = WalletManager.getWallet(wallet_path)
 
         // prepare Network Builder
-        val builder = GatewayManager.getBuilder(wallet, connection_profile_path, contained_id)
+        val builder = GatewayManager.getBuilder(wallet, network_description_path, id)
         builder should not be null
 
         // get gateway object
-        val gateway = GatewayManager.createGateway(wallet, connection_profile_path, contained_id)
+        val gateway = GatewayManager.createGateway(wallet, network_description_path, id)
         gateway should not be null
 
         try {
-          val network = gateway.getNetwork(channel_name)
+          val network = gateway.getNetwork(channel)
           val contract = network.getContract(chaincode, contract_name_course)
           contract should not be null
         } finally {
@@ -103,8 +97,8 @@ class ConnectionTests extends AnyWordSpec with Matchers {
   "The Connection Manager" when {
     "asked for a connection" should {
       "provide network connection" in {
-        val connectionManager: ConnectionManager = ConnectionManager(connection_profile_path, wallet_path)
-        val connection = connectionManager.createConnection()
+        val connection = ConnectionManager.createCourseConnection(
+          id, channel, chaincode, contract_name_course, network_description_path, wallet_path)
         connection should not be null
       }
     }

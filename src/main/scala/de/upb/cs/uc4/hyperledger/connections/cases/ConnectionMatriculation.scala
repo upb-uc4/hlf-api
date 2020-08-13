@@ -1,38 +1,21 @@
-package de.upb.cs.uc4.hyperledger.traits
+package de.upb.cs.uc4.hyperledger.connections.cases
 
+import java.nio.file.Path
+
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
-import org.hyperledger.fabric.gateway.Contract
+import org.hyperledger.fabric.gateway.{Contract, Gateway}
 
-/**
- * Trait to provide explicit access to chaincode transactions regarding courses
- */
-trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
+object ConnectionMatriculation{
+  val contract_name: String = "UC4.MatriculationData"
 
-  def contract_student: Contract
+  def initialize(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path): ConnectionMatriculationTrait = {
+    val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, network_description_path, wallet_path)
+    new ConnectionMatriculation(contract, gateway)
+  }
+}
 
-  /**
-   * Submits any transaction specified by transactionId.
-   *
-   * @param transactionId transactionId to submit
-   * @param params        parameters to pass to the transaction
-   * @throws Exception if chaincode throws an exception.
-   * @return success_state
-   */
-  @throws[HyperledgerExceptionTrait]
-  private def internalSubmitTransaction(transactionId: String, params: String*): Array[Byte] =
-    this.internalSubmitTransaction(contract_student, transactionId, params: _*)
-
-  /**
-   * Evaluates the transaction specified by transactionId.
-   *
-   * @param transactionId transactionId to evaluate
-   * @param params        parameters to pass to the transaction
-   * @throws Exception if chaincode throws an exception.
-   * @return success_state
-   */
-  @throws[HyperledgerExceptionTrait]
-  private def internalEvaluateTransaction(transactionId: String, params: String*): Array[Byte] =
-    this.internalEvaluateTransaction(contract_student, transactionId, params: _*)
+protected case class ConnectionMatriculation(contract: Contract, gateway: Gateway) extends ConnectionMatriculationTrait {
 
   /**
    * Executes the "addCourse" query.
@@ -43,10 +26,9 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  final def addMatriculationData(jSonMatriculationData: String): String = {
+  override def addMatriculationData(jSonMatriculationData: String): String =
     wrapTransactionResult("addMatriculationData",
       this.internalSubmitTransaction("addMatriculationData", jSonMatriculationData))
-  }
 
   /**
    * Submits the "deleteCourseById" query.
@@ -59,10 +41,9 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  final def addEntryToMatriculationData(matriculationId: String, fieldOfStudy: String, semester: String): String = {
+  override def addEntryToMatriculationData(matriculationId: String, fieldOfStudy: String, semester: String): String =
     wrapTransactionResult("addEntryToMatriculationData",
       this.internalSubmitTransaction("addEntryToMatriculationData", matriculationId, fieldOfStudy, semester))
-  }
 
   /**
    * Submits the "updateCourseById" query.
@@ -73,11 +54,9 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  final def updateMatriculationData(jSonMatriculationData: String): String = {
+  override def updateMatriculationData(jSonMatriculationData: String): String =
     wrapTransactionResult("updateMatriculationData",
       this.internalSubmitTransaction("updateMatriculationData", jSonMatriculationData))
-  }
-
   /**
    * Executes the "getCourseById" query.
    *
@@ -87,8 +66,7 @@ trait ChaincodeActionsTraitStudents extends ChaincodeActionsTraitInternal {
    */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  final def getMatriculationData(matId: String): String = {
+  override def getMatriculationData(matId: String): String =
     wrapTransactionResult("getMatriculationData",
       this.internalEvaluateTransaction("getMatriculationData", matId))
-  }
 }

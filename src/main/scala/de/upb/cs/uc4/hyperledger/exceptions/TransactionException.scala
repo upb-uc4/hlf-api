@@ -6,3 +6,14 @@ case class TransactionException(transactionId: String, jsonError: String) extend
   override def toString: String =
     s"The provided transaction: '${transactionId}' failed with an error: ${jsonError}"
 }
+
+object TransactionException {
+  final def jSonUnknown(id: String, detail: String) = "{\n" +
+    "  \"type\": \"" + id + "\",\n" +
+    "  \"title\": \"" + detail + "\"\n" +
+    "}"
+
+  def CreateUnknownException(id: String, detail: String): TransactionException =
+    new TransactionException(id, TransactionException.jSonUnknown(id, detail)
+    )
+}
