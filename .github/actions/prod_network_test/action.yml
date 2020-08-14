@@ -21,9 +21,10 @@ runs:
         echo "##########################"
         echo "#     copied network     #"
         echo "##########################"
-      shell: bash
+      shell: 
+        bash
 
-      - name: Start Network
+    - name: Start Network
       run: |
         pushd hlf-network
         echo "##########################"
