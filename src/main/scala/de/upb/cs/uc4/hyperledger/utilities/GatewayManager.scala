@@ -7,6 +7,13 @@ import org.hyperledger.fabric.gateway.{Gateway, Wallet}
 
 object GatewayManager {
 
+  def createGateway(wallet_path : Path, network_config_path : Path, username : String): Gateway = {
+    val wallet: Wallet = WalletManager.getWallet(wallet_path)
+
+    // prepare Network Builder
+    this.createGateway(wallet, network_config_path, username)
+  }
+
   def createGateway(wallet : Wallet, network_config_path : Path, username : String): Gateway = {
     // prepare Network Builder
     val builder: Builder = this.getBuilder(wallet, network_config_path, username)
@@ -18,7 +25,6 @@ object GatewayManager {
     var builder = Gateway.createBuilder
     builder = builder.identity(wallet, name)
     builder = builder.networkConfig(networkConfigPath)
-    builder = builder.discovery(false)
 
     builder
   }

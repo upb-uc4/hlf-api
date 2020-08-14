@@ -59,6 +59,4 @@ object RegisterUser {
     wallet.put("appUser", user)
     println("Successfully enrolled user \"appUser\" and imported it into the wallet")
   }
-
-  System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true")
 }

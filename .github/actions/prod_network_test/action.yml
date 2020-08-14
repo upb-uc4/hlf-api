@@ -1,5 +1,5 @@
-name: 'UC4 Dev_Network Setup'
-description: 'Sets up the UC4 Dev-Network'
+name: 'UC4 Production Nework setup'
+description: 'Sets up the UC4 Production Network'
 
 inputs:
   what-to-test:  # name of testClass
@@ -11,32 +11,39 @@ runs:
     using: "composite"
     
     steps:    
-    # set up Dev_network
-    - name: Set up dev_network - dockers
+    # start network
+    - name: Start Network
       run: |
-        pushd ./hyperledger_dev_network
+        pushd hlf-network
         echo "##########################"
         echo "#  start network script  #"
         echo "##########################"
-        ./network.sh &
+        ./startNetwork.sh
         echo "##########################"
         echo "# started network script #"
         echo "##########################"
-        echo "#    begin sleep         #"
-        echo "##########################"
-        sleep 180
-        echo "#    finish sleep        #"
-        echo "##########################"
         popd
-      shell: bash
-        
+      shell:
+        bash
+
+    - name: Install Chaincode
+      run: |
+        pushd hlf-network
+        ./installChaincode.sh
+        popd
+      shell: 
+        bash
+
     # run tests
     - name: Run tests
       run: |
+        source setup_minikube_ip.sh
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
         sbt "testOnly *${{ inputs.what-to-test }}"
         echo "##########################"
         echo "#    finished test       #"
-      shell: bash
+        echo "##########################"
+      shell:
+        bash

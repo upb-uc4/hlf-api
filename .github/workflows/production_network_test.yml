@@ -27,21 +27,13 @@ jobs:
     - name: Check out source repository
       uses: actions/checkout@v2
 
+    # Checks out production network
     - name : Check out production network
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-network'
         ref: 'develop'
         path: 'hlf-network'
-
-    - name: Check structure
-      run: |
-        ls
-        pushd hlf-network
-        ls
-        popd
-      shell:
-        bash
 
       # Set up JDK
     - name: Set up JDK 1.8
@@ -53,30 +45,9 @@ jobs:
     - name: Start minikube
       uses: medyagh/setup-minikube@master
 
-    - name: Start Network
-      run: |
-        pushd hlf-network
-        ./startNetwork.sh
-        popd
-
-    - name: Install Chaincode
-      run: |
-        pushd hlf-network
-        ./installChaincode.sh
-        popd
-      shell:
-        bash
-
-    # run enrollmentTests tests
-    - name: Run enrollmentTests tests
-      run: |
-        echo "##########################"
-        echo "#    starting test       #"
-        echo "##########################"
-        source setup_minikube_ip.sh
-        sbt "testOnly *EnrollmentTests"
-        echo "##########################"
-        echo "#    finished test       #"
-        echo "##########################"
-      shell:
-        bash
+    
+    # Run EnrollmentTests
+    - name: setupAndTest
+      uses: ./.github/actions/prod_network_test
+      with:
+        what-to-test: 'EnrollmentTests'
