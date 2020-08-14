@@ -8,7 +8,7 @@ import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 
 case class ConnectionCourses(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path) extends ConnectionCourseTrait {
   val contract_name: String = "UC4.course"
-  val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, wallet_path, network_description_path)
+  override val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, wallet_path, network_description_path)
 
   override def addCourse(jSonCourse: String): String =
     this.customWrapTransactionResult("addCourse", this.internalSubmitTransaction("addCourse", jSonCourse))
@@ -40,6 +40,13 @@ case class ConnectionCourses(id: String, channel: String, chaincode: String, wal
     else resultString
   }
 
+  /**
+   *  gets the CUSTOM course errors and wraps them as a TransactionException
+   * @param transactionId
+   * @param result
+   * @return
+   */
+  @throws[TransactionException]
   private def extractErrorFromResult(transactionId: String, result: String): TransactionException = {
     // retrieve error code
     var id = result.substring(result.indexOf("\"name\":\"") + 8)
@@ -54,7 +61,7 @@ case class ConnectionCourses(id: String, channel: String, chaincode: String, wal
   }
 
   /**
-   * Evaluates whether a transaction was valid or invalid
+   * Evaluates whether a COURSE transaction was valid or invalid
    *
    * @param result result of a chaincode transaction
    * @return true if the result contains error information

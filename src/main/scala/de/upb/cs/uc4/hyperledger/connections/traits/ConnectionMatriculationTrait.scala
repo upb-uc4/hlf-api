@@ -5,7 +5,7 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, T
 trait ConnectionMatriculationTrait extends AbstractConnectionTrait {
 
   /**
-   * Executes the "addCourse" query.
+   * Executes the "addMatriculationData" query.
    *
    * @param jSonMatriculationData Information about the matriculation to add.
    * @throws Exception if chaincode throws an exception.
@@ -16,9 +16,9 @@ trait ConnectionMatriculationTrait extends AbstractConnectionTrait {
   def addMatriculationData(jSonMatriculationData: String): String
 
   /**
-   * Submits the "deleteCourseById" query.
+   * Submits the "addEntryToMatriculationData" query.
    *
-   * @param matriculationId courseId to add entry to
+   * @param matriculationId matriculationId to add entry to
    * @param fieldOfStudy    field of study the student enrolled in
    * @param semester        the semester the student enrolled for
    * @throws Exception if chaincode throws an exception.
@@ -29,7 +29,7 @@ trait ConnectionMatriculationTrait extends AbstractConnectionTrait {
   def addEntryToMatriculationData(matriculationId: String, fieldOfStudy: String, semester: String): String
 
   /**
-   * Submits the "updateCourseById" query.
+   * Submits the "updateMatriculationData" query.
    *
    * @param jSonMatriculationData matriculationInfo to update
    * @throws Exception if chaincode throws an exception.
@@ -40,7 +40,7 @@ trait ConnectionMatriculationTrait extends AbstractConnectionTrait {
   def updateMatriculationData(jSonMatriculationData: String): String
 
   /**
-   * Executes the "getCourseById" query.
+   * Executes the "getMatriculationData" query.
    *
    * @param matId matriculationId to get information
    * @throws Exception if chaincode throws an exception.
