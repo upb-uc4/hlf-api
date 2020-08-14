@@ -4,18 +4,11 @@ import java.nio.file.Path
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCourseTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
-import org.hyperledger.fabric.gateway.{Contract, Gateway}
+import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 
-object ConnectionCourses {
+case class ConnectionCourses(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path) extends ConnectionCourseTrait {
   val contract_name: String = "UC4.course"
-
-  def initialize(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path): ConnectionCourseTrait = {
-    val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, network_description_path, wallet_path)
-    new ConnectionCourses(contract, gateway)
-  }
-}
-
-protected case class ConnectionCourses(contract: Contract, gateway: Gateway) extends ConnectionCourseTrait {
+  val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, wallet_path, network_description_path)
 
   override def addCourse(jSonCourse: String): String =
     this.customWrapTransactionResult("addCourse", this.internalSubmitTransaction("addCourse", jSonCourse))

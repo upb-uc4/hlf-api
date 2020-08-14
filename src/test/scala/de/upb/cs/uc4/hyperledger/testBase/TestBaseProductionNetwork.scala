@@ -21,8 +21,6 @@ class TestBaseProductionNetwork extends AnyWordSpec with Matchers with BeforeAnd
   val channel: String = "mychannel"
   val chaincode: String = "uc4-cc"
 
-  def initializeCourses(): ConnectionCourseTrait = ConnectionCourses.initialize(username, channel, chaincode, wallet_path, network_description_path)
-  def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation.initialize(username, channel, chaincode, wallet_path, network_description_path)
-
-
+  def initializeCourses(): ConnectionCourseTrait = ConnectionCourses(username, channel, chaincode, wallet_path, network_description_path)
+  def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation(username, channel, chaincode, wallet_path, network_description_path)
 }

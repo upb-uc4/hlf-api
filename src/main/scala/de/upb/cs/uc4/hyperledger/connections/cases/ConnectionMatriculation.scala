@@ -4,18 +4,12 @@ import java.nio.file.Path
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
-import org.hyperledger.fabric.gateway.{Contract, Gateway}
+import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 
-object ConnectionMatriculation{
+case class ConnectionMatriculation(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path) extends ConnectionMatriculationTrait {
+
   val contract_name: String = "UC4.MatriculationData"
-
-  def initialize(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path): ConnectionMatriculationTrait = {
-    val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, network_description_path, wallet_path)
-    new ConnectionMatriculation(contract, gateway)
-  }
-}
-
-protected case class ConnectionMatriculation(contract: Contract, gateway: Gateway) extends ConnectionMatriculationTrait {
+  val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, network_description_path, wallet_path)
 
   /**
    * Executes the "addCourse" query.

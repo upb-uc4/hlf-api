@@ -21,7 +21,7 @@ class MatriculationErrorTests extends TestBaseDevNetwork {
         // test action
         val result = intercept[TransactionException](() -> chaincodeConnection.getMatriculationData("1"))
         result.transactionId should ===("getMatriculationData")
-        println(result.jsonError)
+        println(result.payload)
       }
     }
   }

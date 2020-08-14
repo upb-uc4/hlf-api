@@ -16,8 +16,8 @@ class TestBaseDevNetwork extends AnyWordSpec with Matchers with BeforeAndAfterEa
   val channel: String = "myc"
   val chaincode: String = "mycc"
 
-  def initializeCourses(): ConnectionCourseTrait = ConnectionCourses.initialize(id, channel, chaincode, wallet_path, network_description_path)
-  def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation.initialize(id, channel, chaincode, wallet_path, network_description_path)
+  def initializeCourses(): ConnectionCourseTrait = ConnectionCourses(id, channel, chaincode, wallet_path, network_description_path)
+  def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation(id, channel, chaincode, wallet_path, network_description_path)
 
 
 }
