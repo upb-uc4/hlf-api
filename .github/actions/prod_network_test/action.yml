@@ -11,19 +11,7 @@ runs:
     using: "composite"
     
     steps:    
-    # set up Dev_network
-    - name: Set up production_network - dockers
-      run: |
-        echo "##########################"
-        echo "#clone production_network#"
-        echo "##########################"
-        ./fetch_prod_network.sh
-        echo "##########################"
-        echo "#     copied network     #"
-        echo "##########################"
-      shell: 
-        bash
-
+    # start network
     - name: Start Network
       run: |
         pushd hlf-network

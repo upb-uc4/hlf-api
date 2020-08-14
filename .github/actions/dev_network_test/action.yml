@@ -14,13 +14,6 @@ runs:
     # set up Dev_network
     - name: Set up dev_network - dockers
       run: |
-        echo "##########################"
-        echo "#   clone dev_network    #"
-        echo "##########################"
-        ./fetch_dev_network.sh
-        echo "##########################"
-        echo "#   copied dev_network   #"
-        echo "##########################"
         pushd ./hyperledger_dev_network
         echo "##########################"
         echo "#  start network script  #"
