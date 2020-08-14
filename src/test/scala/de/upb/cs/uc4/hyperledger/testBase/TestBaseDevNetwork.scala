@@ -9,10 +9,6 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class TestBaseDevNetwork extends AnyWordSpec with Matchers with BeforeAndAfterEach{
-
-  val contract_name_course: String = "UC4.course"
-  val contract_name_matriculation: String = "UC4.MatriculationData"
-
   val network_description_path: Path = Paths.get(getClass.getResource("/connection_profile.yaml").toURI)
   val wallet_path: Path = Paths.get(getClass.getResource("/wallet/").toURI)
   val id: String = "cli"

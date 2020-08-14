@@ -25,6 +25,7 @@ class CourseErrorTests extends TestBaseDevNetwork {
       "throw TransactionErrorException for wrong transactionId during update " in {
         // test action
         val result = intercept[TransactionException](() -> chaincodeConnection.updateCourseById("1", TestData.invalidCourseData(null)))
+        result.transactionId should ===("updateCourseById")
       }
     }
   }

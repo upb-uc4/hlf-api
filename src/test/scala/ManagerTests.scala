@@ -1,4 +1,3 @@
-import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCourses
 import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
 import de.upb.cs.uc4.hyperledger.utilities.{ConnectionManager, GatewayManager, WalletManager}
 
@@ -57,6 +56,8 @@ class ManagerTests extends TestBaseDevNetwork {
         // get gateway object
         val gateway = GatewayManager.createGateway(wallet_path, network_description_path, id)
 
+        val contract_name_course: String = "UC4.course"
+
         try {
           val network = gateway.getNetwork(channel)
           val contract = network.getContract(chaincode, contract_name_course)
@@ -72,17 +73,25 @@ class ManagerTests extends TestBaseDevNetwork {
   "The Connection Manager" when {
     "asked for connection info" should {
       "provide network connection info - courses" in {
+
+        val contract_name_course: String = "UC4.course"
+
         val (contract, gateway) = ConnectionManager.initializeConnection(
           id, channel, chaincode, contract_name_course, wallet_path, network_description_path)
         contract should not be null
         gateway should not be null
+        GatewayManager.disposeGateway(gateway)
       }
 
       "provide network connection info - matriculation" in {
+
+        val contract_name_matriculation: String = "UC4.MatriculationData"
+
         val (contract, gateway) = ConnectionManager.initializeConnection(
           id, channel, chaincode, contract_name_matriculation, wallet_path, network_description_path)
         contract should not be null
         gateway should not be null
+        GatewayManager.disposeGateway(gateway)
       }
     }
   }
