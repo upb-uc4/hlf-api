@@ -56,6 +56,14 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: check out source repository
       uses: actions/checkout@v2
+
+    # Checks out dev network
+    - name : Check out dev_network
+      uses: actions/checkout@v2
+      with:
+        repository: 'upb-uc4/hyperledger_dev_network'
+        ref: 'develop'
+        path: 'hyperledger_dev_network'
     
     # Set up JDK
     - name: Set up JDK 1.8
@@ -78,6 +86,14 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: check out source repository
       uses: actions/checkout@v2
+
+    # Checks out dev network
+    - name : Check out dev_network
+      uses: actions/checkout@v2
+      with:
+        repository: 'upb-uc4/hyperledger_dev_network'
+        ref: 'develop'
+        path: 'hyperledger_dev_network'
     
     # Set up JDK
     - name: Set up JDK 1.8
@@ -100,6 +116,14 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: check out source repository
       uses: actions/checkout@v2
+
+    # Checks out dev network
+    - name : Check out dev_network
+      uses: actions/checkout@v2
+      with:
+        repository: 'upb-uc4/hyperledger_dev_network'
+        ref: 'develop'
+        path: 'hyperledger_dev_network'
     
     # Set up JDK
     - name: Set up JDK 1.8
