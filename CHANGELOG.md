@@ -1,4 +1,4 @@
-# [v0.6.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.0...v0.6.0) (2020-08-11)
+# [v0.6.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.0...v0.6.0) (2020-08-14)
 
 ## Feature
 
@@ -20,7 +20,7 @@
 - begin changelog
 - return Course errors by wrapping them as TransactionExceptions
 
-# [v0.5.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.4...v0.5.5) (2020-08-11)
+# [v0.5.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.4...v0.5.5) (2020-08-14)
 
 ## Usability
 
