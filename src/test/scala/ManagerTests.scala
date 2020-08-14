@@ -1,10 +1,8 @@
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCourses
 import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
-import de.upb.cs.uc4.hyperledger.utilities.{GatewayManager, WalletManager}
+import de.upb.cs.uc4.hyperledger.utilities.{ConnectionManager, GatewayManager, WalletManager}
 
-class ConnectionTests extends TestBaseDevNetwork {
-
-  val contract_name_course: String = "UC4.course"
+class ManagerTests extends TestBaseDevNetwork {
 
   "The WalletManager" when {
     "asked for a wallet" should {
@@ -34,31 +32,17 @@ class ConnectionTests extends TestBaseDevNetwork {
       }
 
       "provide a gateway" in {
-        // retrieve possible identities
-        val wallet = WalletManager.getWallet(wallet_path)
-
-        // prepare Network Builder
-        val builder = GatewayManager.getBuilder(wallet, network_description_path, id)
-        builder should not be null
-
         // get gateway object
-        val gateway = GatewayManager.createGateway(wallet, network_description_path, id)
+        val gateway = GatewayManager.createGateway(wallet_path, network_description_path, id)
         gateway should not be null
 
         // cleanup
         GatewayManager.disposeGateway(gateway)
       }
+
       "provide a gateway pointing to our network channel" in {
-        // retrieve possible identities
-        val wallet = WalletManager.getWallet(wallet_path)
-
-        // prepare Network Builder
-        val builder = GatewayManager.getBuilder(wallet, network_description_path, id)
-        builder should not be null
-
         // get gateway object
-        val gateway = GatewayManager.createGateway(wallet, network_description_path, id)
-        gateway should not be null
+        val gateway = GatewayManager.createGateway(wallet_path, network_description_path, id)
 
         try {
           val network = gateway.getNetwork(channel)
@@ -68,17 +52,10 @@ class ConnectionTests extends TestBaseDevNetwork {
           GatewayManager.disposeGateway(gateway)
         }
       }
+
       "provide a gateway pointing to our network channel containing our course_contract" in {
-        // retrieve possible identities
-        val wallet = WalletManager.getWallet(wallet_path)
-
-        // prepare Network Builder
-        val builder = GatewayManager.getBuilder(wallet, network_description_path, id)
-        builder should not be null
-
         // get gateway object
-        val gateway = GatewayManager.createGateway(wallet, network_description_path, id)
-        gateway should not be null
+        val gateway = GatewayManager.createGateway(wallet_path, network_description_path, id)
 
         try {
           val network = gateway.getNetwork(channel)
@@ -93,10 +70,19 @@ class ConnectionTests extends TestBaseDevNetwork {
   }
 
   "The Connection Manager" when {
-    "asked for a connection" should {
-      "provide network connection" in {
-        val connection = ConnectionCourses.initialize(id, channel, chaincode, network_description_path, wallet_path)
-        connection should not be null
+    "asked for connection info" should {
+      "provide network connection info - courses" in {
+        val (contract, gateway) = ConnectionManager.initializeConnection(
+          id, channel, chaincode, contract_name_course, network_description_path, wallet_path)
+        contract should not be null
+        gateway should not be null
+      }
+
+      "provide network connection info - matriculation" in {
+        val (contract, gateway) = ConnectionManager.initializeConnection(
+          id, channel, chaincode, contract_name_matriculation, network_description_path, wallet_path)
+        contract should not be null
+        gateway should not be null
       }
     }
   }
