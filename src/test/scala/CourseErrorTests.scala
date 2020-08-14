@@ -6,11 +6,11 @@ class CourseErrorTests extends TestBaseDevNetwork {
 
   var chaincodeConnection: ConnectionCourseTrait = _
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     chaincodeConnection = initializeCourses()
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     chaincodeConnection.close()
   }
 

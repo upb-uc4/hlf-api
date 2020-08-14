@@ -41,7 +41,7 @@ trait AbstractConnectionTrait extends AutoCloseable{
    * @param result Bytes containing a result from a chaincode transaction.
    * @return Result as a String.
    */
-  final protected def convertTransactionResult(result: Array[Byte]): String = {
+  protected final def convertTransactionResult(result: Array[Byte]): String = {
     new String(result, StandardCharsets.UTF_8)
   }
 
@@ -53,7 +53,7 @@ trait AbstractConnectionTrait extends AutoCloseable{
    * @return result as a string
    */
   @throws[TransactionException]
-  final def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
+  protected final def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
     val resultString = convertTransactionResult(result)
     if (containsError(resultString)) throw TransactionException(transactionId, resultString)
     else resultString

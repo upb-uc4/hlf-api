@@ -14,6 +14,7 @@ trait ConnectionCourseTrait extends AbstractConnectionTrait {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   def addCourse(jSonCourse: String): String
+
   /**
    * Submits the "deleteCourseById" query.
    *
@@ -24,6 +25,7 @@ trait ConnectionCourseTrait extends AbstractConnectionTrait {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   def deleteCourseById(courseId: String): String
+
   /**
    * Submits the "updateCourseById" query.
    *
