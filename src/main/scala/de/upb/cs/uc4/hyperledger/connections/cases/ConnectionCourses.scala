@@ -22,8 +22,13 @@ case class ConnectionCourses(id: String, channel: String, chaincode: String, wal
   override def getAllCourses: String =
     this.customWrapTransactionResult("getAllCourses", this.internalEvaluateTransaction("getAllCourses"))
 
-  override def getCourseById(courseId: String): String =
-    this.customWrapTransactionResult("getCourseById", this.internalEvaluateTransaction("getCourseById", courseId))
+  override def getCourseById(courseId: String): String = {
+    val result = this.customWrapTransactionResult("getCourseById", this.internalEvaluateTransaction("getCourseById", courseId))
+
+    // check specific error
+    if (result == "null") throw TransactionException.CreateUnknownException("getCourseById", "Returned null.")
+    else result
+  }
 
   /**
    * Wraps the chaincode query result bytes.
