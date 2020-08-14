@@ -1,4 +1,4 @@
-# [v0.6.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.0...v0.6.0) (2020-08-14)
+# [v0.6.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.5...v0.6.0) (2020-08-14)
 
 ## Feature
 
