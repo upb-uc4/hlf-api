@@ -1,0 +1,42 @@
+name: 'UC4 Dev_Network Setup'
+description: 'Sets up the UC4 Dev-Network'
+
+inputs:
+  what-to-test:  # name of testClass
+    description: 'Name of Test Class'
+    required: true
+    default: '*'
+
+runs:
+    using: "composite"
+    
+    steps:    
+    # set up Dev_network
+    - name: Set up dev_network - dockers
+      run: |
+        pushd ./hyperledger_dev_network
+        echo "##########################"
+        echo "#  start network script  #"
+        echo "##########################"
+        ./network.sh &
+        echo "##########################"
+        echo "# started network script #"
+        echo "##########################"
+        echo "#    begin sleep         #"
+        echo "##########################"
+        sleep 180
+        echo "#    finish sleep        #"
+        echo "##########################"
+        popd
+      shell: bash
+        
+    # run tests
+    - name: Run tests
+      run: |
+        echo "##########################"
+        echo "#    starting test       #"
+        echo "##########################"
+        sbt "testOnly *${{ inputs.what-to-test }}"
+        echo "##########################"
+        echo "#    finished test       #"
+      shell: bash

@@ -5,4 +5,5 @@
 /target
 /project/project
 /project/target
-/dev_network
+/hyperledger_dev_network
+/hlf-network
