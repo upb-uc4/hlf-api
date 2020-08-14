@@ -3,7 +3,7 @@
 
 #clone production network
 
-if [ ! -d ./hyperledger_chaincode/ ]
+if [ ! -d ./hlf-network/ ]
 then
 	git clone https://github.com/upb-uc4/hlf-network.git
 else
