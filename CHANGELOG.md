@@ -1,4 +1,26 @@
-# [v0.5.5 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.4...v0.5.5) (2020-08-11)
+# [v0.6.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.4...v0.5.5) (2020-08-11)
+
+## Feature
+
+- Support new Matriculation Errors (DetailedError, GenericError)
+- Incorporated Production Network (EnrollmentManager to provide enrollment functionality)
+
+## Refactor
+
+- Outsource Wallet-utilities
+- Outsource Gateway-utilities
+- Outsource + Parameterize ConnectionManager
+- Exceptions Code Cleanup
+- Traits Code Cleanup
+
+## Usability
+
+- Rework HyperledgerAPI (dedicated connections)
+- Updated Pipelines to run multiple jobs in parallel
+- begin changelog
+- return Course errors by wrapping them as TransactionExceptions
+
+# [v0.5.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.4...v0.5.5) (2020-08-11)
 
 ## Usability
 
@@ -40,7 +62,7 @@
 
 # [v0.5.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.1...v0.5.2) (2020-08-07)
 
-## Feature
+## Bug Fix
 
 - Adjust contractName from *.student to *.MatriculationData
 
