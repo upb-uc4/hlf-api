@@ -1,20 +1,15 @@
 # [v0.5.5 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.4...develop) (2020-08-11)
 
-## Feature
-
-- 
-
-## Bug Fixes
-
-- 
-
-## Refactor
-
-- 
-
 ## Usability
 
-- 
+- Rework HyperledgerAPI.
+	- no more disgusting ManagerHandling for outsiders
+	- Access a single dedicated Connection (e.g. for course transactions) via 
+	```new ConnectionCourses(<certificateName>, <channel>, <chaincode>, <wallet_path>, <network_config>)```
+	- Invoke Transactions only via dedicated Methods. No more nasty transactionId-handling
+	- React to only TWO different Exceptions.
+		- HyperledgerInnerExceptionTrait :: Something within the Framework went wrong
+		- TransactionExceptionTrait :: Our Chaincode detected something wrong with your transaction. Maybe an item was malformed?
 
 # [v0.5.4](https://github.com/upb-uc4/hyperledger_api/compare/v0.5.3...v0.5.4) (2020-08-11)
 
