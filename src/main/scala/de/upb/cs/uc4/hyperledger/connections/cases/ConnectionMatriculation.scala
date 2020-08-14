@@ -7,7 +7,7 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, T
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 
 case class ConnectionMatriculation(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path) extends ConnectionMatriculationTrait {
-  val contract_name: String = "UC4.MatriculationData"
+  final val contract_name: String = "UC4.MatriculationData"
   override val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, network_description_path, wallet_path)
 
   override def addMatriculationData(jSonMatriculationData: String): String =

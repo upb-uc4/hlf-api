@@ -73,14 +73,14 @@ class ManagerTests extends TestBaseDevNetwork {
     "asked for connection info" should {
       "provide network connection info - courses" in {
         val (contract, gateway) = ConnectionManager.initializeConnection(
-          id, channel, chaincode, contract_name_course, network_description_path, wallet_path)
+          id, channel, chaincode, contract_name_course, wallet_path, network_description_path)
         contract should not be null
         gateway should not be null
       }
 
       "provide network connection info - matriculation" in {
         val (contract, gateway) = ConnectionManager.initializeConnection(
-          id, channel, chaincode, contract_name_matriculation, network_description_path, wallet_path)
+          id, channel, chaincode, contract_name_matriculation, wallet_path, network_description_path)
         contract should not be null
         gateway should not be null
       }
