@@ -8,9 +8,6 @@ import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
 import org.hyperledger.fabric_ca.sdk.{EnrollmentRequest, HFCAClient}
 
 object EnrollmentManager{
-
-  System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true")
-
   def enroll(ca_url : String, tlsCert : Path, walletPath : Path, username : String, password : String, organisationId : String): Unit = {
     // wallet is target for admin certificate
     val wallet = WalletManager.getWallet(walletPath)

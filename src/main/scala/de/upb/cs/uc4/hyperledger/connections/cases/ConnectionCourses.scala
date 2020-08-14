@@ -6,7 +6,7 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCourseTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 
-case class ConnectionCourses(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path) extends ConnectionCourseTrait {
+class ConnectionCourses(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path) extends ConnectionCourseTrait {
   final val contract_name: String = "UC4.course"
   override val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, wallet_path, network_description_path)
 
