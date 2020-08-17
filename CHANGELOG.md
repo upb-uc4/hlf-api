@@ -1,3 +1,28 @@
+
+# [v0.6.2 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.1...develop) (2020-08-17)
+
+## Feature
+
+-
+
+## Bug Fixes
+
+-
+
+## Refactor
+
+- 
+
+## Usability
+
+-
+
+# [v0.6.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.0...v0.6.1) (2020-08-17)
+
+## Refactor
+
+- rename AbstractConnectionTrait to ConnectionTrait
+
 # [v0.6.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.5...v0.6.0) (2020-08-14)
 
 ## Feature
@@ -28,7 +53,7 @@
 	- no more disgusting ManagerHandling for outsiders
 	- Access a single dedicated Connection (e.g. for course transactions) via 
 	```new ConnectionCourses(<certificateName>, <channel>, <chaincode>, <wallet_path>, <network_config>)```
-	- Invoke Transactions only via dedicated Methods. No more nasty transactionId-handling
+	- Invoke Transactions only via dedicated Methods. No more nasty transactionId-handling.
 	- React to only TWO different Exceptions.
 		- HyperledgerInnerExceptionTrait :: Something within the Framework went wrong
 		- TransactionExceptionTrait :: Our Chaincode detected something wrong with your transaction. Maybe an item was malformed?
