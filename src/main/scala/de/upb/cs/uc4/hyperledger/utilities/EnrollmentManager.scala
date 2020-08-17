@@ -8,19 +8,19 @@ import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
 import org.hyperledger.fabric_ca.sdk.{EnrollmentRequest, HFCAClient}
 
 object EnrollmentManager{
-  def enroll(ca_url : String, tlsCert : Path, walletPath : Path, username : String, password : String, organisationId : String): Unit = {
+  def enroll(caURL : String, tlsCert : Path, walletPath : Path, username : String, password : String, organisationId : String): Unit = {
     // wallet is target for admin certificate
     val wallet = WalletManager.getWallet(walletPath)
 
     // check if user already exists in my wallet
     if (wallet.list.contains(username)) {
-      println(s"An identity for the admin user $username already exists in the wallet")
+      println(s"An identity for the user $username already exists in the wallet.")
     } else {
       // Create a CA client for interacting with the CA
       val props = new Properties
       props.put("pemFile", tlsCert.toAbsolutePath.toString)
       props.put("allowAllHostNames", "true")
-      val caClient = HFCAClient.createNewInstance(ca_url, props)
+      val caClient = HFCAClient.createNewInstance(caURL, props)
       val cryptoSuite = CryptoSuiteFactory.getDefault.getCryptoSuite
       caClient.setCryptoSuite(cryptoSuite)
 

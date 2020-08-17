@@ -7,14 +7,14 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
  */
 case class TransactionException(transactionId: String, payload: String) extends TransactionExceptionTrait{
   override def toString: String =
-    s"The provided transaction: '${transactionId}' failed with an error: ${payload}"
+    s"The provided transaction: '$transactionId' failed with an error: $payload"
 }
 
 /**
  * Used to create TransactionExceptions from malformed errors.
  */
 object TransactionException {
-  final def jSonUnknown(id: String, detail: String) = "{\n" +
+  final def jSonUnknown(id: String, detail: String): String = "{\n" +
     "  \"type\": \"" + id + "\",\n" +
     "  \"title\": \"" + detail + "\"\n" +
     "}"

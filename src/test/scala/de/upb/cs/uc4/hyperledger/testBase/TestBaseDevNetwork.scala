@@ -8,15 +8,15 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class TestBaseDevNetwork extends AnyWordSpec with Matchers with BeforeAndAfterEach{
-  val network_description_path: Path = Paths.get(getClass.getResource("/connection_profile.yaml").toURI)
-  val wallet_path: Path = Paths.get(getClass.getResource("/wallet/").toURI)
-  val id: String = "cli"
+class TestBaseDevNetwork extends TestBaseGeneral {
+
+  val networkDescriptionPath: Path = Paths.get(getClass.getResource("/connection_profile.yaml").toURI)
+  val username: String = "cli"
   val channel: String = "myc"
   val chaincode: String = "mycc"
 
-  def initializeCourses(): ConnectionCourseTrait = new ConnectionCourses(id, channel, chaincode, wallet_path, network_description_path)
-  def initializeMatriculation(): ConnectionMatriculationTrait = new ConnectionMatriculation(id, channel, chaincode, wallet_path, network_description_path)
+  def initializeCourses(): ConnectionCourseTrait = new ConnectionCourses(username, channel, chaincode, walletPath, networkDescriptionPath)
+  def initializeMatriculation(): ConnectionMatriculationTrait = new ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
 
 
 }

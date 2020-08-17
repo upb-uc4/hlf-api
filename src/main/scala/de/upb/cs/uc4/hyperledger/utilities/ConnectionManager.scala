@@ -17,18 +17,18 @@ object ConnectionManager {
    * @param channel name of the channel / network
    * @param chaincode name of the chaincode to access
    * @param contractName name of the contract / domain of the contract
-   * @param wallet_path path to the certificate wallet
-   * @param network_description_path path to a configuration-file describing the network (IP addresses of peers)
+   * @param walletPath path to the certificate wallet
+   * @param networkDescriptionPath path to a configuration-file describing the network (IP addresses of peers)
    * @throws GatewayRuntimeException when gateway cannot find channel / network
    * @return contract and gateway objects
    */
   @throws[GatewayRuntimeException]
   def initializeConnection(username: String, channel: String = "myc", chaincode: String = "mycc",
-                           contractName: String, wallet_path: Path, network_description_path: Path): (Contract, Gateway) = { // Load a file system based wallet for managing identities.
-    println("Try to get connection with: " + network_description_path + "    and: " + wallet_path)
+                           contractName: String, walletPath: Path, networkDescriptionPath: Path): (Contract, Gateway) = { // Load a file system based wallet for managing identities.
+    println("Try to get connection with: " + networkDescriptionPath + "    and: " + walletPath)
 
     // get gateway
-    val gateway: Gateway = GatewayManager.createGateway(wallet_path, network_description_path, username)
+    val gateway: Gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
 
     // get contract
     var contract: Contract = null

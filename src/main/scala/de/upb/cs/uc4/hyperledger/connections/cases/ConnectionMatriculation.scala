@@ -3,12 +3,11 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 import java.nio.file.Path
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
-import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 
-case class ConnectionMatriculation(id: String, channel: String, chaincode: String, wallet_path: Path, network_description_path: Path) extends ConnectionMatriculationTrait {
-  final val contract_name: String = "UC4.MatriculationData"
-  override val (contract, gateway) = ConnectionManager.initializeConnection(id, channel, chaincode, this.contract_name, wallet_path, network_description_path)
+case class ConnectionMatriculation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path) extends ConnectionMatriculationTrait {
+  final override val contractName: String = "UC4.MatriculationData"
+  override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
 
   override def addMatriculationData(jSonMatriculationData: String): String =
     wrapTransactionResult("addMatriculationData",

@@ -1,6 +1,7 @@
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCourseTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
+import de.upb.cs.uc4.hyperledger.testData.TestDataCourses
 
 class CourseAccessTests extends TestBaseDevNetwork {
 
@@ -33,7 +34,7 @@ class CourseAccessTests extends TestBaseDevNetwork {
 
         // add new course
         val testCourseId = "41"
-        val addCourseResult = chaincodeConnection.addCourse(TestData.exampleCourseData(testCourseId))
+        val addCourseResult = chaincodeConnection.addCourse(TestDataCourses.exampleCourseData(testCourseId))
         addCourseResult should not be null
         addCourseResult should equal("")
         println("AddNew Result: " + addCourseResult)
@@ -42,8 +43,8 @@ class CourseAccessTests extends TestBaseDevNetwork {
         val readCourseResult = chaincodeConnection.getCourseById(testCourseId)
         readCourseResult should not be null
         println("newCourse read: " + readCourseResult)
-        println("example data: " + TestData.exampleCourseData(testCourseId))
-        readCourseResult should equal(TestData.exampleCourseData(testCourseId))
+        println("example data: " + TestDataCourses.exampleCourseData(testCourseId))
+        readCourseResult should equal(TestDataCourses.exampleCourseData(testCourseId))
 
         // delete new course
         val deleteCourseResult = chaincodeConnection.deleteCourseById(testCourseId)
@@ -56,10 +57,10 @@ class CourseAccessTests extends TestBaseDevNetwork {
         // update new course
         // add new course
         val testUpdateCourseId = "90"
-        val updateAddCourseResult = chaincodeConnection.addCourse(TestData.exampleCourseData(testUpdateCourseId))
+        val updateAddCourseResult = chaincodeConnection.addCourse(TestDataCourses.exampleCourseData(testUpdateCourseId))
         updateAddCourseResult should equal("")
         // update
-        val updateCoursesResult = chaincodeConnection.updateCourseById(testUpdateCourseId, TestData.exampleCourseData2(testUpdateCourseId))
+        val updateCoursesResult = chaincodeConnection.updateCourseById(testUpdateCourseId, TestDataCourses.exampleCourseData2(testUpdateCourseId))
         updateCoursesResult should not be null
         updateCoursesResult should equal("")
       }
