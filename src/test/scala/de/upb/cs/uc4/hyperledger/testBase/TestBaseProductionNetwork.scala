@@ -8,12 +8,11 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class TestBaseProductionNetwork extends AnyWordSpec with Matchers with BeforeAndAfterEach{
+class TestBaseProductionNetwork extends TestBaseGeneral {
 
-  val network_description_path: Path = Paths.get(getClass.getResource("/connection_profile_kubernetes.yaml").toURI)
-  val wallet_path: Path = Paths.get(getClass.getResource("/wallet/").toURI)
+  val networkDescriptionPath: Path = Paths.get(getClass.getResource("/connection_profile_kubernetes.yaml").toURI)
   val minikubeIP: String = sys.env.getOrElse("MINIKUBE_IP", "172.17.0.2")
-  val ca_url = s"https://${minikubeIP}:30907"
+  val caURL = s"https://${minikubeIP}:30907"
   val tlsCert: Path = Paths.get("/tmp/hyperledger/org1/msp/cacerts/org1-ca-cert.pem")
   val username: String = "scala-admin-org1"
   val password: String = "scalaAdminPW"
@@ -21,6 +20,6 @@ class TestBaseProductionNetwork extends AnyWordSpec with Matchers with BeforeAnd
   val channel: String = "mychannel"
   val chaincode: String = "uc4-cc"
 
-  def initializeCourses(): ConnectionCourseTrait = new ConnectionCourses(username, channel, chaincode, wallet_path, network_description_path)
-  def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation(username, channel, chaincode, wallet_path, network_description_path)
+  def initializeCourses(): ConnectionCourseTrait = new ConnectionCourses(username, channel, chaincode, walletPath, networkDescriptionPath)
+  def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
 }

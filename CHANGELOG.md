@@ -11,7 +11,7 @@
 
 ## Refactor
 
-- 
+- camelCase
 
 ## Usability
 

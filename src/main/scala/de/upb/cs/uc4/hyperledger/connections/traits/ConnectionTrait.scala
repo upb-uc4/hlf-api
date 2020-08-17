@@ -9,6 +9,7 @@ import de.upb.cs.uc4.hyperledger.utilities.GatewayManager
 import org.hyperledger.fabric.gateway.{Contract, ContractException, Gateway, GatewayRuntimeException}
 
 trait ConnectionTrait extends AutoCloseable{
+  val contractName: String
   val contract: Contract
   val gateway: Gateway
 
