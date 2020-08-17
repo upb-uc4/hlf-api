@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
 
-trait ConnectionMatriculationTrait extends AbstractConnectionTrait {
+trait ConnectionMatriculationTrait extends ConnectionTrait {
 
   /**
    * Executes the "addMatriculationData" query.
