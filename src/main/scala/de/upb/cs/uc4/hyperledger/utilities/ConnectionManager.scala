@@ -4,12 +4,12 @@ import java.nio.file.Path
 
 import org.hyperledger.fabric.gateway._
 
-/**  Manager for all things ConnectionRelated.
+/** Manager for all things ConnectionRelated.
   *  Can be used to retrieve contract and gateway from
   */
 object ConnectionManager {
 
-  /**  Retrieves a gateway to communicate with the hyperledger network
+  /** Retrieves a gateway to communicate with the hyperledger network
     *  Retrieves a Contract to invoke transactions on.
     * @param username name of the certificate to use when communicating
     * @param channel name of the channel / network
@@ -41,7 +41,7 @@ object ConnectionManager {
     (contract, gateway)
   }
 
-  /**  Creates a Contract to invoke transactions on.
+  /** Creates a Contract to invoke transactions on.
     * @param gateway Gateway to the network to conenct with
     * @param channel name of the channel / network
     * @param chaincode name of the chaincode to access
