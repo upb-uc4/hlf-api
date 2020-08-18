@@ -52,7 +52,6 @@ jobs:
       if: always()
       with:
         path: target/test_reports/
-
         
     - name: Upload test report
       uses: actions/upload-artifact@v1
