@@ -3,10 +3,10 @@ import java.security.PrivateKey
 import java.util
 import java.util.Properties
 
-import org.hyperledger.fabric.gateway.{Identities, Wallets, X509Identity}
+import org.hyperledger.fabric.gateway.{ Identities, Wallets, X509Identity }
 import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
-import org.hyperledger.fabric.sdk.{Enrollment, User}
-import org.hyperledger.fabric_ca.sdk.{HFCAClient, RegistrationRequest}
+import org.hyperledger.fabric.sdk.{ Enrollment, User }
+import org.hyperledger.fabric_ca.sdk.{ HFCAClient, RegistrationRequest }
 
 object RegisterUser {
   @throws[Exception]

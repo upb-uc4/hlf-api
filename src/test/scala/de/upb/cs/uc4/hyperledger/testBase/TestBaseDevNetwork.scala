@@ -1,9 +1,9 @@
 package de.upb.cs.uc4.hyperledger.testBase
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.{ Path, Paths }
 
-import de.upb.cs.uc4.hyperledger.connections.cases.{ConnectionCourses, ConnectionMatriculation}
-import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionCourseTrait, ConnectionMatriculationTrait}
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCourses, ConnectionMatriculation }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCourseTrait, ConnectionMatriculationTrait }
 
 class TestBaseDevNetwork extends TestBaseGeneral {
 
