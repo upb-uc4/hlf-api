@@ -51,3 +51,22 @@ jobs:
       uses: ./.github/actions/prod_network_test
       with:
         what-to-test: 'EnrollmentTests'
+        
+    - name: Scalatest multiproject HTML merger
+      uses: bastihav/scalatest-multiproject-html-action@v1
+      if: always()
+      with:
+        path: target/test_reports/
+        
+    - name: Upload test report
+      uses: actions/upload-artifact@v1
+      if: always()
+      with:
+        name: test-reports
+        path: target/test_reports/
+        
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v1
+      with:
+        name: code-coverage
+        path: target/scala-2.13/scoverage-report

@@ -14,7 +14,6 @@ class MatriculationErrorTests extends TestBaseDevNetwork {
     chaincodeConnection.close()
   }
 
-
   "The ScalaAPI for Matriculation" when {
     "Provoking TransactionExceptions" should {
       "throw TransactionException for not existing matriculationId " in {

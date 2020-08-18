@@ -1,12 +1,9 @@
 package de.upb.cs.uc4.hyperledger.testBase
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.{ Path, Paths }
 
-import de.upb.cs.uc4.hyperledger.connections.cases.{ConnectionCourses, ConnectionMatriculation}
-import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionCourseTrait, ConnectionMatriculationTrait}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCourses, ConnectionMatriculation }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCourseTrait, ConnectionMatriculationTrait }
 
 class TestBaseDevNetwork extends TestBaseGeneral {
 
@@ -16,7 +13,6 @@ class TestBaseDevNetwork extends TestBaseGeneral {
   val chaincode: String = "mycc"
 
   def initializeCourses(): ConnectionCourseTrait = new ConnectionCourses(username, channel, chaincode, walletPath, networkDescriptionPath)
-  def initializeMatriculation(): ConnectionMatriculationTrait = new ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
-
+  def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
 
 }

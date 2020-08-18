@@ -1,7 +1,8 @@
+coverageEnabled in ThisBuild := true
+
 lazy val hyperledger_api = (project in file("."))
   .settings(
-    Commons.commonSettings,
-    name := "hyperledger_api",
+    Commons.commonSettings("hyperledger_api"),
     libraryDependencies ++= Dependencies.scalaTestDependencies,
     libraryDependencies ++= Dependencies.hyperledgerDependencies,
   )

@@ -36,7 +36,7 @@ runs:
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt "testOnly *${{ inputs.what-to-test }}"
+        sbt "testOnly *${{ inputs.what-to-test }}" coverageReport coverageAggregate
         echo "##########################"
         echo "#    finished test       #"
       shell: bash
