@@ -1,11 +1,11 @@
 import java.nio.file.Paths
 import java.security.PrivateKey
-import java.security.cert.X509Certificate
+import java.util
 import java.util.Properties
 
 import org.hyperledger.fabric.gateway.{Identities, Wallets, X509Identity}
-import org.hyperledger.fabric.sdk.{Enrollment, User}
 import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
+import org.hyperledger.fabric.sdk.{Enrollment, User}
 import org.hyperledger.fabric_ca.sdk.{HFCAClient, RegistrationRequest}
 
 object RegisterUser {
@@ -34,13 +34,13 @@ object RegisterUser {
     val admin = new User() {
       override def getName = "admin"
 
-      override def getRoles = null
+      override def getRoles: util.Set[String] = null
 
-      override def getAccount = null
+      override def getAccount = ""
 
       override def getAffiliation = "org1.department1"
 
-      override def getEnrollment = new Enrollment() {
+      override def getEnrollment: Enrollment = new Enrollment() {
         override def getKey: PrivateKey = adminIdentity.getPrivateKey
 
         override def getCert: String = Identities.toPemString(adminIdentity.getCertificate)
@@ -48,7 +48,7 @@ object RegisterUser {
 
       override def getMspId = "Org1MSP"
     }
-    println(adminIdentity.getCertificate.asInstanceOf[X509Certificate].toString)
+    println(adminIdentity.getCertificate.toString)
     // Register the user, enroll the user, and import the new identity into the wallet.
     val registrationRequest = new RegistrationRequest("appUser")
     registrationRequest.setAffiliation("org1.department1")

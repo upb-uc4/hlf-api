@@ -4,27 +4,25 @@ import java.nio.file.Path
 
 import org.hyperledger.fabric.gateway._
 
-/**
- *  Manager for all things ConnectionRelated.
- *  Can be used to retrieve contract and gateway from
- */
+/**  Manager for all things ConnectionRelated.
+  *  Can be used to retrieve contract and gateway from
+  */
 object ConnectionManager {
 
-  /**
-   *  Retrieves a gateway to communicate with the hyperledger network
-   *  Retrieves a Contract to invoke transactions on.
-   * @param username name of the certificate to use when communicating
-   * @param channel name of the channel / network
-   * @param chaincode name of the chaincode to access
-   * @param contractName name of the contract / domain of the contract
-   * @param walletPath path to the certificate wallet
-   * @param networkDescriptionPath path to a configuration-file describing the network (IP addresses of peers)
-   * @throws GatewayRuntimeException when gateway cannot find channel / network
-   * @return contract and gateway objects
-   */
+  /**  Retrieves a gateway to communicate with the hyperledger network
+    *  Retrieves a Contract to invoke transactions on.
+    * @param username name of the certificate to use when communicating
+    * @param channel name of the channel / network
+    * @param chaincode name of the chaincode to access
+    * @param contractName name of the contract / domain of the contract
+    * @param walletPath path to the certificate wallet
+    * @param networkDescriptionPath path to a configuration-file describing the network (IP addresses of peers)
+    * @throws GatewayRuntimeException when gateway cannot find channel / network
+    * @return contract and gateway objects
+    */
   @throws[GatewayRuntimeException]
   def initializeConnection(username: String, channel: String = "myc", chaincode: String = "mycc",
-                           contractName: String, walletPath: Path, networkDescriptionPath: Path): (Contract, Gateway) = { // Load a file system based wallet for managing identities.
+      contractName: String, walletPath: Path, networkDescriptionPath: Path): (Contract, Gateway) = { // Load a file system based wallet for managing identities.
     println("Try to get connection with: " + networkDescriptionPath + "    and: " + walletPath)
 
     // get gateway
@@ -34,7 +32,8 @@ object ConnectionManager {
     var contract: Contract = null
     try {
       contract = ConnectionManager.retrieveContract(gateway, channel, chaincode, contractName)
-    } catch {
+    }
+    catch {
       case e: GatewayRuntimeException => GatewayManager.disposeGateway(gateway); throw e;
     }
 
@@ -42,20 +41,21 @@ object ConnectionManager {
     (contract, gateway)
   }
 
-  /**
-   *  Creates a Contract to invoke transactions on.
-   * @param gateway Gateway to the network to conenct with
-   * @param channel name of the channel / network
-   * @param chaincode name of the chaincode to access
-   * @param contractName name of the contract / domain of the contract
-   * @throws GatewayRuntimeException when gateway cannot find channel / network
-   * @return contract object to invoke transactions on
-   */
+  /**  Creates a Contract to invoke transactions on.
+    * @param gateway Gateway to the network to conenct with
+    * @param channel name of the channel / network
+    * @param chaincode name of the chaincode to access
+    * @param contractName name of the contract / domain of the contract
+    * @throws GatewayRuntimeException when gateway cannot find channel / network
+    * @return contract object to invoke transactions on
+    */
   @throws[GatewayRuntimeException]
-  def retrieveContract(gateway: Gateway,
-                           channel: String = "myc",
-                           chaincode: String = "mycc",
-                           contractName: String): Contract = {
+  def retrieveContract(
+      gateway: Gateway,
+      channel: String = "myc",
+      chaincode: String = "mycc",
+      contractName: String
+  ): Contract = {
     // get network (channel)
     val network: Network = gateway.getNetwork(channel)
     // get contract (chaincode, contract)

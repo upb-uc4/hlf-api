@@ -15,7 +15,6 @@ class CourseErrorTests extends TestBaseDevNetwork {
     chaincodeConnection.close()
   }
 
-
   "The ScalaAPI EvaluateTransaction" when {
     "asked for invalid transactions" should {
       "throw TransactionErrorException for empty transactionId " in {

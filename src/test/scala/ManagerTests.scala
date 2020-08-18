@@ -1,5 +1,5 @@
 import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
-import de.upb.cs.uc4.hyperledger.utilities.{ConnectionManager, GatewayManager, WalletManager}
+import de.upb.cs.uc4.hyperledger.utilities.{ ConnectionManager, GatewayManager, WalletManager }
 
 class ManagerTests extends TestBaseDevNetwork {
 
@@ -14,7 +14,7 @@ class ManagerTests extends TestBaseDevNetwork {
         // retrieve possible identities
         val wallet = WalletManager.getWallet(walletPath)
         val contained = wallet.list.contains(username)
-        contained should equal (true)
+        contained should equal(true)
       }
     }
   }
@@ -46,7 +46,8 @@ class ManagerTests extends TestBaseDevNetwork {
         try {
           val network = gateway.getNetwork(channel)
           network should not be null
-        } finally {
+        }
+        finally {
           // cleanup
           GatewayManager.disposeGateway(gateway)
         }
@@ -60,7 +61,8 @@ class ManagerTests extends TestBaseDevNetwork {
           val network = gateway.getNetwork(channel)
           val contract = network.getContract(chaincode, contractNameCourse)
           contract should not be null
-        } finally {
+        }
+        finally {
           // cleanup
           GatewayManager.disposeGateway(gateway)
         }
@@ -72,7 +74,8 @@ class ManagerTests extends TestBaseDevNetwork {
     "asked for connection info" should {
       "provide network connection info - courses" in {
         val (contract, gateway) = ConnectionManager.initializeConnection(
-          username, channel, chaincode, contractNameCourse, walletPath, networkDescriptionPath)
+          username, channel, chaincode, contractNameCourse, walletPath, networkDescriptionPath
+        )
         contract should not be null
         gateway should not be null
         GatewayManager.disposeGateway(gateway)
@@ -80,7 +83,8 @@ class ManagerTests extends TestBaseDevNetwork {
 
       "provide network connection info - matriculation" in {
         val (contract, gateway) = ConnectionManager.initializeConnection(
-          username, channel, chaincode, contractNameMatriculation, walletPath, networkDescriptionPath)
+          username, channel, chaincode, contractNameMatriculation, walletPath, networkDescriptionPath
+        )
         contract should not be null
         gateway should not be null
         GatewayManager.disposeGateway(gateway)

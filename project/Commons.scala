@@ -1,10 +1,11 @@
 import sbt.Keys._
-import sbt._
+import sbt.{TestFrameworks, Tests}
 
 object Commons {
-  val commonSettings = Seq(
+  def commonSettings(project: String) = Seq(
     organization := "de.upb.cs.uc4",
-    version := "v0.5.2",
-    scalaVersion := "2.13.3"
+    version := "v0.6.1",
+    scalaVersion := "2.13.0",
+    testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test_reports/" + project)
   )
 }

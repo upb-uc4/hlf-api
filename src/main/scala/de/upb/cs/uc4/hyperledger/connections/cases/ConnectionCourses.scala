@@ -30,14 +30,13 @@ class ConnectionCourses(username: String, channel: String, chaincode: String, wa
     else result
   }
 
-  /**
-   * Wraps the chaincode query result bytes.
-   * Translates the byte-array to a string and throws an error if said string is not empty
-   * Overridden due to specific errors occurring in courses
-   *
-   * @param result input byte-array to translate
-   * @return result as a string
-   */
+  /** Wraps the chaincode query result bytes.
+    * Translates the byte-array to a string and throws an error if said string is not empty
+    * Overridden due to specific errors occurring in courses
+    *
+    * @param result input byte-array to translate
+    * @return result as a string
+    */
   @throws[TransactionException]
   private def customWrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
     val resultString = convertTransactionResult(result)
@@ -45,12 +44,7 @@ class ConnectionCourses(username: String, channel: String, chaincode: String, wa
     else resultString
   }
 
-  /**
-   *  gets the CUSTOM course errors and wraps them as a TransactionException
-   * @param transactionId
-   * @param result
-   * @return
-   */
+  /**  gets the CUSTOM course errors and wraps them as a TransactionException */
   @throws[TransactionException]
   private def extractErrorFromResult(transactionId: String, result: String): TransactionException = {
     // retrieve error code
@@ -65,12 +59,11 @@ class ConnectionCourses(username: String, channel: String, chaincode: String, wa
     TransactionException.CreateUnknownException(transactionId, detail)
   }
 
-  /**
-   * Evaluates whether a COURSE transaction was valid or invalid
-   *
-   * @param result result of a chaincode transaction
-   * @return true if the result contains error information
-   */
+  /** Evaluates whether a COURSE transaction was valid or invalid
+    *
+    * @param result result of a chaincode transaction
+    * @return true if the result contains error information
+    */
   private def containsError(result: String): Boolean = {
     result.contains("{\"name\":") && result.contains("\"detail\":")
   }
