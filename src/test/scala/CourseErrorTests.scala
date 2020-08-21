@@ -19,12 +19,12 @@ class CourseErrorTests extends TestBase {
     "asked for invalid transactions" should {
       "throw TransactionErrorException for empty transactionId " in {
         // test action
-        val result = intercept[TransactionException](() -> chaincodeConnection.getCourseById("1"))
+        val result = intercept[TransactionException](() -> chaincodeConnection.getCourseById("2"))
         result.transactionId should ===("getCourseById")
       }
       "throw TransactionErrorException for wrong transactionId during update " in {
         // test action
-        val result = intercept[TransactionException](() -> chaincodeConnection.updateCourseById("1", TestDataCourses.invalidCourseData(null)))
+        val result = intercept[TransactionException](() -> chaincodeConnection.updateCourseById("2", TestDataCourses.invalidCourseData(null)))
         result.transactionId should ===("updateCourseById")
       }
     }
