@@ -1,7 +1,7 @@
-import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
-import de.upb.cs.uc4.hyperledger.utilities.{ ConnectionManager, GatewayManager, WalletManager }
+import de.upb.cs.uc4.hyperledger.testBase.TestBase
+import de.upb.cs.uc4.hyperledger.utilities.{ConnectionManager, GatewayManager, WalletManager}
 
-class ManagerTests extends TestBaseDevNetwork {
+class ManagerTests extends TestBase {
 
   "The WalletManager" when {
     "asked for a wallet" should {
