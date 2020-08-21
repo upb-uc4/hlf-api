@@ -24,7 +24,15 @@ class TestBase extends TestBaseTrait {
   override def beforeAll(): Unit = {
     log("Begin test with testBase Name = " + testBase.getClass.getName)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
+      log("Begin enrollment with: "
+        + " " + caURL
+        + " " + tlsCert
+        + " " + walletPath
+        + " " + username
+        + " " + password
+        + " " + organisationId)
       EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId)
+      log("Finished Enrollment")
     }
   }
 
