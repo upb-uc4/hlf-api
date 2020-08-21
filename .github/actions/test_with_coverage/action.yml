@@ -14,11 +14,7 @@ runs:
     # run tests
     - name: Run tests
       run: |
-        minikube ip
         echo $MINIKUBE_IP
-        pushd src/test/resources
-            cat connection_profile_kubernetes.yaml
-        popd
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
