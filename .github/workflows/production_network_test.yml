@@ -50,6 +50,8 @@ jobs:
       uses: ./.github/actions/production_network_setup
       with:
         network_folder: 'hlf-network'
+      env:
+        Target: 'ProductionNetwork'
 
     # Run Tests
     - name: run tests with coverage and reports

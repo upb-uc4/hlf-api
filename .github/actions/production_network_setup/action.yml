@@ -33,9 +33,3 @@ runs:
         popd
       shell: 
         bash
-
-    - name: Set Environment Variable Test-Target
-      run: |
-        echo "::set-env name=Target::ProductionNetwork"
-      shell:
-        bash
