@@ -1,8 +1,8 @@
 package de.upb.cs.uc4.hyperledger.testBase
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.{ Path, Paths }
 
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
+import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
