@@ -1,0 +1,35 @@
+name: 'UC4 Production Network setup'
+description: 'Sets up the UC4 Production Network'
+
+inputs:
+  network_folder:
+    description: 'path to the network where we can find the startNetwork.sh and installChaincode.sh scripts.'
+    required: true
+    default: 'hlf-network'
+
+runs:
+    using: "composite"
+    
+    steps:    
+    # start network
+    - name: Start Network
+      run: |
+        pushd ${{ inputs.network_folder }}
+        echo "##########################"
+        echo "#  start network script  #"
+        echo "##########################"
+        ./startNetwork.sh
+        echo "##########################"
+        echo "# started network script #"
+        echo "##########################"
+        popd
+      shell:
+        bash
+
+    - name: Install Chaincode
+      run: |
+        pushd ${{ inputs.network_folder }}
+        ./installChaincode.sh
+        popd
+      shell: 
+        bash

@@ -41,25 +41,32 @@ jobs:
       with:
         java-version: 1.8
     
-    # Run ManagerTests
-    - name: setupAndTest
-      uses: ./.github/actions/dev_network_test
+    # Setup Network
+    - name: setup dev_network
+      uses: ./.github/actions/dev_network_setup
+
+    # Run Tests
+    - name: runt tests with coverage and reports
+      uses: ./.github/actions/test_with_coverage
       with:
         what-to-test: 'ManagerTests CourseAccessTests CourseErrorTests MatriculationErrorTests'
-        
+
+    # Combine reports
     - name: Scalatest multiproject HTML merger
       uses: bastihav/scalatest-multiproject-html-action@v1
       if: always()
       with:
         path: target/test_reports/
-        
+
+    # Upload Test Report
     - name: Upload test report
       uses: actions/upload-artifact@v1
       if: always()
       with:
         name: test-reports
         path: target/test_reports/
-        
+
+    # Uplaod Coverage Report
     - name: Upload coverage report
       uses: actions/upload-artifact@v1
       with:
