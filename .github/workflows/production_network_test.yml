@@ -55,7 +55,7 @@ jobs:
     - name: run tests with coverage and reports
       uses: ./.github/actions/test_with_coverage
       with:
-        what-to-test: 'EnrollmentTests ManagerTests CourseAccessTests CourseErrorTests MatriculationErrorTests'
+        what-to-test: 'EnrollmentTests'
       env:
         Target: 'ProductionNetwork'
 
