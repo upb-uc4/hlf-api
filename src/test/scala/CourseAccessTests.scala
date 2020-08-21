@@ -8,12 +8,10 @@ class CourseAccessTests extends TestBase {
   var chaincodeConnection: ConnectionCourseTrait = _
 
   override def beforeEach(): Unit = {
-    super.beforeEach()
     chaincodeConnection = initializeCourses()
   }
 
   override def afterEach(): Unit = {
-    super.afterEach()
     chaincodeConnection.close()
   }
 

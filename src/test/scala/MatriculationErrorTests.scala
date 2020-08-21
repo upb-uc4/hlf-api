@@ -7,12 +7,10 @@ class MatriculationErrorTests extends TestBase {
   var chaincodeConnection: ConnectionMatriculationTrait = _
 
   override def beforeEach(): Unit = {
-    super.beforeEach()
     chaincodeConnection = initializeMatriculation()
   }
 
   override def afterEach(): Unit = {
-    super.afterEach()
     chaincodeConnection.close()
   }
 
