@@ -14,11 +14,11 @@ runs:
     # run tests
     - name: Run tests
       run: |
-        echo $MINIKUBE_IP
+        echo "MINIKUBE_IP: $MINIKUBE_IP"
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
-        sbt "testOnly *${{ inputs.what-to-test }}" coverageReport coverageAggregate
+        sbt "testOnly ${{ inputs.what-to-test }}" coverageReport coverageAggregate
         echo "##########################"
         echo "#    finished test       #"
       shell: bash
