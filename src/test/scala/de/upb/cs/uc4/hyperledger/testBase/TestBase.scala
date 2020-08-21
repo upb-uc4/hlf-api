@@ -22,6 +22,10 @@ class TestBase extends TestBaseTrait {
   override val chaincode: String = testBase.chaincode
 
   override def beforeAll(): Unit = {
+    println("Begin test with testBase Name = " + testBase.getClass.getName)
+    println("Begin test with testBase Name = " + testBase.getClass.getName)
+    println("Begin test with testBase Name = " + testBase.getClass.getName)
+    println("Begin test with testBase Name = " + testBase.getClass.getName)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
       EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId)
     }
@@ -31,9 +35,16 @@ class TestBase extends TestBaseTrait {
   def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation(testBase.username, testBase.channel, testBase.chaincode, testBase.walletPath, testBase.networkDescriptionPath)
 
   private def tryRetrieveEnvVar(varName: String, fallBack: String = ""): String = {
-    if (sys.env.contains(varName))
-      sys.env(varName)
-    else
-      fallBack
+    sys.env.contains(varName) match {
+      case true => {
+        val value = sys.env(varName)
+        println("####### Retrieved variable: " + varName + " with value: " + value)
+        value
+      }
+      case false => {
+        println("####### Returned default fallback")
+        fallBack
+      }
+    }
   }
 }
