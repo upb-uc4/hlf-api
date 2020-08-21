@@ -1,8 +1,10 @@
+package de.upb.cs.uc4.hyperledger.tests
+
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
-import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
+import de.upb.cs.uc4.hyperledger.testBase.TestBase
 
-class MatriculationErrorTests extends TestBaseDevNetwork {
+class MatriculationErrorTests extends TestBase {
 
   var chaincodeConnection: ConnectionMatriculationTrait = _
 

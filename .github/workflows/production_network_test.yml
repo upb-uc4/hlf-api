@@ -18,7 +18,7 @@ on:
 
 jobs:
 
-  DeployAndTestScalaAccess:
+  DeployAndTestProductionNetwork:
 
     runs-on: ubuntu-latest
 
@@ -45,26 +45,43 @@ jobs:
     - name: Start minikube
       uses: medyagh/setup-minikube@master
 
-    
-    # Run EnrollmentTests
-    - name: setupAndTest
-      uses: ./.github/actions/prod_network_test
+    # setup minikube ip
+    - name: setup minikube ip
+      run: |
+        source setup_minikube_ip.sh
+        echo "::set-env name=MINIKUBE_IP::$(minikube ip)"
+        echo "set minikube ip"
+
+    # Setup Network
+    - name: setup production network
+      uses: ./.github/actions/production_network_setup
       with:
-        what-to-test: 'EnrollmentTests'
-        
+        network_folder: 'hlf-network'
+
+    # Run Tests
+    - name: run tests with coverage and reports
+      uses: ./.github/actions/test_with_coverage
+      with:
+        what-to-test: '*EnrollmentTests *ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests'
+      env:
+        Target: 'ProductionNetwork'
+
+    # Combine reports
     - name: Scalatest multiproject HTML merger
       uses: bastihav/scalatest-multiproject-html-action@v1
       if: always()
       with:
         path: target/test_reports/
-        
+
+    # Upload Test Report
     - name: Upload test report
       uses: actions/upload-artifact@v1
       if: always()
       with:
         name: test-reports
         path: target/test_reports/
-        
+
+    # Upload Coverage Report
     - name: Upload coverage report
       uses: actions/upload-artifact@v1
       with:
