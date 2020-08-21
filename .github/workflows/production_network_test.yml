@@ -51,11 +51,16 @@ jobs:
       with:
         network_folder: 'hlf-network'
 
+    # setup minikube ip
+    - name: setup minikube ip
+      run: |
+        source setup_minikube_ip.sh
+
     # Run Tests
     - name: run tests with coverage and reports
       uses: ./.github/actions/test_with_coverage
       with:
-        what-to-test: 'EnrollmentTests'
+        what-to-test: 'EnrollmentTests ManagerTests CourseAccessTests CourseErrorTests MatriculationErrorTests'
       env:
         Target: 'ProductionNetwork'
 
