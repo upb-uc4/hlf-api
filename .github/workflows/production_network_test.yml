@@ -18,7 +18,7 @@ on:
 
 jobs:
 
-  DeployAndTestScalaAccess:
+  DeployAndTestProductionNetwork:
 
     runs-on: ubuntu-latest
 
@@ -46,11 +46,13 @@ jobs:
       uses: medyagh/setup-minikube@master
 
     # Setup Network
-    - name: setup dev_network
+    - name: setup production network
       uses: ./.github/actions/production_network_setup
+      with:
+        network_folder: 'hlf-network'
 
     # Run Tests
-    - name: runt tests with coverage and reports
+    - name: run tests with coverage and reports
       uses: ./.github/actions/test_with_coverage
       with:
         what-to-test: 'EnrollmentTests'
