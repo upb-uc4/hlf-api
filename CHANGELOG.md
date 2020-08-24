@@ -12,6 +12,9 @@
 ## Refactor
 
 - camelCase
+- provide means to execute tests on different networks
+- add test execution for [Production Network](https://github.com/upb-uc4/hlf-network)
+- rename repository to match standard
 
 ## Usability
 
