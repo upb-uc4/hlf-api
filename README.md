@@ -1,9 +1,11 @@
 # Scala Hyperleger API
 
 ## Current Status
-![Dev_Network_Pipeline](https://github.com/upb-uc4/hlf-api/workflows/Hyperledger_Scala_With_Dev_Network/badge.svg)
+![Tests with Dev Network](https://github.com/upb-uc4/hlf-api/workflows/Hyperledger_Scala_With_Dev_Network/badge.svg)
 
-![ProductionNetwork_Pipeline](https://github.com/upb-uc4/hlf-api/workflows/Hyperledger_Scala_With_Production_Network/badge.svg)
+![Tests with Production Network](https://github.com/upb-uc4/hlf-api/workflows/Hyperledger_Scala_With_Production_Network/badge.svg)
+
+![Code Format](https://github.com/upb-uc4/hlf-api/workflows/Code%20Format%20Check%20Pipeline/badge.svg)
 
 ## Prerequesites
 
