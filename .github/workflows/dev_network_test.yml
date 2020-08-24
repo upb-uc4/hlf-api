@@ -31,9 +31,9 @@ jobs:
     - name : Check out dev_network
       uses: actions/checkout@v2
       with:
-        repository: 'upb-uc4/hyperledger_dev_network'
+        repository: 'upb-uc4/hlf-dev-network'
         ref: 'develop'
-        path: 'hyperledger_dev_network'
+        path: 'hlf-dev-network'
     
     # Set up JDK
     - name: Set up JDK 1.8
@@ -45,7 +45,7 @@ jobs:
     - name: setup dev_network
       uses: ./.github/actions/dev_network_setup
       with:
-        network_folder: 'hyperledger_dev_network'
+        network_folder: 'hlf-dev-network'
 
     # Run Tests
     - name: run tests with coverage and reports
