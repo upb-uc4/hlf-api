@@ -5,7 +5,7 @@ inputs:
   network_folder:
     description: 'path to the network where we can find the network.sh script.'
     required: true
-    default: 'hyperledger_dev_network'
+    default: 'hlf-dev-network'
 
 runs:
     using: "composite"
