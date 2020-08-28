@@ -27,7 +27,7 @@ class MatriculationAccessTests extends TestBase {
         result should ===("")
       }
       "allow for reading MatriculationData / Students " in {
-        executeAndLog(() => {chaincodeConnection.getMatriculationData("200")})
+        executeAndLog(() => { chaincodeConnection.getMatriculationData("200") })
       }
       "read the correct data " in {
         val result = chaincodeConnection.getMatriculationData("200")
