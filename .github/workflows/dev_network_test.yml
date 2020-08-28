@@ -51,7 +51,7 @@ jobs:
     - name: run tests with coverage and reports
       uses: ./.github/actions/test_with_coverage
       with:
-        what-to-test: '*ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests'
+        what-to-test: '*ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
 
     # Combine reports
     - name: Scalatest multiproject HTML merger
