@@ -4,6 +4,7 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
+import org.scalactic.Fail
 
 class MatriculationAccessTests extends TestBase {
 
@@ -26,21 +27,23 @@ class MatriculationAccessTests extends TestBase {
         result should ===("")
       }
       "allow for reading MatriculationData / Students " in {
-        val result = chaincodeConnection.getMatriculationData("200")
+        executeAndLog(() => {chaincodeConnection.getMatriculationData("200")})
       }
       "read the correct data " in {
         val result = chaincodeConnection.getMatriculationData("200")
-        result should ===(TestDataMatriculation.validMatriculationData1("200"))
+        compareJson(TestDataMatriculation.validMatriculationData1("200"), result)
       }
       "allow for adding new Entries to existing data " in {
-        val result = chaincodeConnection.addEntryToMatriculationData("200", "ComputerScience", "SS2021")
-        result should ===("")
+        executeAndLog(() => {
+          val result = chaincodeConnection.addEntryToMatriculationData("200", "ComputerScience", "SS2021")
+          result should ===("")
+        })
       }
       "allow for updating existing Data (and thus removing entries) " in {
         val result = chaincodeConnection.updateMatriculationData(TestDataMatriculation.validMatriculationData1("200"))
         result should ===("")
         val readData = chaincodeConnection.getMatriculationData("200")
-        readData should ===(TestDataMatriculation.validMatriculationData1("200"))
+        compareJson(TestDataMatriculation.validMatriculationData1("200"), readData)
       }
     }
   }
