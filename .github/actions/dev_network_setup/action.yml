@@ -18,7 +18,7 @@ runs:
         echo "##########################"
         echo "#  start network script  #"
         echo "##########################"
-        ./network.sh &
+        ./network.sh feature/mutli_field_of_study &
         echo "##########################"
         echo "# started network script #"
         echo "##########################"
