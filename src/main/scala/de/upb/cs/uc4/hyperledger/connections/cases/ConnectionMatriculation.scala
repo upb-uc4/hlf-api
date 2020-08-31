@@ -12,19 +12,19 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
   override def addMatriculationData(jSonMatriculationData: String): String =
     wrapTransactionResult(
       "addMatriculationData",
-      this.internalSubmitTransaction("addMatriculationData", jSonMatriculationData)
+      this.internalSubmitTransaction(true, "addMatriculationData", jSonMatriculationData)
     )
 
   override def addEntryToMatriculationData(matriculationId: String, fieldOfStudy: String, semester: String): String =
     wrapTransactionResult(
       "addEntryToMatriculationData",
-      this.internalSubmitTransaction("addEntryToMatriculationData", matriculationId, fieldOfStudy, semester)
+      this.internalSubmitTransaction(false, "addEntryToMatriculationData", matriculationId, fieldOfStudy, semester)
     )
 
   override def updateMatriculationData(jSonMatriculationData: String): String =
     wrapTransactionResult(
       "updateMatriculationData",
-      this.internalSubmitTransaction("updateMatriculationData", jSonMatriculationData)
+      this.internalSubmitTransaction(true, "updateMatriculationData", jSonMatriculationData)
     )
 
   override def getMatriculationData(matId: String): String =
