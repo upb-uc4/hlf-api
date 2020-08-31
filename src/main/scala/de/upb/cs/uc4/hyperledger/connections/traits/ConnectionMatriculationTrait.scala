@@ -17,14 +17,13 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
   /** Submits the "addEntryToMatriculationData" query.
     *
     * @param matriculationId matriculationId to add entry to
-    * @param fieldOfStudy    field of study the student enrolled in
-    * @param semester        the semester the student enrolled for
+    * @param subjectMatriculationList a Json object containing the List of subjectMatriculationInfo - objects
     * @throws Exception if chaincode throws an exception.
     * @return success_state
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def addEntryToMatriculationData(matriculationId: String, fieldOfStudy: String, semester: String): String
+  def addEntriesToMatriculationData(matriculationId: String, subjectMatriculationList: String): String
 
   /** Submits the "updateMatriculationData" query.
     *

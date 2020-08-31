@@ -18,4 +18,8 @@ object TestDataMatriculation {
   def invalidMatriculationJsonInvalidMatriculationData2(id: String): String = "{\n  \"matriculationId\": \"" + id + "\",\n  \"firstName\": \"Dieter\",\n  \"lastName\": \"Dietrich\",\n  \"birthDate\": \"2020-08-12\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"SS200\"\n      ]\n    }\n  ]\n}"
   def invalidMatriculationJsonInvalidMatriculationData3(id: String): String = "{\n  \"matriculationId\": \"" + id + "\",\n  \"firstName\": \"Dieter\",\n  \"lastName\": \"Dietrich\",\n  \"birthDate\": \"2020-08-12\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"WW2020\"\n      ]\n    }\n  ]\n}"
   def invalidMatriculationJsonInvalidMatriculationData4(id: String): String = "{\n  \"matriculationId\": \"" + id + "\",\n  \"firstName\": \"Dieter\",\n  \"lastName\": \"Dietrich\",\n  \"birthDate\": \"2020-08-12\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"2020\"\n      ]\n    }\n  ]\n}"
+
+  def getSubjectMatriculationList(fieldOfStudy: String, semester: String) = {
+    "[{\"fieldOfStudy\":\"" + fieldOfStudy + "\", \"semesters\": [\"" + semester + "\"]}]"
+  }
 }

@@ -15,10 +15,10 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
       this.internalSubmitTransaction("addMatriculationData", jSonMatriculationData)
     )
 
-  override def addEntryToMatriculationData(matriculationId: String, fieldOfStudy: String, semester: String): String =
+  override def addEntriesToMatriculationData(matriculationId: String, subjectMatriculationList: String): String =
     wrapTransactionResult(
       "addEntryToMatriculationData",
-      this.internalSubmitTransaction("addEntryToMatriculationData", matriculationId, fieldOfStudy, semester)
+      this.internalSubmitTransaction("addEntryToMatriculationData", matriculationId, subjectMatriculationList)
     )
 
   override def updateMatriculationData(jSonMatriculationData: String): String =

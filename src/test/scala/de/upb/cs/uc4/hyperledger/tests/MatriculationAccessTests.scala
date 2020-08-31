@@ -1,10 +1,8 @@
 package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
-import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
-import org.scalactic.Fail
 
 class MatriculationAccessTests extends TestBase {
 
@@ -35,7 +33,7 @@ class MatriculationAccessTests extends TestBase {
       }
       "allow for adding new Entries to existing data " in {
         executeAndLog(() => {
-          val result = chaincodeConnection.addEntryToMatriculationData("200", "ComputerScience", "SS2021")
+          val result = chaincodeConnection.addEntriesToMatriculationData("200", TestDataMatriculation.getSubjectMatriculationList("ComputerScience", "SS2021"))
           result should ===("")
         })
       }
