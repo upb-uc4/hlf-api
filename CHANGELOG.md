@@ -12,10 +12,15 @@
 ## Refactor
 
 - camelCase
+- rename repository to match standard
 
 ## Usability
 
--
+- provide means to execute tests on different networks
+- add test execution for [Production Network](https://github.com/upb-uc4/hlf-network)
+- implement tests for MatriculationAPI
+- generate coverage reports during tests
+- generate pretty test reports
 
 # [v0.6.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.0...v0.6.1) (2020-08-17)
 

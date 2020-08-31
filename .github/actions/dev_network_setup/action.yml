@@ -2,10 +2,10 @@ name: 'UC4 Dev_Network Setup'
 description: 'Sets up the UC4 Dev-Network'
 
 inputs:
-  what-to-test:  # name of testClass
-    description: 'Name of Test Class'
+  network_folder:
+    description: 'path to the network where we can find the network.sh script.'
     required: true
-    default: '*'
+    default: 'hlf-dev-network'
 
 runs:
     using: "composite"
@@ -14,7 +14,7 @@ runs:
     # set up Dev_network
     - name: Set up dev_network - dockers
       run: |
-        pushd ./hyperledger_dev_network
+        pushd ./${{ inputs.network_folder }}
         echo "##########################"
         echo "#  start network script  #"
         echo "##########################"
@@ -28,15 +28,4 @@ runs:
         echo "#    finish sleep        #"
         echo "##########################"
         popd
-      shell: bash
-        
-    # run tests
-    - name: Run tests
-      run: |
-        echo "##########################"
-        echo "#    starting test       #"
-        echo "##########################"
-        sbt "testOnly *${{ inputs.what-to-test }}" coverageReport coverageAggregate
-        echo "##########################"
-        echo "#    finished test       #"
       shell: bash

@@ -3,14 +3,14 @@
 
 #clone dev network
 
-if [ ! -d ./hyperledger_chaincode/ ]
+if [ ! -d ./hlf-dev-network/ ]
 then
-	git clone https://github.com/upb-uc4/hyperledger_dev_network.git
+	git clone https://github.com/upb-uc4/hlf-dev-network.git
 else
 	read -p "Update existing dev network? " -n 1 -r
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
-		pushd ./dev_network
+		pushd ./hlf-dev-network
 		git pull
 		popd
 	fi

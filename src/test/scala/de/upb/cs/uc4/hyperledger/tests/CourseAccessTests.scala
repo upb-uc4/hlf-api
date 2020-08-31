@@ -1,9 +1,11 @@
+package de.upb.cs.uc4.hyperledger.tests
+
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCourseTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
-import de.upb.cs.uc4.hyperledger.testBase.TestBaseDevNetwork
+import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataCourses
 
-class CourseAccessTests extends TestBaseDevNetwork {
+class CourseAccessTests extends TestBase {
 
   var chaincodeConnection: ConnectionCourseTrait = _
 

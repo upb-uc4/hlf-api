@@ -5,7 +5,7 @@ import java.nio.file.{ Path, Paths }
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCourses, ConnectionMatriculation }
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCourseTrait, ConnectionMatriculationTrait }
 
-class TestBaseProductionNetwork extends TestBaseGeneral {
+protected class TestBaseProductionNetwork extends TestBaseTrait {
 
   val networkDescriptionPath: Path = Paths.get(getClass.getResource("/connection_profile_kubernetes.yaml").toURI)
   val minikubeIP: String = sys.env.getOrElse("MINIKUBE_IP", "172.17.0.2")

@@ -17,6 +17,8 @@ object EnrollmentManager {
       println(s"An identity for the user $username already exists in the wallet.")
     }
     else {
+      println(s"Try to get the identity for the user $username.")
+
       // Create a CA client for interacting with the CA
       val props = new Properties
       props.put("pemFile", tlsCert.toAbsolutePath.toString)
@@ -24,13 +26,16 @@ object EnrollmentManager {
       val caClient = HFCAClient.createNewInstance(caURL, props)
       val cryptoSuite = CryptoSuiteFactory.getDefault.getCryptoSuite
       caClient.setCryptoSuite(cryptoSuite)
+      println(s"Created cryptoSuite.")
 
       // enroll my user
       val enrollmentRequestTLS = new EnrollmentRequest
       enrollmentRequestTLS.addHost("localhost")
       enrollmentRequestTLS.setProfile("tls")
       val enrollment = caClient.enroll(username, password, enrollmentRequestTLS)
+      println("got enrollment")
       val identity = Identities.newX509Identity(organisationId, enrollment)
+      println("created identity from enrollment")
       wallet.put(username, identity)
       println(s"Successfully enrolled user $username and imported it into the wallet")
     }
