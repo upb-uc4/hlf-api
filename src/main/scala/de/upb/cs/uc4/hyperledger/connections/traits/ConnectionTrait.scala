@@ -4,9 +4,9 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
 import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
-import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerInnerException, HyperledgerUnhandledException, TransactionException}
+import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerInnerException, HyperledgerUnhandledException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.GatewayManager
-import org.hyperledger.fabric.gateway.{Contract, ContractException, Gateway, GatewayRuntimeException}
+import org.hyperledger.fabric.gateway.{ Contract, ContractException, Gateway, GatewayRuntimeException }
 
 import scala.jdk.CollectionConverters.MapHasAsJava
 
@@ -23,7 +23,7 @@ trait ConnectionTrait extends AutoCloseable {
         var i = 0
         params.foreach(param => {
           transMap += i.toString -> param.toCharArray.map(_.toByte)
-          i = i+1
+          i = i + 1
         })
 
         contract.createTransaction(transactionId).setTransient(transMap.asJava).submit()
@@ -48,7 +48,7 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: ContractException => throw HyperledgerInnerException(transactionId, ex)
-      case ex: Exception => throw HyperledgerUnhandledException(transactionId, ex)
+      case ex: Exception         => throw HyperledgerUnhandledException(transactionId, ex)
     }
   }
 
