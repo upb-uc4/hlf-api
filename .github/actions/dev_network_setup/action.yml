@@ -6,6 +6,10 @@ inputs:
     description: 'path to the network where we can find the network.sh script.'
     required: true
     default: 'hlf-dev-network'
+  chaincode_branch:
+    description: 'branch of the chaincode repo you want to checkout.'
+    required: true
+    default: 'develop'
 
 runs:
     using: "composite"
@@ -18,7 +22,7 @@ runs:
         echo "##########################"
         echo "#  start network script  #"
         echo "##########################"
-        ./network.sh feature/private_data &
+        ./startNetwork.sh ${{ inputs.chaincode_branch }} &
         echo "##########################"
         echo "# started network script #"
         echo "##########################"

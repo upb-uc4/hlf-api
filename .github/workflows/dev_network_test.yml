@@ -46,6 +46,7 @@ jobs:
       uses: ./.github/actions/dev_network_setup
       with:
         network_folder: 'hlf-dev-network'
+        chaincode_branch: 'feature/private_data'
 
     # Run Tests
     - name: run tests with coverage and reports
