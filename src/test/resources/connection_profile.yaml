@@ -28,7 +28,7 @@ channels:
 # this also provides mapping from organization to peers
 organizations:
   SampleOrg: #Org1:
-    mspid: DEFAULT
+    mspid: SampleOrgMSP
     peers:
       - peer
 #    certificateAuthorities:
