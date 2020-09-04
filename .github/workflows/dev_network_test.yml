@@ -32,7 +32,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-dev-network'
-        ref: 'develop'
+        ref: 'feature/private_data'
         path: 'hlf-dev-network'
     
     # Set up JDK
