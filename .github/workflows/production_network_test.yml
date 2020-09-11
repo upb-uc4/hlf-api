@@ -35,22 +35,34 @@ jobs:
         ref: 'develop'
         path: 'hlf-network'
 
-      # Set up JDK
+    # Set up JDK
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-
-    # Set up minikube
-    - name: Start minikube
-      uses: medyagh/setup-minikube@master
-
-    # setup minikube ip
-    - name: setup minikube ip
+        
+    # Prepare for mounts
+    - name: Create folder for mounts
       run: |
-        source setup_minikube_ip.sh
-        echo "::set-env name=MINIKUBE_IP::$(minikube ip)"
-        echo "set minikube ip"
+        pushd hlf-network
+        source ./env.sh
+        sudo mkdir -p $HL_MOUNT
+        sudo chmod -R 777 $K8S_MOUNT
+        popd
+
+    # Generate files
+    - name: Generate files from templates
+      run: |
+        pushd hlf-network
+        ./scripts/setMountFolder.sh
+        popd
+
+    # Start KIND
+    - name: Start KinD
+      uses: engineerd/setup-kind@v0.4.0
+      with:
+        version: "v0.7.0"
+        config: hlf-network/kind.yaml
 
     # Setup Network
     - name: setup production network

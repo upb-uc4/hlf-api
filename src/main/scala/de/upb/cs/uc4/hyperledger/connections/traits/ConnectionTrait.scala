@@ -3,10 +3,12 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
-import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerInnerException, HyperledgerUnhandledException, TransactionException }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
+import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerInnerException, HyperledgerUnhandledException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.GatewayManager
 import org.hyperledger.fabric.gateway.{ Contract, ContractException, Gateway, GatewayRuntimeException }
+
+import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
   val contractName: String
@@ -14,9 +16,21 @@ trait ConnectionTrait extends AutoCloseable {
   val gateway: Gateway
 
   @throws[HyperledgerExceptionTrait]
-  protected final def internalSubmitTransaction(transactionId: String, params: String*): Array[Byte] = {
+  protected final def internalSubmitTransaction(transient: Boolean, transactionId: String, params: String*): Array[Byte] = {
     try {
-      contract.submitTransaction(transactionId, params: _*)
+      if (transient) {
+        var transMap: Map[String, Array[Byte]] = Map()
+        var i = 0
+        params.foreach(param => {
+          transMap += i.toString -> param.toCharArray.map(_.toByte)
+          i = i + 1
+        })
+
+        contract.createTransaction(transactionId).setTransient(transMap.asJava).submit()
+      }
+      else {
+        contract.submitTransaction(transactionId, params: _*)
+      }
     }
     catch {
       case ex: ContractException => throw HyperledgerInnerException(transactionId, ex)
