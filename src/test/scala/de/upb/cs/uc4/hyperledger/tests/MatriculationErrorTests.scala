@@ -99,7 +99,7 @@ class MatriculationErrorTests extends TestBase {
       }
     }
 
-    "invoking addMatriculationData" should {
+    "invoking addEntryToMatriculationData" should {
       "throw TransactionException for not existing matriculationId " in {
         val id = "140"
         val fieldOfStudy = "ComputerScience"
