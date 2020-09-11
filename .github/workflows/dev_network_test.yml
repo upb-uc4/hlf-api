@@ -32,7 +32,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-dev-network'
-        ref: 'feature/private_data'
+        ref: 'develop'
         path: 'hlf-dev-network'
     
     # Set up JDK
@@ -46,7 +46,6 @@ jobs:
       uses: ./.github/actions/dev_network_setup
       with:
         network_folder: 'hlf-dev-network'
-        chaincode_branch: 'feature/private_data'
 
     # Run Tests
     - name: run tests with coverage and reports
