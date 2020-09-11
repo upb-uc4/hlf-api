@@ -18,7 +18,7 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
   override def addEntriesToMatriculationData(matriculationId: String, subjectMatriculationList: String): String =
     wrapTransactionResult(
       "addEntryToMatriculationData",
-      this.internalSubmitTransaction(false, "addEntryToMatriculationData", matriculationId, subjectMatriculationList)
+      this.internalSubmitTransaction(false, "addEntriesToMatriculationData", matriculationId, subjectMatriculationList)
     )
 
   override def updateMatriculationData(jSonMatriculationData: String): String =
