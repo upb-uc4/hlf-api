@@ -104,40 +104,50 @@ class MatriculationErrorTests extends TestBase {
         val id = "140"
         val fieldOfStudy = "ComputerScience"
         val semester = "SS2020"
-        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(id,
-          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)))
+        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(
+          id,
+          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
+        ))
         result.transactionId should ===("addEntryToMatriculationData")
       }
       "throw TransactionException for empty matriculationId " in {
         val id = ""
         val fieldOfStudy = "ComputerScience"
         val semester = "SS2020"
-        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(id,
-          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)))
+        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(
+          id,
+          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
+        ))
         result.transactionId should ===("addEntryToMatriculationData")
       }
       "throw TransactionException for malformed semester Entry " in {
         val id = "001"
         val fieldOfStudy = "ComputerScience"
         val semester = "S2020"
-        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(id,
-          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)))
+        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(
+          id,
+          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
+        ))
         result.transactionId should ===("addEntryToMatriculationData")
       }
       "throw TransactionException for empty semester Entry " in {
         val id = "001"
         val fieldOfStudy = "ComputerScience"
         val semester = ""
-        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(id,
-          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)))
+        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(
+          id,
+          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
+        ))
         result.transactionId should ===("addEntryToMatriculationData")
       }
       "throw TransactionException for empty fieldOfStudy Entry " in {
         val id = "001"
         val fieldOfStudy = ""
         val semester = "SS2020"
-        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(id,
-          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)))
+        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(
+          id,
+          TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
+        ))
         result.transactionId should ===("addEntryToMatriculationData")
       }
     }
