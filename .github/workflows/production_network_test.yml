@@ -1,22 +1,24 @@
 name: Hyperledger_Scala_With_Production_Network
 
 on:  
+  # daily
+  schedule:
+    - cron: '0 0 * * *'
+  # manual trigger
   workflow_dispatch:
     inputs:
       debug:
         description: 'Debug option'
         required: false
         default: 'none'
+  # on push event
   push:
-    branches:
-      - '**feature**'
-      - '**fix**'
-      - develop
-      - master
+    # except for these files
     paths-ignore:
       - README.md
       - LICENSE
       - CHANGELOG.md
+  # on pull request to protected branches
   pull_request:
     branches: 
       - develop
