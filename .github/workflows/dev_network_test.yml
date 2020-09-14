@@ -1,6 +1,12 @@
 name: Hyperledger_Scala_With_Dev_Network
 
 on:
+  workflow_dispatch:
+    inputs:
+      chaincode_target:
+        description: 'Chaincode Target Branch'
+        required: true
+        default: 'develop'
   push:
     branches:
       - '**feature**'
@@ -46,6 +52,7 @@ jobs:
       uses: ./.github/actions/dev_network_setup
       with:
         network_folder: 'hlf-dev-network'
+        chaincode_branch: '${{ github.event.inputs.chaincode_target }}'
 
     # Run Tests
     - name: run tests with coverage and reports
