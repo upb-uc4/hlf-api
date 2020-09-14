@@ -1,6 +1,15 @@
 name: Code Format Check Pipeline
 
-on: [push]
+on:
+  # on push event
+  push:
+    # except for these files
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - CHANGELOG.md
+      - .github/workflows/production_network_test.yml
+      - .github/workflows/dev_network_test.yml
 
 jobs:
   check:
