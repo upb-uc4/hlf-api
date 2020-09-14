@@ -19,6 +19,7 @@ on:
       - LICENSE
       - CHANGELOG.md
       - .github/workflows/production_network_test.yml
+      - .github/workflows/style_check.yaml
   # on pull request to protected branches
   pull_request:
     branches: 
