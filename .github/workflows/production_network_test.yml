@@ -1,6 +1,12 @@
 name: Hyperledger_Scala_With_Production_Network
 
-on:
+on:  
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Debug option'
+        required: false
+        default: 'none'
   push:
     branches:
       - '**feature**'
