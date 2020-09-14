@@ -18,7 +18,7 @@ on:
       - README.md
       - LICENSE
       - CHANGELOG.md
-      - .github/worklows/dev_network_test.yml
+      - .github/workflows/dev_network_test.yml
       - .github/workflows/style_check.yaml
   # on pull request to protected branches
   pull_request:
