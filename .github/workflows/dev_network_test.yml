@@ -1,22 +1,25 @@
 name: Hyperledger_Scala_With_Dev_Network
 
 on:
+  # daily at 00:00
+  schedule:
+    - cron: '0 0 * * *'
+  # manual triggers with parameters
   workflow_dispatch:
     inputs:
       chaincode_target:
         description: 'Chaincode Target Branch'
         required: true
         default: 'develop'
+  # on push event
   push:
-    branches:
-      - '**feature**'
-      - '**fix**'
-      - develop
-      - master
+    # except for these files
     paths-ignore:
       - README.md
       - LICENSE
       - CHANGELOG.md
+      - .github/workflows/production_network_test.yml
+  # on pull request to protected branches
   pull_request:
     branches: 
       - develop
