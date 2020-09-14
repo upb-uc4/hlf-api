@@ -18,7 +18,7 @@
 - 
 
 
-# [v0.8.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.0...v0.6.1) (2020-08-17)
+# [v0.8.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.1...v0.8.0) (2020-08-17)
 
 ## Feature
 
