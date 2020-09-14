@@ -1,13 +1,29 @@
 
-# [v0.6.2 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.1...develop) (2020-08-17)
+# [v0.8.1 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...develop) (2020-08-17)
 
 ## Feature
 
--
+- 
 
 ## Bug Fixes
 
 -
+
+## Refactor
+
+- 
+
+## Usability
+
+- 
+
+
+# [v0.8.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.0...v0.6.1) (2020-08-17)
+
+## Feature
+
+- support new generation of chaincode (private data collection)
+- support new generation of chaincode (multiple inserts at addEntriesToMatriculationData)
 
 ## Refactor
 
@@ -21,6 +37,7 @@
 - implement tests for MatriculationAPI
 - generate coverage reports during tests
 - generate pretty test reports
+- provide pipelines with means to change chaincode branch/tag
 
 # [v0.6.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.0...v0.6.1) (2020-08-17)
 
