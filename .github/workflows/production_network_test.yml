@@ -18,6 +18,7 @@ on:
       - README.md
       - LICENSE
       - CHANGELOG.md
+      - .github/worklows/dev_network_test.yml
   # on pull request to protected branches
   pull_request:
     branches: 
