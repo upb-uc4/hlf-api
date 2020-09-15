@@ -55,6 +55,10 @@ jobs:
     # Checks out dev network
     - name : Check out dev_network
       uses: actions/checkout@v2
+      with:
+        repository: 'upb-uc4/hlf-dev-network'
+        ref: 'develop'
+        path: 'hlf-dev-network'
     
     # Setup Network
     - name: setup dev_network
