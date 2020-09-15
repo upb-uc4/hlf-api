@@ -61,7 +61,7 @@ jobs:
       uses: ./.github/actions/dev_network_setup
       with:
         network_folder: 'hlf-dev-network'
-        chaincode_branch: '${{ github.event.inputs.chaincode_target }}'
+        chaincode_branch: ${{ github.event.inputs.chaincode_target }}
     # ################### DEV NETWORK ############ #
     
     # ################### TEST WITH REPORTS ############# #
@@ -69,7 +69,7 @@ jobs:
     - name: run tests with coverage and reports
       uses: NikoBergemann/action-sbt-test-report@v1
       with:
-        what-to-test: '${{ github.event.inputs.test_set }}'
+        what-to-test: github.event.inputs.test_set
 
     # Combine reports
     - name: Scalatest multiproject HTML merger
