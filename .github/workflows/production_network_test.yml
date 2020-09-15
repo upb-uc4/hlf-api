@@ -77,7 +77,7 @@ jobs:
 
     # Setup Network
     - name: setup production network
-      uses: ./.github/actions/production_network_setup
+      uses: NikoBergemann/action-sbt-test-report@v1
       with:
         network_folder: 'hlf-network'
     # ################### PRODUCTION NETWORK ############ #
