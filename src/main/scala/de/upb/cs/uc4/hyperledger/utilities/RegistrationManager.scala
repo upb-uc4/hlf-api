@@ -16,7 +16,7 @@ object RegistrationManager {
 
     val adminExists = wallet.list.contains(adminName)
     if (!adminExists) {
-      throw new Exception(s"\"${adminName}\" needs to be enrolled and added to the wallet first")
+      throw new Exception(s"'${adminName}' needs to be enrolled and added to the wallet first")
     }
 
     var admin: User = null
@@ -35,7 +35,7 @@ object RegistrationManager {
       }
       println(adminIdentity.getCertificate.toString)
     } catch {
-      case e:Exception => throw new Exception(s"Could not create an X509Identity for the admin user \"${adminName}\"", e)
+      case e:Exception => throw new Exception(s"Could not create an X509Identity for the admin user '${adminName}'", e)
     }
 
     try{
@@ -50,7 +50,7 @@ object RegistrationManager {
       enrollmentSecret
     }
     catch {
-      case e:Exception => throw new Exception(s"Registration for the user \"${userName}\" went wrong.", e)
+      case e:Exception => throw new Exception(s"Registration for the user '${userName}' went wrong.", e)
     }
   }
 }
