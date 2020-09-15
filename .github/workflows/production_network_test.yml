@@ -87,7 +87,7 @@ jobs:
     - name: run tests with coverage and reports
       uses: ./.github/actions/test_with_coverage
       with:
-        what-to-test: '${{ github.event.inputs.test_set }}'
+        what-to-test: github.event.inputs.test_set
       env:
         Target: 'ProductionNetwork'
 
