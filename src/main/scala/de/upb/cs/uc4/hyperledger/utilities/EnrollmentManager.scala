@@ -19,16 +19,11 @@ object EnrollmentManager {
     else {
       println(s"Try to get the identity for the user $username.")
 
-      // Create a CA client for interacting with the CA
-      val props = new Properties
-      props.put("pemFile", tlsCert.toAbsolutePath.toString)
-      props.put("allowAllHostNames", "true")
-      val caClient = HFCAClient.createNewInstance(caURL, props)
-      val cryptoSuite = CryptoSuiteFactory.getDefault.getCryptoSuite
-      caClient.setCryptoSuite(cryptoSuite)
-      println(s"Created cryptoSuite.")
+      println("Create a CA client for interacting with the CA")
+      val caClient = CAManager.getCAClient(caURL, tlsCert)
+      println("Retrieved CAClient")
 
-      // enroll my user
+      println("enroll my user")
       val enrollmentRequestTLS = new EnrollmentRequest
       enrollmentRequestTLS.addHost("localhost")
       enrollmentRequestTLS.setProfile("tls")

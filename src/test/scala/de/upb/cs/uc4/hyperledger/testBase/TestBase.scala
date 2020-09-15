@@ -39,7 +39,7 @@ class TestBase extends TestBaseTrait {
     }
   }
 
-  def initializeCourses(): ConnectionCourseTrait = new ConnectionCourses(testBase.username, testBase.channel, testBase.chaincode, testBase.walletPath, testBase.networkDescriptionPath)
+  def initializeCourses(userName: String = testBase.username): ConnectionCourseTrait = new ConnectionCourses(userName, testBase.channel, testBase.chaincode, testBase.walletPath, testBase.networkDescriptionPath)
   def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation(testBase.username, testBase.channel, testBase.chaincode, testBase.walletPath, testBase.networkDescriptionPath)
 
   private def tryRetrieveEnvVar(varName: String, fallBack: String = ""): String = {
