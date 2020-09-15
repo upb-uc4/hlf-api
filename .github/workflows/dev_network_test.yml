@@ -11,6 +11,10 @@ on:
         description: 'Chaincode Target Branch'
         required: true
         default: 'develop'
+      test_set:
+        description: 'Define which tests to run'
+        required: true
+        default: '*ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
   # on push event
   push:
     # except for these files
@@ -36,10 +40,6 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: check out source repository
       uses: actions/checkout@v2
-
-    # Checks out dev network
-    - name : Check out dev_network
-      uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-dev-network'
         ref: 'develop'
@@ -50,6 +50,11 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+
+    # ################### DEV NETWORK ############ #
+    # Checks out dev network
+    - name : Check out dev_network
+      uses: actions/checkout@v2
     
     # Setup Network
     - name: setup dev_network
@@ -57,12 +62,14 @@ jobs:
       with:
         network_folder: 'hlf-dev-network'
         chaincode_branch: '${{ github.event.inputs.chaincode_target }}'
-
+    # ################### DEV NETWORK ############ #
+    
+    # ################### TEST WITH REPORTS ############# #
     # Run Tests
     - name: run tests with coverage and reports
       uses: ./.github/actions/test_with_coverage
       with:
-        what-to-test: '*ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
+        what-to-test: '${{ github.event.inputs.test_set }}'
 
     # Combine reports
     - name: Scalatest multiproject HTML merger
@@ -85,3 +92,4 @@ jobs:
       with:
         name: code-coverage
         path: target/scala-2.13/scoverage-report
+    # ################### TEST WITH REPORTS ############# #

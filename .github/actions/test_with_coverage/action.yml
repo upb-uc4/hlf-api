@@ -3,7 +3,7 @@ description: 'Runs some sbt tests and produces cool reports.'
 
 inputs:
   what-to-test:
-    description: 'Name of Test Class(es)'
+    description: 'Name of Test Suite(s)'
     required: true
     default: '*'
 
@@ -14,11 +14,11 @@ runs:
     # run tests
     - name: Run tests
       run: |
-        echo "MINIKUBE_IP: $MINIKUBE_IP"
         echo "##########################"
         echo "#    starting test       #"
         echo "##########################"
         sbt coverage "testOnly ${{ inputs.what-to-test }}" coverageReport coverageAggregate
         echo "##########################"
         echo "#    finished test       #"
+        echo "##########################"
       shell: bash
