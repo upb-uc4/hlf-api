@@ -33,10 +33,23 @@ on:
 jobs:
 
   DeployAndTestDevNetwork:
+    env:
+      TEST_SET: "*ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
+      CHAINCODE_TARGET: "develop"
 
     runs-on: ubuntu-latest
 
     steps:
+    # Rewrite chaincodeTarget if started manually
+    - name: rewrite chaincodeTarget if manual invocation
+      if: github.event.inputs.chaincode_target != ''
+      run: echo "::set-env name=CHAINCODE_TARGET::${{ github.event.inputs.chaincode_target }}"
+      
+    # Rewrite test_Set if started manually
+    - name: rewrite test_set if manual invocation
+      if: github.event.inputs.test_set != ''
+      run: echo "::set-env name=TEST_SET::${{ github.event.inputs.test_set }}"
+          
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: check out source repository
       uses: actions/checkout@v2
@@ -61,7 +74,7 @@ jobs:
       uses: ./.github/actions/dev_network_setup
       with:
         network_folder: 'hlf-dev-network'
-        chaincode_branch: github.event.inputs.chaincode_target
+        chaincode_branch: $CHAINCODE_TARGET
     # ################### DEV NETWORK ############ #
     
     # ################### TEST WITH REPORTS ############# #
@@ -69,7 +82,7 @@ jobs:
     - name: run tests with coverage and reports
       uses: NikoBergemann/action-sbt-test-report@v2
       with:
-        what-to-test: "${{ github.event.inputs.test_set }}"
+        what-to-test: $TEST_SET
 
     # Combine reports
     - name: Scalatest multiproject HTML merger
