@@ -77,7 +77,7 @@ jobs:
 
     # Setup Network
     - name: setup production network
-      uses: NikoBergemann/action-sbt-test-report@v1
+      uses: ./.github/actions/production_network_setup
       with:
         network_folder: 'hlf-network'
     # ################### PRODUCTION NETWORK ############ #
@@ -85,7 +85,7 @@ jobs:
     # ################### TEST WITH REPORTS ############# #
     # Run Tests
     - name: run tests with coverage and reports
-      uses: ./.github/actions/test_with_coverage
+      uses: NikoBergemann/action-sbt-test-report@v1
       with:
         what-to-test: github.event.inputs.test_set
       env:
