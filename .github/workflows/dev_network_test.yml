@@ -67,7 +67,7 @@ jobs:
     # ################### TEST WITH REPORTS ############# #
     # Run Tests
     - name: run tests with coverage and reports
-      uses: NikoBergemann/action-sbt-test-report@v1
+      uses: NikoBergemann/action-sbt-test-report@v2
       with:
         what-to-test: github.event.inputs.test_set
 
