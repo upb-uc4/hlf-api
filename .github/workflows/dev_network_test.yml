@@ -40,6 +40,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # ################### ENV VARS ############################################################ #
     # Rewrite chaincodeTarget if started manually
     - name: rewrite chaincodeTarget if manual invocation
       if: github.event.inputs.chaincode_target != ''
@@ -49,6 +50,7 @@ jobs:
     - name: rewrite test_set if manual invocation
       if: github.event.inputs.test_set != ''
       run: echo "::set-env name=TEST_SET::${{ github.event.inputs.test_set }}"
+    # ################### ENV VARS ############################################################ #
           
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: check out source repository
