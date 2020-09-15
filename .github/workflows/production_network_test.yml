@@ -10,7 +10,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default:
+        default: '*RegistrationTests *EnrollmentTests *ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
   # on push event
   push:
     # except for these files
@@ -33,6 +33,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # ################### ENV VARS ############################################################ #      
+    # Rewrite test_Set if started manually
+    - name: rewrite test_set if manual invocation
+      if: github.event.inputs.test_set != ''
+      run: echo "::set-env name=TEST_SET::${{ github.event.inputs.test_set }}"
+    # ################### ENV VARS ############################################################ #
+
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Check out source repository
       uses: actions/checkout@v2
@@ -85,9 +92,9 @@ jobs:
     # ################### TEST WITH REPORTS ############# #
     # Run Tests
     - name: run tests with coverage and reports
-      uses: NikoBergemann/action-sbt-test-report@v2
+      uses: NikoBergemann/action-sbt-test-report@v1
       with:
-        what-to-test: '*RegistrationTests *ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
+        what-to-test: $TEST_SET
       env:
         Target: 'ProductionNetwork'
 
