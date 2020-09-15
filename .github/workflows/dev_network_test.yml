@@ -40,10 +40,6 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: check out source repository
       uses: actions/checkout@v2
-      with:
-        repository: 'upb-uc4/hlf-dev-network'
-        ref: 'develop'
-        path: 'hlf-dev-network'
     
     # Set up JDK
     - name: Set up JDK 1.8
