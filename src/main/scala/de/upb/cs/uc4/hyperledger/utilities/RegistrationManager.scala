@@ -63,17 +63,26 @@ object RegistrationManager {
   }
 
   private def getNameFromIdentity(identity: X509Identity): String = {
+    // println("[DEBUG] ::  TEST: " + identity.getCertificate.getSubjectDN.getName)
+    // CN=scala-registration-admin-org1, OU=admin
 
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSubjectDN.getName)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgName)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgOID)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgParams)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSignature)
-    identity.getCertificate.getSubjectAlternativeNames.forEach(a => println("[DEBUG] ::  TEST: " + a))
+    // println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgName)
+    // SHA256withECDSA
+
+    // println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgOID)
+    // 1.2.840.10045.4.3.2
+
+    // println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgParams)
+    // null
+
+    // println("[DEBUG] ::  TEST: " + identity.getCertificate.getSignature)
+    // [B@5d6f35bf
+
+    // identity.getCertificate.getSubjectAlternativeNames.forEach(a => println("[DEBUG] ::  TEST: " + a))
+    // [2, localhost]
+
     val rawName = identity.getCertificate.getSubjectDN.getName
-    println("[DEBUG] ::  rawname: " + rawName)
-    var name = rawName.substring(rawName.indexOf("="))
-    println("[DEBUG] ::  name: " + name)
+    var name = rawName.substring(rawName.indexOf("=")+1)
     name = name.substring(0, name.indexOf(","))
     println("[DEBUG] ::  name: " + name)
     name
