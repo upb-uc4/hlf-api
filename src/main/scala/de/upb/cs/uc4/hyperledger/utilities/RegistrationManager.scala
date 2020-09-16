@@ -82,7 +82,7 @@ object RegistrationManager {
     // [2, localhost]
 
     val rawName = identity.getCertificate.getSubjectDN.getName
-    var name = rawName.substring(rawName.indexOf("=")+1)
+    var name = rawName.substring(rawName.indexOf("=") + 1)
     name = name.substring(0, name.indexOf(","))
     println("[DEBUG] ::  name: " + name)
     name
