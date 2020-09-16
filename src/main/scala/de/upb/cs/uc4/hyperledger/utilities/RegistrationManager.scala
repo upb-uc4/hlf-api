@@ -11,7 +11,7 @@ import org.hyperledger.fabric_ca.sdk.{ HFCAClient, RegistrationRequest }
 object RegistrationManager {
 
   @throws[Exception]
-  def register(tlsCert: Path, caURL: String, userName: String, adminName: String, adminWalletPath: Path, affiliation: String): String = {
+  def register(tlsCert: Path, caURL: String, userName: String, adminName: String, adminWalletPath: Path, affiliation: String = "org1"): String = {
     // retrieve Admin Identity ad a User
     val wallet = WalletManager.getWallet(adminWalletPath)
     val adminIdentity: X509Identity = WalletManager.getX509Identity(wallet, adminName)
@@ -20,7 +20,7 @@ object RegistrationManager {
     println("[DEBUG] :: AdminUser: " + admin.toString)
 
     // prepare registrationRequest
-    val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName, affiliation)
+    val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName)
 
     // get caClient
     val caClient: HFCAClient = CAClientManager.getCAClient(caURL, tlsCert)
@@ -34,19 +34,25 @@ object RegistrationManager {
     }
   }
 
-  private def prepareRegistrationRequest(userName: String, affiliation: String, newUserType: String = HFCAClient.HFCA_TYPE_CLIENT): RegistrationRequest = {
-    val registrationRequest = new RegistrationRequest(userName, affiliation)
+  /** "If no affiliation is specified in the registration request,
+    * the identity being registered will be given the affiliation of the registrar."
+    *
+    * @param userName
+    * @param newUserType
+    * @return
+    */
+  private def prepareRegistrationRequest(userName: String, newUserType: String = HFCAClient.HFCA_TYPE_CLIENT): RegistrationRequest = {
+    val registrationRequest = new RegistrationRequest(userName)
     registrationRequest.setType(newUserType)
     registrationRequest
   }
 
   private def getUserFromX509Identity(identity: X509Identity, affiliationName: String): User = {
     println("[DEBUG] ::  TEST: " + identity.getCertificate.getSubjectDN.getName)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSubjectUniqueID.toString)
     println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgName)
     println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgOID)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgParams.toString)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSignature.toString)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgParams)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSignature)
 
     new User() {
       override def getName = identity.getCertificate.getSubjectDN.getName
