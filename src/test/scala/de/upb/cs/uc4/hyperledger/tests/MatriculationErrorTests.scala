@@ -158,6 +158,7 @@ class MatriculationErrorTests extends TestBase {
           "[]"
         ))
         result.transactionId should ===("addEntryToMatriculationData")
+        println("[DEBUG] :: " + result.toString)
       }
     }
   }
