@@ -20,7 +20,7 @@ class RegistrationTests extends TestBase {
 
         println("Register TestUser")
         val testUserName = "Tester123"
-        val testUserPw = RegistrationManager.register(tlsCert, caURL, testUserName, username, walletPath, organisationId)
+        val testUserPw = RegistrationManager.register(tlsCert, caURL, testUserName, username, walletPath, organisationId, "org1")
 
         println("Enroll TestUser")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId)
