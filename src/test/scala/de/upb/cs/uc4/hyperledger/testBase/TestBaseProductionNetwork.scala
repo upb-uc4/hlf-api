@@ -11,7 +11,7 @@ protected class TestBaseProductionNetwork extends TestBaseTrait {
   val minikubeIP: String = sys.env.getOrElse("MINIKUBE_IP", "172.17.0.2")
   val caURL = s"https://$minikubeIP:30907"
   val tlsCert: Path = Paths.get("/tmp/hyperledger/org1/msp/cacerts/org1-ca-cert.pem")
-  val username: String = "scala-admin-org1"
+  val username: String = "scala-registration-admin-org1"
   val password: String = "scalaAdminPW"
   val organisationId: String = "org1MSP"
   val channel: String = "mychannel"
