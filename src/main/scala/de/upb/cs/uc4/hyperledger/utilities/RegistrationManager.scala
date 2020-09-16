@@ -46,7 +46,7 @@ object RegistrationManager {
 
       println("Register the user, enroll the user, and import the new identity into the wallet.")
       val registrationRequest = new RegistrationRequest(userName)
-      registrationRequest.setAffiliation(organisationId)
+      // registrationRequest.setAffiliation(organisationId)
       val enrollmentSecret = caClient.register(registrationRequest, admin)
       enrollmentSecret
     }
