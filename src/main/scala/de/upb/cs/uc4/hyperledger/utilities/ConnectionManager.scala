@@ -43,23 +43,23 @@ object ConnectionManager {
 
   /** Creates a Contract to invoke transactions on.
     * @param gateway Gateway to the network to conenct with
-    * @param channel name of the channel / network
-    * @param chaincode name of the chaincode to access
+    * @param channelName name of the channel / network
+    * @param chaincodeName name of the chaincode to access
     * @param contractName name of the contract / domain of the contract
     * @throws GatewayRuntimeException when gateway cannot find channel / network
     * @return contract object to invoke transactions on
     */
   @throws[GatewayRuntimeException]
-  def retrieveContract(
+  private def retrieveContract(
       gateway: Gateway,
-      channel: String = "myc",
-      chaincode: String = "mycc",
+      channelName: String,
+      chaincodeName: String,
       contractName: String
   ): Contract = {
     // get network (channel)
-    val network: Network = gateway.getNetwork(channel)
+    val network: Network = gateway.getNetwork(channelName)
     // get contract (chaincode, contract)
-    val contract = network.getContract(chaincode, contractName)
+    val contract = network.getContract(chaincodeName, contractName)
 
     contract
   }
