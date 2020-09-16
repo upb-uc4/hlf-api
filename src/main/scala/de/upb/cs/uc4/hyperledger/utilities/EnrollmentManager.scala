@@ -13,26 +13,31 @@ object EnrollmentManager {
     val wallet = WalletManager.getWallet(walletPath)
 
     // check if user already exists in my wallet
-    if (wallet.list.contains(username)) {
-      println(s"An identity for the user $username already exists in the wallet.")
+    if (WalletManager.containsIdentity(wallet, username)) {
+      println(s"[DEBUG] :: An identity for the user $username already exists in the wallet.")
     }
     else {
-      println(s"Try to get the identity for the user $username.")
+      println(s"[DEBUG] :: Try to get the identity for the user $username.")
 
-      println("Create a CA client for interacting with the CA")
-      val caClient = CAManager.getCAClient(caURL, tlsCert)
-      println("Retrieved CAClient")
+      val caClient = CAClientManager.getCAClient(caURL, tlsCert)
+      println("[DEBUG] :: Retrieved CAClient")
 
-      println("enroll my user")
-      val enrollmentRequestTLS = new EnrollmentRequest
-      enrollmentRequestTLS.addHost("localhost")
-      enrollmentRequestTLS.setProfile("tls")
+      val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest("localhost", "tls")
       val enrollment = caClient.enroll(username, password, enrollmentRequestTLS)
-      println("got enrollment")
+      println("[DEBUG] :: retrieved enrollment")
+
+      // store in wallet
       val identity = Identities.newX509Identity(organisationId, enrollment)
-      println("created identity from enrollment")
-      wallet.put(username, identity)
-      println(s"Successfully enrolled user $username and imported it into the wallet")
+      println("[DEBUG] :: created identity from enrollment")
+      WalletManager.putIdentity(wallet, username, identity)
+      println(s"[DEBUG] :: Successfully enrolled user $username and inserted it into the wallet.")
     }
+  }
+
+  private def prepareEnrollmentRequest(host: String, profile: String): EnrollmentRequest = {
+    val enrollmentRequestTLS = new EnrollmentRequest
+    enrollmentRequestTLS.addHost(host)
+    enrollmentRequestTLS.setProfile(profile)
+    enrollmentRequestTLS
   }
 }

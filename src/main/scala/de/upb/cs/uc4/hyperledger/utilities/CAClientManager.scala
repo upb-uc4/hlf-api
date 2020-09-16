@@ -6,7 +6,7 @@ import java.util.Properties
 import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
 import org.hyperledger.fabric_ca.sdk.HFCAClient
 
-object CAManager {
+object CAClientManager {
 
   /**
     * Retrieves a clientObject for a CA spec.
@@ -20,10 +20,12 @@ object CAManager {
     props.put("pemFile", tlsCert.toAbsolutePath.toString)
     props.put("allowAllHostNames", "true")
     val caClient = HFCAClient.createNewInstance(caURL, props)
+
+    // set up crypto suite for CAClient
     val cryptoSuite = CryptoSuiteFactory.getDefault.getCryptoSuite
     caClient.setCryptoSuite(cryptoSuite)
-    println(s"Created cryptoSuite.")
 
+    // return
     caClient
   }
 }

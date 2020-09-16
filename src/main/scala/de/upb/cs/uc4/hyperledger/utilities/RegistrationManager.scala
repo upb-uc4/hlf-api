@@ -15,15 +15,15 @@ object RegistrationManager {
     // retrieve Admin Identity ad a User
     val wallet = WalletManager.getWallet(adminWalletPath)
     val adminIdentity: X509Identity = WalletManager.getX509Identity(wallet, adminName)
-    println("[DEBUG] AdminIdentity: " + adminIdentity.getCertificate.toString)
+    println("[DEBUG] :: AdminIdentity: " + adminIdentity.getCertificate.toString)
     val admin: User = RegistrationManager.getUserFromX509Identity(adminIdentity, affiliation)
-    println("[DEBUG] AdminUser: " + admin.toString)
+    println("[DEBUG] :: AdminUser: " + admin.toString)
 
     // prepare registrationRequest
     val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName, affiliation)
 
     // get caClient
-    val caClient: HFCAClient = CAManager.getCAClient(caURL, tlsCert)
+    val caClient: HFCAClient = CAClientManager.getCAClient(caURL, tlsCert)
 
     // actually perform the registration process
     try {
@@ -41,12 +41,12 @@ object RegistrationManager {
   }
 
   private def getUserFromX509Identity(identity : X509Identity, affiliationName: String): User = {
-    println("AAAAA TEST: "+identity.getCertificate.getSubjectDN.getName )
-    println("AAAAA TEST: "+identity.getCertificate.getSubjectUniqueID.toString )
-    println("AAAAA TEST: "+identity.getCertificate.getSigAlgName)
-    println("AAAAA TEST: "+identity.getCertificate.getSigAlgOID)
-    println("AAAAA TEST: "+identity.getCertificate.getSigAlgParams.toString)
-    println("AAAAA TEST: "+identity.getCertificate.getSignature.toString)
+    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSubjectDN.getName )
+    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSubjectUniqueID.toString )
+    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSigAlgName)
+    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSigAlgOID)
+    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSigAlgParams.toString)
+    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSignature.toString)
 
     new User() {
       override def getName = identity.getCertificate.getSubjectDN.getName
