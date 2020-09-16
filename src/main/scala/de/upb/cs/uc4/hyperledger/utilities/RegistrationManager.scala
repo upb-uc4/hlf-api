@@ -48,14 +48,9 @@ object RegistrationManager {
   }
 
   private def getUserFromX509Identity(identity: X509Identity, affiliationName: String): User = {
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSubjectDN.getName)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgName)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgOID)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgParams)
-    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSignature)
-
+    val name = getNameFromIdentity(identity)
     new User() {
-      override def getName = identity.getCertificate.getSubjectDN.getName
+      override def getName = name
       override def getRoles: util.Set[String] = null
       override def getAccount = ""
       override def getAffiliation: String = affiliationName
@@ -65,5 +60,22 @@ object RegistrationManager {
       }
       override def getMspId: String = identity.getMspId
     }
+  }
+
+  private def getNameFromIdentity(identity: X509Identity): String = {
+
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSubjectDN.getName)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgName)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgOID)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgParams)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSignature)
+    identity.getCertificate.getSubjectAlternativeNames.forEach(a => println("[DEBUG] ::  TEST: " + a))
+    val rawName = identity.getCertificate.getSubjectDN.getName
+    println("[DEBUG] ::  rawname: " + rawName)
+    var name = rawName.substring(rawName.indexOf("="))
+    println("[DEBUG] ::  name: " + name)
+    name = name.substring(0, name.indexOf(","))
+    println("[DEBUG] ::  name: " + name)
+    name
   }
 }
