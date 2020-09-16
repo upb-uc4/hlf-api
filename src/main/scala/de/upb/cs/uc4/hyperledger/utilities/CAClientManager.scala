@@ -8,8 +8,7 @@ import org.hyperledger.fabric_ca.sdk.HFCAClient
 
 object CAClientManager {
 
-  /**
-    * Retrieves a clientObject for a CA spec.
+  /** Retrieves a clientObject for a CA spec.
     * @param caURL Address to find the CA.
     * @param tlsCert Certificate to validate the realness of the CA.
     * @return The HFCAClient object to perform registration/enrollment on.

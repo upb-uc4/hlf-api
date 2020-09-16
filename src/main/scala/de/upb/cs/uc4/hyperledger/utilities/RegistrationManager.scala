@@ -4,9 +4,9 @@ import java.nio.file.Path
 import java.security.PrivateKey
 import java.util
 
-import org.hyperledger.fabric.gateway.{Identities, X509Identity}
-import org.hyperledger.fabric.sdk.{Enrollment, User}
-import org.hyperledger.fabric_ca.sdk.{HFCAClient, RegistrationRequest}
+import org.hyperledger.fabric.gateway.{ Identities, X509Identity }
+import org.hyperledger.fabric.sdk.{ Enrollment, User }
+import org.hyperledger.fabric_ca.sdk.{ HFCAClient, RegistrationRequest }
 
 object RegistrationManager {
 
@@ -40,13 +40,13 @@ object RegistrationManager {
     registrationRequest
   }
 
-  private def getUserFromX509Identity(identity : X509Identity, affiliationName: String): User = {
-    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSubjectDN.getName )
-    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSubjectUniqueID.toString )
-    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSigAlgName)
-    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSigAlgOID)
-    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSigAlgParams.toString)
-    println("[DEBUG] ::  TEST: "+identity.getCertificate.getSignature.toString)
+  private def getUserFromX509Identity(identity: X509Identity, affiliationName: String): User = {
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSubjectDN.getName)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSubjectUniqueID.toString)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgName)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgOID)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSigAlgParams.toString)
+    println("[DEBUG] ::  TEST: " + identity.getCertificate.getSignature.toString)
 
     new User() {
       override def getName = identity.getCertificate.getSubjectDN.getName

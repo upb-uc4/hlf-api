@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.utilities
 import java.nio.file.Path
 
 import org.hyperledger.fabric.gateway.Gateway.Builder
-import org.hyperledger.fabric.gateway.{Gateway, Identity, Wallet}
+import org.hyperledger.fabric.gateway.{ Gateway, Identity, Wallet }
 
 object GatewayManager {
 
