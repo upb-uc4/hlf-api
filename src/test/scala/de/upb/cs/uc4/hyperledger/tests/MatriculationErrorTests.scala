@@ -108,7 +108,7 @@ class MatriculationErrorTests extends TestBase {
           id,
           TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
         ))
-        result.transactionId should ===("addEntryToMatriculationData")
+        result.transactionId should ===("addEntriesToMatriculationData")
       }
       "throw TransactionException for empty matriculationId " in {
         val id = ""
@@ -118,7 +118,7 @@ class MatriculationErrorTests extends TestBase {
           id,
           TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
         ))
-        result.transactionId should ===("addEntryToMatriculationData")
+        result.transactionId should ===("addEntriesToMatriculationData")
       }
       "throw TransactionException for malformed semester Entry " in {
         val id = "001"
@@ -128,7 +128,7 @@ class MatriculationErrorTests extends TestBase {
           id,
           TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
         ))
-        result.transactionId should ===("addEntryToMatriculationData")
+        result.transactionId should ===("addEntriesToMatriculationData")
       }
       "throw TransactionException for empty semester Entry " in {
         val id = "001"
@@ -138,7 +138,7 @@ class MatriculationErrorTests extends TestBase {
           id,
           TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
         ))
-        result.transactionId should ===("addEntryToMatriculationData")
+        result.transactionId should ===("addEntriesToMatriculationData")
       }
       "throw TransactionException for empty fieldOfStudy Entry " in {
         val id = "001"
@@ -148,7 +148,7 @@ class MatriculationErrorTests extends TestBase {
           id,
           TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
         ))
-        result.transactionId should ===("addEntryToMatriculationData")
+        result.transactionId should ===("addEntriesToMatriculationData")
       }
     }
   }
