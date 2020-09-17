@@ -12,7 +12,7 @@ object RegistrationManager {
 
   @throws[Exception]
   def register(tlsCert: Path, caURL: String, userName: String, adminName: String, adminWalletPath: Path, affiliation: String = "org1"): String = {
-    // retrieve Admin Identity ad a User
+    // retrieve Admin Identity as a User
     val wallet = WalletManager.getWallet(adminWalletPath)
     val adminIdentity: X509Identity = WalletManager.getX509Identity(wallet, adminName)
     println("[DEBUG] :: AdminIdentity: " + adminIdentity.getCertificate.toString)
