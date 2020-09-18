@@ -1,5 +1,5 @@
 
-# [v0.8.1 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...develop) (2020-08-17)
+# [v0.8.2 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...develop) (2020-08-17)
 
 ## Feature
 
@@ -16,6 +16,22 @@
 ## Usability
 
 - 
+
+# [v0.8.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.0...v0.8.1) (2020-08-17)
+
+## Feature
+
+- Support "Register User"
+
+## Refactor
+
+- Extract the CaClientManagement from the EnrollmentManager.
+
+## Usability
+
+- Pipelines can be triggered manually.
+- Pipelines can be triggered for specific chaincode branches.
+- Pipelines can be triggered for specific tests.
 
 
 # [v0.8.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.1...v0.8.0) (2020-08-17)
