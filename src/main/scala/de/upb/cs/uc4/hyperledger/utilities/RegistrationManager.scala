@@ -64,7 +64,6 @@ object RegistrationManager {
   }
 
   private def getNameFromIdentity(identity: X509Identity): String = {
-
     val rawName = identity.getCertificate.getSubjectDN.getName
     var name = rawName.substring(rawName.indexOf("=") + 1)
     name = name.substring(0, name.indexOf(","))
