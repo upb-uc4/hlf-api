@@ -11,7 +11,8 @@ import org.hyperledger.fabric_ca.sdk.{ HFCAClient, RegistrationRequest }
 object RegistrationManager {
 
   @throws[Exception]
-  def register(tlsCert: Path, caURL: String, userName: String, adminName: String, adminWalletPath: Path, affiliation: String = "org1"): String = {
+  def register(tlsCert: Path, caURL: String, userName: String, adminName: String, adminWalletPath: Path, affiliation: String): String = {
+
     // retrieve Admin Identity as a User
     val wallet = WalletManager.getWallet(adminWalletPath)
     val adminIdentity: X509Identity = WalletManager.getX509Identity(wallet, adminName)
