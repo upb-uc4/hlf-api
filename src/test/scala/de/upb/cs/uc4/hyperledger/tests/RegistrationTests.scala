@@ -7,7 +7,7 @@ class RegistrationTests extends TestBase {
 
   "The registrationManager" when {
     "beginning registration" should {
-      "work as expected" in {
+      "not throw exceptions" in {
         // retrieve possible identities
         val wallet = WalletManager.getWallet(walletPath)
         wallet should not be null
