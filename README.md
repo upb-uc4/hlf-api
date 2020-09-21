@@ -72,7 +72,7 @@ val newUserPassword = RegistrationManager.register(tlsCert, caURL, testUserName,
 ```
 
 ### 1. Enrollment 
-```
+```scala
 val newUserName = "TestUser123" // new user to be enrolled
 val newUserPassword = "Test123" // new user password (retrieve from registration-process)
 val organisationId = "org1MSP" // id of the organisation the user belongs to (current production network organisation is "org1MSP")
@@ -81,13 +81,13 @@ EnrollmentManager.enroll(caURL, tlsCert, walletPath, newUserName, newUserPasswor
 
 ### 2. Connection Initilization
 Simply create an object of the connection for the contract that you want to access
-```
+```scala
 def createConnection: ConnectionMatriculationTrait =
   de.upb.cs.uc4.hyperledger.connections.cases.ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
 ```
 
 ### 3. Performing Transactions
-```
+```scala
 try {
     val result = connection.addEntryToMatriculationData(matriculationId, fieldOfStudy, semester)
 } catch {
