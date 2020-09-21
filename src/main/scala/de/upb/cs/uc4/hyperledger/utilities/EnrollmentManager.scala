@@ -1,36 +1,50 @@
 package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
-import java.util.Properties
 
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.Identities
-import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
-import org.hyperledger.fabric_ca.sdk.{ EnrollmentRequest, HFCAClient }
+import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
 
 object EnrollmentManager {
-  def enroll(caURL: String, tlsCert: Path, walletPath: Path, username: String, password: String, organisationId: String): Unit = {
-    // wallet is target for admin certificate
-    val wallet = WalletManager.getWallet(walletPath)
-
+  /** Register a new User with the CA
+    *
+    * @param caURL Address to find the CA.
+    * @param caCert Certificate to check the validity of the CA.
+    * @param walletPath Wallet to store the new user's certificate.
+    * @param username Name of the user to be enrolled
+    * @param password Password of the user to be enrolled
+    * @param organisationId Organisation ID, that the user belongs to.
+    * @throws Exception if
+    *                   1. The CA Client could not be retrieved from the caURL and Certificate
+    *                   2. The enrollment process fails. Maybe your user is not registered?
+    */
+  def enroll(
+      caURL: String,
+      caCert: Path,
+      walletPath: Path,
+      username: String,
+      password: String,
+      organisationId: String
+  ): Unit = {
     // check if user already exists in my wallet
-    if (WalletManager.containsIdentity(wallet, username)) {
-      println(s"[DEBUG] :: An identity for the user $username already exists in the wallet.")
+    if (WalletManager.containsIdentity(walletPath, username)) {
+      Logger.log(s"An identity for the user $username already exists in the wallet.")
     }
     else {
-      println(s"[DEBUG] :: Try to get the identity for the user $username.")
+      Logger.log(s"Try to get the identity for the user $username.")
 
-      val caClient = CAClientManager.getCAClient(caURL, tlsCert)
-      println("[DEBUG] :: Retrieved CAClient")
+      val caClient = CAClientManager.getCAClient(caURL, caCert)
 
       val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest("localhost", "tls")
       val enrollment = caClient.enroll(username, password, enrollmentRequestTLS)
-      println("[DEBUG] :: retrieved enrollment")
+      Logger.log("Successfully performed and retrieved enrollment")
 
       // store in wallet
       val identity = Identities.newX509Identity(organisationId, enrollment)
-      println("[DEBUG] :: created identity from enrollment")
-      WalletManager.putIdentity(wallet, username, identity)
-      println(s"[DEBUG] :: Successfully enrolled user $username and inserted it into the wallet.")
+      Logger.log("Created identity from enrollment")
+      WalletManager.putIdentity(walletPath, username, identity)
+      Logger.log("Successfully enrolled user $username and inserted it into the wallet.")
     }
   }
 

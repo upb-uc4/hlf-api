@@ -2,6 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
+import org.hyperledger.fabric_ca.sdk.HFCAClient
 
 class RegistrationTests extends TestBase {
 
@@ -20,7 +21,7 @@ class RegistrationTests extends TestBase {
 
         println("Register TestUser")
         val testUserName = "Tester123"
-        val testUserPw = RegistrationManager.register(tlsCert, caURL, testUserName, username, walletPath, "org1")
+        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
 
         println("Enroll TestUser")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId)
