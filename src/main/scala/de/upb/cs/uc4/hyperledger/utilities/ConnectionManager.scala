@@ -2,12 +2,13 @@ package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
 
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway._
 
 /** Manager for all things ConnectionRelated.
   *  Can be used to retrieve contract and gateway from
   */
-object ConnectionManager {
+protected[hyperledger] object ConnectionManager {
 
   /** Retrieves a gateway to communicate with the hyperledger network
     *  Retrieves a Contract to invoke transactions on.
@@ -21,10 +22,15 @@ object ConnectionManager {
     * @return contract and gateway objects
     */
   @throws[GatewayRuntimeException]
-  def initializeConnection(username: String, channel: String = "myc", chaincode: String = "mycc",
-      contractName: String, walletPath: Path, networkDescriptionPath: Path): (Contract, Gateway) = { // Load a file system based wallet for managing identities.
-    println("Try to get connection with: " + networkDescriptionPath + "    and: " + walletPath)
-
+  def initializeConnection(
+      username: String,
+      channel: String = "myc",
+      chaincode: String = "mycc",
+      contractName: String,
+      walletPath: Path,
+      networkDescriptionPath: Path
+  ): (Contract, Gateway) = {
+    Logger.log(s"Try to get connection with: '$networkDescriptionPath' and: '$walletPath'")
     // get gateway
     val gateway: Gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
 
@@ -34,7 +40,10 @@ object ConnectionManager {
       contract = ConnectionManager.retrieveContract(gateway, channel, chaincode, contractName)
     }
     catch {
-      case e: GatewayRuntimeException => GatewayManager.disposeGateway(gateway); throw e;
+      case e: GatewayRuntimeException => {
+        GatewayManager.disposeGateway(gateway)
+        throw e
+      }
     }
 
     // return (contract, gateway) - pair

@@ -5,7 +5,7 @@ import java.nio.file.Path
 import org.hyperledger.fabric.gateway.Gateway.Builder
 import org.hyperledger.fabric.gateway.{ Gateway, Identity, Wallet }
 
-object GatewayManager {
+protected[hyperledger] object GatewayManager {
 
   def createGateway(walletPath: Path, networkDescriptionPath: Path, username: String): Gateway =
     this.createGateway(WalletManager.getWallet(walletPath), networkDescriptionPath, username)
