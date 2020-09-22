@@ -68,7 +68,7 @@ val organisationName = "org1" // current organisation name in our production net
 val maxEnrollments = 1 // number of times the user can be enrolled/reenrolled with the same username-password combination (default = 1)
 val newUserType = HFCAClient.HFCA_TYPE_CLIENT // permission level of the new user (default = HFCAClient.HFCA_TYPE_CLIENT)
 
-val newUserPassword = RegistrationManager.register(tlsCert, caURL, testUserName, username, walletPath, organisationName, maxEnrollments, )
+val newUserPassword = RegistrationManager.register(tlsCert, caURL, newUserName, adminUserName, walletPath, organisationName, maxEnrollments, )
 ```
 
 ### 1. Enrollment 
