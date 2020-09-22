@@ -46,7 +46,7 @@ class UserManagementTests extends TestBase {
         WalletManager.containsIdentity(walletPath, testUserName) should be(true)
 
         Logger.debug("Newly enrolled Identity: " + WalletManager.getIdentity(walletPath, testUserName).toString)
-        
+
         /*
         Cannot access chain with out private key
 
