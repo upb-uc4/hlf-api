@@ -1,9 +1,7 @@
 package de.upb.cs.uc4.hyperledger.tests
 
-import java.nio.file.Paths
 
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testData.TestDataCourses
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
@@ -47,7 +45,7 @@ class UserManagementTests extends TestBase {
 
         Logger.debug("Newly enrolled Identity: " + WalletManager.getIdentity(walletPath, testUserName).toString)
 
-        intercept(super.initializeCourses(testUserName))
+        intercept[Exception](super.initializeCourses(testUserName))
       }
     }
   }
