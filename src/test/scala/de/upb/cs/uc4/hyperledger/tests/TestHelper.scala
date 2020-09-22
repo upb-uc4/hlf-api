@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 
 object TestHelper {
 
-  def testChaincodeCourseAccess(testId: String, courseConnection: ConnectionCourseTrait): Unit ={
+  def testChaincodeCourseAccess(testId: String, courseConnection: ConnectionCourseTrait): Unit = {
     val testCourse = TestDataCourses.exampleCourseData(testId)
     courseConnection.addCourse(testCourse)
     val result = courseConnection.getCourseById(testId)
@@ -21,6 +21,6 @@ object TestHelper {
     val cleanActual = actual
       .replace("\n", "")
       .replace(" ", "")
-    cleanActual should be === cleanExpected
+    cleanActual should be(cleanExpected)
   }
 }
