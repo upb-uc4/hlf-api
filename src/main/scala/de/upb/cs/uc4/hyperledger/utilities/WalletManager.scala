@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.utilities
 import java.nio.file.Path
 import java.security.cert.X509Certificate
 
-import org.hyperledger.fabric.gateway.{Identity, Wallet, Wallets, X509Identity}
+import org.hyperledger.fabric.gateway.{ Identity, Wallet, Wallets, X509Identity }
 
 object WalletManager {
   // get Wallet
@@ -15,7 +15,7 @@ object WalletManager {
     * @param id Identity Name to be accessed in the wallet.
     * @return The X509Certificate-object.
     */
-  def getCertificate(walletPath: Path, id: String) : X509Certificate =
+  def getCertificate(walletPath: Path, id: String): X509Certificate =
     WalletManager.getX509Identity(walletPath, id).getCertificate
 
   // get Identity
