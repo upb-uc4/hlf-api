@@ -47,13 +47,7 @@ class UserManagementTests extends TestBase {
 
         Logger.debug("Newly enrolled Identity: " + WalletManager.getIdentity(walletPath, testUserName).toString)
 
-        /*
-        Cannot access chain with out private key
-
-        val connection = super.initializeCourses(testUserName)
-        intercept(TestHelper.testChaincodeCourseAccess("102", connection))
-
-         */
+        intercept(val connection = super.initializeCourses(testUserName))
       }
     }
   }
