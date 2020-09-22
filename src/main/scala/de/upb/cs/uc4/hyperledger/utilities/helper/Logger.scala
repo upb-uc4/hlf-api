@@ -15,7 +15,9 @@ protected[hyperledger] object Logger {
     * @return The HFCAClient object to perform registration/enrollment on.
     */
   def err(message: String, e: Exception = null): Exception = {
-    throw new Exception(s"[ERROR] :: $message", e)
+    val msg = s"[ERROR] :: $message"
+    println(msg)
+    throw new Exception(msg, e)
   }
 
   /** Logger utility to encapsulate printing debug messages.
@@ -43,12 +45,5 @@ protected[hyperledger] object Logger {
     */
   def info(message: String): Unit = {
     println(s"[INFO] :: $message")
-  }
-
-  private def prepareCAClientProperties(tlsCert: Path): Properties = {
-    val props = new Properties
-    props.put("pemFile", tlsCert.toAbsolutePath.toString)
-    props.put("allowAllHostNames", "true")
-    props
   }
 }

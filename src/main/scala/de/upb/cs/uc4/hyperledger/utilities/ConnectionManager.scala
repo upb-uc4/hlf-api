@@ -42,7 +42,7 @@ protected[hyperledger] object ConnectionManager {
     catch {
       case e: GatewayRuntimeException => {
         GatewayManager.disposeGateway(gateway)
-        Logger.err(s"Could not retrieve contract $contractName from chaincode $chaincode in channel $channel.", e)
+        throw Logger.err(s"Could not retrieve contract $contractName from chaincode $chaincode in channel $channel.", e)
       }
     }
 

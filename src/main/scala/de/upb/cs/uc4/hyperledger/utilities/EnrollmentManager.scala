@@ -47,7 +47,7 @@ object EnrollmentManager {
       val identity = Identities.newX509Identity(organisationId, enrollment)
       Logger.info("Created identity from enrollment")
       WalletManager.putIdentity(walletPath, username, identity)
-      Logger.info("Successfully enrolled user $username and inserted it into the wallet.")
+      Logger.info(s"Successfully enrolled user $username and inserted it into the wallet.")
     }
   }
 

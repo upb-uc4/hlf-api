@@ -5,8 +5,10 @@ import java.nio.file.Paths
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataCourses
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
+import de.upb.cs.uc4.hyperledger.utilities.{EnrollmentManager, RegistrationManager, WalletManager}
 import org.hyperledger.fabric_ca.sdk.HFCAClient
+
+import scala.io.Source
 
 class UserManagementTests extends TestBase {
 
@@ -26,9 +28,15 @@ class UserManagementTests extends TestBase {
         val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.debug("get csr_pem")
-        val file = getClass.getResource("/testid.csr").getFile
-        Logger.debug(s"file: $file")
-        val content = file.getBytes.toString
+        val resource = getClass.getResource("/testid.csr")
+        Logger.debug(s"file: ${resource.getFile}")
+        val source = Source.fromURL(resource)
+        var content: String = null
+        try{
+          content = source.mkString
+        } finally {
+          source.close()
+        }
         Logger.debug(s"content: $content")
 
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId, content)

@@ -16,7 +16,7 @@ protected[hyperledger] object WalletManager {
   def getIdentity(walletPath: Path, id: String): Identity = WalletManager.getIdentity(getWallet(walletPath), id)
   def getIdentity(wallet: Wallet, id: String): Identity = {
     if (!WalletManager.containsIdentity(wallet, id)) {
-      Logger.err(s"'${id}' credentials not found in wallet: '${wallet.toString}'.")
+      throw Logger.err(s"'${id}' credentials not found in wallet: '${wallet.toString}'.")
     }
     wallet.get(id)
   }
@@ -25,7 +25,7 @@ protected[hyperledger] object WalletManager {
   def putIdentity(walletPath: Path, id: String, identity: Identity): Unit = putIdentity(getWallet(walletPath), id, identity)
   def putIdentity(wallet: Wallet, id: String, identity: Identity): Unit = {
     if (WalletManager.containsIdentity(wallet, id)) {
-      Logger.err(s"'${id}' credentials already present in wallet: '${wallet.toString}'. Cannot put two copies.")
+      throw Logger.err(s"'${id}' credentials already present in wallet: '${wallet.toString}'. Cannot put two copies.")
     }
     wallet.put(id, identity)
   }
