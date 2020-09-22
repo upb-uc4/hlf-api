@@ -66,6 +66,6 @@ object EnrollmentManager {
   }
 
   private def generateGarbageKeyPair(): KeyPair = {
-    KeyPairGenerator.getInstance("RSASSA-PKCS1-v1_5").generateKeyPair()
+    KeyPairGenerator.getInstance("RSA").generateKeyPair()
   }
 }
