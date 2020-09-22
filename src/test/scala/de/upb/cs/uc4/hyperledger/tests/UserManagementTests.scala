@@ -5,7 +5,7 @@ import java.nio.file.Paths
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataCourses
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import de.upb.cs.uc4.hyperledger.utilities.{EnrollmentManager, RegistrationManager, WalletManager}
+import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
 
 import scala.io.Source
@@ -32,9 +32,10 @@ class UserManagementTests extends TestBase {
         Logger.debug(s"file: ${resource.getFile}")
         val source = Source.fromURL(resource)
         var content: String = null
-        try{
+        try {
           content = source.mkString
-        } finally {
+        }
+        finally {
           source.close()
         }
         Logger.debug(s"content: $content")
@@ -42,10 +43,17 @@ class UserManagementTests extends TestBase {
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId, content)
         Logger.info("Finished enrolling new user")
 
-        WalletManager.containsIdentity(walletPath, testUserName) should be
+        WalletManager.containsIdentity(walletPath, testUserName) should be(true)
+
+        Logger.debug("Newly enrolled Identity: " + WalletManager.getIdentity(walletPath, testUserName).toString)
+        
+        /*
+        Cannot access chain with out private key
 
         val connection = super.initializeCourses(testUserName)
         intercept(TestHelper.testChaincodeCourseAccess("102", connection))
+
+         */
       }
     }
   }

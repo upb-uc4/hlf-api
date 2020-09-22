@@ -1,7 +1,7 @@
 package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
-import java.security.{KeyPair, KeyPairGenerator}
+import java.security.{ KeyPair, KeyPairGenerator }
 
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.Identities
