@@ -1,10 +1,30 @@
 
-# [v0.8.2 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...develop) (2020-08-17)
+# [v0.8.3 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.2...develop) (2020-08-17)
+
+## Feature
+
+- Support Enrollment with CSR creating an invalid Identity in the given wallet.
+
+## Bug Fixes
+
+- 
+
+## Refactor
+
+- Test cleanup
+
+## Usability
+
+- 
+
+
+# [v0.8.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...v0.8.2) (2020-08-17)
 
 ## Feature
 
 - Make userType and maxEnrollmentCount variable
 - document publicly available methods
+- Publish dedicated wallet Actions
 
 ## Bug Fixes
 
