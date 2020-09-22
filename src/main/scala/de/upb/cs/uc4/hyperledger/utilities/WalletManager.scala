@@ -4,7 +4,7 @@ import java.nio.file.Path
 import java.security.cert.X509Certificate
 
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import org.hyperledger.fabric.gateway.{Identity, Wallet, Wallets, X509Identity}
+import org.hyperledger.fabric.gateway.{ Identity, Wallet, Wallets, X509Identity }
 
 object WalletManager {
   // get Wallet
