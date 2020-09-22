@@ -22,11 +22,11 @@ class UserManagementTests extends TestBase {
     "enrolling a User with csr" should {
       "not directly allow for the new User to access the chain [102]" in {
         Logger.info("Register TestUser")
-        val testUserName = "Tester102"
+        val testUserName = "testid"
         val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.debug("get csr_pem")
-        val file = getClass.getResource("/example_csr").getFile
+        val file = getClass.getResource("/testid.csr").getFile
         Logger.debug(s"file: $file")
         val content = file.getBytes.toString
         Logger.debug(s"content: $content")
@@ -49,7 +49,7 @@ class UserManagementTests extends TestBase {
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId)
 
         Logger.info("Register TestUser")
-        val testUserName = "Tester103"
+        val testUserName = "Tester102"
         val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.info("Enroll TestUser")
