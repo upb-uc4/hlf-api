@@ -47,7 +47,7 @@ class UserManagementTests extends TestBase {
 
         Logger.debug("Newly enrolled Identity: " + WalletManager.getIdentity(walletPath, testUserName).toString)
 
-        intercept(val connection = super.initializeCourses(testUserName))
+        intercept(super.initializeCourses(testUserName))
       }
     }
   }
