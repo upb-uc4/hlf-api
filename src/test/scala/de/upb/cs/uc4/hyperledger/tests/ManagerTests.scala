@@ -24,11 +24,8 @@ class ManagerTests extends TestBase {
   "The GatewayManager" when {
     "asked to setup a gateway" should {
       "provide a gateway for wallet" in {
-        // retrieve possible identities
-        val wallet = WalletManager.getWallet(walletPath)
-
         // prepare Network Builder
-        val gateway = GatewayManager.createGateway(wallet, networkDescriptionPath, username)
+        val gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
         gateway should not be null
 
         // cleanup
