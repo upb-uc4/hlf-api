@@ -7,7 +7,7 @@ import org.hyperledger.fabric.gateway.{Identity, Wallet, Wallets, X509Identity}
 
 object WalletManager {
   // get Wallet
-  private def getWallet(walletPath: Path): Wallet = Wallets.newFileSystemWallet(walletPath)
+  protected[hyperledger] def getWallet(walletPath: Path): Wallet = Wallets.newFileSystemWallet(walletPath)
 
   /** Gets the X509Certificate from an Identity in the wallet
     *
