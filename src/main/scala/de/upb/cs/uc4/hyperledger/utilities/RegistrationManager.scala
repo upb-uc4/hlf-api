@@ -57,7 +57,7 @@ object RegistrationManager {
       caClient.register(registrationRequest, admin)
     }
     catch {
-      case e: Exception => Logger.err(s"Registration for the user '${userName}' went wrong.", e)
+      case e: Exception => throw Logger.err(s"Registration for the user '${userName}' went wrong.", e)
     }
   }
 

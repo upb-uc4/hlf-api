@@ -14,7 +14,7 @@ protected[hyperledger] object Logger {
     *
     * @return The HFCAClient object to perform registration/enrollment on.
     */
-  def err(message: String, e: Exception = null): Unit = {
+  def err(message: String, e: Exception = null): Exception = {
     throw new Exception(s"[ERROR] :: $message", e)
   }
 

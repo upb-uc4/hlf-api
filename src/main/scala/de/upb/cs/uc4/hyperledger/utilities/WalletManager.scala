@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.utilities
 import java.nio.file.Path
 
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import org.hyperledger.fabric.gateway.{Identity, Wallet, Wallets, X509Identity}
+import org.hyperledger.fabric.gateway.{ Identity, Wallet, Wallets, X509Identity }
 
 protected[hyperledger] object WalletManager {
   // get Wallet

@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
 import java.security.spec.ECGenParameterSpec
-import java.security.{KeyPair, KeyPairGenerator, KeyPairGeneratorSpi, PublicKey, SecureRandom}
+import java.security.{ KeyPair, KeyPairGenerator, KeyPairGeneratorSpi, PublicKey, SecureRandom }
 
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.Identities
@@ -59,13 +59,13 @@ object EnrollmentManager {
     enrollmentRequestTLS.addHost(host)
     enrollmentRequestTLS.setProfile(profile)
     enrollmentRequestTLS.setCsr(csr_pem)
-    if(csr_pem != null){
+    if (csr_pem != null) {
       enrollmentRequestTLS.setKeyPair(generateGarbageKeyPair())
     }
     enrollmentRequestTLS
   }
 
-  private def generateGarbageKeyPair(): KeyPair ={
+  private def generateGarbageKeyPair(): KeyPair = {
     KeyPairGenerator.getInstance("RSASSA-PKCS1-v1_5").generateKeyPair()
   }
 }
