@@ -1,9 +1,13 @@
 package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
+import java.security.spec.ECGenParameterSpec
+import java.security.{KeyPair, KeyPairGenerator, KeyPairGeneratorSpi, PublicKey, SecureRandom}
 
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.Identities
+import org.hyperledger.fabric.sdk.exception.CryptoException
+import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
 import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
 
 object EnrollmentManager {
@@ -15,6 +19,7 @@ object EnrollmentManager {
     * @param username Name of the user to be enrolled
     * @param password Password of the user to be enrolled
     * @param organisationId Organisation ID, that the user belongs to.
+    * @param csr_pem csr to sign - optional
     * @throws Exception if
     *                   1. The CA Client could not be retrieved from the caURL and Certificate
     *                   2. The enrollment process fails. Maybe your user is not registered?
@@ -25,7 +30,8 @@ object EnrollmentManager {
       walletPath: Path,
       username: String,
       password: String,
-      organisationId: String
+      organisationId: String,
+      csr_pem: String = null
   ): Unit = {
     // check if user already exists in my wallet
     if (WalletManager.containsIdentity(walletPath, username)) {
@@ -36,7 +42,7 @@ object EnrollmentManager {
 
       val caClient = CAClientManager.getCAClient(caURL, caCert)
 
-      val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest("localhost", "tls")
+      val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest("localhost", "tls", csr_pem)
       val enrollment = caClient.enroll(username, password, enrollmentRequestTLS)
       Logger.info("Successfully performed and retrieved enrollment")
 
@@ -48,10 +54,18 @@ object EnrollmentManager {
     }
   }
 
-  private def prepareEnrollmentRequest(host: String, profile: String): EnrollmentRequest = {
+  private def prepareEnrollmentRequest(host: String, profile: String, csr_pem: String = null): EnrollmentRequest = {
     val enrollmentRequestTLS = new EnrollmentRequest
     enrollmentRequestTLS.addHost(host)
     enrollmentRequestTLS.setProfile(profile)
+    enrollmentRequestTLS.setCsr(csr_pem)
+    if(csr_pem != null){
+      enrollmentRequestTLS.setKeyPair(generateGarbageKeyPair())
+    }
     enrollmentRequestTLS
+  }
+
+  private def generateGarbageKeyPair(): KeyPair ={
+    KeyPairGenerator.getInstance("RSASSA-PKCS1-v1_5").generateKeyPair()
   }
 }

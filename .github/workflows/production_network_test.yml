@@ -10,7 +10,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: '*RegistrationTests *EnrollmentTests *ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
+        default: '*UserManagementTests *InternalManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
   # on push event
   push:
     # except for these files
@@ -29,6 +29,8 @@ on:
 jobs:
 
   DeployAndTestProductionNetwork:
+    env:
+      TEST_SET: "*UserManagementTests *InternalManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
 
     runs-on: ubuntu-latest
 

@@ -2,10 +2,11 @@ package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCourses, ConnectionMatriculation }
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCourseTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.cases.{ConnectionCourses, ConnectionMatriculation}
+import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionCourseTrait, ConnectionMatriculationTrait}
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.utilities.EnrollmentManager
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.scalactic.Fail
 
 class TestBase extends TestBaseTrait {
@@ -56,17 +57,7 @@ class TestBase extends TestBaseTrait {
   }
 
   private def log(message: String): Unit = {
-    println("[TestBase] :: " + message)
-  }
-
-  def compareJson(expected: String, actual: String): Unit = {
-    val cleanExpected = expected
-      .replace("\n", "")
-      .replace(" ", "")
-    val cleanActual = actual
-      .replace("\n", "")
-      .replace(" ", "")
-    cleanActual should ===(cleanExpected)
+    Logger.debug("[TestBase] :: " + message)
   }
 
   def executeAndLog(test: () => Any) = {

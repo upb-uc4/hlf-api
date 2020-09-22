@@ -7,7 +7,7 @@ import de.upb.cs.uc4.hyperledger.utilities.CAClientManager
 import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
 import org.hyperledger.fabric_ca.sdk.HFCAClient
 
-protected[utilities] object Logger {
+protected[hyperledger] object Logger {
 
   /** Logger utility to encapsulate printing debug messages.
     * Maybe we can have some flag set to enable/disable in the future.
