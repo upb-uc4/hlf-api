@@ -2,15 +2,12 @@ package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
 
-import org.hyperledger.fabric.gateway.Gateway.Builder
-import org.hyperledger.fabric.gateway.{ Gateway, Identity, Wallet }
+import org.hyperledger.fabric.gateway.{ Gateway, Identity }
 
 protected[hyperledger] object GatewayManager {
 
   def createGateway(walletPath: Path, networkDescriptionPath: Path, username: String): Gateway =
-    this.createGateway(WalletManager.getWallet(walletPath), networkDescriptionPath, username)
-  def createGateway(wallet: Wallet, networkDescriptionPath: Path, username: String): Gateway =
-    this.createGateway(WalletManager.getIdentity(wallet, username), networkDescriptionPath)
+    this.createGateway(WalletManager.getIdentity(walletPath, username), networkDescriptionPath)
   def createGateway(identity: Identity, networkDescriptionPath: Path): Gateway = {
     Gateway.createBuilder()
       .identity(identity)

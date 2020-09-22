@@ -40,8 +40,7 @@ object RegistrationManager {
   ): String = {
 
     // retrieve Admin Identity as a User
-    val wallet = WalletManager.getWallet(adminWalletPath)
-    val adminIdentity: X509Identity = WalletManager.getX509Identity(wallet, adminName)
+    val adminIdentity: X509Identity = WalletManager.getX509Identity(adminWalletPath, adminName)
     Logger.log(s"AdminIdentity: '${adminIdentity.getCertificate.toString}'")
     val admin: User = RegistrationManager.getUserFromX509Identity(adminIdentity, affiliation)
     Logger.log(s"AdminUser: '${admin.toString}'")
@@ -57,7 +56,7 @@ object RegistrationManager {
       caClient.register(registrationRequest, admin)
     }
     catch {
-      case e: Exception => throw new Exception(s"Registration for the user '${userName}' went wrong.", e)
+      case e: Exception => throw new Exception(s"Registration for the user '$userName' went wrong.", e)
     }
   }
 
