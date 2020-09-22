@@ -3,11 +3,12 @@
 
 ## Feature
 
-- 
+- Make userType and maxEnrollmentCount variable
+- document publicly available methods
 
 ## Bug Fixes
 
--
+- hide services that are not meant to be accessible to the outside
 
 ## Refactor
 
@@ -15,7 +16,7 @@
 
 ## Usability
 
-- 
+- provide/use a logger for framework debugging
 
 # [v0.8.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.0...v0.8.1) (2020-08-17)
 
