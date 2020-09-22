@@ -35,7 +35,7 @@ class UserManagementTests extends TestBase {
         Logger.info("Finished enrolling new user")
 
         WalletManager.containsIdentity(walletPath, testUserName) should be
-        
+
         val connection = super.initializeCourses(testUserName)
         intercept(TestHelper.testChaincodeCourseAccess("102", connection))
       }

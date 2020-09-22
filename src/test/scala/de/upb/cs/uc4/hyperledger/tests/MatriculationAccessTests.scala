@@ -29,7 +29,7 @@ class MatriculationAccessTests extends TestBase {
       }
       "read the correct data " in {
         val result = chaincodeConnection.getMatriculationData("200")
-        compareJson(TestDataMatriculation.validMatriculationData1("200"), result)
+        TestHelper.compareJson(TestDataMatriculation.validMatriculationData1("200"), result)
       }
       "allow for adding new Entries to existing data " in {
         executeAndLog(() => {
@@ -41,7 +41,7 @@ class MatriculationAccessTests extends TestBase {
         val result = chaincodeConnection.updateMatriculationData(TestDataMatriculation.validMatriculationData1("200"))
         result should ===("")
         val readData = chaincodeConnection.getMatriculationData("200")
-        compareJson(TestDataMatriculation.validMatriculationData1("200"), readData)
+        TestHelper.compareJson(TestDataMatriculation.validMatriculationData1("200"), readData)
       }
     }
   }
