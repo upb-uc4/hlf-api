@@ -1,13 +1,10 @@
 package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
-import java.security.spec.ECGenParameterSpec
-import java.security.{ KeyPair, KeyPairGenerator, KeyPairGeneratorSpi, PublicKey, SecureRandom }
+import java.security.{KeyPair, KeyPairGenerator}
 
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.Identities
-import org.hyperledger.fabric.sdk.exception.CryptoException
-import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
 import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
 
 object EnrollmentManager {
