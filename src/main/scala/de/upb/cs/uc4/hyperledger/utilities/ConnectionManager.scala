@@ -30,7 +30,7 @@ protected[hyperledger] object ConnectionManager {
       walletPath: Path,
       networkDescriptionPath: Path
   ): (Contract, Gateway) = {
-    Logger.log(s"Try to get connection with: '$networkDescriptionPath' and: '$walletPath'")
+    Logger.info(s"Try to get connection with: '$networkDescriptionPath' and: '$walletPath'")
     // get gateway
     val gateway: Gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
 
@@ -42,7 +42,7 @@ protected[hyperledger] object ConnectionManager {
     catch {
       case e: GatewayRuntimeException => {
         GatewayManager.disposeGateway(gateway)
-        throw e
+        Logger.err(s"Could not retrieve contract $contractName from chaincode $chaincode in channel $channel.", e)
       }
     }
 

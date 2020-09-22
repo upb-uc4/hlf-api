@@ -29,22 +29,22 @@ object EnrollmentManager {
   ): Unit = {
     // check if user already exists in my wallet
     if (WalletManager.containsIdentity(walletPath, username)) {
-      Logger.log(s"An identity for the user $username already exists in the wallet.")
+      Logger.warn(s"An identity for the user $username already exists in the wallet.")
     }
     else {
-      Logger.log(s"Try to get the identity for the user $username.")
+      Logger.info(s"Try to get the identity for the user $username.")
 
       val caClient = CAClientManager.getCAClient(caURL, caCert)
 
       val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest("localhost", "tls")
       val enrollment = caClient.enroll(username, password, enrollmentRequestTLS)
-      Logger.log("Successfully performed and retrieved enrollment")
+      Logger.info("Successfully performed and retrieved enrollment")
 
       // store in wallet
       val identity = Identities.newX509Identity(organisationId, enrollment)
-      Logger.log("Created identity from enrollment")
+      Logger.info("Created identity from enrollment")
       WalletManager.putIdentity(walletPath, username, identity)
-      Logger.log("Successfully enrolled user $username and inserted it into the wallet.")
+      Logger.info("Successfully enrolled user $username and inserted it into the wallet.")
     }
   }
 

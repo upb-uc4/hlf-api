@@ -2,7 +2,8 @@ package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
 
-import org.hyperledger.fabric.gateway.{ Identity, Wallet, Wallets, X509Identity }
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import org.hyperledger.fabric.gateway.{Identity, Wallet, Wallets, X509Identity}
 
 protected[hyperledger] object WalletManager {
   // get Wallet
@@ -15,7 +16,7 @@ protected[hyperledger] object WalletManager {
   def getIdentity(walletPath: Path, id: String): Identity = WalletManager.getIdentity(getWallet(walletPath), id)
   def getIdentity(wallet: Wallet, id: String): Identity = {
     if (!WalletManager.containsIdentity(wallet, id)) {
-      throw new Exception(s"'${id}' credentials not found in wallet: '${wallet.toString}'.")
+      Logger.err(s"'${id}' credentials not found in wallet: '${wallet.toString}'.")
     }
     wallet.get(id)
   }
@@ -24,7 +25,7 @@ protected[hyperledger] object WalletManager {
   def putIdentity(walletPath: Path, id: String, identity: Identity): Unit = putIdentity(getWallet(walletPath), id, identity)
   def putIdentity(wallet: Wallet, id: String, identity: Identity): Unit = {
     if (WalletManager.containsIdentity(wallet, id)) {
-      throw new Exception(s"'${id}' credentials already present in wallet: '${wallet.toString}'. Cannot put two copies.")
+      Logger.err(s"'${id}' credentials already present in wallet: '${wallet.toString}'. Cannot put two copies.")
     }
     wallet.put(id, identity)
   }

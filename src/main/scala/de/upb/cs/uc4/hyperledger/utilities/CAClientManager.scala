@@ -24,7 +24,7 @@ protected object CAClientManager {
     caClient.setCryptoSuite(cryptoSuite)
 
     // return
-    Logger.log("Created CAClient-Object")
+    Logger.info("Created CAClient-Object")
     caClient
   }
 
