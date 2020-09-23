@@ -8,4 +8,6 @@ trait HyperledgerExceptionTrait extends Exception {
 
   /**  Inner Exception thrown from the Hyperledger Framework */
   def innerException: Exception
+
+  override def getMessage: String = toString
 }
