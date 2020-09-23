@@ -22,11 +22,11 @@ class MatriculationErrorTests extends TestBase {
 
   "The ScalaAPI for Matriculation" when {
     "invoking getMatriculationData" should {
-      "throw TransactionException for not existing matriculationId " in {
+      "throw TransactionException for not existing enrollmentId " in {
         val result = intercept[TransactionException](() -> chaincodeConnection.getMatriculationData("110"))
         result.transactionId should ===("getMatriculationData")
       }
-      "throw TransactionException for empty matriculationId-String " in {
+      "throw TransactionException for empty enrollmentId-String " in {
         val result = intercept[TransactionException](() -> chaincodeConnection.getMatriculationData(""))
         result.transactionId should ===("getMatriculationData")
       }
@@ -48,32 +48,12 @@ class MatriculationErrorTests extends TestBase {
         result.transactionId should ===("addMatriculationData")
       }
 
-      "throw TransactionException for malformed json Input (missing MatId) " in {
+      "throw TransactionException for malformed json Input (missing enrollmentId) " in {
         val result = intercept[TransactionException](() -> chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoMatriculationId("123")))
         result.transactionId should ===("addMatriculationData")
       }
 
-      "throw TransactionException for malformed json Input (missing FirstName) " in {
-        val result = intercept[TransactionException](() -> chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoFirstName("124")))
-        result.transactionId should ===("addMatriculationData")
-      }
-
-      "throw TransactionException for malformed json Input (missing LastName) " in {
-        val result = intercept[TransactionException](() -> chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoLastName("125")))
-        result.transactionId should ===("addMatriculationData")
-      }
-
-      "throw TransactionException for malformed json Input (missing Birthdate) " in {
-        val result = intercept[TransactionException](() -> chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoBirthdate("126")))
-        result.transactionId should ===("addMatriculationData")
-      }
-
-      "throw TransactionException for malformed json Input (invalid Birthdate) " in {
-        val result = intercept[TransactionException](() -> chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonInvalidBirthdate("130")))
-        result.transactionId should ===("addMatriculationData")
-      }
-
-      "throw TransactionException for malformed json Input (invalid id) " in {
+      "throw TransactionException for malformed json Input (invalid enrollmentId) " in {
         val result = intercept[TransactionException](() -> chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonInvalidId))
         result.transactionId should ===("addMatriculationData")
       }
@@ -100,7 +80,7 @@ class MatriculationErrorTests extends TestBase {
     }
 
     "invoking addEntriesToMatriculationData" should {
-      "throw TransactionException for not existing matriculationId " in {
+      "throw TransactionException for not existing enrollmentId " in {
         val id = "140"
         val fieldOfStudy = "ComputerScience"
         val semester = "SS2020"
@@ -110,7 +90,7 @@ class MatriculationErrorTests extends TestBase {
         ))
         result.transactionId should ===("addEntriesToMatriculationData")
       }
-      "throw TransactionException for empty matriculationId " in {
+      "throw TransactionException for empty enrollmentId " in {
         val id = ""
         val fieldOfStudy = "ComputerScience"
         val semester = "SS2020"
