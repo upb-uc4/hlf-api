@@ -72,14 +72,4 @@ class TestBase extends TestBaseTrait {
       .replace("\n", "")
       .replace(" ", "")
   }
-
-  def executeAndLog(test: () => Any) = {
-    try {
-      test.apply()
-    }
-    catch {
-      case ex: TransactionException => throw new Exception("Exception Occured: " + ex.toString, ex)
-      case e: Throwable             => throw e
-    }
-  }
 }
