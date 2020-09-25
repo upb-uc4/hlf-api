@@ -35,7 +35,7 @@ jobs:
   DeployAndTestDevNetwork:
     env:
       TEST_SET: "*ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
-      CHAINCODE_TARGET: "feature/pseudonymization"
+      CHAINCODE_TARGET: "develop"
 
     runs-on: ubuntu-latest
 
