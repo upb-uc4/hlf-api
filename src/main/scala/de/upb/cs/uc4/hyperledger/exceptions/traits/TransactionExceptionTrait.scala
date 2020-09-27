@@ -10,4 +10,6 @@ trait TransactionExceptionTrait extends Exception {
 
   /**  Json-String containing the error-information defined in the API at https://github.com/upb-uc4/api */
   val payload: String
+
+  override def getMessage: String = toString
 }

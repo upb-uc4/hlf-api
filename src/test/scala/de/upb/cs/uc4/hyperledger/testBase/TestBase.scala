@@ -8,6 +8,8 @@ import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.utilities.EnrollmentManager
 import org.scalactic.Fail
 
+import scala.reflect.internal.util.NoFile.input
+
 class TestBase extends TestBaseTrait {
   private val testBase: TestBaseTrait = tryRetrieveEnvVar("Target") match {
     case "ProductionNetwork" => new TestBaseProductionNetwork
@@ -60,21 +62,14 @@ class TestBase extends TestBaseTrait {
   }
 
   def compareJson(expected: String, actual: String): Unit = {
-    val cleanExpected = expected
-      .replace("\n", "")
-      .replace(" ", "")
-    val cleanActual = actual
-      .replace("\n", "")
-      .replace(" ", "")
+    val cleanExpected = cleanJson(expected)
+    val cleanActual = cleanJson(actual)
     cleanActual should ===(cleanExpected)
   }
 
-  def executeAndLog(test: () => Any) = {
-    try {
-      test.apply()
-    }
-    catch {
-      case ex: TransactionException => Fail("Exception Occured: " + ex.toString)
-    }
+  def cleanJson(input: String): String = {
+    input
+      .replace("\n", "")
+      .replace(" ", "")
   }
 }
