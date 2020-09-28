@@ -32,7 +32,8 @@ on:
 
 jobs:
 
-  DeployAndTestProductionNetwork:env:
+  DeployAndTestProductionNetwork:
+    env:
       TEST_SET: "*UserManagementTests *InternalManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
       CHAINCODE_TARGET: "develop"
 
