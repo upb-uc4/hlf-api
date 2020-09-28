@@ -16,14 +16,14 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
 
   /** Submits the "addEntryToMatriculationData" query.
     *
-    * @param matriculationId matriculationId to add entry to
+    * @param enrollmentId enrollment.id to add entry to
     * @param subjectMatriculationList a Json object containing the List of subjectMatriculationInfo - objects
     * @throws Exception if chaincode throws an exception.
     * @return success_state
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def addEntriesToMatriculationData(matriculationId: String, subjectMatriculationList: String): String
+  def addEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String): String
 
   /** Submits the "updateMatriculationData" query.
     *
@@ -37,11 +37,11 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
 
   /** Executes the "getMatriculationData" query.
     *
-    * @param matId matriculationId to get information
+    * @param enrollmentId enrollment.id to get information
     * @throws Exception if chaincode throws an exception.
     * @return JSon Course Object
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getMatriculationData(matId: String): String
+  def getMatriculationData(enrollmentId: String): String
 }

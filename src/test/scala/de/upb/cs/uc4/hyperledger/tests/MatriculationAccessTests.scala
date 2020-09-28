@@ -21,27 +21,28 @@ class MatriculationAccessTests extends TestBase {
   "The ScalaAPI for Matriculation" when {
     "invoked with correct transactions " should {
       "allow for adding new MatriculationData / Students " in {
-        val result = chaincodeConnection.addMatriculationData(TestDataMatriculation.validMatriculationData1("200"))
-        result should ===("")
+        val newData = TestDataMatriculation.validMatriculationData1("200")
+        TestHelper.compareJson(newData, chaincodeConnection.addMatriculationData(newData))
       }
       "allow for reading MatriculationData / Students " in {
-        executeAndLog(() => { chaincodeConnection.getMatriculationData("200") })
+        chaincodeConnection.getMatriculationData("200")
       }
       "read the correct data " in {
-        val result = chaincodeConnection.getMatriculationData("200")
-        TestHelper.compareJson(TestDataMatriculation.validMatriculationData1("200"), result)
+        val newData = TestDataMatriculation.validMatriculationData1("200")
+        TestHelper.compareJson(newData, chaincodeConnection.getMatriculationData("200"))
       }
       "allow for adding new Entries to existing data " in {
-        executeAndLog(() => {
-          val result = chaincodeConnection.addEntriesToMatriculationData("200", TestDataMatriculation.getSubjectMatriculationList("ComputerScience", "SS2021"))
-          result should ===("")
-        })
+        val result = chaincodeConnection.addEntriesToMatriculationData(
+          "200",
+          TestDataMatriculation.getSubjectMatriculationList("Computer Science", "SS2021")
+        )
+        val expectedResult = chaincodeConnection.getMatriculationData("200")
+        TestHelper.compareJson(expectedResult, result)
       }
       "allow for updating existing Data (and thus removing entries) " in {
-        val result = chaincodeConnection.updateMatriculationData(TestDataMatriculation.validMatriculationData1("200"))
-        result should ===("")
-        val readData = chaincodeConnection.getMatriculationData("200")
-        TestHelper.compareJson(TestDataMatriculation.validMatriculationData1("200"), readData)
+        val newData = TestDataMatriculation.validMatriculationData2("200")
+        TestHelper.compareJson(newData, chaincodeConnection.updateMatriculationData(newData))
+        TestHelper.compareJson(newData, chaincodeConnection.getMatriculationData("200"))
       }
     }
   }

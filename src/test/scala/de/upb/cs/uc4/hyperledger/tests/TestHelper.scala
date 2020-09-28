@@ -15,12 +15,14 @@ object TestHelper {
   }
 
   def compareJson(expected: String, actual: String): Unit = {
-    val cleanExpected = expected
-      .replace("\n", "")
-      .replace(" ", "")
-    val cleanActual = actual
-      .replace("\n", "")
-      .replace(" ", "")
+    val cleanExpected = cleanJson(expected)
+    val cleanActual = cleanJson(actual)
     cleanActual should be(cleanExpected)
+  }
+
+  def cleanJson(input: String): String = {
+    input
+      .replace("\n", "")
+      .replace(" ", "")
   }
 }

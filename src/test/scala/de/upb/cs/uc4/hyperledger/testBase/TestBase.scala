@@ -2,12 +2,14 @@ package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCourses, ConnectionMatriculation }
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCourseTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.cases.{ConnectionCourses, ConnectionMatriculation}
+import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionCourseTrait, ConnectionMatriculationTrait}
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.utilities.EnrollmentManager
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.scalactic.Fail
+
+import scala.reflect.internal.util.NoFile.input
 
 class TestBase extends TestBaseTrait {
   private val testBase: TestBaseTrait = tryRetrieveEnvVar("Target") match {
@@ -25,9 +27,9 @@ class TestBase extends TestBaseTrait {
   override val chaincode: String = testBase.chaincode
 
   override def beforeAll(): Unit = {
-    log("Begin test with testBase Name = " + testBase.getClass.getName)
+    debug("Begin test with testBase Name = " + testBase.getClass.getName)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
-      log("Begin enrollment with: "
+      debug("Begin enrollment with: "
         + " " + caURL
         + " " + tlsCert
         + " " + walletPath
@@ -35,7 +37,7 @@ class TestBase extends TestBaseTrait {
         + " " + password
         + " " + organisationId)
       EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId)
-      log("Finished Enrollment")
+      debug("Finished Enrollment")
     }
   }
 
@@ -46,26 +48,17 @@ class TestBase extends TestBaseTrait {
     sys.env.contains(varName) match {
       case true => {
         val value = sys.env(varName)
-        log("####### Retrieved variable: " + varName + " with value: " + value)
+        debug("####### Retrieved variable: " + varName + " with value: " + value)
         value
       }
       case false => {
-        log("####### Returned default fallback")
+        debug("####### Returned default fallback")
         fallBack
       }
     }
   }
 
-  private def log(message: String): Unit = {
+  private def debug(message: String): Unit = {
     Logger.debug("[TestBase] :: " + message)
-  }
-
-  def executeAndLog(test: () => Any) = {
-    try {
-      test.apply()
-    }
-    catch {
-      case ex: TransactionException => Fail("Exception Occured: " + ex.toString)
-    }
   }
 }
