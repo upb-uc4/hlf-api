@@ -6,6 +6,10 @@ inputs:
     description: 'path to the network where we can find the startNetwork.sh and installChaincode.sh scripts.'
     required: true
     default: 'hlf-network'
+  chaincode_branch:
+    description: 'branch of the chaincode repo you want to checkout.'
+    required: true
+    default: 'develop'
 
 runs:
     using: "composite"
@@ -29,7 +33,7 @@ runs:
     - name: Install Chaincode
       run: |
         pushd ${{ inputs.network_folder }}
-        ./installChaincode.sh
+        ./installChaincode.sh ${{ inputs.chaincode_branch }}
         popd
       shell: 
         bash
