@@ -1,5 +1,5 @@
 
-# [v0.8.3 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.2...develop) (2020-08-17)
+# [v0.8.4 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...develop) (2020-08-17)
 
 ## Feature
 
@@ -17,6 +17,20 @@
 
 - 
 
+# [v0.8.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.2...v0.8.3) (2020-09-28)
+
+## Feature
+
+- support new chaincode API (non-transient, enrollmentId instead of matriculationID)
+- update Exception messaging for easier handling
+
+## Usability
+
+- remove firstname/lastname/birthdate from testData
+- remove firstname/lastname/birthdate - error tests
+
+
+switch transient / non-transient
 
 # [v0.8.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...v0.8.2) (2020-08-17)
 
