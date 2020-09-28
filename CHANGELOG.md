@@ -15,7 +15,7 @@
 
 ## Usability
 
-- 
+- make production pipeline configurable regarding the chaincode-target
 
 # [v0.8.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.2...v0.8.3) (2020-09-28)
 
