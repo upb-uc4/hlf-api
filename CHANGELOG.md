@@ -3,7 +3,7 @@
 
 ## Feature
 
-- Support Enrollment with CSR creating an invalid Identity in the given wallet.
+- Support Enrollment with CSR creating an invalid Identity in the given wallet but containing the correct Signed Certificate created from the CSR.
 
 ## Bug Fixes
 
