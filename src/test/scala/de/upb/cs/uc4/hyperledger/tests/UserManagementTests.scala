@@ -40,7 +40,7 @@ class UserManagementTests extends TestBase {
         val signedCert: String = EnrollmentManager.enrollSecure(caURL, tlsCert, testUserName, testUserPw, content)
         Logger.info("Finished enrolling new user")
 
-        signedCert should not be(null)
+        signedCert should not be (null)
       }
     }
   }

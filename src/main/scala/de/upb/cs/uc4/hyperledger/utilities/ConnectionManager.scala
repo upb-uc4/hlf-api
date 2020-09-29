@@ -11,7 +11,7 @@ import org.hyperledger.fabric.gateway._
 protected[hyperledger] object ConnectionManager {
 
   /** Retrieves a gateway to communicate with the hyperledger network
-    *  Retrieves a Contract to invoke transactions on.
+    * Retrieves a Contract to invoke transactions on.
     * @param username name of the certificate to use when communicating
     * @param channel name of the channel / network
     * @param chaincode name of the chaincode to access
