@@ -4,6 +4,7 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class MatriculationErrorTests extends TestBase {
 
@@ -11,8 +12,12 @@ class MatriculationErrorTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    chaincodeConnection = initializeMatriculation()
-    chaincodeConnection.addMatriculationData(TestDataMatriculation.validMatriculationData1("001"))
+    try {
+      chaincodeConnection = initializeMatriculation()
+      chaincodeConnection.addMatriculationData(TestDataMatriculation.validMatriculationData1("001"))
+    } catch {
+      case e: Exception => Logger.err("[CertificateErrorTest] :: ", e)
+    }
   }
 
   override def afterAll(): Unit = {

@@ -9,11 +9,12 @@ case class ConnectionCertificate(username: String, channel: String, chaincode: S
   final override val contractName: String = "UC4.Certificate"
   override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
 
-  override def addCertificate(enrollmentID: String, certificate: String): String =
+  override def addCertificate(enrollmentID: String, certificate: String): String = {
     wrapTransactionResult(
       "addCertificate",
       this.internalSubmitTransaction(false, "addCertificate", enrollmentID, certificate)
     )
+  }
 
   override def updateCertificate(enrollmentID: String, certificate: String): String =
     wrapTransactionResult(
