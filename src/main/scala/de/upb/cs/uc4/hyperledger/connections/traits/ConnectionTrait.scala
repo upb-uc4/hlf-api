@@ -44,6 +44,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   protected final def internalEvaluateTransaction(transactionId: String, params: String*): Array[Byte] = {
+    testParamsNull(transactionId, params: _*)
     try {
       contract.evaluateTransaction(transactionId, params: _*)
     }
