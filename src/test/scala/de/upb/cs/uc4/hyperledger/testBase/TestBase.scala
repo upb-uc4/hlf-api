@@ -52,7 +52,7 @@ class TestBase extends TestBaseTrait {
   override def beforeAll(): Unit = {
     debug("Begin test with testBase Name = " + testBase.getClass.getName)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
-      while (WalletManager.containsIdentity(walletPath, username)) {
+      while (!WalletManager.containsIdentity(walletPath, username)) {
         tryEnrollment(
           caURL,
           tlsCert,
