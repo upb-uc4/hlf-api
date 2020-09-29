@@ -37,14 +37,10 @@ class UserManagementTests extends TestBase {
         }
         Logger.debug(s"content: $content")
 
-        EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId, content)
+        val signedCert: String = EnrollmentManager.enrollSecure(caURL, tlsCert, testUserName, testUserPw, content)
         Logger.info("Finished enrolling new user")
 
-        WalletManager.containsIdentity(walletPath, testUserName) should be(true)
-
-        Logger.debug("Newly enrolled Identity: " + WalletManager.getIdentity(walletPath, testUserName).toString)
-
-        intercept[Exception](super.initializeCourses(testUserName))
+        signedCert should not be(null)
       }
     }
   }
