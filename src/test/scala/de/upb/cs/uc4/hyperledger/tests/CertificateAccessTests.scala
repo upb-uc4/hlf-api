@@ -1,12 +1,11 @@
 package de.upb.cs.uc4.hyperledger.tests
 
-import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCertificate
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
 
 class CertificateAccessTests extends TestBase {
 
-  var chaincodeConnection: ConnectionCertificate = _
+  var chaincodeConnection: ConnectionCertificateTrait = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()
