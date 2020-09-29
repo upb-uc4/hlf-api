@@ -15,7 +15,8 @@ class MatriculationErrorTests extends TestBase {
     try {
       chaincodeConnection = initializeMatriculation()
       chaincodeConnection.addMatriculationData(TestDataMatriculation.validMatriculationData1("001"))
-    } catch {
+    }
+    catch {
       case e: Exception => Logger.err("[CertificateErrorTest] :: ", e)
     }
   }

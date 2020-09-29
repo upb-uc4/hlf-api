@@ -94,6 +94,6 @@ trait ConnectionTrait extends AutoCloseable {
     */
   @throws[TransactionException]
   private def testParamsNull(transactionId: String, params: String*) = {
-    params.foreach(param => if(param == null) throw TransactionException.CreateUnknownException(transactionId, "A parameter was null."))
+    params.foreach(param => if (param == null) throw TransactionException.CreateUnknownException(transactionId, "A parameter was null."))
   }
 }

@@ -13,10 +13,11 @@ class CertificateErrorTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    try{
+    try {
       chaincodeConnection = initializeCertificate()
       chaincodeConnection.addCertificate(TestEnrollmentID, TestCertificate)
-    } catch {
+    }
+    catch {
       case e: Exception => Logger.err("[CertificateErrorTest] :: ", e)
     }
   }
