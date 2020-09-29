@@ -12,7 +12,7 @@ class UserManagementTests extends TestBase {
   "The enrollmentManager" when {
     "enrolling a User without csr" should {
       "allow for the new User to access the chain [101]" in {
-        EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId)
+        EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
         val connection = super.initializeCourses(username)
         TestHelper.testChaincodeCourseAccess("101", connection)
@@ -37,7 +37,7 @@ class UserManagementTests extends TestBase {
         }
         Logger.debug(s"content: $content")
 
-        val signedCert: String = EnrollmentManager.enrollSecure(caURL, tlsCert, testUserName, testUserPw, content)
+        val signedCert: String = EnrollmentManager.enrollSecure(caURL, tlsCert, testUserName, testUserPw, content, adminName = username, adminWalletPath = walletPath, channel, chaincode, networkDescriptionPath)
         Logger.info("Finished enrolling new user")
 
         signedCert should not be (null)
@@ -49,7 +49,7 @@ class UserManagementTests extends TestBase {
     "performing a registration [103]" should {
       "not throw exceptions" in {
         Logger.info("Enroll as admin and store cert to wallet")
-        EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId)
+        EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
         Logger.info("Register TestUser")
         val testUserName = "Tester102"

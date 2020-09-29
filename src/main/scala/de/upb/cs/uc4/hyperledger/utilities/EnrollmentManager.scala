@@ -1,8 +1,9 @@
 package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
-import java.security.{ KeyPair, KeyPairGenerator }
+import java.security.{KeyPair, KeyPairGenerator}
 
+import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCertificate
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.Identities
 import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
@@ -25,7 +26,12 @@ object EnrollmentManager {
       caCert: Path,
       enrollmentID: String,
       enrollmentSecret: String,
-      csr_pem: String = null
+      csr_pem: String = null,
+      adminName: String,
+      adminWalletPath: Path,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
   ): String = {
     Logger.info(s"Try to sign the certificate for the user $enrollmentID.")
     val caClient = CAClientManager.getCAClient(caURL, caCert)
@@ -38,6 +44,10 @@ object EnrollmentManager {
     Logger.info("Retrieved SignedCertificate.")
 
     // store cert on new chaincode
+    val certificateConnection = new ConnectionCertificate(adminName, channel, chaincode, adminWalletPath, networkDescriptionPath)
+    certificateConnection.addCertificate(enrollmentID, cert)
+    Logger.info("Successfully stored cert on new chaincode")
+
     cert
   }
 
@@ -59,7 +69,10 @@ object EnrollmentManager {
       walletPath: Path,
       enrollmentID: String,
       enrollmentSecret: String,
-      organisationId: String
+      organisationId: String,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
   ): Unit = {
     // check if user already exists in my wallet
     if (WalletManager.containsIdentity(walletPath, enrollmentID)) {
@@ -79,6 +92,10 @@ object EnrollmentManager {
       Logger.info("Created identity from enrollment.")
       WalletManager.putIdentity(walletPath, enrollmentID, identity)
       Logger.info(s"Successfully enrolled user $enrollmentID and inserted it into the wallet.")
+
+      val certificateConnection = new ConnectionCertificate(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath)
+      certificateConnection.addCertificate(enrollmentID, enrollment.getCert)
+      Logger.info("Successfully stored cert on new chaincode")
     }
   }
 
