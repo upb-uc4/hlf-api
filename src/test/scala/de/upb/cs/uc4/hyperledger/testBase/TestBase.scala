@@ -4,12 +4,8 @@ import java.nio.file.Path
 
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionCourses, ConnectionMatriculation }
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionCourseTrait, ConnectionMatriculationTrait }
-import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import org.scalactic.Fail
-
-import scala.reflect.internal.util.NoFile.input
 
 class TestBase extends TestBaseTrait {
   private val testBase: TestBaseTrait = tryRetrieveEnvVar("Target") match {
