@@ -1,13 +1,33 @@
-
-# [v0.8.4 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...develop) (2020-08-17)
+# [v0.9.1 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...develop) (2020-10-02)
 
 ## Feature
 
-- Support Enrollment with CSR creating an invalid Identity in the given wallet but containing the correct Signed Certificate created from the CSR.
+- Support CertificateChaincode
+  - addCertificate
+  - getCertificate
+  - updateCertificate
+- Extend Enrollment to add the new Certificate to the Certificate Chaincode
 
 ## Bug Fixes
 
-- 
+- Improve resillience of parallel tests against negative influence from other tests
+
+## Refactor
+
+- Test cleanup
+
+## Usability
+
+- CertificateAccessTests
+- CertificateErrorTests
+- Update UserManagement Tests
+- Provide SequentialTestSuite
+
+# [v0.9.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...v0.9.0) (2020-09-29)
+
+## Feature
+
+- Support Enrollment with CSR creating returning the correct SignedCertificate created from the CSR.
 
 ## Refactor
 
