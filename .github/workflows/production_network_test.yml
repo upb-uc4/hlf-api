@@ -35,7 +35,7 @@ jobs:
   DeployAndTestProductionNetwork:
     env:
       TEST_SET: "*UserManagementTests *InternalManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
-      CHAINCODE_TARGET: "develop"
+      CHAINCODE_TARGET: "feature/certificate"
 
     runs-on: ubuntu-latest
 
