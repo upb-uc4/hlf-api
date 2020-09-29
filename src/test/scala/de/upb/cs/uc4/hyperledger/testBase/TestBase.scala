@@ -49,7 +49,7 @@ class TestBase extends TestBaseTrait {
       EnrollmentManager.enroll(caURL, caCert, walletPath, enrollmentID, enrollmentSecret, organisationId, channel, chaincode, networkDescriptionPath)
     }
     catch {
-      case e: Exception => Logger.warn("Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage, e)
+      case e: Exception => Logger.warn("Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage)
     }
   }
 
