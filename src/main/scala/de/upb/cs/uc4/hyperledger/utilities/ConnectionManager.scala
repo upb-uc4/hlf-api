@@ -11,7 +11,7 @@ import org.hyperledger.fabric.gateway._
 protected[hyperledger] object ConnectionManager {
 
   /** Retrieves a gateway to communicate with the hyperledger network
-    *  Retrieves a Contract to invoke transactions on.
+    * Retrieves a Contract to invoke transactions on.
     * @param username name of the certificate to use when communicating
     * @param channel name of the channel / network
     * @param chaincode name of the chaincode to access
@@ -30,7 +30,7 @@ protected[hyperledger] object ConnectionManager {
       walletPath: Path,
       networkDescriptionPath: Path
   ): (Contract, Gateway) = {
-    Logger.log(s"Try to get connection with: '$networkDescriptionPath' and: '$walletPath'")
+    Logger.info(s"Try to get connection with: '$networkDescriptionPath' and: '$walletPath'")
     // get gateway
     val gateway: Gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
 
@@ -42,7 +42,7 @@ protected[hyperledger] object ConnectionManager {
     catch {
       case e: GatewayRuntimeException => {
         GatewayManager.disposeGateway(gateway)
-        throw e
+        throw Logger.err(s"Could not retrieve contract $contractName from chaincode $chaincode in channel $channel.", e)
       }
     }
 

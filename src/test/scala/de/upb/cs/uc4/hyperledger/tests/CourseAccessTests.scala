@@ -4,6 +4,7 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCourseTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataCourses
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class CourseAccessTests extends TestBase {
 
@@ -32,26 +33,26 @@ class CourseAccessTests extends TestBase {
         // initial courses
         val getAllCourses = chaincodeConnection.getAllCourses
         getAllCourses should not be null
-        println("Courses: " + getAllCourses)
+        Logger.info("Courses: " + getAllCourses)
 
         // add new course
         val testCourseId = "41"
         val addCourseResult = chaincodeConnection.addCourse(TestDataCourses.exampleCourseData(testCourseId))
         addCourseResult should not be null
         addCourseResult should equal("")
-        println("AddNew Result: " + addCourseResult)
+        Logger.info("AddNew Result: " + addCourseResult)
 
         // Check AddNew worked as expected READ COURSE
         val readCourseResult = chaincodeConnection.getCourseById(testCourseId)
         readCourseResult should not be null
-        println("newCourse read: " + readCourseResult)
-        println("example data: " + TestDataCourses.exampleCourseData(testCourseId))
+        Logger.info("newCourse read: " + readCourseResult)
+        Logger.info("example data: " + TestDataCourses.exampleCourseData(testCourseId))
         readCourseResult should equal(TestDataCourses.exampleCourseData(testCourseId))
 
         // delete new course
         val deleteCourseResult = chaincodeConnection.deleteCourseById(testCourseId)
         deleteCourseResult should not equal null
-        println("deleteCourseResult: " + deleteCourseResult)
+        Logger.info("deleteCourseResult: " + deleteCourseResult)
 
         // access deleted course shall throw an exception
         intercept[TransactionException](() -> chaincodeConnection.getCourseById(testCourseId))
