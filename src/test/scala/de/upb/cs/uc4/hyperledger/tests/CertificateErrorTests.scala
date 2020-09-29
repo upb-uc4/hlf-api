@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class CertificateErrorTests extends TestBase {
 
@@ -12,8 +13,12 @@ class CertificateErrorTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    chaincodeConnection = initializeCertificate()
-    chaincodeConnection.addCertificate(TestEnrollmentID, TestCertificate)
+    try{
+      chaincodeConnection = initializeCertificate()
+      chaincodeConnection.addCertificate(TestEnrollmentID, TestCertificate)
+    } catch {
+      case e: Exception => Logger.err("[CertificateErrorTest] :: ", e)
+    }
   }
 
   override def afterAll(): Unit = {
