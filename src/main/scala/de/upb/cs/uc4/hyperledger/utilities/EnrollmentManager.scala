@@ -43,8 +43,8 @@ object EnrollmentManager {
     val cert = enrollment.getCert
     Logger.info("Retrieved SignedCertificate.")
 
-    // store cert on new chaincode
-    val certificateConnection = new ConnectionCertificate(adminName, channel, chaincode, adminWalletPath, networkDescriptionPath)
+    // store cert on chaincode
+    val certificateConnection = ConnectionCertificate(adminName, channel, chaincode, adminWalletPath, networkDescriptionPath)
     certificateConnection.addCertificate(enrollmentID, cert)
     Logger.info("Successfully stored cert on new chaincode")
 
@@ -93,7 +93,8 @@ object EnrollmentManager {
       WalletManager.putIdentity(walletPath, enrollmentID, identity)
       Logger.info(s"Successfully enrolled user $enrollmentID and inserted it into the wallet.")
 
-      val certificateConnection = new ConnectionCertificate(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath)
+      // store cert on chaincode
+      val certificateConnection = ConnectionCertificate(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath)
       certificateConnection.addCertificate(enrollmentID, enrollment.getCert)
       Logger.info("Successfully stored cert on new chaincode")
     }
