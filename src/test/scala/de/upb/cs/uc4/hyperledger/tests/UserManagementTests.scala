@@ -56,7 +56,7 @@ class UserManagementTests extends TestBase {
         val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.info("Enroll TestUser")
-        EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId)
+        EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
 
         Logger.info("Access Chain as TestUser")
         val connection = super.initializeCourses(testUserName)

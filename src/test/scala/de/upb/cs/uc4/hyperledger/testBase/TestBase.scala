@@ -36,7 +36,7 @@ class TestBase extends TestBaseTrait {
         + " " + username
         + " " + password
         + " " + organisationId)
-      EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId)
+      EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
       debug("Finished Enrollment")
     }
   }
