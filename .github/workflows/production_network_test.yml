@@ -14,7 +14,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: '*ProductionNetworkTestSuite'
+        default: '*UserManagementTests *InternalManagerTests *CertificateAccessTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
   # on push event
   push:
     # except for these files
@@ -34,7 +34,7 @@ jobs:
 
   DeployAndTestProductionNetwork:
     env:
-      TEST_SET: "*ProductionNetworkTestSuite"
+      TEST_SET: "*UserManagementTests *InternalManagerTests *CertificateAccessTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
       CHAINCODE_TARGET: "feature/certificate"
 
     runs-on: ubuntu-latest

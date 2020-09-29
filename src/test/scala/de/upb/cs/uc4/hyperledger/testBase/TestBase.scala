@@ -29,14 +29,18 @@ class TestBase extends TestBaseTrait {
   override def beforeAll(): Unit = {
     debug("Begin test with testBase Name = " + testBase.getClass.getName)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
-      debug("Begin enrollment with: "
+      debug("Try beforeAll enrollment with: "
         + " " + caURL
         + " " + tlsCert
         + " " + walletPath
         + " " + username
         + " " + password
         + " " + organisationId)
-      EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
+      try {
+        EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
+      } catch {
+        case e: Exception => throw Logger.err("Enrollment faield: " + e.getMessage, e)
+      }
       debug("Finished Enrollment")
     }
   }
