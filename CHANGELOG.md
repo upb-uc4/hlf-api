@@ -1,5 +1,4 @@
-
-# [v0.8.4 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...develop) (2020-08-17)
+# [v0.9.1 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...develop) (2020-10-02)
 
 ## Feature
 
@@ -8,6 +7,20 @@
 ## Bug Fixes
 
 - 
+
+## Refactor
+
+- Test cleanup
+
+## Usability
+
+- make production pipeline configurable regarding the chaincode-target
+
+# [v0.9.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...v0.9.0) (2020-09-29)
+
+## Feature
+
+- Support Enrollment with CSR creating returning the correct SignedCertificate created from the CSR.
 
 ## Refactor
 
