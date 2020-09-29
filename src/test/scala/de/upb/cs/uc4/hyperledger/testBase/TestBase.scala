@@ -52,26 +52,26 @@ class TestBase extends TestBaseTrait {
   override def beforeAll(): Unit = {
     debug("Begin test with testBase Name = " + testBase.getClass.getName)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
-      while (!WalletManager.containsIdentity(walletPath, username)) {
+      while (!WalletManager.containsIdentity(this.walletPath, this.username)) {
         tryEnrollment(
-          caURL,
-          tlsCert,
-          walletPath,
-          username,
-          password,
-          organisationId,
-          channel,
-          chaincode,
-          networkDescriptionPath
+          this.caURL,
+          this.tlsCert,
+          this.walletPath,
+          this.username,
+          this.password,
+          this.organisationId,
+          this.channel,
+          this.chaincode,
+          this.networkDescriptionPath
         )
       }
       debug("Finished Enrollment")
     }
   }
 
-  def initializeCourses(userName: String = testBase.username): ConnectionCourseTrait = new ConnectionCourses(userName, testBase.channel, testBase.chaincode, testBase.walletPath, testBase.networkDescriptionPath)
-  def initializeMatriculation(userName: String = testBase.username): ConnectionMatriculationTrait = ConnectionMatriculation(userName, testBase.channel, testBase.chaincode, testBase.walletPath, testBase.networkDescriptionPath)
-  def initializeCertificate(userName: String = testBase.username): ConnectionCertificateTrait = ConnectionCertificate(userName, testBase.channel, testBase.chaincode, testBase.walletPath, testBase.networkDescriptionPath)
+  def initializeCourses(userName: String = this.username): ConnectionCourseTrait = new ConnectionCourses(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeMatriculation(userName: String = this.username): ConnectionMatriculationTrait = ConnectionMatriculation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeCertificate(userName: String = this.username): ConnectionCertificateTrait = ConnectionCertificate(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
 
   private def tryRetrieveEnvVar(varName: String, fallBack: String = ""): String = {
     if (sys.env.contains(varName)) {

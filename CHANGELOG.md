@@ -7,6 +7,7 @@
   - getCertificate
   - updateCertificate
 - Extend Enrollment to add the new Certificate to the Certificate Chaincode
+- Throw TransactionErrors instead of HyperledgerInnerException for "null"-parameters passed to transactions
 
 ## Bug Fixes
 
