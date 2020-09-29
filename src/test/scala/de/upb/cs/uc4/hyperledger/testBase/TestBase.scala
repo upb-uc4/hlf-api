@@ -38,7 +38,8 @@ class TestBase extends TestBaseTrait {
         + " " + organisationId)
       try {
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
-      } catch {
+      }
+      catch {
         case e: Exception => throw Logger.err("Enrollment faield: " + e.getMessage, e)
       }
       debug("Finished Enrollment")
