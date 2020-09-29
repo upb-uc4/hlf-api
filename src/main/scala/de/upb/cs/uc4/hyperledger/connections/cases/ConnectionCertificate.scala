@@ -15,7 +15,7 @@ case class ConnectionCertificate(username: String, channel: String, chaincode: S
       this.internalSubmitTransaction(false, "addCertificate", enrollmentID, certificate)
     )
 
-    override def updateCertificate(enrollmentID: String, certificate: String): String =
+  override def updateCertificate(enrollmentID: String, certificate: String): String =
     wrapTransactionResult(
       "updateCertificate",
       this.internalSubmitTransaction(false, "updateCertificate", enrollmentID, certificate)

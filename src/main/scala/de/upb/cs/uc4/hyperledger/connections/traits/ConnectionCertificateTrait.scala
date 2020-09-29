@@ -1,6 +1,6 @@
 package de.upb.cs.uc4.hyperledger.connections.traits
 
-import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
+import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 
 trait ConnectionCertificateTrait extends ConnectionTrait {
 
