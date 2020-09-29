@@ -7,6 +7,10 @@ on:
   # manual trigger
   workflow_dispatch:
     inputs:
+      chaincode_target:
+        description: 'Chaincode Target Branch'
+        required: true
+        default: 'develop'
       test_set:
         description: 'Define which tests to run'
         required: true
@@ -31,6 +35,7 @@ jobs:
   DeployAndTestProductionNetwork:
     env:
       TEST_SET: "*UserManagementTests *InternalManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
+      CHAINCODE_TARGET: "develop"
 
     runs-on: ubuntu-latest
 
@@ -40,6 +45,11 @@ jobs:
     - name: rewrite test_set if manual invocation
       if: github.event.inputs.test_set != ''
       run: echo "::set-env name=TEST_SET::${{ github.event.inputs.test_set }}"
+
+    # Rewrite chaincodeTarget if started manually
+    - name: rewrite chaincodeTarget if manual invocation
+      if: github.event.inputs.chaincode_target != ''
+      run: echo "::set-env name=CHAINCODE_TARGET::${{ github.event.inputs.chaincode_target }}"
     # ################### ENV VARS ############################################################ #
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -89,6 +99,7 @@ jobs:
       uses: ./.github/actions/production_network_setup
       with:
         network_folder: 'hlf-network'
+        chaincode_branch: $CHAINCODE_TARGET
     # ################### PRODUCTION NETWORK ############ #
 
     # ################### TEST WITH REPORTS ############# #

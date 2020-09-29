@@ -3,7 +3,7 @@
 
 ## Feature
 
-- Support Enrollment with CSR creating an invalid Identity in the given wallet.
+- Support Enrollment with CSR creating an invalid Identity in the given wallet but containing the correct Signed Certificate created from the CSR.
 
 ## Bug Fixes
 
@@ -15,7 +15,7 @@
 
 ## Usability
 
-- 
+- make production pipeline configurable regarding the chaincode-target
 
 # [v0.8.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.2...v0.8.3) (2020-09-28)
 
