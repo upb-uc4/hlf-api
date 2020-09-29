@@ -5,7 +5,7 @@ import java.nio.file.Path
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionCourses, ConnectionMatriculation }
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionCourseTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
-import de.upb.cs.uc4.hyperledger.utilities.EnrollmentManager
+import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.scalactic.Fail
 
@@ -26,21 +26,48 @@ class TestBase extends TestBaseTrait {
   override val channel: String = testBase.channel
   override val chaincode: String = testBase.chaincode
 
+  private def tryEnrollment(
+      caURL: String,
+      caCert: Path,
+      walletPath: Path,
+      enrollmentID: String,
+      enrollmentSecret: String,
+      organisationId: String,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
+  ): Unit = {
+    try {
+      debug("Try enrollment with: "
+        + " " + caURL
+        + " " + caCert
+        + " " + walletPath
+        + " " + enrollmentID
+        + " " + enrollmentSecret
+        + " " + organisationId)
+
+      EnrollmentManager.enroll(caURL, caCert, walletPath, enrollmentID, enrollmentSecret, organisationId, channel, chaincode, networkDescriptionPath)
+    }
+    catch {
+      case e: Exception => Logger.warn("Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage, e)
+    }
+  }
+
   override def beforeAll(): Unit = {
     debug("Begin test with testBase Name = " + testBase.getClass.getName)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
-      debug("Try beforeAll enrollment with: "
-        + " " + caURL
-        + " " + tlsCert
-        + " " + walletPath
-        + " " + username
-        + " " + password
-        + " " + organisationId)
-      try {
-        EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
-      }
-      catch {
-        case e: Exception => throw Logger.err("Enrollment faield: " + e.getMessage, e)
+      while (WalletManager.containsIdentity(walletPath, username)) {
+        tryEnrollment(
+          caURL,
+          tlsCert,
+          walletPath,
+          username,
+          password,
+          organisationId,
+          channel,
+          chaincode,
+          networkDescriptionPath
+        )
       }
       debug("Finished Enrollment")
     }
