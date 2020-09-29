@@ -2,8 +2,8 @@ package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.cases.{ConnectionCertificate, ConnectionCourses, ConnectionMatriculation}
-import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionCertificateTrait, ConnectionCourseTrait, ConnectionMatriculationTrait}
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionCourses, ConnectionMatriculation }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionCourseTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.utilities.EnrollmentManager
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
@@ -50,7 +50,8 @@ class TestBase extends TestBaseTrait {
       val value = sys.env(varName)
       debug("####### Retrieved variable: " + varName + " with value: " + value)
       value
-    } else {
+    }
+    else {
       debug("####### Returned default fallback")
       fallBack
     }
