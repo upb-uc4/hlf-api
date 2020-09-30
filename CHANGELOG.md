@@ -1,4 +1,4 @@
-# [v0.9.1 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...develop) (2020-10-02)
+# [v1.0.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...v1.0.0) (2020-10-02)
 
 ## Feature
 
@@ -7,7 +7,9 @@
   - getCertificate
   - updateCertificate
 - Extend Enrollment to add the new Certificate to the Certificate Chaincode
-- Throw TransactionErrors instead of HyperledgerInnerException for "null"-parameters passed to transactions
+- Throw TransactionExceptions instead of HyperledgerInnerException for "null"-parameters passed to transactions
+- Throw NetworkExceptions instead of regular ones, if the network could not be reached or something with the EnrollmentProcess went wrong
+- Add interfaces for public Managers to enable mocking
 
 ## Bug Fixes
 
@@ -16,6 +18,7 @@
 ## Refactor
 
 - Test cleanup
+- Exception cleanup
 
 ## Usability
 
@@ -23,6 +26,7 @@
 - CertificateErrorTests
 - Update UserManagement Tests
 - Provide SequentialTestSuite
+- NonExistingNetworkTests + Pipeline
 
 # [v0.9.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...v0.9.0) (2020-09-29)
 
