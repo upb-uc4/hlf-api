@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, PublicExceptionHelper }
 import org.hyperledger.fabric.gateway._
 
 /** Manager for all things ConnectionRelated.
@@ -30,24 +30,32 @@ protected[hyperledger] object ConnectionManager {
       walletPath: Path,
       networkDescriptionPath: Path
   ): (Contract, Gateway) = {
-    Logger.info(s"Try to get connection with: '$networkDescriptionPath' and: '$walletPath'")
-    // get gateway
-    val gateway: Gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
+    PublicExceptionHelper.wrapInvocationWithNetworkException[(Contract, Gateway)](
+      () => {
+        Logger.info(s"Try to get connection with: '$networkDescriptionPath' and: '$walletPath'")
+        // get gateway
+        val gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
 
-    // get contract
-    var contract: Contract = null
-    try {
-      contract = ConnectionManager.retrieveContract(gateway, channel, chaincode, contractName)
-    }
-    catch {
-      case e: GatewayRuntimeException => {
-        GatewayManager.disposeGateway(gateway)
-        throw Logger.err(s"Could not retrieve contract $contractName from chaincode $chaincode in channel $channel.", e)
-      }
-    }
+        var contract: Contract = null
+        try {
+          contract = ConnectionManager.retrieveContract(gateway, channel, chaincode, contractName)
+        }
+        catch {
+          case e: GatewayRuntimeException => {
+            GatewayManager.disposeGateway(gateway)
+            throw Logger.err(s"Could not retrieve contract $contractName from chaincode $chaincode in channel $channel.", e)
+          }
+        }
 
-    // return (contract, gateway) - pair
-    (contract, gateway)
+        // return (contract, gateway) - pair
+        (contract, gateway)
+      },
+      channel, chaincode, networkDescriptionPath.toString, username
+    )
+  }
+
+  private def checkConnectionInititalized(network: Network): Unit = {
+    if (!network.getChannel.isInitialized) throw new Exception("Network could not be initialized.")
   }
 
   /** Creates a Contract to invoke transactions on.
@@ -67,6 +75,8 @@ protected[hyperledger] object ConnectionManager {
   ): Contract = {
     // get network (channel)
     val network: Network = gateway.getNetwork(channelName)
+    checkConnectionInititalized(network)
+
     // get contract (chaincode, contract)
     val contract = network.getContract(chaincodeName, contractName)
 

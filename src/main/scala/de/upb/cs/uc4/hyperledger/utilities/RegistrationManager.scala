@@ -4,7 +4,7 @@ import java.nio.file.Path
 import java.security.PrivateKey
 import java.util
 
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, PublicExceptionHelper }
 import org.hyperledger.fabric.gateway.{ Identities, X509Identity }
 import org.hyperledger.fabric.sdk.{ Enrollment, User }
 import org.hyperledger.fabric_ca.sdk.{ HFCAClient, RegistrationRequest }
@@ -38,34 +38,43 @@ object RegistrationManager {
       maxEnrollments: Integer = 1,
       newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
   ): String = {
+    PublicExceptionHelper.wrapInvocationWithNetworkException[String](
+      () => {
+        // retrieve Admin Identity as a User
+        val adminIdentity: X509Identity = WalletManager.getX509Identity(adminWalletPath, adminName)
+        Logger.debug(s"AdminIdentity: '${adminIdentity.getCertificate.toString}'")
+        val admin: User = RegistrationManager.getUserFromX509Identity(adminIdentity, affiliation)
+        Logger.debug(s"AdminUser: '${admin.toString}'")
 
-    // retrieve Admin Identity as a User
-    val adminIdentity: X509Identity = WalletManager.getX509Identity(adminWalletPath, adminName)
-    Logger.debug(s"AdminIdentity: '${adminIdentity.getCertificate.toString}'")
-    val admin: User = RegistrationManager.getUserFromX509Identity(adminIdentity, affiliation)
-    Logger.debug(s"AdminUser: '${admin.toString}'")
+        // prepare registrationRequest
+        val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName, maxEnrollments, newUserType)
 
-    // prepare registrationRequest
-    val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName, maxEnrollments, newUserType)
+        // get caClient
+        val caClient: HFCAClient = CAClientManager.getCAClient(caURL, caCert)
 
-    // get caClient
-    val caClient: HFCAClient = CAClientManager.getCAClient(caURL, caCert)
-
-    // actually perform the registration process
-    try {
-      caClient.register(registrationRequest, admin)
-    }
-    catch {
-      case e: Exception => throw Logger.err(s"Registration for the user '$userName' went wrong.", e)
-    }
+        // actually perform the registration process
+        try {
+          caClient.register(registrationRequest, admin)
+        }
+        catch {
+          case e: Exception => throw Logger.err(s"Registration for the user '$userName' went wrong.", e)
+        }
+      },
+      channel = null,
+      chaincode = null,
+      networkDescription = null,
+      identity = adminName,
+      organisationId = null,
+      organisationName = affiliation
+    )
   }
 
   /** "If no affiliation is specified in the registration request,
     * the identity being registered will be given the affiliation of the registrar."
     *
-    * @param userName
-    * @param newUserType
-    * @return
+    * @param userName userName to prepare RegistrationRequest for.
+    * @param newUserType type the new user will assume in the network.
+    * @return The registrationRequest for the registrationProcess
     */
   private def prepareRegistrationRequest(userName: String, maxEnrollments: Integer = 1, newUserType: String = HFCAClient.HFCA_TYPE_CLIENT): RegistrationRequest = {
     val registrationRequest = new RegistrationRequest(userName)

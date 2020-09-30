@@ -4,7 +4,7 @@ import java.nio.file.Path
 import java.security.{ KeyPair, KeyPairGenerator }
 
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCertificate
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, PublicExceptionHelper }
 import org.hyperledger.fabric.gateway.Identities
 import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
 
@@ -33,22 +33,30 @@ object EnrollmentManager {
       chaincode: String,
       networkDescriptionPath: Path
   ): String = {
-    Logger.info(s"Try to sign the certificate for the user $enrollmentID.")
-    val caClient = CAClientManager.getCAClient(caURL, caCert)
-    Logger.info("Successfully created a communication channel with the CA.")
-    val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest(enrollmentID, "tls", csr_pem)
-    Logger.info("Successfully prepared the enrollmentRequest.")
-    val enrollment = caClient.enroll(enrollmentID, enrollmentSecret, enrollmentRequestTLS)
-    Logger.info("Successfully performed and retrieved enrollment.")
-    val cert = enrollment.getCert
-    Logger.info("Retrieved SignedCertificate.")
+    PublicExceptionHelper.wrapInvocationWithNetworkException[String](
+      () => {
+        Logger.info(s"Try to sign the certificate for the user $enrollmentID.")
+        val caClient = CAClientManager.getCAClient(caURL, caCert)
+        Logger.info("Successfully created a communication channel with the CA.")
+        val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest(enrollmentID, "tls", csr_pem)
+        Logger.info("Successfully prepared the enrollmentRequest.")
+        val enrollment = caClient.enroll(enrollmentID, enrollmentSecret, enrollmentRequestTLS)
+        Logger.info("Successfully performed and retrieved enrollment.")
+        val certificate = enrollment.getCert
+        Logger.info("Retrieved SignedCertificate.")
 
-    // store cert on chaincode
-    val certificateConnection = ConnectionCertificate(adminName, channel, chaincode, adminWalletPath, networkDescriptionPath)
-    certificateConnection.addCertificate(enrollmentID, cert)
-    Logger.info("Successfully stored cert on new chaincode")
+        // store cert on chaincode
+        val certificateConnection = ConnectionCertificate(adminName, channel, chaincode, adminWalletPath, networkDescriptionPath)
+        certificateConnection.addCertificate(enrollmentID, certificate)
+        Logger.info("Successfully stored cert on new chaincode")
 
-    cert
+        certificate
+      },
+      channel,
+      chaincode,
+      networkDescriptionPath.toString,
+      adminName
+    )
   }
 
   /** Enrolls a new User and stores the X509Identity (KeyPair, SignedCert, MetaData) in the Wallet.
@@ -74,30 +82,39 @@ object EnrollmentManager {
       chaincode: String,
       networkDescriptionPath: Path
   ): Unit = {
-    // check if user already exists in my wallet
-    if (WalletManager.containsIdentity(walletPath, enrollmentID)) {
-      Logger.warn(s"An identity for the user $enrollmentID already exists in the wallet.")
-    }
-    else {
-      Logger.info(s"Try to get the identity for the user $enrollmentID.")
+    PublicExceptionHelper.wrapInvocationWithNetworkException(
+      () => {
+        // check if user already exists in my wallet
+        if (WalletManager.containsIdentity(walletPath, enrollmentID)) {
+          Logger.warn(s"An identity for the user $enrollmentID already exists in the wallet.")
+        }
+        else {
+          Logger.info(s"Try to get the identity for the user $enrollmentID.")
 
-      val caClient = CAClientManager.getCAClient(caURL, caCert)
+          val caClient = CAClientManager.getCAClient(caURL, caCert)
 
-      val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest(enrollmentID, "tls")
-      val enrollment = caClient.enroll(enrollmentID, enrollmentSecret, enrollmentRequestTLS)
-      Logger.info("Successfully performed and retrieved enrollment")
+          val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest(enrollmentID, "tls")
+          val enrollment = caClient.enroll(enrollmentID, enrollmentSecret, enrollmentRequestTLS)
+          Logger.info("Successfully performed and retrieved enrollment")
 
-      // store in wallet
-      val identity = Identities.newX509Identity(organisationId, enrollment)
-      Logger.info("Created identity from enrollment.")
-      WalletManager.putIdentity(walletPath, enrollmentID, identity)
-      Logger.info(s"Successfully enrolled user $enrollmentID and inserted it into the wallet.")
+          // store in wallet
+          val identity = Identities.newX509Identity(organisationId, enrollment)
+          Logger.info("Created identity from enrollment.")
+          WalletManager.putIdentity(walletPath, enrollmentID, identity)
+          Logger.info(s"Successfully enrolled user $enrollmentID and inserted it into the wallet.")
 
-      // store cert on chaincode
-      val certificateConnection = ConnectionCertificate(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath)
-      certificateConnection.addCertificate(enrollmentID, enrollment.getCert)
-      Logger.info("Successfully stored cert on new chaincode")
-    }
+          // store cert on chaincode
+          val certificateConnection = ConnectionCertificate(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath)
+          certificateConnection.addCertificate(enrollmentID, enrollment.getCert)
+          Logger.info("Successfully stored cert on new chaincode")
+        }
+      },
+      channel,
+      chaincode,
+      networkDescriptionPath.toString,
+      enrollmentID,
+      organisationId
+    )
   }
 
   /** Creates the enrollmentRequest.

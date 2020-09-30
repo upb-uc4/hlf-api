@@ -40,6 +40,16 @@ import de.upb.cs.uc4.hyperledger.utilities.RegistrationManager
 
 ## Communicate with the Network
 
+Any Communication with the Network will happen through our designated interface and methods provided.
+These Methods can throw different types of Exceptions as described in 
+https://github.com/upb-uc4/api/blob/develop/hlf_scala_api_errors.md
+In General these are
+- TransactionException :: you invoked the chaincode/contract in a wrong/invalid manner
+- NetworkException :: you could not build a connection to the specified network.
+- HyperledgerException :: something unexpected happened with the HLF framework
+
+
+
 ### 0. Configure your connection variables (These are used to let the framework know how to access YOUR UC4-hlf-network)
 - general information on the network
 ```scala
@@ -99,7 +109,7 @@ val walletPath: Path = "/hyperledger_assets/wallet/" // directory your X509Ident
 
 Now the basic enrollment can be preformed.
 ```scala
-EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, enrollmentSecret, organisationId)
+EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, enrollmentSecret, organisationId, channel, chaincode, networkDescriptionPath)
 ```
 
 #### 1.2 Secure Enrollment (Sign your CSR)
@@ -115,7 +125,7 @@ val adminWalletPath: Path = "/hyperledger_assets/wallet/" // directory containin
 
 Now the secure enrollment can be preformed.
 ```scala
-val signedCertificate: String = EnrollmentManager.enrollSecure(caURL, tlsCert, enrollmentId, enrollmentSecret, adminName, adminWalletPath, chanel, chaincode, networkDescriptionPath)
+val signedCertificate: String = EnrollmentManager.enrollSecure(caURL, tlsCert, enrollmentId, enrollmentSecret, adminName, adminWalletPath, channel, chaincode, networkDescriptionPath)
 ```
 
 ### 2. Connection Initilization

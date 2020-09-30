@@ -4,6 +4,7 @@ import java.nio.file.Path
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCourseTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
+import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 
 class ConnectionCourses(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path) extends ConnectionCourseTrait {
@@ -37,7 +38,7 @@ class ConnectionCourses(username: String, channel: String, chaincode: String, wa
     * @param result input byte-array to translate
     * @return result as a string
     */
-  @throws[TransactionException]
+  @throws[TransactionExceptionTrait]
   private def customWrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
     val resultString = convertTransactionResult(result)
     if (containsError(resultString)) throw extractErrorFromResult(transactionId, resultString)
@@ -45,8 +46,8 @@ class ConnectionCourses(username: String, channel: String, chaincode: String, wa
   }
 
   /**  gets the CUSTOM course errors and wraps them as a TransactionException */
-  @throws[TransactionException]
-  private def extractErrorFromResult(transactionId: String, result: String): TransactionException = {
+  @throws[TransactionExceptionTrait]
+  private def extractErrorFromResult(transactionId: String, result: String): TransactionExceptionTrait = {
     // retrieve error code
     var id = result.substring(result.indexOf("\"name\":\"") + 8)
     id = id.substring(0, id.indexOf("\""))
