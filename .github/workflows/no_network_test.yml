@@ -60,6 +60,8 @@ jobs:
       uses: NikoBergemann/action-sbt-test-report@v2
       with:
         what-to-test: $TEST_SET
+      env:
+        Target: 'ProductionNetwork'
 
     # Combine reports
     - name: Scalatest multiproject HTML merger
