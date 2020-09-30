@@ -1,10 +1,9 @@
 package de.upb.cs.uc4.hyperledger.tests
 
-import java.nio.file.Path
-
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionCourses, ConnectionMatriculation }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.NetworkExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
+import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
@@ -51,18 +50,18 @@ class NonExistentNetworkTests extends TestBase {
     content
   }
 
-  "The Managers" when {
+  "The public Managers" when {
     "no network is running / reachable" should {
-      "throw NetworkErrors [EnrollmentManager]" in {
+      "throw NetworkErrors [EnrollmentManager Basic]" in {
+        val newUserName = "NoNetwork001"
         this.testNetworkException(() => {
-          EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password,
+          EnrollmentManager.enroll(caURL, tlsCert, walletPath, newUserName, password,
             organisationId, channel, chaincode, networkDescriptionPath)
-        }, channel, chaincode, networkDescriptionPath.toString, username, organisationId)
+        }, channel, chaincode, networkDescriptionPath.toString, newUserName, organisationId)
       }
-      "throw NetworkErrors [EnrollmentManager]" in {
+      "throw NetworkErrors [EnrollmentManager Secure]" in {
         val testUserName = "testid"
-        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
-
+        val testUserPw = "testPassword"
         Logger.debug("get csr_pem")
         val content = getCSR
         Logger.debug(s"content: $content")
@@ -80,26 +79,31 @@ class NonExistentNetworkTests extends TestBase {
         this.testNetworkException(() => {
           RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, affiliation,
             1, HFCAClient.HFCA_TYPE_CLIENT)
-        }, identity = username, organisationId = affiliation)
+        }, identity = username, organisationName = affiliation)
       }
       "throw NetworkErrors [WalletManager]" in {
+        val newUserName = "NoNetwork002"
         this.testNetworkException(() => {
-          WalletManager.getCertificate(walletPath, username)
-        }, identity = username)
+          WalletManager.getCertificate(walletPath, newUserName)
+        }, identity = newUserName)
       }
-      "throw NetworkErrors [ConnectionManager]" in {
+      "throw NetworkErrors [ConnectionManager - Matriculation]" in {
         this.testNetworkException(() => {
-          ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
+          val connection = ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
+          connection.addMatriculationData(TestDataMatriculation.validMatriculationData1("0101010"))
         }, channel, chaincode, networkDescriptionPath.toString, username)
       }
-      "throw NetworkErrors [ConnectionManager]" in {
+      "throw NetworkErrors [ConnectionManager - Courses]" in {
         this.testNetworkException(() => {
-          new ConnectionCourses(username, channel, chaincode, walletPath, networkDescriptionPath)
+          val connection = new ConnectionCourses(username, channel, chaincode, walletPath, networkDescriptionPath)
+          connection.getAllCourses
         }, channel, chaincode, networkDescriptionPath.toString, username)
       }
-      "throw NetworkErrors [ConnectionManager]" in {
+      "throw NetworkErrors [ConnectionManager - Certificate]" in {
         this.testNetworkException(() => {
-          ConnectionCertificate(username, channel, chaincode, walletPath, networkDescriptionPath)
+          val newUserName = "NoNetwork003"
+          val connection = ConnectionCertificate(username, channel, chaincode, walletPath, networkDescriptionPath)
+          connection.addCertificate(newUserName, newUserName)
         }, channel, chaincode, networkDescriptionPath.toString, username)
       }
     }
