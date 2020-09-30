@@ -7,7 +7,7 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
 import org.hyperledger.fabric_ca.sdk.HFCAClient
 
-protected object CAClientManager {
+protected[utilities] object CAClientManager {
 
   /** Retrieves a clientObject for a CA spec.
     * @param caURL Address to find the CA.

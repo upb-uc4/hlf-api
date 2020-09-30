@@ -2,6 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
+import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
@@ -27,69 +28,69 @@ class CertificateErrorTests extends TestBase {
     super.afterAll()
   }
 
-  private def testTransactionException(transactionName: String, f: => Any) = {
-    val result = intercept[TransactionException](f)
+  private def testTransactionException(transactionName: String, f: () => Any) = {
+    val result = intercept[TransactionExceptionTrait](f.apply())
     result.transactionId should be(transactionName)
   }
 
   "The ScalaAPI for Certificate" when {
     "invoking getCertificate" should {
       "throw TransactionException for not existing enrollmentId " in {
-        testTransactionException("getCertificate", () -> chaincodeConnection.getCertificate("110"))
+        testTransactionException("getCertificate", () => chaincodeConnection.getCertificate("110"))
       }
       "throw TransactionException for empty enrollmentId-String " in {
-        testTransactionException("getCertificate", () -> chaincodeConnection.getCertificate(""))
+        testTransactionException("getCertificate", () => chaincodeConnection.getCertificate(""))
       }
       "throw TransactionException if enrollmentId-String equals null" in {
-        testTransactionException("getCertificate", () -> chaincodeConnection.getCertificate(null))
+        testTransactionException("getCertificate", () => chaincodeConnection.getCertificate(null))
       }
     }
 
     "invoking addCertificate" should {
       "throw TransactionException for existing enrollmentId " in {
-        testTransactionException("addCertificate", () -> chaincodeConnection.addCertificate(TestEnrollmentID, TestCertificate))
+        testTransactionException("addCertificate", () => chaincodeConnection.addCertificate(TestEnrollmentID, TestCertificate))
       }
       "throw TransactionException for empty enrollmentId-String " in {
-        testTransactionException("addCertificate", () -> chaincodeConnection.addCertificate("", TestCertificate))
+        testTransactionException("addCertificate", () => chaincodeConnection.addCertificate("", TestCertificate))
       }
       "throw TransactionException if enrollmentId-String equals null" in {
-        testTransactionException("addCertificate", () -> chaincodeConnection.addCertificate(null, TestCertificate))
+        testTransactionException("addCertificate", () => chaincodeConnection.addCertificate(null, TestCertificate))
       }
       "throw TransactionException for empty certificate-String " in {
-        testTransactionException("addCertificate", () -> chaincodeConnection.addCertificate("002", ""))
+        testTransactionException("addCertificate", () => chaincodeConnection.addCertificate("002", ""))
       }
       "throw TransactionException if certificate-String equals null" in {
-        testTransactionException("addCertificate", () -> chaincodeConnection.addCertificate("003", null))
+        testTransactionException("addCertificate", () => chaincodeConnection.addCertificate("003", null))
       }
       "throw TransactionException for empty enrollmentID-String and empty certificate-String " in {
-        testTransactionException("addCertificate", () -> chaincodeConnection.addCertificate("", ""))
+        testTransactionException("addCertificate", () => chaincodeConnection.addCertificate("", ""))
       }
       "throw TransactionException if enrollmentID-String and certificate-String equal null" in {
-        testTransactionException("addCertificate", () -> chaincodeConnection.addCertificate(null, null))
+        testTransactionException("addCertificate", () => chaincodeConnection.addCertificate(null, null))
       }
     }
 
     "invoking updateCertificate" should {
       "throw TransactionException for not existing enrollmentId " in {
-        testTransactionException("updateCertificate", () -> chaincodeConnection.updateCertificate("004", TestCertificate))
+        testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate("004", TestCertificate))
       }
       "throw TransactionException for empty enrollmentId-String " in {
-        testTransactionException("updateCertificate", () -> chaincodeConnection.updateCertificate("", TestCertificate))
+        testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate("", TestCertificate))
       }
       "throw TransactionException if enrollmentId-String equals null" in {
-        testTransactionException("updateCertificate", () -> chaincodeConnection.updateCertificate(null, TestCertificate))
+        testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate(null, TestCertificate))
       }
       "throw TransactionException for empty certificate-String " in {
-        testTransactionException("updateCertificate", () -> chaincodeConnection.updateCertificate(TestEnrollmentID, ""))
+        testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate(TestEnrollmentID, ""))
       }
       "throw TransactionException if certificate-String equals null" in {
-        testTransactionException("updateCertificate", () -> chaincodeConnection.updateCertificate(TestEnrollmentID, null))
+        testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate(TestEnrollmentID, null))
       }
       "throw TransactionException for empty enrollmentID-String and empty certificate-String " in {
-        testTransactionException("updateCertificate", () -> chaincodeConnection.updateCertificate("", ""))
+        testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate("", ""))
       }
       "throw TransactionException if enrollmentID-String and certificate-String equal null" in {
-        testTransactionException("updateCertificate", () -> chaincodeConnection.updateCertificate(null, null))
+        testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate(null, null))
       }
     }
   }
