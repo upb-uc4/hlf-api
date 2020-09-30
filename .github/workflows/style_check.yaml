@@ -10,6 +10,7 @@ on:
       - CHANGELOG.md
       - .github/workflows/production_network_test.yml
       - .github/workflows/dev_network_test.yml
+      - .github/workflows/no_network_test.yml
       - '.github/actions/**'
   # on pull request to protected branches
   pull_request:
