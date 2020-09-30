@@ -4,13 +4,13 @@ import java.nio.file.Path
 import java.security.PrivateKey
 import java.util
 
-import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, PublicExceptionHelper}
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, PublicExceptionHelper }
 import de.upb.cs.uc4.hyperledger.utilities.traits.RegistrationManagerTrait
-import org.hyperledger.fabric.gateway.{Identities, X509Identity}
-import org.hyperledger.fabric.sdk.{Enrollment, User}
-import org.hyperledger.fabric_ca.sdk.{HFCAClient, RegistrationRequest}
+import org.hyperledger.fabric.gateway.{ Identities, X509Identity }
+import org.hyperledger.fabric.sdk.{ Enrollment, User }
+import org.hyperledger.fabric_ca.sdk.{ HFCAClient, RegistrationRequest }
 
-object RegistrationManager extends RegistrationManagerTrait{
+object RegistrationManager extends RegistrationManagerTrait {
 
   @throws[Exception]
   override def register(

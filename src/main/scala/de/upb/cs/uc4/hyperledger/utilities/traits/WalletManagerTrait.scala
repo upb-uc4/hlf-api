@@ -3,8 +3,8 @@ package de.upb.cs.uc4.hyperledger.utilities.traits
 import java.nio.file.Path
 import java.security.cert.X509Certificate
 
-import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, PublicExceptionHelper}
-import org.hyperledger.fabric.gateway.{Identity, Wallet, Wallets, X509Identity}
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, PublicExceptionHelper }
+import org.hyperledger.fabric.gateway.{ Identity, Wallet, Wallets, X509Identity }
 
 trait WalletManagerTrait {
   /** Gets the X509Certificate from an Identity in the wallet

@@ -1,17 +1,17 @@
 package de.upb.cs.uc4.hyperledger.utilities
 
 import java.nio.file.Path
-import java.security.{KeyPair, KeyPairGenerator}
+import java.security.{ KeyPair, KeyPairGenerator }
 
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCertificate
-import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, PublicExceptionHelper}
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, PublicExceptionHelper }
 import de.upb.cs.uc4.hyperledger.utilities.traits.EnrollmentManagerTrait
 import org.hyperledger.fabric.gateway.Identities
 import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
 
 object EnrollmentManager extends EnrollmentManagerTrait {
 
- override def enrollSecure(
+  override def enrollSecure(
       caURL: String,
       caCert: Path,
       enrollmentID: String,
