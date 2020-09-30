@@ -2,21 +2,21 @@ package de.upb.cs.uc4.hyperledger.utilities.helper
 
 protected[hyperledger] object Logger {
 
-  /** Logger utility to encapsulate printing debug messages.
+  /** Logger utility to encapsulate printing error messages.
     * Maybe we can have some flag set to enable/disable in the future.
     *
-    * @return The HFCAClient object to perform registration/enrollment on.
+    * @return A new Exception encapsulating the error.
     */
   def err(message: String, e: Exception = null): Exception = {
-    val msg = s"[ERROR] :: $message \nMessage :: ${e.getMessage}\nStackTrace :: ${e.getStackTrace.mkString("Array(", ", ", ")")}"
+    val msg = s"""
+              [ERROR] :: ${getInfoFromException(e)}
+              """
     println(msg)
     new Exception(msg, e)
   }
 
-  /** Logger utility to encapsulate printing debug messages.
+  /** Logger utility to encapsulate printing warning messages.
     * Maybe we can have some flag set to enable/disable in the future.
-    *
-    * @return The HFCAClient object to perform registration/enrollment on.
     */
   def warn(message: String): Unit = {
     println(s"[WARNING] :: $message")
@@ -24,19 +24,22 @@ protected[hyperledger] object Logger {
 
   /** Logger utility to encapsulate printing debug messages.
     * Maybe we can have some flag set to enable/disable in the future.
-    *
-    * @return The HFCAClient object to perform registration/enrollment on.
     */
   def debug(message: String): Unit = {
     println(s"[DEBUG] :: $message")
   }
 
-  /** Logger utility to encapsulate printing debug messages.
+  /** Logger utility to encapsulate printing info messages.
     * Maybe we can have some flag set to enable/disable in the future.
-    *
-    * @return The HFCAClient object to perform registration/enrollment on.
     */
   def info(message: String): Unit = {
     println(s"[INFO] :: $message")
+  }
+
+  def getInfoFromException(exception: Exception): String = {
+    s"""
+        Exception-Message :: ${exception.getMessage}
+        Exception-StackTrace :: ${exception.getStackTrace.mkString("Array(", ", ", ")")}
+     """
   }
 }

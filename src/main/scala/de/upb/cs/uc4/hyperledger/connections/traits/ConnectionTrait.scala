@@ -3,8 +3,8 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
-import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
-import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerInnerException, HyperledgerUnhandledException, TransactionException }
+import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
+import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.GatewayManager
 import org.hyperledger.fabric.gateway.{ Contract, ContractException, Gateway, GatewayRuntimeException }
 
@@ -34,11 +34,11 @@ trait ConnectionTrait extends AutoCloseable {
       }
     }
     catch {
-      case ex: ContractException => throw HyperledgerInnerException(transactionId, ex)
-      case ex: TimeoutException => throw HyperledgerInnerException(transactionId, ex)
-      case ex: java.lang.InterruptedException => throw HyperledgerInnerException(transactionId, ex)
-      case ex: GatewayRuntimeException => throw HyperledgerInnerException(transactionId, ex)
-      case ex: Exception => throw HyperledgerUnhandledException(transactionId, ex)
+      case ex: ContractException => throw HyperledgerException(transactionId, ex)
+      case ex: TimeoutException => throw HyperledgerException(transactionId, ex)
+      case ex: java.lang.InterruptedException => throw HyperledgerException(transactionId, ex)
+      case ex: GatewayRuntimeException => throw HyperledgerException(transactionId, ex)
+      case ex: Exception => throw HyperledgerException(transactionId, ex)
     }
   }
 
@@ -49,8 +49,8 @@ trait ConnectionTrait extends AutoCloseable {
       contract.evaluateTransaction(transactionId, params: _*)
     }
     catch {
-      case ex: ContractException => throw HyperledgerInnerException(transactionId, ex)
-      case ex: Exception         => throw HyperledgerUnhandledException(transactionId, ex)
+      case ex: ContractException => throw HyperledgerException(transactionId, ex)
+      case ex: Exception         => throw HyperledgerException(transactionId, ex)
     }
   }
 
@@ -69,7 +69,7 @@ trait ConnectionTrait extends AutoCloseable {
     * @param result input byte-array to translate
     * @return result as a string
     */
-  @throws[TransactionException]
+  @throws[TransactionExceptionTrait]
   protected final def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
     val resultString = convertTransactionResult(result)
     if (containsError(resultString)) throw TransactionException(transactionId, resultString)
@@ -93,7 +93,7 @@ trait ConnectionTrait extends AutoCloseable {
     * @param params parameters to check
     * @throws TransactionException if a parameter is null.
     */
-  @throws[TransactionException]
+  @throws[TransactionExceptionTrait]
   private def testParamsNull(transactionId: String, params: String*) = {
     params.foreach(param => if (param == null) throw TransactionException.CreateUnknownException(transactionId, "A parameter was null."))
   }

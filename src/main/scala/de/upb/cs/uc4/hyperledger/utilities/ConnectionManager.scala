@@ -50,6 +50,8 @@ protected[hyperledger] object ConnectionManager {
     (contract, gateway)
   }
 
+
+
   /** Creates a Contract to invoke transactions on.
     * @param gateway Gateway to the network to conenct with
     * @param channelName name of the channel / network

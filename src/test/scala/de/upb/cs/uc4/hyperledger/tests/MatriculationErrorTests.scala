@@ -2,6 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
+import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
@@ -28,7 +29,7 @@ class MatriculationErrorTests extends TestBase {
   }
 
   private def testTransactionException(transactionName: String, f: => Any) = {
-    val result = intercept[TransactionException](f)
+    val result = intercept[TransactionExceptionTrait](f)
     result.transactionId should be(transactionName)
   }
 

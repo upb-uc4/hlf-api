@@ -1,7 +1,7 @@
 package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCourseTrait
-import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
+import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataCourses
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
@@ -55,7 +55,7 @@ class CourseAccessTests extends TestBase {
         Logger.info("deleteCourseResult: " + deleteCourseResult)
 
         // access deleted course shall throw an exception
-        intercept[TransactionException](() -> chaincodeConnection.getCourseById(testCourseId))
+        intercept[TransactionExceptionTrait](() -> chaincodeConnection.getCourseById(testCourseId))
 
         // update new course
         // add new course
