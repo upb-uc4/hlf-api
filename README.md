@@ -109,7 +109,7 @@ val walletPath: Path = "/hyperledger_assets/wallet/" // directory your X509Ident
 
 Now the basic enrollment can be preformed.
 ```scala
-EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, enrollmentSecret, organisationId)
+EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, enrollmentSecret, organisationId, channel, chaincode, networkDescriptionPath)
 ```
 
 #### 1.2 Secure Enrollment (Sign your CSR)
@@ -125,7 +125,7 @@ val adminWalletPath: Path = "/hyperledger_assets/wallet/" // directory containin
 
 Now the secure enrollment can be preformed.
 ```scala
-val signedCertificate: String = EnrollmentManager.enrollSecure(caURL, tlsCert, enrollmentId, enrollmentSecret, adminName, adminWalletPath, chanel, chaincode, networkDescriptionPath)
+val signedCertificate: String = EnrollmentManager.enrollSecure(caURL, tlsCert, enrollmentId, enrollmentSecret, adminName, adminWalletPath, channel, chaincode, networkDescriptionPath)
 ```
 
 ### 2. Connection Initilization
