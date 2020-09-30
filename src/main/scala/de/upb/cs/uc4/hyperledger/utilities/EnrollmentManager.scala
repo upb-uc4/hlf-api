@@ -5,23 +5,13 @@ import java.security.{ KeyPair, KeyPairGenerator }
 
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCertificate
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, PublicExceptionHelper }
+import de.upb.cs.uc4.hyperledger.utilities.traits.EnrollmentManagerTrait
 import org.hyperledger.fabric.gateway.Identities
 import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
 
-object EnrollmentManager {
+object EnrollmentManager extends EnrollmentManagerTrait {
 
-  /** Enrolls a new User and stores the X509Identity (KeyPair, SignedCert, MetaData) in the Wallet.
-    *
-    * @param caURL            Address to find the CA.
-    * @param caCert           Certificate to check the validity of the CA.
-    * @param enrollmentID     enrollmentID of the user to be enrolled.
-    * @param enrollmentSecret Password of the user to be enrolled.
-    * @throws Exception       if
-    *                         1. The CA Client could not be retrieved from the caURL and Certificate.
-    *                         2. The enrollment process fails. Maybe your user is not registered?
-    * @return                 the Signed Certificate for the CSR.
-    */
-  def enrollSecure(
+  override def enrollSecure(
       caURL: String,
       caCert: Path,
       enrollmentID: String,
@@ -59,19 +49,7 @@ object EnrollmentManager {
     )
   }
 
-  /** Enrolls a new User and stores the X509Identity (KeyPair, SignedCert, MetaData) in the Wallet.
-    *
-    * @param caURL            Address to find the CA.
-    * @param caCert           Certificate to check the validity of the CA.
-    * @param walletPath       Wallet to store the new user's identity.
-    * @param enrollmentID     enrollmentID of the user to be enrolled.
-    * @param enrollmentSecret Password of the user to be enrolled.
-    * @param organisationId   Organisation ID, that the user belongs to (MetaInfo for Identity).
-    * @throws Exception       if
-    *                         1. The CA Client could not be retrieved from the caURL and Certificate.
-    *                         2. The enrollment process fails. Maybe your user is not registered?
-    */
-  def enroll(
+  override def enroll(
       caURL: String,
       caCert: Path,
       walletPath: Path,
@@ -117,15 +95,6 @@ object EnrollmentManager {
     )
   }
 
-  /** Creates the enrollmentRequest.
-    * If a csr_pem is provided, a garbage KeyPair is generated to fool the faulty hyperledger CSR implementation.
-    *
-    * @param hostName the hostname associated with the identity.
-    * @param profile  the security profile (e.g. "tls").
-    * @param csr_pem  (optional) certificate signing request.
-    *                 If none is provided, a new KeyPair is generated and used to create a new CSR.
-    * @return         the enrollmentRequest object.
-    */
   private def prepareEnrollmentRequest(
       hostName: String,
       profile: String,
