@@ -40,6 +40,16 @@ import de.upb.cs.uc4.hyperledger.utilities.RegistrationManager
 
 ## Communicate with the Network
 
+Any Communication with the Network will happen through our designated interface and methods provided.
+These Methods can throw different types of Exceptions as described in 
+https://github.com/upb-uc4/api/blob/develop/hlf_scala_api_errors.md
+In General these are
+- TransactionException :: you invoked the chaincode/contract in a wrong/invalid manner
+- NetworkException :: you could not build a connection to the specified network.
+- HyperledgerException :: something unexpected happened with the HLF framework
+
+
+
 ### 0. Configure your connection variables (These are used to let the framework know how to access YOUR UC4-hlf-network)
 - general information on the network
 ```scala
