@@ -11,7 +11,7 @@ case class TransactionException(transactionId: String, payload: String) extends 
 /** Used to create TransactionExceptions from malformed errors. */
 object TransactionException {
 
-  final def jSonUnknown(id: String, detail: String): String = "{\n" +
+  final private def jSonUnknown(id: String, detail: String): String = "{\n" +
     "  \"type\": \"" + id + "\",\n" +
     "  \"title\": \"" + detail + "\"\n" +
     "}"

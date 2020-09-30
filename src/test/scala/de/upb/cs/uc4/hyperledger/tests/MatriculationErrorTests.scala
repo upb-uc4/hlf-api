@@ -4,15 +4,22 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class MatriculationErrorTests extends TestBase {
 
   var chaincodeConnection: ConnectionMatriculationTrait = _
+  var existingMatriculationId = "501"
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    chaincodeConnection = initializeMatriculation()
-    chaincodeConnection.addMatriculationData(TestDataMatriculation.validMatriculationData1("001"))
+    try {
+      chaincodeConnection = initializeMatriculation()
+      chaincodeConnection.addMatriculationData(TestDataMatriculation.validMatriculationData1(existingMatriculationId))
+    }
+    catch {
+      case e: Exception => Logger.err("[MatriculationErrorTests] :: ", e)
+    }
   }
 
   override def afterAll(): Unit = {
@@ -116,7 +123,7 @@ class MatriculationErrorTests extends TestBase {
         )
       }
       "throw TransactionException for malformed semester Entry " in {
-        val id = "001"
+        val id = existingMatriculationId
         val fieldOfStudy = "ComputerScience"
         val semester = "S2020"
         testTransactionException(
@@ -127,7 +134,7 @@ class MatriculationErrorTests extends TestBase {
         )
       }
       "throw TransactionException for empty semester Entry " in {
-        val id = "001"
+        val id = existingMatriculationId
         val fieldOfStudy = "ComputerScience"
         val semester = ""
         testTransactionException(
@@ -138,7 +145,7 @@ class MatriculationErrorTests extends TestBase {
         )
       }
       "throw TransactionException for empty fieldOfStudy Entry " in {
-        val id = "001"
+        val id = existingMatriculationId
         val fieldOfStudy = ""
         val semester = "SS2020"
         testTransactionException(

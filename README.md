@@ -14,13 +14,13 @@
     and  [chaincode](https://github.com/upb-uc4/hlf-chaincode)
     )
 2. Store the .yaml describing the network (example provided in ./src/test/resources/connection_profile.yaml)
-3. Store the wallet-directory containing the certificate (example for dev-network provided in .src/test/resource/wallet/cli.id)
+3. (Optional) Store the certificates you want to use in your wallet-directory (example for dev-network provided in .src/test/resource/wallet/cli.id)
 
 ## Configuration / Initialization
 
 ### 1. Dependencies
 ```sbt
-val hyperledgerApiVersion = "v0.8.1"
+val hyperledgerApiVersion = "v0.9.1"
 val hyperledger_api = RootProject(uri("https://github.com/upb-uc4/hlf-api.git#%s".format(hyperledgerApiVersion)))
 
 lazy val yourProject = (project in file(".")).dependsOn(hyperledger_api)
@@ -56,36 +56,75 @@ protected val caURL: String = "172.17.0.3:30906" // adress of the CA-server.
 
 protected val username: String = "TestUser123" // this should in most cases be the name of the .id file in your wallet directory.
 protected val password: String = "Test123" // a password used to register a user and receive/set a certificate for said user when enrolling.
-protected val organisationId: String = "org1MSP" // the name of the organisation the user belongs to.
+protected val organisationId: String = "org1MSP" // the id of the organisation the user belongs to.
+protected val organisationName: String = "org1" // the name of the organisation the user belongs to.
 
 ```
 
 ### 0.5 (optional) Register a user (only possible if you already obtained an admin certificate through the enrollment-process)
 ```scala
-val newUserName = "TestUser123" // new user to be registered.
-val adminUserName = "scala-registration-admin-org1" // current existing adminEntity in our production network.
-val organisationName = "org1" // current organisation name in our production network.
-val maxEnrollments = 1 // number of times the user can be enrolled/reenrolled with the same username-password combination (default = 1)
-val newUserType = HFCAClient.HFCA_TYPE_CLIENT // permission level of the new user (default = HFCAClient.HFCA_TYPE_CLIENT)
+val enrollmentId: String = "TestUser123" // new user to be registered.
+val adminUserName: String = "scala-registration-admin-org1" // current existing adminEntity in our production network.
+val organisationName: String = "org1" // current organisation name in our production network.
+val maxEnrollments: Integer = 1 // number of times the user can be enrolled/reenrolled with the same username-password combination (default = 1)
+val newUserType: String = HFCAClient.HFCA_TYPE_CLIENT // permission level of the new user (default = HFCAClient.HFCA_TYPE_CLIENT)
 
-val newUserPassword = RegistrationManager.register(tlsCert, caURL, newUserName, adminUserName, walletPath, organisationName, maxEnrollments)
+val newUserPassword: String = RegistrationManager.register(tlsCert, caURL, newUserName, adminUserName, walletPath, organisationName, maxEnrollments)
 ```
 
 ### 1. Enrollment 
+Any Enrollment "publishes" your newly registered user.
+This user can be enrolled with his enrollmentId and enrollmentSecret.
 ```scala
-val newUserName = "TestUser123" // new user to be enrolled
-val newUserPassword = "Test123" // new user password (retrieve from registration-process)
-val organisationId = "org1MSP" // id of the organisation the user belongs to (current production network organisation is "org1MSP")
+val enrollmentId: String = "TestUser123" // new user to be enrolled
+val enrollmentSecret: String = "Test123" // new user password (retrieve from registration-process)
+```
 
-EnrollmentManager.enroll(caURL, tlsCert, walletPath, newUserName, newUserPassword, organisationId)
+It Creates/Signs your Certificate and stores the signedCertificate on the ledger.
+For this we need to pass the following additional parameters.
+```scala
+val channel: String = "myc"/"mychannel" // channel your certificate-chaincode is setup for.
+val chaincode: String = "mycc"/ // chaincode containing your certificate-contract
+protected val networkDescriptionPath: Path = "/hyperledger_assets/connection_profile.yaml" // the file describing the existing network.
+```
+
+#### 1.1 Basic Enrollment (generates your KeyPair and stores it in your wallet)
+This enrollment generates a new KeyPair for the newly enrolled user.
+This means we need to store the new X509Identity (configured with an organisationId) in a wallet.
+
+```scala
+val organisationId: String = "org1MSP" // id of the organisation the user belongs to (current production network organisation is "org1MSP")
+val walletPath: Path = "/hyperledger_assets/wallet/" // directory your X509Identity will be stored in.
+```
+
+Now the basic enrollment can be preformed.
+```scala
+EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, enrollmentSecret, organisationId)
+```
+
+#### 1.2 Secure Enrollment (Sign your CSR)
+To have the enrollment sign your provided Certificate Signing Request, you need to pass said CSR.
+```scala
+val CSR: String = "Some CSR String" // passed "Certificate Signing Request".
+```
+
+```scala
+val adminName: String = "scala-registration-admin-org1" // admin identity used to store the signedCertificate on the Ledger.
+val adminWalletPath: Path = "/hyperledger_assets/wallet/" // directory containing your admin certificate.
+```
+
+Now the secure enrollment can be preformed.
+```scala
+val signedCertificate: String = EnrollmentManager.enrollSecure(caURL, tlsCert, enrollmentId, enrollmentSecret, adminName, adminWalletPath, chanel, chaincode, networkDescriptionPath)
 ```
 
 ### 2. Connection Initilization
-Simply create an object of the connection for the contract that you want to access
+Simply create an object of the connection for the contract that you want to access.
 ```scala
 def createConnection: ConnectionMatriculationTrait =
   de.upb.cs.uc4.hyperledger.connections.cases.ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
 ```
+
 
 ### 3. Performing Transactions
 ```scala
@@ -96,3 +135,5 @@ try {
     case e_h: HyperledgerInnerException => HandleError(e_h) // something seems to have gone wrong with the framework, please submit a bugReport :)
 }
 ```
+
+### [4. All Connections and Transactions](https://github.com/upb-uc4/api)

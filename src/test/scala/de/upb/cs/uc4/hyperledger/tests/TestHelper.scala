@@ -20,6 +20,12 @@ object TestHelper {
     cleanActual should be(cleanExpected)
   }
 
+  def compareCertificates(expected: String, actual: String): Unit = {
+    val cleanExpected = expected
+    val cleanActual = actual
+    cleanActual should be(cleanExpected)
+  }
+
   def cleanJson(input: String): String = {
     input
       .replace("\n", "")

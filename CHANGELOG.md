@@ -2,11 +2,16 @@
 
 ## Feature
 
-- Support Enrollment with CSR creating an invalid Identity in the given wallet but containing the correct Signed Certificate created from the CSR.
+- Support CertificateChaincode
+  - addCertificate
+  - getCertificate
+  - updateCertificate
+- Extend Enrollment to add the new Certificate to the Certificate Chaincode
+- Throw TransactionErrors instead of HyperledgerInnerException for "null"-parameters passed to transactions
 
 ## Bug Fixes
 
-- 
+- Improve resillience of parallel tests against negative influence from other tests
 
 ## Refactor
 
@@ -14,7 +19,10 @@
 
 ## Usability
 
-- make production pipeline configurable regarding the chaincode-target
+- CertificateAccessTests
+- CertificateErrorTests
+- Update UserManagement Tests
+- Provide SequentialTestSuite
 
 # [v0.9.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...v0.9.0) (2020-09-29)
 

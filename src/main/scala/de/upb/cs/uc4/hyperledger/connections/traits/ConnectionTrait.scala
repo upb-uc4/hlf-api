@@ -17,6 +17,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   protected final def internalSubmitTransaction(transient: Boolean, transactionId: String, params: String*): Array[Byte] = {
+    testParamsNull(transactionId, params: _*)
     try {
       if (transient) {
         var transMap: Map[String, Array[Byte]] = Map()
@@ -43,6 +44,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   protected final def internalEvaluateTransaction(transactionId: String, params: String*): Array[Byte] = {
+    testParamsNull(transactionId, params: _*)
     try {
       contract.evaluateTransaction(transactionId, params: _*)
     }
@@ -84,4 +86,15 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   final override def close(): Unit = GatewayManager.disposeGateway(this.gateway)
+
+  /** Checks if the transaction params are null.
+    *
+    * @param transactionId transactionId causing the error.
+    * @param params parameters to check
+    * @throws TransactionException if a parameter is null.
+    */
+  @throws[TransactionException]
+  private def testParamsNull(transactionId: String, params: String*) = {
+    params.foreach(param => if (param == null) throw TransactionException.CreateUnknownException(transactionId, "A parameter was null."))
+  }
 }
