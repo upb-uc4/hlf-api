@@ -85,7 +85,7 @@ trait ConnectionTrait extends AutoCloseable {
     result.contains("{\"type\":") && result.contains("\"title\":")
   }
 
-  final override def close(): Unit = GatewayManager.disposeGateway(this.gateway)
+  final override def close(): Unit = this.gateway.close()
 
   /** Checks if the transaction params are null.
     *
