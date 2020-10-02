@@ -1,4 +1,22 @@
-# [v1.0.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...v1.0.0) (2020-10-02)
+# [v0.9.2 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.1...develop) (TBD)
+
+## Feature
+
+- 
+
+## Bug Fixes
+
+- 
+
+## Refactor
+
+- 
+
+## Usability
+
+- 
+
+# [v0.9.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...v0.9.1) (2020-10-02)
 
 ## Feature
 
