@@ -22,7 +22,7 @@ runs:
         echo "##########################"
         echo "#  start deploy script   #"
         echo "##########################"
-        ./deploy.sh ${{ inputs.chaincode_branch }}
+        ./deploy.sh -b ${{ inputs.chaincode_branch }}
         popd
       shell: 
         bash
