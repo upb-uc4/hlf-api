@@ -20,20 +20,9 @@ runs:
       run: |
         pushd ${{ inputs.network_folder }}
         echo "##########################"
-        echo "#  start network script  #"
+        echo "#  start deploy script   #"
         echo "##########################"
-        ./startNetwork.sh
-        echo "##########################"
-        echo "# started network script #"
-        echo "##########################"
-        popd
-      shell:
-        bash
-
-    - name: Install Chaincode
-      run: |
-        pushd ${{ inputs.network_folder }}
-        ./installChaincode.sh ${{ inputs.chaincode_branch }}
+        ./deploy.sh -b ${{ inputs.chaincode_branch }}
         popd
       shell: 
         bash
