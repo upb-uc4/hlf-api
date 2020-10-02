@@ -16,7 +16,7 @@
 
 - 
 
-# [v0.9.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...v0.9.1) (2020-10-02)
+# <a id="v0.9.1" />[v0.9.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...v0.9.1) (2020-10-02)
 
 ## Feature
 
@@ -46,7 +46,7 @@
 - Provide SequentialTestSuite
 - NonExistingNetworkTests + Pipeline
 
-# [v0.9.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...v0.9.0) (2020-09-29)
+# <a id="v0.9.0" />[v0.9.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...v0.9.0) (2020-09-29)
 
 ## Feature
 
@@ -60,7 +60,7 @@
 
 - make production pipeline configurable regarding the chaincode-target
 
-# [v0.8.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.2...v0.8.3) (2020-09-28)
+# <a id="v0.8.3" />[v0.8.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.2...v0.8.3) (2020-09-28)
 
 ## Feature
 
@@ -75,7 +75,7 @@
 
 switch transient / non-transient
 
-# [v0.8.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...v0.8.2) (2020-08-17)
+# <a id="v0.8.2" />[v0.8.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...v0.8.2) (2020-08-17)
 
 ## Feature
 
@@ -95,7 +95,7 @@ switch transient / non-transient
 
 - provide/use a logger for framework debugging
 
-# [v0.8.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.0...v0.8.1) (2020-08-17)
+# <a id="v0.8.1" />[v0.8.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.0...v0.8.1) (2020-08-17)
 
 ## Feature
 
@@ -112,7 +112,7 @@ switch transient / non-transient
 - Pipelines can be triggered for specific tests.
 
 
-# [v0.8.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.1...v0.8.0) (2020-08-17)
+# <a id="v0.8.0" />[v0.8.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.1...v0.8.0) (2020-08-17)
 
 ## Feature
 
