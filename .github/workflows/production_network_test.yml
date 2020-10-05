@@ -83,27 +83,16 @@ jobs:
         path: 'hlf-network'
         
     # Prepare for mounts
-    - name: Create folder for mounts
+    - name: Create folder for mounts of default cluster
       run: |
-        pushd hlf-network
-        source ./env.sh
-        sudo mkdir -p $HL_MOUNT
-        sudo chmod -R 777 $K8S_MOUNT
-        popd
+          sudo mkdir -p /data/development/hyperledger
+          sudo chmod -R 777 /data/development
 
-    # Generate files
-    - name: Generate files from templates
-      run: |
-        pushd hlf-network
-        ./scripts/setMountFolder.sh
-        popd
-
-    # Start KIND
-    - name: Start KinD
+    - name: Start KinD with default cluster config
       uses: engineerd/setup-kind@v0.4.0
       with:
-        version: "v0.7.0"
-        config: hlf-network/kind.yaml
+          version: "v0.7.0"
+          config: hlf-network/assets/kind.yaml
 
     # Setup Network
     - name: setup production network
