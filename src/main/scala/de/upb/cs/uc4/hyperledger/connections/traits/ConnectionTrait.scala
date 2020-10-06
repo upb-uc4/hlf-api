@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
+import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.WalletManager
@@ -70,6 +71,11 @@ trait ConnectionTrait extends AutoCloseable {
     proposalBuilder.context(context)
     proposalBuilder.request(request)
     proposalBuilder.build()
+  }
+
+  final def submitSignedTransaction(proposal: ByteString, signature: ByteString) = {
+    val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
+    val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal).setSignature(signature).build
   }
 
   /** Since the chain returns bytes, we need to convert them to a readable Result.
