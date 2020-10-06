@@ -5,14 +5,20 @@ import java.util.concurrent.TimeoutException
 
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
-import org.hyperledger.fabric.gateway.{ Contract, Gateway, GatewayRuntimeException }
+import de.upb.cs.uc4.hyperledger.utilities.WalletManager
+import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl }
+import org.hyperledger.fabric.gateway.{ Contract, Gateway, GatewayRuntimeException, Identity, Transaction, X509Identity }
+import org.hyperledger.fabric.protos.peer.ProposalPackage
+import org.hyperledger.fabric.sdk.HFClient
+import org.hyperledger.fabric.sdk.NetworkConfig.UserInfo
+import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
 
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
   val contractName: String
-  val contract: Contract
-  val gateway: Gateway
+  val contract: ContractImpl
+  val gateway: GatewayImpl
 
   @throws[HyperledgerExceptionTrait]
   protected final def internalSubmitTransaction(transient: Boolean, transactionId: String, params: String*): Array[Byte] = {
@@ -50,6 +56,20 @@ trait ConnectionTrait extends AutoCloseable {
       case ex: TimeoutException        => throw NetworkException(innerException = ex)
       case ex: Exception               => throw HyperledgerException(transactionId, ex)
     }
+  }
+
+  protected final def createUnsignedTransaction(transactionId: String, params: String*): ProposalPackage.Proposal = {
+    val client = gateway.getClient()
+    val request = client.newTransactionProposalRequest()
+    request.setChaincodeName(contractName)
+    request.setFcn(transactionId)
+    request.setArgs(params: _*)
+    val context: TransactionContext = contract.getNetwork.getChannel.newTransactionContext()
+
+    val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder
+    proposalBuilder.context(context)
+    proposalBuilder.request(request)
+    proposalBuilder.build()
   }
 
   /** Since the chain returns bytes, we need to convert them to a readable Result.

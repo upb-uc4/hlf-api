@@ -4,6 +4,7 @@ import java.nio.file.Path
 
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, PublicExceptionHelper }
 import org.hyperledger.fabric.gateway._
+import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, NetworkImpl }
 
 /** Manager for all things ConnectionRelated.
   *  Can be used to retrieve contract and gateway from
@@ -29,14 +30,14 @@ protected[hyperledger] object ConnectionManager {
       contractName: String,
       walletPath: Path,
       networkDescriptionPath: Path
-  ): (Contract, Gateway) = {
-    PublicExceptionHelper.wrapInvocationWithNetworkException[(Contract, Gateway)](
+  ): (ContractImpl, GatewayImpl) = {
+    PublicExceptionHelper.wrapInvocationWithNetworkException[(ContractImpl, GatewayImpl)](
       () => {
         Logger.info(s"Try to get connection with: '$networkDescriptionPath' and: '$walletPath'")
         // get gateway
-        val gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
+        val gateway: GatewayImpl = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
 
-        var contract: Contract = null
+        var contract: ContractImpl = null
         try {
           contract = ConnectionManager.retrieveContract(gateway, channel, chaincode, contractName)
         }
@@ -68,18 +69,16 @@ protected[hyperledger] object ConnectionManager {
     */
   @throws[GatewayRuntimeException]
   private def retrieveContract(
-      gateway: Gateway,
+      gateway: GatewayImpl,
       channelName: String,
       chaincodeName: String,
       contractName: String
-  ): Contract = {
+  ): ContractImpl = {
     // get network (channel)
-    val network: Network = gateway.getNetwork(channelName)
+    val network: NetworkImpl = gateway.getNetwork(channelName).asInstanceOf[NetworkImpl]
     checkConnectionInititalized(network)
 
     // get contract (chaincode, contract)
-    val contract = network.getContract(chaincodeName, contractName)
-
-    contract
+    network.getContract(chaincodeName, contractName).asInstanceOf[ContractImpl]
   }
 }
