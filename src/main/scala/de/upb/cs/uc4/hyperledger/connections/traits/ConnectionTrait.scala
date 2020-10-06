@@ -58,7 +58,7 @@ trait ConnectionTrait extends AutoCloseable {
     }
   }
 
-  protected final def createUnsignedTransaction(transactionId: String, params: String*): ProposalPackage.Proposal = {
+  final def createUnsignedTransaction(transactionId: String, params: String*): ProposalPackage.Proposal = {
     val client = gateway.getClient()
     val request = client.newTransactionProposalRequest()
     request.setChaincodeName(contractName)
