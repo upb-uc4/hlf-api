@@ -1,5 +1,5 @@
 import sbt.Keys._
-import sbt.{Developer, ScmInfo, TestFrameworks, Tests, url}
+import sbt.{ Developer, ScmInfo, TestFrameworks, Tests, url }
 
 object Commons {
   def commonSettings(project: String) = Seq(
