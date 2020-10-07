@@ -8,12 +8,10 @@ import java.util.concurrent.TimeoutException
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
-import de.upb.cs.uc4.hyperledger.utilities.WalletManager
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, NetworkImpl }
-import org.hyperledger.fabric.gateway.{ Contract, Gateway, GatewayRuntimeException, Identity, Transaction, X509Identity }
+import org.hyperledger.fabric.gateway.{ ContractException, GatewayRuntimeException, Transaction }
 import org.hyperledger.fabric.protos.peer.ProposalPackage
-import org.hyperledger.fabric.sdk.{ Channel, HFClient, Peer, TransactionProposalRequest, User }
-import org.hyperledger.fabric.sdk.NetworkConfig.UserInfo
+import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
 
 import scala.jdk.CollectionConverters.MapHasAsJava
@@ -76,16 +74,60 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   @throws[HyperledgerExceptionTrait]
-  final def submitSignedTransaction(proposal: ByteString, signature: ByteString, user: User) = {
-    val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
-    val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal).setSignature(signature).build
+  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, user: User, transactionId: String, params: String*) = {
 
-    //val proposalRequest: TransactionProposalRequest = TransactionProposalRequest.newInstance(user)
-    //gateway.getNetwork("").getChannel.sendTransactionProposal(proposalRequest)
+    def sendSignedProposal(channel: Channel, request: TransactionProposalRequest, endorsingPeers: util.Collection[Peer]) = {
+      val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
+      val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
 
-    val context: TransactionContext = contract.getNetwork.getChannel.newTransactionContext()
-    val peers: util.Collection[Peer] = callPrivateMethodOnChannel("getEndorsingPeers")
-    callPrivateMethodOnChannel("sendProposalToPeers", peers, signedProposal, context)
+      //val proposalRequest: TransactionProposalRequest = TransactionProposalRequest.newInstance(user)
+      gateway.getNetwork("").getChannel.sendTransactionProposal(request)
+
+      val context: TransactionContext = contract.getNetwork.getChannel.newTransactionContext()
+      val peers: util.Collection[Peer] = callPrivateMethodOnChannel("getEndorsingPeers")
+      callPrivateMethodOnChannel("sendProposalToPeers", peers, signedProposal, context)
+    }
+
+    val transaction: Transaction = contract.createTransaction(transactionId)
+
+    //try {
+    val request = callPrivateMethodOnTransactionImpl(transaction, "newProposalRequest", params).asInstanceOf[TransactionProposalRequest]
+
+    val f = transaction.getClass.getDeclaredField("endorsingPeers")
+    f.setAccessible(true)
+    val endorsingPeers = f.get(transaction).asInstanceOf[util.Collection[Peer]]
+    val network: NetworkImpl = gateway.getNetwork("").asInstanceOf[NetworkImpl]
+    val channel: Channel = network.getChannel()
+
+    // if (network.getGateway.isDiscoveryEnabled) TODO not supported in case there are no endorsing peers
+
+    val proposalResponses: util.Collection[ProposalResponse] = {
+      if (endorsingPeers != null) {
+        sendSignedProposal(channel, request, endorsingPeers)
+      }
+      else {
+        val endorsingChannelPeers = callPrivateMethodOnChannel("getEndorsingPeers").asInstanceOf[util.Collection[Peer]]
+        sendSignedProposal(channel, request, endorsingChannelPeers)
+      }
+    }
+    val validResponses = callPrivateMethodOnTransactionImpl(transaction, "validatePeerResponses", proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+
+    try callPrivateMethodOnTransactionImpl(transaction, "commitTransaction", validResponses).asInstanceOf[Array[Byte]]
+    catch {
+      case e: ContractException =>
+        e.setProposalResponses(proposalResponses)
+        throw e
+    }
+    //} catch {
+    //  case e@(_: InvalidArgumentException | _: ProposalException | _: ServiceDiscoveryException) =>
+    //   throw new GatewayRuntimeException(e)
+    //}
+  }
+
+  final def callPrivateMethodOnTransactionImpl[T](transaction: Transaction, methodName: String, args: Object*): T = {
+    val method: Method = Class.forName("TransactionImpl").getDeclaredMethod(methodName)
+    method.setAccessible(true)
+    method.invoke(transaction, args: _*).asInstanceOf[T]
   }
 
   final def callPrivateMethodOnChannel[T](methodName: String, args: Object*): T = {
