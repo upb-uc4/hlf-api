@@ -5,7 +5,7 @@ object Commons {
   def commonSettings(project: String) = Seq(
     // Info for Maven Publishing
     // ----------------------------------
-    version := "v0.9.1",
+    version := "0.9.2",
     organization := "de.upb.cs.uc4",
     organizationName := "uc4",
     homepage := Some(url("https://uc4.cs.upb.de/")),
