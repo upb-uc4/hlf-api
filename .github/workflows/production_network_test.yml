@@ -25,6 +25,7 @@ on:
       - .github/workflows/dev_network_test.yml
       - .github/workflows/no_network_test.yml
       - .github/workflows/style_check.yaml
+      - .github/workflows/publish_to_sonatype.yaml
       - .github/actions/dev_network_setup/action.yml
   # on pull request to protected branches
   pull_request:
@@ -39,6 +40,7 @@ on:
       - .github/workflows/dev_network_test.yml
       - .github/workflows/no_network_test.yml
       - .github/workflows/style_check.yaml
+      - .github/workflows/publish_to_sonatype.yaml
       - .github/actions/dev_network_setup/action.yml
 
 jobs:
