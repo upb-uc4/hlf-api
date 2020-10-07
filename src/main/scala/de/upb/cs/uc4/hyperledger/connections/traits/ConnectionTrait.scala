@@ -1,16 +1,18 @@
 package de.upb.cs.uc4.hyperledger.connections.traits
 
+import java.lang.reflect.Method
 import java.nio.charset.StandardCharsets
+import java.util
 import java.util.concurrent.TimeoutException
 
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.WalletManager
-import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl }
+import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, NetworkImpl }
 import org.hyperledger.fabric.gateway.{ Contract, Gateway, GatewayRuntimeException, Identity, Transaction, X509Identity }
 import org.hyperledger.fabric.protos.peer.ProposalPackage
-import org.hyperledger.fabric.sdk.HFClient
+import org.hyperledger.fabric.sdk.{ Channel, HFClient, Peer, TransactionProposalRequest, User }
 import org.hyperledger.fabric.sdk.NetworkConfig.UserInfo
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
 
@@ -73,9 +75,24 @@ trait ConnectionTrait extends AutoCloseable {
     proposalBuilder.build()
   }
 
-  final def submitSignedTransaction(proposal: ByteString, signature: ByteString) = {
+  @throws[HyperledgerExceptionTrait]
+  final def submitSignedTransaction(proposal: ByteString, signature: ByteString, user: User) = {
     val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
     val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal).setSignature(signature).build
+
+    //val proposalRequest: TransactionProposalRequest = TransactionProposalRequest.newInstance(user)
+    //gateway.getNetwork("").getChannel.sendTransactionProposal(proposalRequest)
+
+    val context: TransactionContext = contract.getNetwork.getChannel.newTransactionContext()
+    val peers: util.Collection[Peer] = callPrivateMethodOnChannel("getEndorsingPeers")
+    callPrivateMethodOnChannel("sendProposalToPeers", peers, signedProposal, context)
+  }
+
+  final def callPrivateMethodOnChannel[T](methodName: String, args: Object*): T = {
+    val channel: Channel = gateway.getNetwork("").getChannel()
+    val method: Method = channel.getClass().getDeclaredMethod(methodName)
+    method.setAccessible(true)
+    method.invoke(channel, args: _*).asInstanceOf[T]
   }
 
   /** Since the chain returns bytes, we need to convert them to a readable Result.
