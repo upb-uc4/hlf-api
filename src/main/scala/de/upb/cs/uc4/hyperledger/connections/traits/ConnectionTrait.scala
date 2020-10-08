@@ -74,7 +74,7 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   @throws[HyperledgerExceptionTrait]
-  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionId: String, params: String*): Array[Byte] = {
+  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionId: java.lang.String, params: java.lang.String*): Array[Byte] = {
 
     def sendSignedProposal(channel: Channel, request: TransactionProposalRequest): util.Collection[ProposalResponse] = {
       val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
@@ -125,9 +125,11 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   final def callPrivateMethodOnTransactionImpl[T](transaction: TransactionImpl, methodName: String, args: Object*): T = {
-    val method: Method = classOf[TransactionImpl].getDeclaredMethod(methodName, classOf[Array[String]])
+    val argTypes = Array(classOf[Array[String]])
+    val method: Method = classOf[TransactionImpl].getDeclaredMethod(methodName, argTypes: _*)
     method.setAccessible(true)
-    method.invoke(transaction, Array[Object] { args }).asInstanceOf[T]
+    val stringArgs: Array[String] = args.map(o => o.asInstanceOf[String]).toArray
+    method.invoke(transaction, stringArgs).asInstanceOf[T]
   }
 
   final def callPrivateMethodOnChannel[T](methodName: String, args: Object*): T = {
