@@ -1,3 +1,4 @@
+import com.jsuereth.sbtpgp.PgpKeys.useGpg
 import sbt.Keys.{ testOptions, _ }
 import sbt.{ Credentials, Developer, ScmInfo, Test, TestFrameworks, Tests, url }
 
@@ -6,6 +7,7 @@ object Commons {
     // Info for Maven Publishing
     // ----------------------------------
     version := "v0.9.2",
+    isSnapshot := version.value endsWith "SNAPSHOT",
     organization := "de.upb.cs.uc4",
     organizationName := "uc4",
     homepage := Some(url("https://uc4.cs.upb.de/")),
@@ -17,6 +19,14 @@ object Commons {
     pomIncludeRepository := { _ => false },
     publishArtifact in Test := false,
     // ----------------------------------
+    // GPG Credentials
+    credentials += Credentials(
+      "Sonatype Nexus Repository Manager",
+      "oss.sonatype.org",
+      sys.env.getOrElse("PGP_PASSPHRASE", ""),
+      sys.env.getOrElse("SONATYPE_PASS", "")
+    ),
+    useGpg := false,
     // Sonatype
     credentials += Credentials(
       "Sonatype Nexus Repository Manager",

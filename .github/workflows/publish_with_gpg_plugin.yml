@@ -1,4 +1,4 @@
-name: Publish to Sonatype
+name: Publish with gpg plugin
 
 on:
   # on push tag
@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  PublishRelease:
+  PublishGPG:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,25 +16,19 @@ jobs:
         uses: actions/checkout@v2
       # setup scala@v2
       - uses: olafurpg/setup-scala@v7
+      # setup gpg plugin
+      - uses: olafurpg/setup-gpg@v2
 
       # release action
       - name: Publish ${{ github.ref }}
         run: |
+          echo "$PGP_SECRET" | base64 --decode | gpg --import
           echo "##########################"
-          echo "    sonatype Prepare"
+          echo "    ci-release"
           echo "##########################"
-          sbt sonatypePrepare
-          echo "##########################"
-          echo "    sonatype BundleUpload"
-          echo "##########################"
-          sbt sonatypeBundleUpload
-          echo "##########################"
-          echo "    sonatype Release"
-          echo "##########################"
-          sbt sonatypeRelease
-          echo "##########################"
-          echo "    finished"
-          echo "##########################"
+          sbt ci-release
         env: # Add env variables from secrets
+          PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+          PGP_SECRET: ${{ secrets.PGP_SECRET }}
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PW }}
