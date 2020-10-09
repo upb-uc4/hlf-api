@@ -23,11 +23,15 @@ jobs:
       - name: Publish ${{ github.ref }}
         run: |
           echo "##########################"
+          echo "    sonatype publishSigned"
+          echo "##########################"
+          sbt publishSigned
+          echo "##########################"
           echo "    sonatype Prepare"
           echo "##########################"
           sbt sonatypePrepare
           echo "##########################"
-          echo "    sonatype Prepare"
+          echo "    sonatype BundleUpload"
           echo "##########################"
           sbt sonatypeBundleUpload
           echo "##########################"

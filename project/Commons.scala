@@ -1,5 +1,5 @@
 import sbt.Keys.{ testOptions, _ }
-import sbt.{ Developer, ScmInfo, Test, TestFrameworks, Tests, url }
+import sbt.{ Credentials, Developer, ScmInfo, Test, TestFrameworks, Tests, url }
 
 object Commons {
   def commonSettings(project: String) = Seq(
@@ -16,6 +16,14 @@ object Commons {
     crossPaths := false,
     pomIncludeRepository := { _ => false },
     publishArtifact in Test := false,
+    // ----------------------------------
+    // Sonatype
+    credentials += Credentials(
+      "Sonatype Nexus Repository Manager",
+      "oss.sonatype.org",
+      sys.env.getOrElse("SONATYPE_USER", ""),
+      sys.env.getOrElse("SONATYPE_PASS", "")
+    ),
     // ----------------------------------
     // scala version
     scalaVersion := "2.13.0",
