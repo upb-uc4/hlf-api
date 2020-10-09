@@ -12,3 +12,4 @@ lazy val hyperledger_api = (project in file("."))
     libraryDependencies ++= Dependencies.scalaTestDependencies,
     libraryDependencies ++= Dependencies.hyperledgerDependencies,
   )
+  .enablePlugins(GitVersioning)
