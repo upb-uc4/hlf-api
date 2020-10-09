@@ -22,7 +22,7 @@ jobs:
       # release action
       - name: Publish ${{ github.ref }}
         run: |
-          echo "$PGP_SECRET" | base64 --decode | gpg --import
+          echo "$PGP_SECRET" | gpg --import
           echo "##########################"
           echo "    ci-release"
           echo "##########################"
