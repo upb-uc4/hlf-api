@@ -16,6 +16,8 @@ jobs:
         uses: actions/checkout@v2
       # setup scala@v2
       - uses: olafurpg/setup-scala@v7
+      # setup gpg plugin
+      - uses: olafurpg/setup-gpg@v2
 
       # release action
       - name: Publish ${{ github.ref }}
