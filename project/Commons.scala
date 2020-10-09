@@ -1,4 +1,4 @@
-import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, pgpPublicRing, pgpSecretRing, useGpg }
+import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, pgpPublicRing, pgpSecretRing, useGpg, usePgpKeyHex }
 import sbt.Keys.{ testOptions, _ }
 import sbt.{ Credentials, Developer, ScmInfo, Test, TestFrameworks, Tests, url }
 
@@ -21,8 +21,7 @@ object Commons {
     // ----------------------------------
     // GPG Stuff
     useGpg := false,
-    pgpPublicRing := baseDirectory.value \ "project" \ "gnupg" \ "pubring.gpg",
-    pgpSecretRing := baseDirectory.value \ "project" \ "gnupg" \ "secring.gpg",
+    usePgpKeyHex("07EF6093B4C0007ECA5188BDB866D31874B0B47F"),
     pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
     // Sonatype
     credentials += Credentials(
