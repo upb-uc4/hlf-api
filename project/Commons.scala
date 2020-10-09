@@ -1,4 +1,4 @@
-import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, pgpPublicRing, pgpSecretRing, useGpg, usePgpKeyHex }
+import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, pgpPublicRing, pgpSecretRing, useGpg, useGpgPinentry, usePgpKeyHex }
 import sbt.Keys.{ testOptions, _ }
 import sbt.{ Credentials, Developer, ScmInfo, Test, TestFrameworks, Tests, url }
 
@@ -20,9 +20,10 @@ object Commons {
     publishArtifact in Test := false,
     // ----------------------------------
     // GPG Stuff
-    useGpg := false,
-    usePgpKeyHex("07EF6093B4C0007ECA5188BDB866D31874B0B47F"),
+    useGpgPinentry := true,
+    // usePgpKeyHex("07EF6093B4C0007ECA5188BDB866D31874B0B47F"),
     pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
+    // ----------------------------------
     // Sonatype
     credentials += Credentials(
       "Sonatype Nexus Repository Manager",
