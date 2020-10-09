@@ -1,9 +1,9 @@
 name: Publish to Sonatype
 
 on:
-  # on new release / tag
-  release:
-    types: [published]
+  # on push tag
+  push:
+    tags: ['*']
 
 jobs:
 
@@ -15,7 +15,7 @@ jobs:
       - name: check out source repository
         uses: actions/checkout@v2
       # setup scala@v2
-      - uses: olafurpg/setup-scala@v2
+      - uses: olafurpg/setup-scala@v7
       # setup gpg plugin
       - uses: olafurpg/setup-gpg@v2
 
