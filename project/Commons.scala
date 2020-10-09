@@ -1,4 +1,4 @@
-import com.jsuereth.sbtpgp.PgpKeys.useGpg
+import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, useGpg }
 import sbt.Keys.{ testOptions, _ }
 import sbt.{ Credentials, Developer, ScmInfo, Test, TestFrameworks, Tests, url }
 
@@ -27,6 +27,7 @@ object Commons {
       sys.env.getOrElse("SONATYPE_PASS", "")
     ),
     useGpg := false,
+    pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
     // Sonatype
     credentials += Credentials(
       "Sonatype Nexus Repository Manager",
