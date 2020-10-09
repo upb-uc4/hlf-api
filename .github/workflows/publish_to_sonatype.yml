@@ -21,7 +21,22 @@ jobs:
 
       # release action
       - name: Publish ${{ github.ref }}
-        run: sbt sonatypeBundleRelease
+        run: |
+          echo "##########################"
+          echo "    sonatype Prepare"
+          echo "##########################"
+          sbt sonatypePrepare
+          echo "##########################"
+          echo "    sonatype Prepare"
+          echo "##########################"
+          sbt sonatypeBundleUpload
+          echo "##########################"
+          echo "    sonatype Release"
+          echo "##########################"
+          sbt sonatypeRelease
+          echo "##########################"
+          echo "    finished"
+          echo "##########################"
         env: # Add env variables from secrets
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
           PGP_SECRET: ${{ secrets.PGP_SECRET }}
