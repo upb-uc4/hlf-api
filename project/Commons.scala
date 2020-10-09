@@ -19,16 +19,10 @@ object Commons {
     pomIncludeRepository := { _ => false },
     publishArtifact in Test := false,
     // ----------------------------------
-    // GPG Credentials
-    credentials += Credentials(
-      "Sonatype Nexus Repository Manager",
-      "oss.sonatype.org",
-      sys.env.getOrElse("PGP_PASSPHRASE", ""),
-      sys.env.getOrElse("SONATYPE_PASS", "")
-    ),
+    // GPG Stuff
     useGpg := false,
-    pgpPublicRing := baseDirectory.value / "project" / "gnupg" / "pubring.gpg",
-    pgpSecretRing := baseDirectory.value / "project" / "gnupg" / "secring.gpg",
+    pgpPublicRing := baseDirectory.value \ "project" \ "gnupg" \ "pubring.gpg",
+    pgpSecretRing := baseDirectory.value \ "project" \ "gnupg" \ "secring.gpg",
     pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
     // Sonatype
     credentials += Credentials(
