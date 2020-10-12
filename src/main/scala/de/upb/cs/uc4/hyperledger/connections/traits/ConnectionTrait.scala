@@ -74,7 +74,7 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   @throws[HyperledgerExceptionTrait]
-  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionId: java.lang.String, params: String*): Array[Byte] = {
+  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionId: String, params: String*): Array[Byte] = {
 
     class PrivateMethodCaller(x: AnyRef, methodName: String) {
       def apply(_args: Any*): Any = {
@@ -94,12 +94,13 @@ trait ConnectionTrait extends AutoCloseable {
 
     def p(x: AnyRef): PrivateMethodExposer = new PrivateMethodExposer(x)
 
-    def sendSignedProposal(channel: Channel, request: TransactionProposalRequest): util.Collection[ProposalResponse] = {
+    //def sendSignedProposal(channel: Channel, request: TransactionProposalRequest): util.Collection[ProposalResponse] = {
+    def sendSignedProposal(): util.Collection[ProposalResponse] = {
       val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
       val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
 
       //val proposalRequest: TransactionProposalRequest = TransactionProposalRequest.newInstance(user)
-      channel.sendTransactionProposal(request)
+      //channel.sendTransactionProposal(request)
 
       val context: TransactionContext = contract.getNetwork.getChannel.newTransactionContext()
       // val peers: util.Collection[Peer] = callPrivateMethodOnChannel("getEndorsingPeers")
@@ -124,7 +125,7 @@ trait ConnectionTrait extends AutoCloseable {
 
     val proposalResponses: util.Collection[ProposalResponse] = {
       // if (endorsingPeers != null) {
-      sendSignedProposal(channel, request)
+      sendSignedProposal() //channel, request)
       // }
       // else {
       //   val endorsingChannelPeers = callPrivateMethodOnChannel("getEndorsingPeers").asInstanceOf[util.Collection[Peer]]
