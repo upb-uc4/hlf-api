@@ -31,7 +31,7 @@
 
 ## Bug Fixes
 
-- Improve resillience of parallel tests against negative influence from other tests
+- Improve resilience of parallel tests against negative influence from other tests
 
 ## Refactor
 

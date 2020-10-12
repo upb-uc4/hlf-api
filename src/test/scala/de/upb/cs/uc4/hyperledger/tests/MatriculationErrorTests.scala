@@ -10,7 +10,7 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 class MatriculationErrorTests extends TestBase {
 
   var chaincodeConnection: ConnectionMatriculationTrait = _
-  var existingMatriculationId = "501"
+  val existingMatriculationId = "501"
 
   override def beforeAll(): Unit = {
     super.beforeAll()

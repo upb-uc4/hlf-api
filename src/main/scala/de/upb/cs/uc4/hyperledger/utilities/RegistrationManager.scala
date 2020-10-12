@@ -65,7 +65,7 @@ object RegistrationManager extends RegistrationManagerTrait {
     val name = getNameFromIdentity(identity)
     Logger.debug("Retrieved Name from identity: '$name'")
     new User() {
-      override def getName = name
+      override def getName: String = name
       override def getRoles: util.Set[String] = null
       override def getAccount = ""
       override def getAffiliation: String = affiliationName

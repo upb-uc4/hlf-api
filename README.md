@@ -1,4 +1,4 @@
-# Scala Hyperleger API
+# Scala Hyperledger API
 
 ## Current Status
 ![Tests with Dev Network](https://github.com/upb-uc4/hlf-api/workflows/Hyperledger_Scala_With_Dev_Network/badge.svg)
@@ -7,7 +7,7 @@
 
 ![Code Format](https://github.com/upb-uc4/hlf-api/workflows/Code%20Format%20Check%20Pipeline/badge.svg)
 
-## Prerequesites
+## Prerequisites
 
 1. Have a working UC4-chaincode-network running 
     (download from [dev-network](https://github.com/upb-uc4/hlf-dev-network)
@@ -62,7 +62,7 @@ protected val chaincode: String = "mycc" // name of the chaincode a connection i
 - for user-management
 ```scala
 protected val tlsCert: Path = "/hyperledger_assets/ca_cert.pem" // CA-certificate to have your client validate that the Server you are talking to is actually the CA.
-protected val caURL: String = "172.17.0.3:30906" // adress of the CA-server.
+protected val caURL: String = "172.17.0.3:30906" // address of the CA-server.
 
 protected val username: String = "TestUser123" // this should in most cases be the name of the .id file in your wallet directory.
 protected val password: String = "Test123" // a password used to register a user and receive/set a certificate for said user when enrolling.
@@ -76,7 +76,7 @@ protected val organisationName: String = "org1" // the name of the organisation 
 val enrollmentId: String = "TestUser123" // new user to be registered.
 val adminUserName: String = "scala-registration-admin-org1" // current existing adminEntity in our production network.
 val organisationName: String = "org1" // current organisation name in our production network.
-val maxEnrollments: Integer = 1 // number of times the user can be enrolled/reenrolled with the same username-password combination (default = 1)
+val maxEnrollments: Integer = 1 // number of times the user can be enrolled/re-enrolled with the same username-password combination (default = 1)
 val newUserType: String = HFCAClient.HFCA_TYPE_CLIENT // permission level of the new user (default = HFCAClient.HFCA_TYPE_CLIENT)
 
 val newUserPassword: String = RegistrationManager.register(tlsCert, caURL, newUserName, adminUserName, walletPath, organisationName, maxEnrollments)
@@ -128,7 +128,7 @@ Now the secure enrollment can be preformed.
 val signedCertificate: String = EnrollmentManager.enrollSecure(caURL, tlsCert, enrollmentId, enrollmentSecret, adminName, adminWalletPath, channel, chaincode, networkDescriptionPath)
 ```
 
-### 2. Connection Initilization
+### 2. Connection Initialization
 Simply create an object of the connection for the contract that you want to access.
 ```scala
 def createConnection: ConnectionMatriculationTrait =
