@@ -41,7 +41,7 @@ on:
 
 jobs:
 
-  DeployAndTestDevNetwork:
+  DeployAndTestNoNetwork:
     env:
       TEST_SET: "*NonExistentNetworkTests"
       CHAINCODE_TARGET: "develop"
