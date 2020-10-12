@@ -74,7 +74,25 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   @throws[HyperledgerExceptionTrait]
-  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionId: java.lang.String, params: java.lang.String*): Array[Byte] = {
+  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionId: java.lang.String, params: String*): Array[Byte] = {
+
+    class PrivateMethodCaller(x: AnyRef, methodName: String) {
+      def apply(_args: Any*): Any = {
+        val args = _args.map(_.asInstanceOf[AnyRef])
+        def _parents: LazyList[Class[_]] = LazyList(x.getClass) #::: _parents.map(_.getSuperclass)
+        val parents = _parents.takeWhile(_ != null).toList
+        val methods = parents.flatMap(_.getDeclaredMethods)
+        val method = methods.find(_.getName == methodName).getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
+        method.setAccessible(true)
+        method.invoke(x, args: _*)
+      }
+    }
+
+    class PrivateMethodExposer(x: AnyRef) {
+      def apply(method: scala.Symbol): PrivateMethodCaller = new PrivateMethodCaller(x, method.name)
+    }
+
+    def p(x: AnyRef): PrivateMethodExposer = new PrivateMethodExposer(x)
 
     def sendSignedProposal(channel: Channel, request: TransactionProposalRequest): util.Collection[ProposalResponse] = {
       val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
@@ -84,14 +102,17 @@ trait ConnectionTrait extends AutoCloseable {
       channel.sendTransactionProposal(request)
 
       val context: TransactionContext = contract.getNetwork.getChannel.newTransactionContext()
-      val peers: util.Collection[Peer] = callPrivateMethodOnChannel("getEndorsingPeers")
-      callPrivateMethodOnChannel("sendProposalToPeers", peers, signedProposal, context)
+      // val peers: util.Collection[Peer] = callPrivateMethodOnChannel("getEndorsingPeers")
+      val peers: util.Collection[Peer] = p(contract.getNetwork().getChannel())(Symbol("getEndorsingPeers"))().asInstanceOf[util.Collection[Peer]]
+      // callPrivateMethodOnChannel("sendProposalToPeers", peers, signedProposal, context)
+      p(contract.getNetwork().getChannel())(Symbol("sendProposalToPeers"))(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
     }
 
     val transaction: TransactionImpl = contract.createTransaction(transactionId).asInstanceOf[TransactionImpl]
 
     //try {
-    val request = callPrivateMethodOnTransactionImpl(transaction, "newProposalRequest", params: _*).asInstanceOf[TransactionProposalRequest]
+    // val request = callPrivateMethodOnTransactionImpl(transaction, "newProposalRequest", params: _*).asInstanceOf[TransactionProposalRequest] // works, but requires one function per private method to be called
+    val request = p(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
 
     // val f = transaction.getClass.getDeclaredField("endorsingPeers")
     // f.setAccessible(true)
@@ -110,9 +131,11 @@ trait ConnectionTrait extends AutoCloseable {
       //   sendSignedProposal(channel, request, endorsingChannelPeers)
       // }
     }
-    val validResponses = callPrivateMethodOnTransactionImpl(transaction, "validatePeerResponses", proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+    // val validResponses = callPrivateMethodOnTransactionImpl(transaction, "validatePeerResponses", proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+    val validResponses = p(transaction)(Symbol("validatePeerResponse"))(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
 
-    try callPrivateMethodOnTransactionImpl(transaction, "commitTransaction", validResponses).asInstanceOf[Array[Byte]]
+    // try callPrivateMethodOnTransactionImpl(transaction, "commitTransaction", validResponses).asInstanceOf[Array[Byte]]
+    try p(transaction)(Symbol("commitTransaction"))(validResponses).asInstanceOf[Array[Byte]]
     catch {
       case e: ContractException =>
         e.setProposalResponses(proposalResponses)
