@@ -20,9 +20,9 @@ object Commons {
     publishArtifact in Test := false,
     // ----------------------------------
     // GPG Stuff
-    useGpgPinentry := true,
+    // useGpgPinentry := true,
     // usePgpKeyHex("07EF6093B4C0007ECA5188BDB866D31874B0B47F"),
-    pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
+    // pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
     // ----------------------------------
     // Sonatype
     /*credentials += Credentials(
