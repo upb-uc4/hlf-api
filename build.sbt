@@ -1,6 +1,6 @@
 lazy val hyperledger_api = (project in file("."))
   .settings(
-    Commons.commonSettings("hyperledger_api"),
+    Commons.commonSettings("hlf_api"),
     description := "Scala API to access our UC4 contracts/chaincodes.",
     /*publishTo := {
       val nexus = "https://oss.sonatype.org/"
