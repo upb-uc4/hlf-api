@@ -22,8 +22,8 @@ object Commons {
     pomIncludeRepository := { _ => false },
     // ----------------------------------
     // GPG Stuff
-    // useGpgPinentry := true,
-    // pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
+    useGpgPinentry := true,
+    pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
     // ----------------------------------
     // Sonatype
     /*credentials += Credentials(
