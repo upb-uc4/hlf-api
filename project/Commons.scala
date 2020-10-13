@@ -1,6 +1,7 @@
-import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, pgpPublicRing, pgpSecretRing, useGpg, useGpgPinentry, usePgpKeyHex }
+import com.jsuereth.sbtpgp.PgpKeys.useGpg
+import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, useGpgPinentry, usePgpKeyHex }
 import sbt.Keys.{ testOptions, _ }
-import sbt.{ Credentials, Developer, ScmInfo, Test, TestFrameworks, Tests, url }
+import sbt.{ Developer, TestFrameworks, Tests, url }
 
 object Commons {
   def commonSettings(project: String) = Seq(
@@ -22,8 +23,10 @@ object Commons {
     pomIncludeRepository := { _ => false },
     // ----------------------------------
     // GPG Stuff
-    useGpgPinentry := true,
+    useGpg := false,
+    //useGpgPinentry := true,
     pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
+    usePgpKeyHex("02C7EAB5DE1AD596FE5CCB68DBBB1A432C70E654"),
     // ----------------------------------
     // Sonatype
     /*credentials += Credentials(
