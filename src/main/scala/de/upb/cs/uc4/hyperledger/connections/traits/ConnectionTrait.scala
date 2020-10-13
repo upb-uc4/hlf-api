@@ -59,83 +59,40 @@ trait ConnectionTrait extends AutoCloseable {
     }
   }
 
-  final def createUnsignedTransaction(transactionId: String, params: String*): ProposalPackage.Proposal = {
-    val client = gateway.getClient()
-    val request = client.newTransactionProposalRequest()
-    request.setChaincodeName(contractName)
-    request.setFcn(transactionId)
-    request.setArgs(params: _*)
-    val context: TransactionContext = contract.getNetwork.getChannel.newTransactionContext()
-
-    val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder
+  final def createUnsignedTransaction(transactionName: String, params: String*): (ProposalPackage.Proposal, String) = {
+    val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
+    val request: TransactionProposalRequest = p(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val channel = contract.getNetwork().getChannel()
+    val context: TransactionContext = p(channel)(Symbol("getTransactionContext"))(request).asInstanceOf[TransactionContext]
+    val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder()
     proposalBuilder.context(context)
     proposalBuilder.request(request)
-    proposalBuilder.build()
+    (proposalBuilder.build(), context.getTxID())
   }
 
   @throws[HyperledgerExceptionTrait]
-  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionId: String, params: String*): Array[Byte] = {
+  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionName: String, transactionId: String, params: String*): Array[Byte] = {
 
-    class PrivateMethodCaller(x: AnyRef, methodName: String) {
-      def apply(_args: Any*): Any = {
-        val args = _args.map(_.asInstanceOf[AnyRef])
-        def _parents: LazyList[Class[_]] = LazyList(x.getClass) #::: _parents.map(_.getSuperclass)
-        val parents = _parents.takeWhile(_ != null).toList
-        val methods = parents.flatMap(_.getDeclaredMethods)
-        val method = methods.find(_.getName == methodName).getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
-        method.setAccessible(true)
-        method.invoke(x, args: _*)
-      }
-    }
-
-    class PrivateMethodExposer(x: AnyRef) {
-      def apply(method: scala.Symbol): PrivateMethodCaller = new PrivateMethodCaller(x, method.name)
-    }
-
-    def p(x: AnyRef): PrivateMethodExposer = new PrivateMethodExposer(x)
-
-    //def sendSignedProposal(channel: Channel, request: TransactionProposalRequest): util.Collection[ProposalResponse] = {
     def sendSignedProposal(): util.Collection[ProposalResponse] = {
       val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
       val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
+      val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
+      val request: TransactionProposalRequest = p(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
+      val context: TransactionContext = p(contract.getNetwork.getChannel)(Symbol("getTransactionContext"))(request).asInstanceOf[TransactionContext]
+      f(context)(Symbol("txID"))(transactionId)
+      context.verify(request.doVerify)
+      context.setProposalWaitTime(request.getProposalWaitTime)
 
-      //val proposalRequest: TransactionProposalRequest = TransactionProposalRequest.newInstance(user)
-      //channel.sendTransactionProposal(request)
-
-      val context: TransactionContext = contract.getNetwork.getChannel.newTransactionContext()
-      // val peers: util.Collection[Peer] = callPrivateMethodOnChannel("getEndorsingPeers")
       val peers: util.Collection[Peer] = p(contract.getNetwork().getChannel())(Symbol("getEndorsingPeers"))().asInstanceOf[util.Collection[Peer]]
-      // callPrivateMethodOnChannel("sendProposalToPeers", peers, signedProposal, context)
+
       p(contract.getNetwork().getChannel())(Symbol("sendProposalToPeers"))(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
     }
 
-    val transaction: TransactionImpl = contract.createTransaction(transactionId).asInstanceOf[TransactionImpl]
+    val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
 
-    //try {
-    // val request = callPrivateMethodOnTransactionImpl(transaction, "newProposalRequest", params: _*).asInstanceOf[TransactionProposalRequest] // works, but requires one function per private method to be called
-    val request = p(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val proposalResponses: util.Collection[ProposalResponse] = sendSignedProposal()
+    val validResponses = p(transaction)(Symbol("validatePeerResponses"))(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
 
-    // val f = transaction.getClass.getDeclaredField("endorsingPeers")
-    // f.setAccessible(true)
-    // val endorsingPeers = f.get(transaction).asInstanceOf[util.Collection[Peer]]
-    val network: NetworkImpl = contract.getNetwork()
-    val channel: Channel = network.getChannel()
-
-    // if (network.getGateway.isDiscoveryEnabled) TODO not supported in case there are no endorsing peers
-
-    val proposalResponses: util.Collection[ProposalResponse] = {
-      // if (endorsingPeers != null) {
-      sendSignedProposal() //channel, request)
-      // }
-      // else {
-      //   val endorsingChannelPeers = callPrivateMethodOnChannel("getEndorsingPeers").asInstanceOf[util.Collection[Peer]]
-      //   sendSignedProposal(channel, request, endorsingChannelPeers)
-      // }
-    }
-    // val validResponses = callPrivateMethodOnTransactionImpl(transaction, "validatePeerResponses", proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
-    val validResponses = p(transaction)(Symbol("validatePeerResponse"))(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
-
-    // try callPrivateMethodOnTransactionImpl(transaction, "commitTransaction", validResponses).asInstanceOf[Array[Byte]]
     try p(transaction)(Symbol("commitTransaction"))(validResponses).asInstanceOf[Array[Byte]]
     catch {
       case e: ContractException =>
@@ -148,20 +105,42 @@ trait ConnectionTrait extends AutoCloseable {
     //}
   }
 
-  final def callPrivateMethodOnTransactionImpl[T](transaction: TransactionImpl, methodName: String, args: Object*): T = {
-    val argTypes = Array(classOf[Array[String]])
-    val method: Method = classOf[TransactionImpl].getDeclaredMethod(methodName, argTypes: _*)
-    method.setAccessible(true)
-    val stringArgs: Array[String] = args.map(o => o.asInstanceOf[String]).toArray
-    method.invoke(transaction, stringArgs).asInstanceOf[T]
+  class PrivateMethodCaller(x: AnyRef, methodName: String) {
+    def apply(_args: Any*): Any = {
+      val args = _args.map(_.asInstanceOf[AnyRef])
+      def _parents: LazyList[Class[_]] = LazyList(x.getClass) #::: _parents.map(_.getSuperclass)
+      val parents = _parents.takeWhile(_ != null).toList
+      val methods = parents.flatMap(_.getDeclaredMethods)
+      val method = methods.find(_.getName == methodName).getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
+      method.setAccessible(true)
+      method.invoke(x, args: _*)
+    }
   }
 
-  final def callPrivateMethodOnChannel[T](methodName: String, args: Object*): T = {
-    val channel: Channel = gateway.getNetwork("").getChannel()
-    val method: Method = channel.getClass().getDeclaredMethod(methodName)
-    method.setAccessible(true)
-    method.invoke(channel, args: _*).asInstanceOf[T]
+  class PrivateMethodExposer(x: AnyRef) {
+    def apply(method: scala.Symbol): PrivateMethodCaller = new PrivateMethodCaller(x, method.name)
   }
+
+  def p(x: AnyRef): PrivateMethodExposer = new PrivateMethodExposer(x)
+
+  class PrivateFieldCaller(x: AnyRef, fieldName: String) {
+    def apply(_arg: Any): Any = {
+      val arg = _arg.asInstanceOf[AnyRef]
+      def _parents: LazyList[Class[_]] = LazyList(x.getClass) #::: _parents.map(_.getSuperclass)
+      val parents = _parents.takeWhile(_ != null).toList
+      val fields = parents.flatMap(_.getDeclaredFields)
+      val field = fields.find(_.getName == fieldName).getOrElse(throw new IllegalArgumentException("Method " + fieldName + " not found"))
+      field.setAccessible(true)
+      field.set(x, arg)
+    }
+  }
+
+  class PrivateFieldExposer(x: AnyRef) {
+    def apply(field: scala.Symbol): PrivateFieldCaller = new PrivateFieldCaller(x, field.name)
+  }
+
+  def f(x: AnyRef): PrivateFieldExposer = new PrivateFieldExposer(x)
+
 
   /** Since the chain returns bytes, we need to convert them to a readable Result.
     *
