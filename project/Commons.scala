@@ -1,5 +1,5 @@
 import com.jsuereth.sbtpgp.PgpKeys.useGpg
-import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, useGpgPinentry, usePgpKeyHex }
+import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, usePgpKeyHex }
 import sbt.Keys.{ testOptions, _ }
 import sbt.{ Developer, TestFrameworks, Tests, url }
 

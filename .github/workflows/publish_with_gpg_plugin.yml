@@ -33,15 +33,15 @@ jobs:
 
       # cache stuff
       - uses: actions/cache@v2
-          with:
-            path: |
-              ~/.cache/coursier
-              ~/.ivy2/cache
-              ~/.sbt
-              !~/.ivy2/.sbt.ivy.lock
-              !~/.ivy2/cache/**/ivydata-*.properties
-              !~/.sbt/**/*.lock
-            key: ${{ runner.os }}-sbt-cache-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+        with:
+          path: |
+            ~/.cache/coursier
+            ~/.ivy2/cache
+            ~/.sbt
+            !~/.ivy2/.sbt.ivy.lock
+            !~/.ivy2/cache/**/ivydata-*.properties
+            !~/.sbt/**/*.lock
+          key: ${{ runner.os }}-sbt-cache-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
       # release action
       - name: Publish ${{ github.ref }}
