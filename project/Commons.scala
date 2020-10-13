@@ -15,10 +15,10 @@ object Commons {
   )
 
   def gpgSettings() = Seq(
-    useGpg := false,
-    //useGpgPinentry := true,
-    pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
-    usePgpKeyHex("02C7EAB5DE1AD596FE5CCB68DBBB1A432C70E654")
+    // useGpg := false,
+    // useGpgPinentry := true,
+    // pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
+    // usePgpKeyHex("02C7EAB5DE1AD596FE5CCB68DBBB1A432C70E654")
   )
 
   def commonSettings() = Seq(
