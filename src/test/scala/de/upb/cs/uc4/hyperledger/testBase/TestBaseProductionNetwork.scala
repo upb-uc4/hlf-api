@@ -1,6 +1,6 @@
 package de.upb.cs.uc4.hyperledger.testBase
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.{ Path, Paths }
 
 protected class TestBaseProductionNetwork extends TestBaseTrait {
   val networkDescriptionPath: Path = Paths.get(getClass.getResource("/connection_profile_kubernetes.yaml").toURI)
