@@ -5,7 +5,7 @@ addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.3")
 // ---------------------------
 // release plugin
 addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.3")
-/* plugins are already brought in by sbt-ci-release
+/* below plugins are already brought in by sbt-ci-release
 // Publish to sonatype - maven
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.3")
 // public key generation
