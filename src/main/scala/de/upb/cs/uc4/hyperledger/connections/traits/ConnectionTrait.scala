@@ -61,9 +61,9 @@ trait ConnectionTrait extends AutoCloseable {
 
   final def createUnsignedTransaction(transactionName: String, params: String*): (ProposalPackage.Proposal, String) = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = p(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val request: TransactionProposalRequest = callPrivateMethod(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
     val channel = contract.getNetwork().getChannel()
-    val context: TransactionContext = p(channel)(Symbol("getTransactionContext"))(request).asInstanceOf[TransactionContext]
+    val context: TransactionContext = callPrivateMethod(channel)(Symbol("getTransactionContext"))(request).asInstanceOf[TransactionContext]
     val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder()
     proposalBuilder.context(context)
     proposalBuilder.request(request)
@@ -73,27 +73,23 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[HyperledgerExceptionTrait]
   final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionName: String, transactionId: String, params: String*): Array[Byte] = {
 
-    def sendSignedProposal(): util.Collection[ProposalResponse] = {
-      val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
-      val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
-      val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-      val request: TransactionProposalRequest = p(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
-      val context: TransactionContext = p(contract.getNetwork.getChannel)(Symbol("getTransactionContext"))(request).asInstanceOf[TransactionContext]
-      f(context)(Symbol("txID"))(transactionId)
-      context.verify(request.doVerify)
-      context.setProposalWaitTime(request.getProposalWaitTime)
-
-      val peers: util.Collection[Peer] = p(contract.getNetwork().getChannel())(Symbol("getEndorsingPeers"))().asInstanceOf[util.Collection[Peer]]
-
-      p(contract.getNetwork().getChannel())(Symbol("sendProposalToPeers"))(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
-    }
-
+    val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
+    val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
+    val request: TransactionProposalRequest = callPrivateMethod(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val context: TransactionContext = callPrivateMethod(contract.getNetwork.getChannel)(Symbol("getTransactionContext"))(request).asInstanceOf[TransactionContext]
+    setPrivateField(context)(Symbol("txID"))(transactionId)
+    context.verify(request.doVerify)
+    context.setProposalWaitTime(request.getProposalWaitTime)
 
-    val proposalResponses: util.Collection[ProposalResponse] = sendSignedProposal()
-    val validResponses = p(transaction)(Symbol("validatePeerResponses"))(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+    setPrivateField(transaction)(Symbol("transactionContext"))(context)
 
-    try p(transaction)(Symbol("commitTransaction"))(validResponses).asInstanceOf[Array[Byte]]
+    val peers: util.Collection[Peer] = callPrivateMethod(contract.getNetwork().getChannel())(Symbol("getEndorsingPeers"))().asInstanceOf[util.Collection[Peer]]
+
+    val proposalResponses: util.Collection[ProposalResponse] = callPrivateMethod(contract.getNetwork().getChannel())(Symbol("sendProposalToPeers"))(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
+    val validResponses = callPrivateMethod(transaction)(Symbol("validatePeerResponses"))(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+
+    try callPrivateMethod(transaction)(Symbol("commitTransaction"))(validResponses).asInstanceOf[Array[Byte]]
     catch {
       case e: ContractException =>
         e.setProposalResponses(proposalResponses)
@@ -121,7 +117,7 @@ trait ConnectionTrait extends AutoCloseable {
     def apply(method: scala.Symbol): PrivateMethodCaller = new PrivateMethodCaller(x, method.name)
   }
 
-  def p(x: AnyRef): PrivateMethodExposer = new PrivateMethodExposer(x)
+  def callPrivateMethod(x: AnyRef): PrivateMethodExposer = new PrivateMethodExposer(x)
 
   class PrivateFieldCaller(x: AnyRef, fieldName: String) {
     def apply(_arg: Any): Any = {
@@ -139,7 +135,7 @@ trait ConnectionTrait extends AutoCloseable {
     def apply(field: scala.Symbol): PrivateFieldCaller = new PrivateFieldCaller(x, field.name)
   }
 
-  def f(x: AnyRef): PrivateFieldExposer = new PrivateFieldExposer(x)
+  def setPrivateField(x: AnyRef): PrivateFieldExposer = new PrivateFieldExposer(x)
 
 
   /** Since the chain returns bytes, we need to convert them to a readable Result.

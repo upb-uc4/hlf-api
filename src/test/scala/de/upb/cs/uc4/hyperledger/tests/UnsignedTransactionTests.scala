@@ -1,7 +1,10 @@
 package de.upb.cs.uc4.hyperledger.tests
 
+import java.nio.charset.StandardCharsets
+
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
+import org.bouncycastle.util.encoders.UTF8
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
 class UnsignedTransactionTests extends TestBase {
@@ -40,7 +43,7 @@ class UnsignedTransactionTests extends TestBase {
         val transactionContext: TransactionContext = chaincodeConnection.contract.getNetwork.getChannel.newTransactionContext()
         val signature = transactionContext.signByteString(proposal.toByteArray())
         val result = chaincodeConnection.submitSignedTransaction(proposal, signature, transaction, transactionId, enrollmentId, certificate)
-        println("\n\n\n##########################\nHeader:\n##########################\n\n" + result)
+        println("\n\n\n##########################\nResult:\n##########################\n\n" + new String(result, StandardCharsets.UTF_8))
       }
     }
   }
