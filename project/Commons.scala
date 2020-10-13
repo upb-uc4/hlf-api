@@ -6,22 +6,23 @@ object Commons {
   def commonSettings(project: String) = Seq(
     // Info for Maven Publishing
     // ----------------------------------
+    // set by plugins
     // version := "v0.9.2",
     // isSnapshot := version.value endsWith "SNAPSHOT",
+    // scmInfo := Some(ScmInfo(url("https://github.com/upb-uc4/hlf-api"), "scm:git@github.com:upb-uc4/hlf-api.git")),
+    // publishMavenStyle := true,
+    // publishArtifact in Test := false,
+    // ----------------------------------
     organization := "de.upb.cs.uc4",
     organizationName := "uc4",
     homepage := Some(url("https://uc4.cs.upb.de/")),
-    // scmInfo := Some(ScmInfo(url("https://github.com/upb-uc4/hlf-api"), "scm:git@github.com:upb-uc4/hlf-api.git")),
     developers := List(Developer("UC4", "UC4", "UC4_official@web.de", url("https://github.com/upb-uc4"))),
     licenses := List("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-    // publishMavenStyle := true,
     crossPaths := false,
     pomIncludeRepository := { _ => false },
-    publishArtifact in Test := false,
     // ----------------------------------
     // GPG Stuff
     // useGpgPinentry := true,
-    // usePgpKeyHex("07EF6093B4C0007ECA5188BDB866D31874B0B47F"),
     // pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
     // ----------------------------------
     // Sonatype
