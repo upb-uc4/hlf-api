@@ -17,7 +17,7 @@ jobs:
 
       # setup scala@v2
       - uses: olafurpg/setup-scala@v7
-        -
+
       # setup gpg
       - run: |
           sudo apt-get update && sudo apt-get -y install gnupg2
