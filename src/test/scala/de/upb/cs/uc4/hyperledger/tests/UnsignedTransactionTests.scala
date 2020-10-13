@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import org.bouncycastle.util.encoders.UTF8
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
 class UnsignedTransactionTests extends TestBase {
@@ -27,22 +26,22 @@ class UnsignedTransactionTests extends TestBase {
         val enrollmentId = "100"
         val certificate = "Whatever"
         val (proposal, _) = chaincodeConnection.createUnsignedTransaction("addCertificate", enrollmentId, certificate)
-        println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader().toStringUtf8())
-        println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload().toStringUtf8())
+        println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
+        println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
       }
     }
 
     "passing a signed transaction" should {
       "submit the transaction to the ledger" in {
-        val transaction = "addCertificate"
+        val transactionName = "addCertificate"
         val enrollmentId = "101"
         val certificate = "Whatever"
-        val (proposal, transactionId) = chaincodeConnection.createUnsignedTransaction(transaction, enrollmentId, certificate)
-        println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader().toStringUtf8())
-        println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload().toStringUtf8())
+        val (proposal, transactionId) = chaincodeConnection.createUnsignedTransaction(transactionName, enrollmentId, certificate)
+        println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
+        println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
         val transactionContext: TransactionContext = chaincodeConnection.contract.getNetwork.getChannel.newTransactionContext()
-        val signature = transactionContext.signByteString(proposal.toByteArray())
-        val result = chaincodeConnection.submitSignedTransaction(proposal, signature, transaction, transactionId, enrollmentId, certificate)
+        val signature = transactionContext.signByteString(proposal.toByteArray)
+        val result = chaincodeConnection.submitSignedTransaction(proposal, signature, transactionName, transactionId, enrollmentId, certificate)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + new String(result, StandardCharsets.UTF_8))
       }
     }
