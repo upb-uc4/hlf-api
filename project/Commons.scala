@@ -20,7 +20,7 @@ object Commons {
     // Info for Maven Publishing
     // ----------------------------------
     // set by plugins
-    version := "v0.10.0",
+    // version := "v0.10.0",
     // isSnapshot := version.value endsWith "SNAPSHOT",
     // scmInfo := Some(ScmInfo(url("https://github.com/upb-uc4/hlf-api"), "scm:git@github.com:upb-uc4/hlf-api.git")),
     // publishMavenStyle := true,
