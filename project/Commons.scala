@@ -1,7 +1,6 @@
-import com.jsuereth.sbtpgp.PgpKeys.useGpg
-import com.jsuereth.sbtpgp.SbtPgp.autoImport.{ pgpPassphrase, usePgpKeyHex }
 import sbt.Keys.{ testOptions, _ }
 import sbt.{ Developer, TestFrameworks, Tests, url }
+import sbtbuildinfo.BuildInfoPlugin.autoImport.{ BuildInfoKey, buildInfoKeys, buildInfoPackage }
 
 object Commons {
 
@@ -11,21 +10,17 @@ object Commons {
     // append -deprecation to the options passed to the Scala compiler
     scalacOptions += "-deprecation",
     // testOption for test-reports
-    testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test_reports/" + project)
+    testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test_reports/" + project),
+    // build info
+    buildInfoKeys := Seq[BuildInfoKey](organization, name, version, scalaVersion, sbtVersion),
+    buildInfoPackage := s"${organization.value}.hyperledger"
   )
 
-  def gpgSettings() = Seq(
-    // useGpg := false,
-    // useGpgPinentry := true,
-    // pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
-    // usePgpKeyHex("02C7EAB5DE1AD596FE5CCB68DBBB1A432C70E654")
-  )
-
-  def commonSettings() = Seq(
+  def projectInfo() = Seq(
     // Info for Maven Publishing
     // ----------------------------------
     // set by plugins
-    // version := "v0.9.2",
+    version := "v0.10.0",
     // isSnapshot := version.value endsWith "SNAPSHOT",
     // scmInfo := Some(ScmInfo(url("https://github.com/upb-uc4/hlf-api"), "scm:git@github.com:upb-uc4/hlf-api.git")),
     // publishMavenStyle := true,
@@ -47,5 +42,12 @@ object Commons {
     licenses := List("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
     crossPaths := false,
     pomIncludeRepository := { _ => false }
+  )
+
+  def gpgSettings() = Seq(
+    // useGpg := false,
+    // useGpgPinentry := true,
+    // pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray),
+    // usePgpKeyHex("02C7EAB5DE1AD596FE5CCB68DBBB1A432C70E654")
   )
 }
