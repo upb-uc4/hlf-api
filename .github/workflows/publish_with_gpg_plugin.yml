@@ -49,7 +49,12 @@ jobs:
 
       # release action
       - name: Publish ${{ github.ref }}
-        run: sbt ci-release
+        run: |
+          echo ======================
+          echo version
+          sbt version
+          echo ======================
+          sbt ci-release
         env: # Add env variables from secrets
           GITHUB_REF: ${{ github.ref }}
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
