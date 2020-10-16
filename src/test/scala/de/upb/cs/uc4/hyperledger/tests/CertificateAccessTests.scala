@@ -38,6 +38,18 @@ class CertificateAccessTests extends TestBase {
         TestHelper.compareJson(newCertificate, chaincodeConnection.updateCertificate(enrollmentId, newCertificate))
         TestHelper.compareJson(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
       }
+      "support update on addOrUpdate-Command " in {
+        val enrollmentId = "100"
+        val newCertificate = "Whatever3"
+        TestHelper.compareJson(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
+        TestHelper.compareJson(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
+      }
+      "support add on addOrUpdate-Command " in {
+        val enrollmentId = "101"
+        val newCertificate = "Whatever1"
+        TestHelper.compareJson(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
+        TestHelper.compareJson(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
+      }
     }
   }
 }

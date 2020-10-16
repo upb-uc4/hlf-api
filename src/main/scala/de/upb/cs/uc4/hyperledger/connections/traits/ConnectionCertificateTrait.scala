@@ -8,7 +8,8 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     *
     * @param enrollmentID Information about the enrollmentID to add.
     * @param certificate Information about the certificate to add.
-    * @throws Exception if chaincode throws an exception.
+    * @throws TransactionExceptionTrait if chaincode throws an exception.
+    * @throws HyperledgerExceptionTrait if the framework throws an exception.
     * @return Success_state
     */
   @throws[HyperledgerExceptionTrait]
@@ -19,7 +20,8 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     *
     * @param enrollmentID enrollmentID to update
     * @param certificate certificate to update
-    * @throws Exception if chaincode throws an exception.
+    * @throws TransactionExceptionTrait if chaincode throws an exception.
+    * @throws HyperledgerExceptionTrait if the framework throws an exception.
     * @return success_state
     */
   @throws[HyperledgerExceptionTrait]
@@ -29,10 +31,23 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
   /** Executes the "getCertificate" query.
     *
     * @param enrollmentId enrollment.id to get information
-    * @throws Exception if chaincode throws an exception.
+    * @throws TransactionExceptionTrait if chaincode throws an exception.
+    * @throws HyperledgerExceptionTrait if the framework throws an exception.
     * @return JSon Course Object
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getCertificate(enrollmentId: String): String
+
+  /** Stores a new certificate on the chain. If no certificate for the user exists, we add it, else update.
+    *
+    * @param enrollmentID enrollmentID to add or update
+    * @param certificate certificate to add or update
+    * @throws TransactionExceptionTrait if chaincode throws an exception.
+    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @return success_state
+    */
+  @throws[HyperledgerExceptionTrait]
+  @throws[TransactionExceptionTrait]
+  def addOrUpdateCertificate(enrollmentID: String, certificate: String): String
 }

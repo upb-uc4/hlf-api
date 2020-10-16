@@ -2,6 +2,7 @@ import sbt.Keys.{ testOptions, _ }
 import sbt.{ Developer, TestFrameworks, Tests, url }
 import sbtbuildinfo.BuildInfoPlugin.autoImport.{ BuildInfoKey, buildInfoKeys, buildInfoPackage }
 
+// format: OFF    <-- this directive disables formatting from this point
 object Commons {
 
   def projectSettings(project: String) = Seq(
@@ -51,3 +52,4 @@ object Commons {
     // usePgpKeyHex("02C7EAB5DE1AD596FE5CCB68DBBB1A432C70E654")
   )
 }
+// format: ON    <-- this directive enables formatting from this point
