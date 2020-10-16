@@ -12,6 +12,7 @@ class UserManagementTests extends TestBase {
   "The enrollmentManager" when {
     "enrolling a User without csr" should {
       "allow for the new User to access the chain [101]" in {
+        Logger.info("Enroll Admin as user.")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
         val connection = super.initializeCourses(username)
@@ -20,6 +21,9 @@ class UserManagementTests extends TestBase {
     }
     "enrolling a User with csr" should {
       "not directly allow for the new User to access the chain [102]" in {
+        Logger.info("EnrollAdmin")
+        EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
+
         Logger.info("Register TestUser")
         val testUserName = "testid"
         val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)

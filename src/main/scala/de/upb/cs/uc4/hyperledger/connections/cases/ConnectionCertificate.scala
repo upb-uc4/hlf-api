@@ -51,7 +51,7 @@ case class ConnectionCertificate(username: String, channel: String, chaincode: S
       true
     }
     catch {
-      case _ => false
+      case _: Throwable => false
     }
   }
 }

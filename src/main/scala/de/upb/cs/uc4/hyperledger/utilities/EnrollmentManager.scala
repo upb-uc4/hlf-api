@@ -42,9 +42,7 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       adminName
     )
 
-    // store certificate on chaincode
-    val certificateConnection = ConnectionCertificate(enrollmentID, channel, chaincode, adminWalletPath, networkDescriptionPath)
-    certificateConnection.addOrUpdateCertificate(enrollmentID, certificate)
+    putNewCertificateOnChain(adminName, channel, chaincode, adminWalletPath, networkDescriptionPath, enrollmentID, certificate)
 
     certificate
   }
@@ -60,16 +58,23 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       chaincode: String,
       networkDescriptionPath: Path
   ): String = {
+    // return certificate
     var certificate: String = ""
-    PublicExceptionHelper.wrapInvocationWithNetworkException(
-      () => {
-        // check if user already exists in my wallet
-        if (WalletManager.containsIdentity(walletPath, enrollmentID)) {
-          Logger.warn(s"An identity for the user $enrollmentID already exists in the wallet.")
-        }
-        else {
-          Logger.info(s"Try to get the identity for the user $enrollmentID.")
 
+    // check if user already exists in my wallet
+    if (WalletManager.containsIdentity(walletPath, enrollmentID)) {
+      Logger.warn(
+        s""""
+           An identity for the user '$enrollmentID' already exists in your wallet.
+           If you want to re-enroll, please delete the current identity file
+         """"
+      )
+      certificate = WalletManager.getX509Identity(walletPath, enrollmentID).getCertificate.toString
+    }
+    else {
+      Logger.info(s"Try to enroll user: '$enrollmentID'.")
+      PublicExceptionHelper.wrapInvocationWithNetworkException(
+        () => {
           val caClient = CAClientManager.getCAClient(caURL, caCert)
 
           val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest(enrollmentID, "tls")
@@ -82,20 +87,24 @@ object EnrollmentManager extends EnrollmentManagerTrait {
           Logger.info("Created identity from enrollment.")
           WalletManager.putIdentity(walletPath, enrollmentID, identity)
           Logger.info(s"Successfully enrolled user $enrollmentID and inserted it into the wallet.")
-        }
-      },
-      channel,
-      chaincode,
-      networkDescriptionPath.toString,
-      enrollmentID,
-      organisationId
-    )
-
-    // store certificate on chaincode
-    val certificateConnection = ConnectionCertificate(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath)
-    certificateConnection.addOrUpdateCertificate(enrollmentID, certificate)
+        },
+        channel,
+        chaincode,
+        networkDescriptionPath.toString,
+        enrollmentID,
+        organisationId
+      )
+      putNewCertificateOnChain(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath, enrollmentID, certificate)
+    }
 
     certificate
+  }
+
+  private def putNewCertificateOnChain(connectionName: String, channel: String, chaincode: String, connectionWalletPath: Path, networkDescriptionPath: Path,
+      newEnrollmentID: String, newCertificate: String): Unit = {
+    // store certificate on chaincode
+    val certificateConnection = ConnectionCertificate(connectionName, channel, chaincode, connectionWalletPath, networkDescriptionPath)
+    certificateConnection.addOrUpdateCertificate(newEnrollmentID, newCertificate)
   }
 
   private def prepareEnrollmentRequest(

@@ -1,7 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
-import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
@@ -65,7 +64,7 @@ class MatriculationErrorTests extends TestBase {
       "throw TransactionException for malformed json Input (missing enrollmentId) " in {
         testTransactionException(
           "addMatriculationData",
-          () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoMatriculationId("123"))
+          () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoMatriculationId)
         )
       }
       "throw TransactionException for malformed json Input (invalid enrollmentId) " in {
