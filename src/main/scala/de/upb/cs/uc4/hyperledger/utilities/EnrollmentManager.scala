@@ -23,7 +23,8 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       chaincode: String,
       networkDescriptionPath: Path
   ): String = {
-    PublicExceptionHelper.wrapInvocationWithNetworkException[String](
+    var certificate: String = ""
+    PublicExceptionHelper.wrapInvocationWithNetworkException(
       () => {
         Logger.info(s"Try to sign the certificate for the user $enrollmentID.")
         val caClient = CAClientManager.getCAClient(caURL, caCert)
@@ -32,21 +33,20 @@ object EnrollmentManager extends EnrollmentManagerTrait {
         Logger.info("Successfully prepared the enrollmentRequest.")
         val enrollment = caClient.enroll(enrollmentID, enrollmentSecret, enrollmentRequestTLS)
         Logger.info("Successfully performed and retrieved enrollment.")
-        val certificate = enrollment.getCert
+        certificate = enrollment.getCert
         Logger.info("Retrieved SignedCertificate.")
-
-        // store cert on chaincode
-        val certificateConnection = ConnectionCertificate(adminName, channel, chaincode, adminWalletPath, networkDescriptionPath)
-        certificateConnection.addCertificate(enrollmentID, certificate)
-        Logger.info("Successfully stored cert on new chaincode")
-
-        certificate
       },
       channel,
       chaincode,
       networkDescriptionPath.toString,
       adminName
     )
+
+    // store certificate on chaincode
+    val certificateConnection = ConnectionCertificate(enrollmentID, channel, chaincode, adminWalletPath, networkDescriptionPath)
+    certificateConnection.addOrUpdateCertificate(enrollmentID, certificate)
+
+    certificate
   }
 
   override def enroll(
@@ -59,7 +59,8 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       channel: String,
       chaincode: String,
       networkDescriptionPath: Path
-  ): Unit = {
+  ): String = {
+    var certificate: String = ""
     PublicExceptionHelper.wrapInvocationWithNetworkException(
       () => {
         // check if user already exists in my wallet
@@ -73,6 +74,7 @@ object EnrollmentManager extends EnrollmentManagerTrait {
 
           val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest(enrollmentID, "tls")
           val enrollment = caClient.enroll(enrollmentID, enrollmentSecret, enrollmentRequestTLS)
+          certificate = enrollment.getCert
           Logger.info("Successfully performed and retrieved enrollment")
 
           // store in wallet
@@ -80,11 +82,6 @@ object EnrollmentManager extends EnrollmentManagerTrait {
           Logger.info("Created identity from enrollment.")
           WalletManager.putIdentity(walletPath, enrollmentID, identity)
           Logger.info(s"Successfully enrolled user $enrollmentID and inserted it into the wallet.")
-
-          // store cert on chaincode
-          val certificateConnection = ConnectionCertificate(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath)
-          certificateConnection.addCertificate(enrollmentID, enrollment.getCert)
-          Logger.info("Successfully stored cert on new chaincode")
         }
       },
       channel,
@@ -93,6 +90,12 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       enrollmentID,
       organisationId
     )
+
+    // store certificate on chaincode
+    val certificateConnection = ConnectionCertificate(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath)
+    certificateConnection.addOrUpdateCertificate(enrollmentID, certificate)
+
+    certificate
   }
 
   private def prepareEnrollmentRequest(
