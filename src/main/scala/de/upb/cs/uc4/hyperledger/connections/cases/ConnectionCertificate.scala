@@ -31,24 +31,26 @@ case class ConnectionCertificate(username: String, channel: String, chaincode: S
     )
   }
 
-  override def addOrUpdateCertificate(enrollmentID: String, enrollmentCertificate: String): String= {
+  override def addOrUpdateCertificate(enrollmentID: String, enrollmentCertificate: String): String = {
     val alreadyContained = containsCertificate(enrollmentID)
 
     // store
-    if(!alreadyContained){
+    if (!alreadyContained) {
       Logger.info(s"Storing new certificate for enrollmentID: $enrollmentID")
       addCertificate(enrollmentID, enrollmentCertificate)
-    } else {
+    }
+    else {
       Logger.info(s"Updating existing certificate for enrollmentID: $enrollmentID")
       updateCertificate(enrollmentID, enrollmentCertificate)
     }
   }
 
-  private def containsCertificate(enrollmentID: String): Boolean ={
-    try{
+  private def containsCertificate(enrollmentID: String): Boolean = {
+    try {
       getCertificate(enrollmentID)
       true
-    } catch {
+    }
+    catch {
       case _ => false
     }
   }
