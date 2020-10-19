@@ -1,6 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests
 
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionCourses, ConnectionMatriculation }
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionMatriculation }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.NetworkExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
@@ -91,12 +91,6 @@ class NonExistentNetworkTests extends TestBase {
         this.testNetworkException(() => {
           val connection = ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
           connection.addMatriculationData(TestDataMatriculation.validMatriculationData1("0101010"))
-        }, channel, chaincode, networkDescriptionPath.toString, username)
-      }
-      "throw NetworkErrors [ConnectionManager - Courses]" in {
-        this.testNetworkException(() => {
-          val connection = new ConnectionCourses(username, channel, chaincode, walletPath, networkDescriptionPath)
-          connection.getAllCourses
         }, channel, chaincode, networkDescriptionPath.toString, username)
       }
       "throw NetworkErrors [ConnectionManager - Certificate]" in {

@@ -33,7 +33,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     * @param enrollmentId enrollment.id to get information
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if the framework throws an exception.
-    * @return JSon Course Object
+    * @return Certificate String
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
