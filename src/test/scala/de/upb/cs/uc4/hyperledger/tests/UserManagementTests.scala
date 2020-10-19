@@ -11,16 +11,16 @@ class UserManagementTests extends TestBase {
 
   "The enrollmentManager" when {
     "enrolling a User without csr" should {
-      "allow for the new User to access the chain [101]" in {
+      "allow for the new User to access the chain [102]" in {
         Logger.info("Enroll Admin as user.")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
         val connection = super.initializeCertificate(username)
-        TestHelper.testCertificateAccess("101", connection)
+        TestHelper.testCertificateAccess("102", connection)
       }
     }
     "enrolling a User with csr" should {
-      "not directly allow for the new User to access the chain [102]" in {
+      "not directly allow for the new User to access the chain [103]" in {
         Logger.info("EnrollAdmin")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
@@ -50,13 +50,13 @@ class UserManagementTests extends TestBase {
   }
 
   "The registrationManager" when {
-    "performing a registration [103]" should {
+    "performing a registration [104]" should {
       "not throw exceptions" in {
         Logger.info("Enroll as admin and store cert to wallet")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
         Logger.info("Register TestUser")
-        val testUserName = "Tester102"
+        val testUserName = "Tester104"
         val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.info("Enroll TestUser")
@@ -64,7 +64,7 @@ class UserManagementTests extends TestBase {
 
         Logger.info("Access Chain as TestUser")
         val connection = super.initializeCertificate(testUserName)
-        TestHelper.testCertificateAccess("103", connection)
+        TestHelper.testCertificateAccess("104", connection)
       }
     }
   }
