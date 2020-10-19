@@ -28,8 +28,8 @@ lazy val yourProject = (project in file(".")).dependsOn(hyperledger_api)
 ### 2. Imports
 - the Connections (Class and Trait) you want to access
 ```scala
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCourses, ConnectionMatriculation }
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCourseTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionMatriculation
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 ```
 - the Managers you need service from
 ```scala

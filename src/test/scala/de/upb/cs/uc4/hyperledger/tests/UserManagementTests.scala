@@ -15,8 +15,8 @@ class UserManagementTests extends TestBase {
         Logger.info("Enroll Admin as user.")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
-        val connection = super.initializeCourses(username)
-        TestHelper.testChaincodeCourseAccess("101", connection)
+        val connection = super.initializeCertificate(username)
+        TestHelper.testCertificateAccess("101", connection)
       }
     }
     "enrolling a User with csr" should {
@@ -63,8 +63,8 @@ class UserManagementTests extends TestBase {
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
 
         Logger.info("Access Chain as TestUser")
-        val connection = super.initializeCourses(testUserName)
-        TestHelper.testChaincodeCourseAccess("103", connection)
+        val connection = super.initializeCertificate(testUserName)
+        TestHelper.testCertificateAccess("103", connection)
       }
     }
   }

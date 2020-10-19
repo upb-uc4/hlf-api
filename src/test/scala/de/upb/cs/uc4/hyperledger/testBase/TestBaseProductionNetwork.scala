@@ -2,9 +2,6 @@ package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.{ Path, Paths }
 
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCourses, ConnectionMatriculation }
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCourseTrait, ConnectionMatriculationTrait }
-
 protected class TestBaseProductionNetwork extends TestBaseTrait {
   val networkDescriptionPath: Path = Paths.get(getClass.getResource("/connection_profile_kubernetes.yaml").toURI)
   val username: String = "scala-registration-admin-org1"

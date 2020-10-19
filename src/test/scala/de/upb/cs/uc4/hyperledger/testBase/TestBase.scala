@@ -2,8 +2,8 @@ package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionCourses, ConnectionMatriculation }
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionCourseTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionMatriculation }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
@@ -69,7 +69,6 @@ class TestBase extends TestBaseTrait {
     }
   }
 
-  def initializeCourses(userName: String = this.username): ConnectionCourseTrait = new ConnectionCourses(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeMatriculation(userName: String = this.username): ConnectionMatriculationTrait = ConnectionMatriculation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeCertificate(userName: String = this.username): ConnectionCertificateTrait = ConnectionCertificate(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
 

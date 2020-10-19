@@ -55,13 +55,13 @@ class InternalManagerTests extends TestBase {
         }
       }
 
-      "provide a gateway pointing to our network channel containing our course_contract" in {
+      "provide a gateway pointing to our network channel containing our course_certificate" in {
         // get gateway object
         val gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
 
         try {
           val network = gateway.getNetwork(channel)
-          val contract = network.getContract(chaincode, contractNameCourse)
+          val contract = network.getContract(chaincode, contractNameCertificate)
           contract should not be null
         }
         finally {
@@ -74,9 +74,9 @@ class InternalManagerTests extends TestBase {
 
   "The Connection Manager" when {
     "asked for connection info" should {
-      "provide network connection info - courses" in {
+      "provide network connection info - Certificate" in {
         val (contract, gateway) = ConnectionManager.initializeConnection(
-          username, channel, chaincode, contractNameCourse, walletPath, networkDescriptionPath
+          username, channel, chaincode, contractNameCertificate, walletPath, networkDescriptionPath
         )
         contract should not be null
         gateway should not be null
