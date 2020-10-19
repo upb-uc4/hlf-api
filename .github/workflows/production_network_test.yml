@@ -81,7 +81,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-network'
-        ref: 'develop'
+        ref: 'v0.10.0'
         path: 'hlf-network'
         
     # Prepare for mounts
@@ -104,7 +104,7 @@ jobs:
       uses: ./.github/actions/production_network_setup
       with:
         network_folder: 'hlf-network'
-        chaincode_branch: $CHAINCODE_TARGET
+        chaincode_branch: 'v0.9.2'
     # ################### PRODUCTION NETWORK ############ #
 
     # ################### TEST WITH REPORTS ############# #
