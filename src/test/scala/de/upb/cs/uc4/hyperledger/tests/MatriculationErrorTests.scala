@@ -158,7 +158,7 @@ class MatriculationErrorTests extends TestBase {
 
       "throw TransactionException for super empty matriculationList " in {
         val id = "001"
-        val result = intercept[TransactionException](() -> chaincodeConnection.addEntriesToMatriculationData(
+        val result = intercept[TransactionExceptionTrait](() -> chaincodeConnection.addEntriesToMatriculationData(
           id,
           "[]"
         ))
