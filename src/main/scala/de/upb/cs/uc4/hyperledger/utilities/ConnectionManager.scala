@@ -55,9 +55,8 @@ protected[hyperledger] object ConnectionManager {
     )
   }
 
-  private def checkConnectionInititalized(network: Network): Unit = {
+  private def checkConnectionInitialized(network: Network): Unit =
     if (!network.getChannel.isInitialized) throw new Exception("Network could not be initialized.")
-  }
 
   /** Creates a Contract to invoke transactions on.
     * @param gateway Gateway to the network to conenct with
@@ -76,7 +75,7 @@ protected[hyperledger] object ConnectionManager {
   ): ContractImpl = {
     // get network (channel)
     val network: NetworkImpl = gateway.getNetwork(channelName).asInstanceOf[NetworkImpl]
-    checkConnectionInititalized(network)
+    checkConnectionInitialized(network)
 
     // get contract (chaincode, contract)
     network.getContract(chaincodeName, contractName).asInstanceOf[ContractImpl]

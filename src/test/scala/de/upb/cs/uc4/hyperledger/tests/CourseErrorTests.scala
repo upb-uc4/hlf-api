@@ -22,14 +22,14 @@ class CourseErrorTests extends TestBase {
       "throw TransactionErrorException for non existent courseId " in {
         // test action
         val result = intercept[TransactionExceptionTrait](() -> chaincodeConnection.getCourseById("0"))
-        result.transactionId should be("getCourseById")
+        result.transactionName should be("getCourseById")
       }
     }
     "invoking updateCourseById" should {
       "throw TransactionErrorException for non existent courseId " in {
         // test action
         val result = intercept[TransactionExceptionTrait](() -> chaincodeConnection.updateCourseById("0", TestDataCourses.invalidCourseData(null)))
-        result.transactionId should be("updateCourseById")
+        result.transactionName should be("updateCourseById")
       }
     }
   }

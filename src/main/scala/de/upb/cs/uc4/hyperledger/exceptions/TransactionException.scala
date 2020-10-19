@@ -3,10 +3,8 @@ package de.upb.cs.uc4.hyperledger.exceptions
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 
 /** Exception Trait to wrap any Exception thrown from the Hyperledger Framework */
-protected case class TransactionException(
-    transactionName: String,
-    payload: String
-) extends TransactionExceptionTrait {
+protected case class TransactionException(transactionName: String, payload: String)
+  extends TransactionExceptionTrait {
   override def toString: String =
     s"The provided transaction: '$transactionName' failed with an error: $payload"
 }
