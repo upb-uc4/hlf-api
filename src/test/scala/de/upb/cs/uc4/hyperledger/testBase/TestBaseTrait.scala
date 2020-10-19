@@ -12,7 +12,6 @@ trait TestBaseTrait extends AnyWordSpec with Matchers with BeforeAndAfterEach wi
   val walletPath: Path = Paths.get(getClass.getResource("/wallet/").toURI)
 
   val networkDescriptionPath: Path
-  val minikubeIP: String
   val caURL: String
   val tlsCert: Path
   val username: String

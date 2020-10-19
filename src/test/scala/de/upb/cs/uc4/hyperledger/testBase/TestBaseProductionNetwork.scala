@@ -8,8 +8,8 @@ protected class TestBaseProductionNetwork extends TestBaseTrait {
   val channel: String = "mychannel"
   val chaincode: String = "uc4-cc"
   // productionNetwork variables
-  val minikubeIP: String = sys.env.getOrElse("NODE_IP", "172.17.0.2")
-  val caURL = s"https://$minikubeIP:30907"
+  private val NODE_IP: String = sys.env.getOrElse("NODE_IP", "172.17.0.2")
+  val caURL = s"https://$NODE_IP:30907"
   val tlsCert: Path = Paths.get("/tmp/hyperledger/org1/msp/cacerts/org1-ca-cert.pem")
   val password: String = "scalaAdminPW"
   val organisationId: String = "org1MSP"

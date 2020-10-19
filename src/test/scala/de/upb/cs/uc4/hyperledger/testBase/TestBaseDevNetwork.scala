@@ -11,7 +11,6 @@ protected class TestBaseDevNetwork extends TestBaseTrait {
   val channel: String = "myc"
   val chaincode: String = "mycc"
   // unused productionNetwork variables
-  val minikubeIP: String = null
   val caURL: String = null
   val tlsCert: Path = null
   val password: String = null
