@@ -1,5 +1,6 @@
 package de.upb.cs.uc4.hyperledger.connections.traits
 
+import java.lang.reflect.{ Field, Method }
 import java.nio.charset.StandardCharsets
 import java.util
 import java.util.concurrent.TimeoutException
@@ -21,8 +22,8 @@ trait ConnectionTrait extends AutoCloseable {
   val gateway: GatewayImpl
 
   @throws[HyperledgerExceptionTrait]
-  protected final def internalSubmitTransaction(transient: Boolean, transactionId: String, params: String*): Array[Byte] = {
-    testParamsNull(transactionId, params: _*)
+  protected final def internalSubmitTransaction(transient: Boolean, transactionName: String, params: String*): Array[Byte] = {
+    testParamsNull(transactionName, params: _*)
     try {
       if (transient) {
         var transMap: Map[String, Array[Byte]] = Map()
@@ -32,36 +33,36 @@ trait ConnectionTrait extends AutoCloseable {
           i = i + 1
         })
 
-        contract.createTransaction(transactionId).setTransient(transMap.asJava).submit()
+        contract.createTransaction(transactionName).setTransient(transMap.asJava).submit()
       }
       else {
-        contract.submitTransaction(transactionId, params: _*)
+        contract.submitTransaction(transactionName, params: _*)
       }
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
       case ex: TimeoutException        => throw NetworkException(innerException = ex)
-      case ex: Exception               => throw HyperledgerException(transactionId, ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 
   @throws[HyperledgerExceptionTrait]
-  protected final def internalEvaluateTransaction(transactionId: String, params: String*): Array[Byte] = {
-    testParamsNull(transactionId, params: _*)
+  protected final def internalEvaluateTransaction(transactionName: String, params: String*): Array[Byte] = {
+    testParamsNull(transactionName, params: _*)
     try {
-      contract.evaluateTransaction(transactionId, params: _*)
+      contract.evaluateTransaction(transactionName, params: _*)
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
       case ex: TimeoutException        => throw NetworkException(innerException = ex)
-      case ex: Exception               => throw HyperledgerException(transactionId, ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 
   final def createUnsignedTransaction(transactionName: String, params: String*): (ProposalPackage.Proposal, String) = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = callPrivateMethod(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
-    val context: TransactionContext = callPrivateMethod(contract.getNetwork.getChannel)(Symbol("getTransactionContext"))(request).asInstanceOf[TransactionContext]
+    val request: TransactionProposalRequest = callPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val context: TransactionContext = callPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
     val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder()
     proposalBuilder.context(context)
     proposalBuilder.request(request)
@@ -72,7 +73,7 @@ trait ConnectionTrait extends AutoCloseable {
   final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionName: String, transactionId: String, params: String*): Array[Byte] = {
     val (transaction, context, signedProposal) = createProposal(proposal, signature, transactionName, transactionId, params: _*)
     val proposalResponses = sendProposalToPeers(context, signedProposal)
-    val validResponses = callPrivateMethod(transaction)(Symbol("validatePeerResponses"))(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+    val validResponses = callPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
     commitTransaction(transaction, proposalResponses, validResponses)
   }
 
@@ -80,23 +81,23 @@ trait ConnectionTrait extends AutoCloseable {
     val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
     val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = callPrivateMethod(transaction)(Symbol("newProposalRequest"))(params.toArray).asInstanceOf[TransactionProposalRequest]
-    val context: TransactionContext = callPrivateMethod(contract.getNetwork.getChannel)(Symbol("getTransactionContext"))(request).asInstanceOf[TransactionContext]
-    setPrivateField(context)(Symbol("txID"))(transactionId)
+    val request: TransactionProposalRequest = callPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val context: TransactionContext = callPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
+    setPrivateField(context)("txID")(transactionId)
     context.verify(request.doVerify())
     context.setProposalWaitTime(request.getProposalWaitTime)
-    setPrivateField(transaction)(Symbol("transactionContext"))(context)
+    setPrivateField(transaction)("transactionContext")(context)
     (transaction, context, signedProposal)
   }
 
   private def sendProposalToPeers(context: TransactionContext, signedProposal: ProposalPackage.SignedProposal) = {
     val channel: Channel = contract.getNetwork.getChannel
-    val peers: util.Collection[Peer] = callPrivateMethod(channel)(Symbol("getEndorsingPeers"))().asInstanceOf[util.Collection[Peer]]
-    callPrivateMethod(channel)(Symbol("sendProposalToPeers"))(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
+    val peers: util.Collection[Peer] = callPrivateMethod(channel)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
+    callPrivateMethod(channel)("sendProposalToPeers")(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
   }
 
   private def commitTransaction(transaction: Transaction, proposalResponses: util.Collection[ProposalResponse], validResponses: util.Collection[ProposalResponse]) = {
-    try callPrivateMethod(transaction)(Symbol("commitTransaction"))(validResponses).asInstanceOf[Array[Byte]]
+    try callPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
     catch {
       case e: ContractException =>
         e.setProposalResponses(proposalResponses)
@@ -108,50 +109,33 @@ trait ConnectionTrait extends AutoCloseable {
     //}
   }
 
-  private class PrivateMethodCaller(x: AnyRef, methodName: String) {
-    def apply(_args: Any*): Any = {
-      val args = _args.map(_.asInstanceOf[AnyRef])
-      def _parents: LazyList[Class[_]] = LazyList(x.getClass) #::: _parents.map(_.getSuperclass)
-      val parents = _parents.takeWhile(_ != null).toList
-      val methods = parents.flatMap(_.getDeclaredMethods)
-      val method = methods.find(_.getName == methodName).getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
-      method.setAccessible(true)
-      method.invoke(x, args: _*)
-    }
+  private def callPrivateMethod(instance: AnyRef)(methodName: String)(args: AnyRef*): AnyRef = {
+    def _parents: LazyList[Class[_]] = LazyList(instance.getClass) #::: _parents.map(_.getSuperclass)
+    val parents: List[Class[_]] = _parents.takeWhile(_ != null).toList
+    val methods: List[Method] = parents.flatMap(_.getDeclaredMethods)
+    val method: Method = methods.find(method =>
+      method.getName == methodName && method.getParameterCount == args.length)
+      .getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
+    method.setAccessible(true)
+    method.invoke(instance, args: _*)
   }
 
-  private class PrivateMethodExposer(x: AnyRef) {
-    def apply(method: scala.Symbol): PrivateMethodCaller = new PrivateMethodCaller(x, method.name)
+  private def setPrivateField(instance: AnyRef)(fieldName: String)(arg: AnyRef): Unit = {
+    def _parents: LazyList[Class[_]] = LazyList(instance.getClass) #::: _parents.map(_.getSuperclass)
+    val parents: List[Class[_]] = _parents.takeWhile(_ != null).toList
+    val fields: List[Field] = parents.flatMap(_.getDeclaredFields)
+    val field: Field = fields.find(_.getName == fieldName)
+      .getOrElse(throw new IllegalArgumentException("Method " + fieldName + " not found"))
+    field.setAccessible(true)
+    field.set(instance, arg)
   }
-
-  private def callPrivateMethod(x: AnyRef): PrivateMethodExposer = new PrivateMethodExposer(x)
-
-  private class PrivateFieldCaller(x: AnyRef, fieldName: String) {
-    def apply(_arg: Any): Any = {
-      val arg = _arg.asInstanceOf[AnyRef]
-      def _parents: LazyList[Class[_]] = LazyList(x.getClass) #::: _parents.map(_.getSuperclass)
-      val parents = _parents.takeWhile(_ != null).toList
-      val fields = parents.flatMap(_.getDeclaredFields)
-      val field = fields.find(_.getName == fieldName).getOrElse(throw new IllegalArgumentException("Method " + fieldName + " not found"))
-      field.setAccessible(true)
-      field.set(x, arg)
-    }
-  }
-
-  private class PrivateFieldExposer(x: AnyRef) {
-    def apply(field: scala.Symbol): PrivateFieldCaller = new PrivateFieldCaller(x, field.name)
-  }
-
-  private def setPrivateField(x: AnyRef): PrivateFieldExposer = new PrivateFieldExposer(x)
 
   /** Since the chain returns bytes, we need to convert them to a readable Result.
     *
     * @param result Bytes containing a result from a chaincode transaction.
     * @return Result as a String.
     */
-  protected final def convertTransactionResult(result: Array[Byte]): String = {
-    new String(result, StandardCharsets.UTF_8)
-  }
+  protected final def convertTransactionResult(result: Array[Byte]): String = new String(result, StandardCharsets.UTF_8)
 
   /** Wraps the chaincode query result bytes.
     * Translates the byte-array to a string and throws an error if said string is not empty
@@ -160,9 +144,9 @@ trait ConnectionTrait extends AutoCloseable {
     * @return result as a string
     */
   @throws[TransactionExceptionTrait]
-  protected final def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
+  protected final def wrapTransactionResult(transactionName: String, result: Array[Byte]): String = {
     val resultString = convertTransactionResult(result)
-    if (containsError(resultString)) throw TransactionException(transactionId, resultString)
+    if (containsError(resultString)) throw TransactionException(transactionName, resultString)
     else resultString
   }
 
@@ -171,20 +155,18 @@ trait ConnectionTrait extends AutoCloseable {
     * @param result result of a chaincode transaction
     * @return true if the result contains error information conforming to API-standards
     */
-  private def containsError(result: String): Boolean = {
-    result.contains("{\"type\":") && result.contains("\"title\":")
-  }
+  private def containsError(result: String): Boolean = result.contains("{\"type\":") && result.contains("\"title\":")
 
   final override def close(): Unit = this.gateway.close()
 
   /** Checks if the transaction params are null.
     *
-    * @param transactionId transactionId causing the error.
+    * @param transactionName transactionId causing the error.
     * @param params parameters to check
     * @throws TransactionException if a parameter is null.
     */
   @throws[TransactionExceptionTrait]
-  private def testParamsNull(transactionId: String, params: String*): Unit = {
-    params.foreach(param => if (param == null) throw TransactionException.CreateUnknownException(transactionId, "A parameter was null."))
+  private def testParamsNull(transactionName: String, params: String*): Unit = {
+    params.foreach(param => if (param == null) throw TransactionException.CreateUnknownException(transactionName, "A parameter was null."))
   }
 }
