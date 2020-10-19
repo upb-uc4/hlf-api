@@ -14,7 +14,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: '*UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
+        default: '*UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *MatriculationErrorTests *MatriculationAccessTests'
   # on push event
   push:
     # except for these files
@@ -47,7 +47,7 @@ jobs:
 
   DeployAndTestProductionNetwork:
     env:
-      TEST_SET: "*UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
+      TEST_SET: "*UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *MatriculationErrorTests *MatriculationAccessTests"
       CHAINCODE_TARGET: "develop"
 
     runs-on: ubuntu-latest
@@ -104,7 +104,7 @@ jobs:
       uses: ./.github/actions/production_network_setup
       with:
         network_folder: 'hlf-network'
-        chaincode_branch: 'v0.9.2'
+        chaincode_branch: $CHAINCODE_TARGET
     # ################### PRODUCTION NETWORK ############ #
 
     # ################### TEST WITH REPORTS ############# #

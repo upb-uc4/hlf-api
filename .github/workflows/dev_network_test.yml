@@ -14,7 +14,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: "*InternalManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
+        default: "*InternalManagerTests  *MatriculationErrorTests *MatriculationAccessTests"
   # on push event
   push:
     # except for these files
@@ -89,7 +89,7 @@ jobs:
       uses: ./.github/actions/dev_network_setup
       with:
         network_folder: 'hlf-dev-network'
-        chaincode_branch: 'v0.9.2'
+        chaincode_branch: $CHAINCODE_TARGET
     # ################### DEV NETWORK ############ #
     
     # ################### TEST WITH REPORTS ############# #
