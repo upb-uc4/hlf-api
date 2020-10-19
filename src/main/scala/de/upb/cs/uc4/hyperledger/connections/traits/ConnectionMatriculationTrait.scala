@@ -39,7 +39,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
     *
     * @param enrollmentId enrollment.id to get information
     * @throws Exception if chaincode throws an exception.
-    * @return JSon Course Object
+    * @return JSon Matriculation Object
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]

@@ -14,7 +14,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: '*UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests'
+        default: '*UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests'
   # on push event
   push:
     # except for these files
@@ -47,7 +47,7 @@ jobs:
 
   DeployAndTestProductionNetwork:
     env:
-      TEST_SET: "*UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests"
+      TEST_SET: "*UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests"
       CHAINCODE_TARGET: "develop"
 
     runs-on: ubuntu-latest
@@ -81,7 +81,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-network'
-        ref: 'develop'
+        ref: 'v0.10.0'
         path: 'hlf-network'
         
     # Prepare for mounts
@@ -95,6 +95,9 @@ jobs:
       with:
           version: "v0.7.0"
           config: hlf-network/assets/kind.yaml
+
+    - name: (Temporary) install faketime to prevent clockdrifts
+      run: sudo apt-get install faketime
 
     # Setup Network
     - name: setup production network
