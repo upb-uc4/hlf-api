@@ -21,6 +21,7 @@ on:
       - .github/workflows/production_network_test.yml
       - .github/workflows/dev_network_test.yml
       - .github/workflows/style_check.yaml
+      - .github/workflows/publish_to_sonatype.yaml
       - '.github/actions/**'
   # on pull request to protected branches
   pull_request:
@@ -35,11 +36,12 @@ on:
       - .github/workflows/production_network_test.yml
       - .github/workflows/dev_network_test.yml
       - .github/workflows/style_check.yaml
+      - .github/workflows/publish_to_sonatype.yaml
       - '.github/actions/**'
 
 jobs:
 
-  DeployAndTestDevNetwork:
+  DeployAndTestNoNetwork:
     env:
       TEST_SET: "*NonExistentNetworkTests"
       CHAINCODE_TARGET: "develop"
@@ -88,10 +90,10 @@ jobs:
         name: test-reports
         path: target/test_reports/
 
-    # Uplaod Coverage Report
+    # Upload Coverage Report
     - name: Upload coverage report
       uses: actions/upload-artifact@v1
       with:
         name: code-coverage
-        path: target/scala-2.13/scoverage-report
+        path: target/scoverage-report
     # ################### TEST WITH REPORTS ############# #

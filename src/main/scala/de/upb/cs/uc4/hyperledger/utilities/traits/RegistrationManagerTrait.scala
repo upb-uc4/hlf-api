@@ -19,7 +19,7 @@ trait RegistrationManagerTrait {
     * @param adminName Name of the Admin User you want to access to perform the registration.
     * @param adminWalletPath Wallet containing the admin-certificate.
     * @param affiliation Organisation name, the admin belongs to and the new user will belong to as well.
-    * @param maxEnrollments Number of times the user can be enrolled/reenrolled with the username-padssword combination.
+    * @param maxEnrollments Number of times the user can be enrolled/re-enrolled with the username-password combination.
     * @param newUserType Permission Level of the new User. Default :: Client.
     * @throws Exception if
     *                   1. The admin user could not be retrieved from the wallet.

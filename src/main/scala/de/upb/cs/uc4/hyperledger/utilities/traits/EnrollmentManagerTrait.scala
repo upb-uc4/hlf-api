@@ -45,6 +45,7 @@ trait EnrollmentManagerTrait {
     * @throws Exception       if
     *                         1. The CA Client could not be retrieved from the caURL and Certificate.
     *                         2. The enrollment process fails. Maybe your user is not registered?
+    * @return                 the Signed Certificate created.
     */
   def enroll(
       caURL: String,
@@ -56,5 +57,5 @@ trait EnrollmentManagerTrait {
       channel: String,
       chaincode: String,
       networkDescriptionPath: Path
-  ): Unit
+  ): String
 }

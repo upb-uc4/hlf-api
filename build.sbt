@@ -1,6 +1,14 @@
-lazy val hyperledger_api = (project in file("."))
+import sbt._
+
+lazy val hlf_api = (project in file("."))
   .settings(
-    Commons.commonSettings("hyperledger_api"),
+    Commons.projectInfo(),
+    Commons.projectSettings("hlf_api"),
+    Commons.gpgSettings(),
+    description := "Scala API to access our UC4 contracts/chaincodes.",
     libraryDependencies ++= Dependencies.scalaTestDependencies,
     libraryDependencies ++= Dependencies.hyperledgerDependencies,
   )
+  .enablePlugins(
+    GitVersioning,
+    BuildInfoPlugin)

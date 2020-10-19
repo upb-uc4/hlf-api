@@ -9,8 +9,8 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 class CertificateErrorTests extends TestBase {
 
   var chaincodeConnection: ConnectionCertificateTrait = _
-  var TestEnrollmentID = "001"
-  var TestCertificate = "001"
+  val TestEnrollmentID = "001"
+  val TestCertificate = "001"
 
   override def beforeAll(): Unit = {
     super.beforeAll()

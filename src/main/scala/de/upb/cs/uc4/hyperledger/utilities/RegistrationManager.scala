@@ -63,9 +63,9 @@ object RegistrationManager extends RegistrationManagerTrait {
 
   private def getUserFromX509Identity(identity: X509Identity, affiliationName: String): User = {
     val name = getNameFromIdentity(identity)
-    Logger.debug("Retrieved Name from identity: '$name'")
+    Logger.debug(s"Retrieved Name from identity: '$name'")
     new User() {
-      override def getName = name
+      override def getName: String = name
       override def getRoles: util.Set[String] = null
       override def getAccount = ""
       override def getAffiliation: String = affiliationName

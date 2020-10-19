@@ -1,4 +1,4 @@
-# [v0.9.2 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.1...develop) (TBD)
+# <a id="v0.10.1" />[v0.10.1 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.1...develop) (TBD)
 
 ## Feature
 
@@ -16,6 +16,26 @@
 
 - 
 
+# <a id="v0.10.0" />[v0.10.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.2...v0.10.0) (2020-10-16)
+
+## Feature
+
+- 
+
+## Bug Fixes
+
+- support multiple enrollments by updating existing certificate entries in case they already exist
+
+# <a id="v0.9.2" />[v0.9.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.1...v0.9.2) (2020-10-13)
+
+## Usability
+
+- Released on Maven via local push (import as follows)
+```scala
+libraryDependencies += "de.upb.cs.uc4" % "hlf_api" % "v0.9.2"
+```
+
+
 # <a id="v0.9.1" />[v0.9.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...v0.9.1) (2020-10-02)
 
 ## Feature
@@ -31,7 +51,7 @@
 
 ## Bug Fixes
 
-- Improve resillience of parallel tests against negative influence from other tests
+- Improve resilience of parallel tests against negative influence from other tests
 
 ## Refactor
 

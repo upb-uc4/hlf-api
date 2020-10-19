@@ -13,11 +13,11 @@ protected[hyperledger] case class NetworkException(
     innerException: Exception = null
 ) extends NetworkExceptionTrait {
   override def toString: String = {
-    s"""An Exception occured when trying to access the network.
+    s"""An Exception occurred when trying to access the network.
         Your tried to build a connection with these parameters:
           channel   :: $channel
           chaincode :: $chaincode
-          networkDescripion :: $networkDescription
+          networkDescription :: $networkDescription
           identity :: $identity
           organisationId :: $organisationId
           organisationName :: $organisationName

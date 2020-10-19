@@ -9,6 +9,7 @@ protected[hyperledger] object Logger {
     */
   def err(message: String, e: Exception = null): Exception = {
     val msg = s"""
+              [MESSAGE] :: $message
               [ERROR] :: ${getInfoFromException(e)}
               """
     println(msg)

@@ -7,7 +7,7 @@ object TestDataMatriculation {
   def invalidMatriculationJsonNoSemester(id: String): String = "{\n  \"matriculationId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n        }\n  ]\n}"
   def invalidMatriculationJsonNoFieldOfStudy(id: String): String = "{\n  \"matriculationId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"semesters\": [\n        \"SS2020\"\n      ]\n    }\n  ]\n}"
   def invalidMatriculationJsonNoMatriculationStatus(id: String): String = "{\n  \"matriculationId\": \"" + id + "\",\n}"
-  def invalidMatriculationJsonNoMatriculationId(id: String): String = "{\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"SS2020\"\n      ]\n    }\n  ]\n}"
+  def invalidMatriculationJsonNoMatriculationId: String = "{\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"SS2020\"\n      ]\n    }\n  ]\n}"
 
   def invalidMatriculationJsonInvalidId: String = "{\n  \"matriculationId\": \"" + "" + "\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"SS2020\"\n      ]\n    }\n  ]\n}"
   def invalidMatriculationJsonInvalidMatriculationData1(id: String): String = "{\n  \"matriculationId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"S2020\"\n      ]\n    }\n  ]\n}"
@@ -15,7 +15,7 @@ object TestDataMatriculation {
   def invalidMatriculationJsonInvalidMatriculationData3(id: String): String = "{\n  \"matriculationId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"WW2020\"\n      ]\n    }\n  ]\n}"
   def invalidMatriculationJsonInvalidMatriculationData4(id: String): String = "{\n  \"matriculationId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"2020\"\n      ]\n    }\n  ]\n}"
 
-  def getSubjectMatriculationList(fieldOfStudy: String, semester: String) = {
+  def getSubjectMatriculationList(fieldOfStudy: String, semester: String): String = {
     "[{\"fieldOfStudy\":\"" + fieldOfStudy + "\", \"semesters\": [\"" + semester + "\"]}]"
   }
 }
