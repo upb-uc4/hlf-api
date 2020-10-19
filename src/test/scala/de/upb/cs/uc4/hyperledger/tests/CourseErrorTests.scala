@@ -1,7 +1,7 @@
 package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCourseTrait
-import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
+import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.TestDataCourses
 
@@ -17,17 +17,19 @@ class CourseErrorTests extends TestBase {
     chaincodeConnection.close()
   }
 
-  "The ScalaAPI EvaluateTransaction" when {
-    "asked for invalid transactions" should {
-      "throw TransactionErrorException for empty transactionId " in {
+  "The ScalaAPI for Courses" when {
+    "invoking getCourseById" should {
+      "throw TransactionErrorException for non existent courseId " in {
         // test action
-        val result = intercept[TransactionException](() -> chaincodeConnection.getCourseById("2"))
-        result.transactionId should ===("getCourseById")
+        val result = intercept[TransactionExceptionTrait](() -> chaincodeConnection.getCourseById("0"))
+        result.transactionId should be("getCourseById")
       }
-      "throw TransactionErrorException for wrong transactionId during update " in {
+    }
+    "invoking updateCourseById" should {
+      "throw TransactionErrorException for non existent courseId " in {
         // test action
-        val result = intercept[TransactionException](() -> chaincodeConnection.updateCourseById("2", TestDataCourses.invalidCourseData(null)))
-        result.transactionId should ===("updateCourseById")
+        val result = intercept[TransactionExceptionTrait](() -> chaincodeConnection.updateCourseById("0", TestDataCourses.invalidCourseData(null)))
+        result.transactionId should be("updateCourseById")
       }
     }
   }

@@ -1,9 +1,11 @@
 package de.upb.cs.uc4.hyperledger.exceptions.traits
 
-/** Exception Trait to wrap any Exception thrown from our chaincode.
-  *  Any validation, misuse of transaction, or similar errors.
+import de.upb.cs.uc4.hyperledger.exceptions.traits.internal.UC4ExceptionTrait
+
+/** Exception Trait to wrap any Exception thrown from our chaincode-contracts.
+  * Any validation, misuse of transaction, or similar errors.
   */
-trait TransactionExceptionTrait extends Exception {
+trait TransactionExceptionTrait extends UC4ExceptionTrait {
 
   /**  Transaction Id provoking the exception. */
   val transactionId: String

@@ -1,5 +1,4 @@
-
-# [v0.8.1 WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...develop) (2020-08-17)
+# <a id="v0.10.1" />[v0.10.1 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.1...develop) (TBD)
 
 ## Feature
 
@@ -7,7 +6,7 @@
 
 ## Bug Fixes
 
--
+- 
 
 ## Refactor
 
@@ -17,8 +16,123 @@
 
 - 
 
+# <a id="v0.10.0" />[v0.10.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.2...v0.10.0) (2020-10-16)
 
-# [v0.8.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.1...v0.8.0) (2020-08-17)
+## Feature
+
+- 
+
+## Bug Fixes
+
+- support multiple enrollments by updating existing certificate entries in case they already exist
+
+# <a id="v0.9.2" />[v0.9.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.1...v0.9.2) (2020-10-13)
+
+## Usability
+
+- Released on Maven via local push (import as follows)
+```scala
+libraryDependencies += "de.upb.cs.uc4" % "hlf_api" % "v0.9.2"
+```
+
+
+# <a id="v0.9.1" />[v0.9.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.0...v0.9.1) (2020-10-02)
+
+## Feature
+
+- Support CertificateChaincode
+  - addCertificate
+  - getCertificate
+  - updateCertificate
+- Extend Enrollment to add the new Certificate to the Certificate Chaincode
+- Throw TransactionExceptions instead of HyperledgerInnerException for "null"-parameters passed to transactions
+- Throw NetworkExceptions instead of regular ones, if the network could not be reached or something with the EnrollmentProcess went wrong
+- Add interfaces for public Managers to enable mocking
+
+## Bug Fixes
+
+- Improve resilience of parallel tests against negative influence from other tests
+
+## Refactor
+
+- Test cleanup
+- Exception cleanup
+
+## Usability
+
+- CertificateAccessTests
+- CertificateErrorTests
+- Update UserManagement Tests
+- Provide SequentialTestSuite
+- NonExistingNetworkTests + Pipeline
+
+# <a id="v0.9.0" />[v0.9.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.3...v0.9.0) (2020-09-29)
+
+## Feature
+
+- Support Enrollment with CSR creating returning the correct SignedCertificate created from the CSR.
+
+## Refactor
+
+- Test cleanup
+
+## Usability
+
+- make production pipeline configurable regarding the chaincode-target
+
+# <a id="v0.8.3" />[v0.8.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.2...v0.8.3) (2020-09-28)
+
+## Feature
+
+- support new chaincode API (non-transient, enrollmentId instead of matriculationID)
+- update Exception messaging for easier handling
+
+## Usability
+
+- remove firstname/lastname/birthdate from testData
+- remove firstname/lastname/birthdate - error tests
+
+
+switch transient / non-transient
+
+# <a id="v0.8.2" />[v0.8.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.1...v0.8.2) (2020-08-17)
+
+## Feature
+
+- Make userType and maxEnrollmentCount variable
+- document publicly available methods
+- Publish dedicated wallet Actions
+
+## Bug Fixes
+
+- hide services that are not meant to be accessible to the outside
+
+## Refactor
+
+- 
+
+## Usability
+
+- provide/use a logger for framework debugging
+
+# <a id="v0.8.1" />[v0.8.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.8.0...v0.8.1) (2020-08-17)
+
+## Feature
+
+- Support "Register User"
+
+## Refactor
+
+- Extract the CaClientManagement from the EnrollmentManager.
+
+## Usability
+
+- Pipelines can be triggered manually.
+- Pipelines can be triggered for specific chaincode branches.
+- Pipelines can be triggered for specific tests.
+
+
+# <a id="v0.8.0" />[v0.8.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.6.1...v0.8.0) (2020-08-17)
 
 ## Feature
 

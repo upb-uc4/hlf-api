@@ -2,12 +2,10 @@ package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
 
-import com.google.common.reflect.Invokable
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCourses, ConnectionMatriculation }
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCourseTrait, ConnectionMatriculationTrait }
-import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
-import de.upb.cs.uc4.hyperledger.utilities.EnrollmentManager
-import org.scalactic.Fail
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionCourses, ConnectionMatriculation }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionCourseTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class TestBase extends TestBaseTrait {
   private val testBase: TestBaseTrait = tryRetrieveEnvVar("Target") match {
@@ -24,58 +22,70 @@ class TestBase extends TestBaseTrait {
   override val channel: String = testBase.channel
   override val chaincode: String = testBase.chaincode
 
-  override def beforeAll(): Unit = {
-    log("Begin test with testBase Name = " + testBase.getClass.getName)
-    if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
-      log("Begin enrollment with: "
-        + " " + caURL
-        + " " + tlsCert
-        + " " + walletPath
-        + " " + username
-        + " " + password
-        + " " + organisationId)
-      EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId)
-      log("Finished Enrollment")
-    }
-  }
-
-  def initializeCourses(): ConnectionCourseTrait = new ConnectionCourses(testBase.username, testBase.channel, testBase.chaincode, testBase.walletPath, testBase.networkDescriptionPath)
-  def initializeMatriculation(): ConnectionMatriculationTrait = ConnectionMatriculation(testBase.username, testBase.channel, testBase.chaincode, testBase.walletPath, testBase.networkDescriptionPath)
-
-  private def tryRetrieveEnvVar(varName: String, fallBack: String = ""): String = {
-    sys.env.contains(varName) match {
-      case true => {
-        val value = sys.env(varName)
-        log("####### Retrieved variable: " + varName + " with value: " + value)
-        value
-      }
-      case false => {
-        log("####### Returned default fallback")
-        fallBack
-      }
-    }
-  }
-
-  private def log(message: String): Unit = {
-    println("[TestBase] :: " + message)
-  }
-
-  def compareJson(expected: String, actual: String): Unit = {
-    val cleanExpected = expected
-      .replace("\n", "")
-      .replace(" ", "")
-    val cleanActual = actual
-      .replace("\n", "")
-      .replace(" ", "")
-    cleanActual should ===(cleanExpected)
-  }
-
-  def executeAndLog(test: () => Any) = {
+  private def tryEnrollment(
+      caURL: String,
+      caCert: Path,
+      walletPath: Path,
+      enrollmentID: String,
+      enrollmentSecret: String,
+      organisationId: String,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
+  ): Unit = {
     try {
-      test.apply()
+      debug("Try enrollment with: "
+        + " " + caURL
+        + " " + caCert
+        + " " + walletPath
+        + " " + enrollmentID
+        + " " + enrollmentSecret
+        + " " + organisationId)
+
+      EnrollmentManager.enroll(caURL, caCert, walletPath, enrollmentID, enrollmentSecret, organisationId, channel, chaincode, networkDescriptionPath)
     }
     catch {
-      case ex: TransactionException => Fail("Exception Occured: " + ex.toString)
+      case e: Exception => Logger.warn("Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage)
     }
+  }
+
+  override def beforeAll(): Unit = {
+    debug("Begin test with testBase Name = " + testBase.getClass.getName)
+    if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
+      while (!WalletManager.containsIdentity(this.walletPath, this.username)) {
+        tryEnrollment(
+          this.caURL,
+          this.tlsCert,
+          this.walletPath,
+          this.username,
+          this.password,
+          this.organisationId,
+          this.channel,
+          this.chaincode,
+          this.networkDescriptionPath
+        )
+      }
+      debug("Finished Enrollment")
+    }
+  }
+
+  def initializeCourses(userName: String = this.username): ConnectionCourseTrait = new ConnectionCourses(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeMatriculation(userName: String = this.username): ConnectionMatriculationTrait = ConnectionMatriculation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeCertificate(userName: String = this.username): ConnectionCertificateTrait = ConnectionCertificate(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+
+  private def tryRetrieveEnvVar(varName: String, fallBack: String = ""): String = {
+    if (sys.env.contains(varName)) {
+      val value = sys.env(varName)
+      debug("####### Retrieved variable: " + varName + " with value: " + value)
+      value
+    }
+    else {
+      debug("####### Returned default fallback")
+      fallBack
+    }
+  }
+
+  private def debug(message: String): Unit = {
+    Logger.debug("[TestBase] :: " + message)
   }
 }

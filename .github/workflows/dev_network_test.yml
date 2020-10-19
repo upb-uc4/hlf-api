@@ -14,7 +14,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: "*ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
+        default: "*InternalManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
   # on push event
   push:
     # except for these files
@@ -23,18 +23,31 @@ on:
       - LICENSE
       - CHANGELOG.md
       - .github/workflows/production_network_test.yml
+      - .github/workflows/no_network_test.yml
       - .github/workflows/style_check.yaml
+      - .github/workflows/publish_to_sonatype.yaml
+      - .github/actions/production_network_setup/action.yml
   # on pull request to protected branches
   pull_request:
     branches: 
       - develop
       - master
+    # except for these files
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - CHANGELOG.md
+      - .github/workflows/production_network_test.yml
+      - .github/workflows/no_network_test.yml
+      - .github/workflows/style_check.yaml
+      - .github/workflows/publish_to_sonatype.yaml
+      - .github/actions/production_network_setup/action.yml
 
 jobs:
 
   DeployAndTestDevNetwork:
     env:
-      TEST_SET: "*ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
+      TEST_SET: "*InternalManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests"
       CHAINCODE_TARGET: "develop"
 
     runs-on: ubuntu-latest
@@ -101,10 +114,10 @@ jobs:
         name: test-reports
         path: target/test_reports/
 
-    # Uplaod Coverage Report
+    # Upload Coverage Report
     - name: Upload coverage report
       uses: actions/upload-artifact@v1
       with:
         name: code-coverage
-        path: target/scala-2.13/scoverage-report
+        path: target/scoverage-report
     # ################### TEST WITH REPORTS ############# #

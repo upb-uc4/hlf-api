@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.utilities.{ ConnectionManager, GatewayManager, WalletManager }
 
-class ManagerTests extends TestBase {
+class InternalManagerTests extends TestBase {
 
   "The WalletManager" when {
     "asked for a wallet" should {
@@ -23,16 +23,16 @@ class ManagerTests extends TestBase {
 
   "The GatewayManager" when {
     "asked to setup a gateway" should {
-      "provide a builder" in {
-        // retrieve possible identities
-        val wallet = WalletManager.getWallet(walletPath)
-
+      "provide a gateway for wallet" in {
         // prepare Network Builder
-        val builder = GatewayManager.getBuilder(wallet, networkDescriptionPath, username)
-        builder should not be null
+        val gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
+        gateway should not be null
+
+        // cleanup
+        GatewayManager.disposeGateway(gateway)
       }
 
-      "provide a gateway" in {
+      "provide a gateway for walletPath" in {
         // get gateway object
         val gateway = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
         gateway should not be null
