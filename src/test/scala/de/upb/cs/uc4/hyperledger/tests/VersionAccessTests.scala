@@ -24,7 +24,7 @@ class VersionAccessTests extends TestBase {
         version should fullyMatch regex regexVersionString
         certificateConnection.close()
       }
-      "provide a valid endpoint [Certificate] " in {
+      "provide a valid endpoint [Matriculation] " in {
         matriculationConnection = initializeMatriculation()
         val version: String = matriculationConnection.getVersion
         version should fullyMatch regex regexVersionString
