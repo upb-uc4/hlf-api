@@ -11,6 +11,7 @@ import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkExcep
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.{ ContractException, GatewayRuntimeException, Transaction }
 import org.hyperledger.fabric.protos.peer.ProposalPackage
+import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
 import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
 
@@ -20,6 +21,10 @@ trait ConnectionTrait extends AutoCloseable {
   val contractName: String
   val contract: ContractImpl
   val gateway: GatewayImpl
+
+  val draftContractName: String = "UC4.Draft"
+  val draftContract: ContractImpl
+  val draftGateway: GatewayImpl
 
   @throws[HyperledgerExceptionTrait]
   protected final def internalSubmitTransaction(transient: Boolean, transactionName: String, params: String*): Array[Byte] = {
@@ -59,7 +64,17 @@ trait ConnectionTrait extends AutoCloseable {
     }
   }
 
-  final def createUnsignedTransaction(transactionName: String, params: String*): (ProposalPackage.Proposal, String) = {
+  protected final def internalGetUnsignedProposal(transactionName: String, params: String*): (Array[Byte], String) = {
+    val (proposal: Proposal, id: String) = this.createUnsignedTransaction(transactionName, params: _*)
+    (proposal.toByteArray, id)
+  }
+
+  final def submitSignedProposal(proposalBytes: Array[Byte], signature: ByteString, transactionName: String, transactionId: String, params: String*): Array[Byte] = {
+    val proposal: Proposal = Proposal.parseFrom(proposalBytes)
+    internalSubmitSignedProposal(proposal, signature, transactionName, transactionId, params: _*)
+  }
+
+  private final def createUnsignedTransaction(transactionName: String, params: String*): (Proposal, String) = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
     val request: TransactionProposalRequest = callPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
     val context: TransactionContext = callPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
@@ -69,8 +84,7 @@ trait ConnectionTrait extends AutoCloseable {
     (proposalBuilder.build(), context.getTxID)
   }
 
-  @throws[HyperledgerExceptionTrait]
-  final def submitSignedTransaction(proposal: ProposalPackage.Proposal, signature: ByteString, transactionName: String, transactionId: String, params: String*): Array[Byte] = {
+  private final def internalSubmitSignedProposal(proposal: Proposal, signature: ByteString, transactionName: String, transactionId: String, params: String*): Array[Byte] = {
     val (transaction, context, signedProposal) = createProposal(proposal, signature, transactionName, transactionId, params: _*)
     val proposalResponses = sendProposalToPeers(context, signedProposal)
     val validResponses = callPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
