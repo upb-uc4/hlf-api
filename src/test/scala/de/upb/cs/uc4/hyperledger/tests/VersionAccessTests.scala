@@ -3,8 +3,6 @@ package de.upb.cs.uc4.hyperledger.tests
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 
-import scala.util.matching.Regex
-
 class VersionAccessTests extends TestBase {
 
   var certificateConnection: ConnectionCertificateTrait = _
@@ -27,11 +25,11 @@ class VersionAccessTests extends TestBase {
   "The ScalaAPI for Connections" when {
     "asked for chaincode version " should {
       "provide a valid endpoint [Certificate] " in {
-        val version: String = certificateConnection.getVersion
+        var version: String = certificateConnection.getVersion
         version should fullyMatch regex regexVersionString
       }
       "provide a valid endpoint [Certificate] " in {
-        val version: String = matriculationConnection.getVersion
+        var version: String = matriculationConnection.getVersion
         version should fullyMatch regex regexVersionString
       }
     }
