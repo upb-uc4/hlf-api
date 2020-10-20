@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionMatriculation }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.NetworkExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
+import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
@@ -98,6 +98,18 @@ class NonExistentNetworkTests extends TestBase {
           val newUserName = "NoNetwork003"
           val connection = ConnectionCertificate(username, channel, chaincode, walletPath, networkDescriptionPath)
           connection.addCertificate(newUserName, newUserName)
+        }, channel, chaincode, networkDescriptionPath.toString, username)
+      }
+      "throw NetworkErrors [getVersion - Matriculation]" in {
+        this.testNetworkException(() => {
+          val connection = ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
+          connection.getChaincodeVersion
+        }, channel, chaincode, networkDescriptionPath.toString, username)
+      }
+      "throw NetworkErrors [getVersion - Certificate]" in {
+        this.testNetworkException(() => {
+          val connection = ConnectionCertificate(username, channel, chaincode, walletPath, networkDescriptionPath)
+          connection.getChaincodeVersion
         }, channel, chaincode, networkDescriptionPath.toString, username)
       }
     }

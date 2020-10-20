@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelper }
 
 class MatriculationAccessTests extends TestBase {
 
