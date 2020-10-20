@@ -160,7 +160,7 @@ class MatriculationErrorTests extends TestBase {
         val id = "001"
         testTransactionException(
           "addEntriesToMatriculationData",
-          () => chaincodeConnection.addEntriesToMatriculationData(id, "[]" )
+          () => chaincodeConnection.addEntriesToMatriculationData(id, "[]")
         )
       }
     }
