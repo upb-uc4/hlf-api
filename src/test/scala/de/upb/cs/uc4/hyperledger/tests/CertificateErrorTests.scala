@@ -30,7 +30,7 @@ class CertificateErrorTests extends TestBase {
 
   private def testTransactionException(transactionName: String, f: () => Any) = {
     val result = intercept[TransactionExceptionTrait](f.apply())
-    result.transactionId should be(transactionName)
+    result.transactionName should be(transactionName)
   }
 
   "The ScalaAPI for Certificate" when {

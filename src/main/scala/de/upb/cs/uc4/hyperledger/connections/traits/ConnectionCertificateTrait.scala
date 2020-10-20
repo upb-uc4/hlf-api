@@ -4,6 +4,44 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, 
 
 trait ConnectionCertificateTrait extends ConnectionTrait {
 
+  /** Retrieves a proposal for the designated query
+    * Also submits the "addCertificate" query as current user (admin).
+    *
+    * @param enrollmentID Information about the enrollmentID to add.
+    * @param certificate Information about the certificate to add.
+    * @throws TransactionExceptionTrait if chaincode throws an exception.
+    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @return Proposal and transactionId
+    */
+  @throws[HyperledgerExceptionTrait]
+  @throws[TransactionExceptionTrait]
+  def getProposalAddCertificate(enrollmentID: String, certificate: String): (Array[Byte], String)
+
+  /** Retrieves a proposal for the designated query
+    * Also submits the "updateCertificate" query as current user (admin).
+    *
+    * @param enrollmentID enrollmentID to update
+    * @param certificate certificate to update
+    * @throws TransactionExceptionTrait if chaincode throws an exception.
+    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @return Proposal and transactionId
+    */
+  @throws[HyperledgerExceptionTrait]
+  @throws[TransactionExceptionTrait]
+  def getProposalUpdateCertificate(enrollmentID: String, certificate: String): (Array[Byte], String)
+
+  /** Retrieves a proposal for the designated query
+    * Also submits the "getCertificate" query as current user (admin).
+    *
+    * @param enrollmentID enrollmentID to update
+    * @throws TransactionExceptionTrait if chaincode throws an exception.
+    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @return Proposal and transactionId
+    */
+  @throws[HyperledgerExceptionTrait]
+  @throws[TransactionExceptionTrait]
+  def getProposalGetCertificate(enrollmentID: String): (Array[Byte], String)
+
   /** Executes the "addCertificate" query.
     *
     * @param enrollmentID Information about the enrollmentID to add.

@@ -13,7 +13,6 @@ class TestBase extends TestBaseTrait {
     case _                   => new TestBaseDevNetwork
   }
   override val networkDescriptionPath: Path = testBase.networkDescriptionPath
-  override val minikubeIP: String = testBase.minikubeIP
   override val caURL: String = testBase.caURL
   override val tlsCert: Path = testBase.tlsCert
   override val username: String = testBase.username
