@@ -20,13 +20,13 @@ class VersionAccessTests extends TestBase {
     "asked for chaincode version " should {
       "provide a valid endpoint [Certificate] " in {
         certificateConnection = initializeCertificate()
-        val version: String = certificateConnection.getVersion
+        val version: String = certificateConnection.getChaincodeVersion
         version should fullyMatch regex regexVersionString
         certificateConnection.close()
       }
       "provide a valid endpoint [Matriculation] " in {
         matriculationConnection = initializeMatriculation()
-        val version: String = matriculationConnection.getVersion
+        val version: String = matriculationConnection.getChaincodeVersion
         version should fullyMatch regex regexVersionString
         matriculationConnection.close()
       }

@@ -33,7 +33,7 @@ trait ConnectionTrait extends AutoCloseable {
     *
     * @return String containing versionInfo
     */
-  final def getVersion: String = wrapEvaluateTransaction("getVersion")
+  final def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
 
   /** Wrapper for a submission transaction
     * Translates the result byte-array to a string and throws an error if said string contains an error.
