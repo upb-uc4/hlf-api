@@ -10,7 +10,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     * @param enrollmentID Information about the enrollmentID to add.
     * @param certificate Information about the certificate to add.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
-    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Proposal and transactionId
     */
   @throws[HyperledgerExceptionTrait]
@@ -23,7 +23,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     * @param enrollmentID enrollmentID to update
     * @param certificate certificate to update
     * @throws TransactionExceptionTrait if chaincode throws an exception.
-    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Proposal and transactionId
     */
   @throws[HyperledgerExceptionTrait]
@@ -35,19 +35,19 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     *
     * @param enrollmentID enrollmentID to update
     * @throws TransactionExceptionTrait if chaincode throws an exception.
-    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Proposal and transactionId
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getProposalGetCertificate(enrollmentID: String): (Array[Byte], String)
 
-  /** Executes the "addCertificate" query.
+  /** Submits the "addCertificate" query.
     *
     * @param enrollmentID Information about the enrollmentID to add.
     * @param certificate Information about the certificate to add.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
-    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Success_state
     */
   @throws[HyperledgerExceptionTrait]
@@ -59,7 +59,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     * @param enrollmentID enrollmentID to update
     * @param certificate certificate to update
     * @throws TransactionExceptionTrait if chaincode throws an exception.
-    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return success_state
     */
   @throws[HyperledgerExceptionTrait]
@@ -70,7 +70,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     *
     * @param enrollmentId enrollment.id to get information
     * @throws TransactionExceptionTrait if chaincode throws an exception.
-    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Certificate String
     */
   @throws[HyperledgerExceptionTrait]
@@ -82,7 +82,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     * @param enrollmentID enrollmentID to add or update
     * @param certificate certificate to add or update
     * @throws TransactionExceptionTrait if chaincode throws an exception.
-    * @throws HyperledgerExceptionTrait if the framework throws an exception.
+    * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return success_state
     */
   @throws[HyperledgerExceptionTrait]
