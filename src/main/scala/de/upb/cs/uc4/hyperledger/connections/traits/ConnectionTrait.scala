@@ -14,8 +14,37 @@ trait ConnectionTrait extends AutoCloseable {
   val contract: Contract
   val gateway: Gateway
 
+  final def getVersion(): String = wrapEvaluateTransaction("getVersion")
+
+  /** Wrapper for a submission transaction
+    * Translates the result byte-array to a string and throws an error if said string contains an error.
+    *
+    * @param transient boolean flag to determine transaction to be transient or not.
+    * @param transactionId transaction to call
+    * @param params parameters to feed into transaction
+    * @return result as a string
+    */
+  @throws[TransactionExceptionTrait]
+  protected final def wrapSubmitTransaction(transient: Boolean, transactionId: String, params: String*): String = {
+    val result = this.privateSubmitTransaction(transient, transactionId, params:_*)
+    this.wrapTransactionResult(transactionId, result)
+  }
+
+  /** Wrapper for an evaluation transaction
+    * Translates the result byte-array to a string and throws an error if said string contains an error.
+    *
+    * @param transactionId transaction to call
+    * @param params parameters to feed into transaction
+    * @return result as a string
+    */
+  @throws[TransactionExceptionTrait]
+  protected final def wrapEvaluateTransaction(transactionId: String, params: String*): String = {
+    val result = this.privateEvaluateTransaction(transactionId, params:_*)
+    this.wrapTransactionResult(transactionId, result)
+  }
+
   @throws[HyperledgerExceptionTrait]
-  protected final def internalSubmitTransaction(transient: Boolean, transactionId: String, params: String*): Array[Byte] = {
+  private def privateSubmitTransaction(transient: Boolean, transactionId: String, params: String*): Array[Byte] = {
     testParamsNull(transactionId, params: _*)
     try {
       if (transient) {
@@ -40,7 +69,7 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   @throws[HyperledgerExceptionTrait]
-  protected final def internalEvaluateTransaction(transactionId: String, params: String*): Array[Byte] = {
+  private def privateEvaluateTransaction(transactionId: String, params: String*): Array[Byte] = {
     testParamsNull(transactionId, params: _*)
     try {
       contract.evaluateTransaction(transactionId, params: _*)
@@ -57,19 +86,19 @@ trait ConnectionTrait extends AutoCloseable {
     * @param result Bytes containing a result from a chaincode transaction.
     * @return Result as a String.
     */
-  protected final def convertTransactionResult(result: Array[Byte]): String = {
+  private def convertTransactionResult(result: Array[Byte]): String = {
     new String(result, StandardCharsets.UTF_8)
   }
 
   /** Wraps the chaincode query result bytes.
-    * Translates the byte-array to a string and throws an error if said string is not empty
+    * Translates the byte-array to a string and throws an error if said string contains an error.
     *
     * @param result input byte-array to translate
     * @return result as a string
     */
   @throws[TransactionExceptionTrait]
-  protected final def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
-    val resultString = convertTransactionResult(result)
+  private def wrapTransactionResult(transactionId: String, result: Array[Byte]): String = {
+    val resultString = this.convertTransactionResult(result)
     if (containsError(resultString)) throw TransactionException(transactionId, resultString)
     else resultString
   }

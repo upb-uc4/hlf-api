@@ -10,26 +10,14 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
   override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
 
   override def addMatriculationData(jSonMatriculationData: String): String =
-    wrapTransactionResult(
-      "addMatriculationData",
-      this.internalSubmitTransaction(false, "addMatriculationData", jSonMatriculationData)
-    )
+    wrapSubmitTransaction(false, "addMatriculationData", jSonMatriculationData)
 
   override def addEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String): String =
-    wrapTransactionResult(
-      "addEntriesToMatriculationData",
-      this.internalSubmitTransaction(false, "addEntriesToMatriculationData", enrollmentId, subjectMatriculationList)
-    )
+    wrapSubmitTransaction(false,       "addEntriesToMatriculationData",enrollmentId, subjectMatriculationList)
 
   override def updateMatriculationData(jSonMatriculationData: String): String =
-    wrapTransactionResult(
-      "updateMatriculationData",
-      this.internalSubmitTransaction(false, "updateMatriculationData", jSonMatriculationData)
-    )
+    wrapSubmitTransaction(false, "updateMatriculationData",jSonMatriculationData)
 
   override def getMatriculationData(enrollmentId: String): String =
-    wrapTransactionResult(
-      "getMatriculationData",
-      this.internalEvaluateTransaction("getMatriculationData", enrollmentId)
-    )
+    wrapEvaluateTransaction("getMatriculationData",enrollmentId)
 }
