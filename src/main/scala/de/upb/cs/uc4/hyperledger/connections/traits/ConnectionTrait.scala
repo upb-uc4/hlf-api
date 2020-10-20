@@ -139,8 +139,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException => throw NetworkException(innerException = ex)
-      case ex: Exception => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException        => throw NetworkException(innerException = ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 
@@ -152,8 +152,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException => throw NetworkException(innerException = ex)
-      case ex: Exception => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException        => throw NetworkException(innerException = ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 

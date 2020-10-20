@@ -25,11 +25,11 @@ class VersionAccessTests extends TestBase {
   "The ScalaAPI for Connections" when {
     "asked for chaincode version " should {
       "provide a valid endpoint [Certificate] " in {
-        var version: String = certificateConnection.getVersion
+        val version: String = certificateConnection.getVersion
         version should fullyMatch regex regexVersionString
       }
       "provide a valid endpoint [Certificate] " in {
-        var version: String = matriculationConnection.getVersion
+        val version: String = matriculationConnection.getVersion
         version should fullyMatch regex regexVersionString
       }
     }

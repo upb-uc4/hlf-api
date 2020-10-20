@@ -1,7 +1,7 @@
 package de.upb.cs.uc4.hyperledger.testUtil
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
-import org.scalatest.matchers.should.Matchers.{ be, convertToAnyShouldWrapper }
+import org.scalatest.matchers.should.Matchers._
 
 object TestHelper {
 
