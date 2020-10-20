@@ -100,6 +100,18 @@ class NonExistentNetworkTests extends TestBase {
           connection.addCertificate(newUserName, newUserName)
         }, channel, chaincode, networkDescriptionPath.toString, username)
       }
+      "throw NetworkErrors [getVersion - Matriculation]" in {
+        this.testNetworkException(() => {
+          val connection = ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
+          connection.getVersion
+        }, channel, chaincode, networkDescriptionPath.toString, username)
+      }
+      "throw NetworkErrors [getVersion - Certificate]" in {
+        this.testNetworkException(() => {
+          val connection = ConnectionCertificate(username, channel, chaincode, walletPath, networkDescriptionPath)
+          connection.getVersion
+        }, channel, chaincode, networkDescriptionPath.toString, username)
+      }
     }
   }
 }
