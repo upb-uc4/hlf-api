@@ -8,12 +8,6 @@ class VersionAccessTests extends TestBase {
   var certificateConnection: ConnectionCertificateTrait = _
   var matriculationConnection: ConnectionMatriculationTrait = _
 
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-    certificateConnection = initializeCertificate()
-    matriculationConnection = initializeMatriculation()
-  }
-
   override def afterAll(): Unit = {
     certificateConnection.close()
     matriculationConnection.close()
@@ -25,12 +19,16 @@ class VersionAccessTests extends TestBase {
   "The ScalaAPI for Connections" when {
     "asked for chaincode version " should {
       "provide a valid endpoint [Certificate] " in {
+        certificateConnection = initializeCertificate()
         val version: String = certificateConnection.getVersion
         version should fullyMatch regex regexVersionString
+        certificateConnection.close()
       }
       "provide a valid endpoint [Certificate] " in {
+        matriculationConnection = initializeMatriculation()
         val version: String = matriculationConnection.getVersion
         version should fullyMatch regex regexVersionString
+        matriculationConnection.close()
       }
     }
   }
