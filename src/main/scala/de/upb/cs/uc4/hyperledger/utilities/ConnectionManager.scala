@@ -59,7 +59,7 @@ protected[hyperledger] object ConnectionManager {
     if (!network.getChannel.isInitialized) throw new Exception("Network could not be initialized.")
 
   /** Creates a Contract to invoke transactions on.
-    * @param gateway Gateway to the network to conenct with
+    * @param gateway Gateway to the network to connect with
     * @param channelName name of the channel / network
     * @param chaincodeName name of the chaincode to access
     * @param contractName name of the contract / domain of the contract
