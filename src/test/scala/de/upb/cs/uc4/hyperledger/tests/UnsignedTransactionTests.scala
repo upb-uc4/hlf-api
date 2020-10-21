@@ -42,6 +42,7 @@ class UnsignedTransactionTests extends TestBase {
         val certificate = "Whatever"
         val (proposalBytes, transactionId) = chaincodeConnection.getProposalAddCertificate(enrollmentId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
+        println("\n\n\n##########################\nPROPOSALBYTES:\n##########################\n\n" + proposal.toByteString.toStringUtf8)
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
         val transactionContext: TransactionContext = chaincodeConnection.contract.getNetwork.getChannel.newTransactionContext()
