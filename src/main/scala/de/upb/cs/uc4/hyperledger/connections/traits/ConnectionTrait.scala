@@ -8,6 +8,7 @@ import java.util.concurrent.TimeoutException
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.{ ContractException, GatewayRuntimeException, Transaction }
 import org.hyperledger.fabric.protos.peer.ProposalPackage
@@ -85,7 +86,7 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   private final def internalSubmitSignedProposal(proposal: Proposal, signature: ByteString, transactionName: String, transactionId: String, params: String*): Array[Byte] = {
-    val (transaction, context, signedProposal) = createProposal(proposal, signature, transactionName, transactionId, params: _*)
+    val (transaction: TransactionImpl, context, signedProposal) = createProposal(proposal, signature, transactionName, transactionId, params: _*)
     val proposalResponses = sendProposalToPeers(context, signedProposal)
     val validResponses = callPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
     commitTransaction(transaction, proposalResponses, validResponses)
@@ -131,7 +132,11 @@ trait ConnectionTrait extends AutoCloseable {
       method.getName == methodName && method.getParameterCount == args.length)
       .getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
     method.setAccessible(true)
-    method.invoke(instance, args: _*)
+    try {
+      method.invoke(instance, args: _*)
+    } catch {
+      case ex: Throwable => throw Logger.err("Exception on invocation: ", ex)
+    }
   }
 
   private def setPrivateField(instance: AnyRef)(fieldName: String)(arg: AnyRef): Unit = {
