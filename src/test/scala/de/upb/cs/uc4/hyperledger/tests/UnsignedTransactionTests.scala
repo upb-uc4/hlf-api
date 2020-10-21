@@ -38,7 +38,7 @@ class UnsignedTransactionTests extends TestBase {
     "passing a signed transaction" should {
       "submit the transaction to the ledger" in {
         val transactionName = "addCertificate"
-        val enrollmentId = "101"
+        val enrollmentId = "102"
         val certificate = "Whatever"
         val (proposalBytes, transactionId) = chaincodeConnection.getProposalAddCertificate(enrollmentId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)

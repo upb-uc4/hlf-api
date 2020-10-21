@@ -21,7 +21,7 @@ class CertificateAccessTests extends TestBase {
   "The ScalaAPI for Certificates" when {
     "invoked with correct transactions " should {
       "allow for adding new Certificate " in {
-        val enrollmentId = "100"
+        val enrollmentId = "200"
         val certificate = "Whatever"
         TestHelper.compareCertificates(certificate, chaincodeConnection.addCertificate(enrollmentId, certificate))
       }
@@ -29,24 +29,24 @@ class CertificateAccessTests extends TestBase {
         chaincodeConnection.getCertificate("100")
       }
       "read the correct data " in {
-        val enrollmentId = "100"
+        val enrollmentId = "200"
         val certificate = "Whatever"
         TestHelper.compareCertificates(certificate, chaincodeConnection.getCertificate(enrollmentId))
       }
       "allow for updating existing Data " in {
-        val enrollmentId = "100"
+        val enrollmentId = "200"
         val newCertificate = "Whatever2"
         TestHelper.compareCertificates(newCertificate, chaincodeConnection.updateCertificate(enrollmentId, newCertificate))
         TestHelper.compareCertificates(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
       }
       "support update on addOrUpdate-Command " in {
-        val enrollmentId = "100"
+        val enrollmentId = "200"
         val newCertificate = "Whatever3"
         TestHelper.compareCertificates(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
         TestHelper.compareCertificates(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
       }
       "support add on addOrUpdate-Command " in {
-        val enrollmentId = "101"
+        val enrollmentId = "201"
         val newCertificate = "Whatever1"
         TestHelper.compareCertificates(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
         TestHelper.compareCertificates(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
