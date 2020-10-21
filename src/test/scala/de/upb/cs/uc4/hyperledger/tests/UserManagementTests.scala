@@ -1,6 +1,7 @@
 package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelper
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
@@ -16,7 +17,7 @@ class UserManagementTests extends TestBase {
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
         val connection = super.initializeCertificate(username)
-        TestHelper.testCertificateAccess("102", connection)
+        TestHelper.testAddCertificateAccess("102", connection)
       }
     }
     "enrolling a User with csr" should {
@@ -64,7 +65,7 @@ class UserManagementTests extends TestBase {
 
         Logger.info("Access Chain as TestUser")
         val connection = super.initializeCertificate(testUserName)
-        TestHelper.testCertificateAccess("104", connection)
+        TestHelper.testAddCertificateAccess("104", connection)
       }
     }
   }

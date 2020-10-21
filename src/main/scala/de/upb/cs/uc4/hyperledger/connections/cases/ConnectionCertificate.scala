@@ -33,26 +33,14 @@ case class ConnectionCertificate(username: String, channel: String, chaincode: S
     internalGetUnsignedProposal("getCertificate", enrollmentID)
   }
 
-  override def addCertificate(enrollmentID: String, certificate: String): String = {
-    wrapTransactionResult(
-      "addCertificate",
-      this.internalSubmitTransaction(false, "addCertificate", enrollmentID, certificate)
-    )
-  }
+  override def addCertificate(enrollmentID: String, certificate: String): String =
+    wrapSubmitTransaction(false, "addCertificate", enrollmentID, certificate)
 
-  override def updateCertificate(enrollmentID: String, certificate: String): String = {
-    wrapTransactionResult(
-      "updateCertificate",
-      this.internalSubmitTransaction(false, "updateCertificate", enrollmentID, certificate)
-    )
-  }
+  override def updateCertificate(enrollmentID: String, certificate: String): String =
+    wrapSubmitTransaction(false, "updateCertificate", enrollmentID, certificate)
 
-  override def getCertificate(enrollmentId: String): String = {
-    wrapTransactionResult(
-      "getCertificate",
-      this.internalEvaluateTransaction("getCertificate", enrollmentId)
-    )
-  }
+  override def getCertificate(enrollmentId: String): String =
+    wrapEvaluateTransaction("getCertificate", enrollmentId)
 
   override def addOrUpdateCertificate(enrollmentID: String, enrollmentCertificate: String): String = {
     val alreadyContained = containsCertificate(enrollmentID)

@@ -2,6 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelper
 
 class CertificateAccessTests extends TestBase {
 
@@ -30,25 +31,25 @@ class CertificateAccessTests extends TestBase {
       "read the correct data " in {
         val enrollmentId = "100"
         val certificate = "Whatever"
-        TestHelper.compareJson(certificate, chaincodeConnection.getCertificate(enrollmentId))
+        TestHelper.compareCertificates(certificate, chaincodeConnection.getCertificate(enrollmentId))
       }
       "allow for updating existing Data " in {
         val enrollmentId = "100"
         val newCertificate = "Whatever2"
-        TestHelper.compareJson(newCertificate, chaincodeConnection.updateCertificate(enrollmentId, newCertificate))
-        TestHelper.compareJson(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
+        TestHelper.compareCertificates(newCertificate, chaincodeConnection.updateCertificate(enrollmentId, newCertificate))
+        TestHelper.compareCertificates(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
       }
       "support update on addOrUpdate-Command " in {
         val enrollmentId = "100"
         val newCertificate = "Whatever3"
-        TestHelper.compareJson(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
-        TestHelper.compareJson(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
+        TestHelper.compareCertificates(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
+        TestHelper.compareCertificates(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
       }
       "support add on addOrUpdate-Command " in {
         val enrollmentId = "101"
         val newCertificate = "Whatever1"
-        TestHelper.compareJson(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
-        TestHelper.compareJson(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
+        TestHelper.compareCertificates(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
+        TestHelper.compareCertificates(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
       }
     }
   }

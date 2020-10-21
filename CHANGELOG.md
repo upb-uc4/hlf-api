@@ -1,4 +1,4 @@
-# <a id="v0.10.1" />[v0.10.1 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.1...develop) (TBD)
+# <a id="v0.10.2" />[v0.10.2 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.1...develop) (TBD)
 
 ## Feature
 
@@ -15,6 +15,18 @@
 ## Usability
 
 - 
+
+# <a id="v0.10.1" />[v0.10.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.0...v0.10.1) (2020-10-20)
+
+## Feature
+
+- Provide first draft of an API for unsigned Transactions
+- Provide Version Endpoint
+
+## Refactor
+
+- Test Structure CleanUp
+- ConenctionTrait CleanUp
 
 # <a id="v0.10.0" />[v0.10.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.9.2...v0.10.0) (2020-10-16)
 
