@@ -61,7 +61,7 @@ class UnsignedTransactionTests extends TestBase {
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
-        val signature = ByteString.copyFrom(Base64.getDecoder.decode("MEQCIFlK0g7gml2sHdiWMYboto9Z3c3iCqf68bj+rmXbZKb+AiAYInRbfTJsjIdg2k15yxkSSwHidJoKt8p2t+3rYbMo0Q=="))
+        val signature = ByteString.copyFrom(Base64.getDecoder.decode("cLcZeNwtXgdLotj6epk+NQ1ZDWHxqvvEBUttbtUVMx39U/UshnVMh15LGMF5Jhj94vHRIPSqhA7kFdegj0XklA=="))
         val result = chaincodeConnection.submitSignedProposal(proposalBytes, signature, transactionName, transactionId, enrollmentId, certificate)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + new String(result, StandardCharsets.UTF_8))
       }
