@@ -1,4 +1,4 @@
-# <a id="v0.10.2" />[v0.10.2 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.1...develop) (TBD)
+# <a id="v0.11.0" />[v0.11.0 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.2...develop) (TBD)
 
 ## Feature
 
@@ -15,6 +15,12 @@
 ## Usability
 
 - 
+
+# <a id="v0.10.2" />[v0.10.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.1...v0.10.2) (2020-10-21)
+
+## Usability
+
+- Release to Maven via Pipeline (with SBT-CI-RELEASE Plugin)
 
 # <a id="v0.10.1" />[v0.10.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.0...v0.10.1) (2020-10-20)
 
