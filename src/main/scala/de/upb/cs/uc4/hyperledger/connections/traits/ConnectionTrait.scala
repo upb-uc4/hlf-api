@@ -71,13 +71,15 @@ trait ConnectionTrait extends AutoCloseable {
     proposal.toByteArray
   }
 
-  final def submitSignedProposal(proposalBytes: Array[Byte], signature: ByteString): Array[Byte] = {
+  final def submitSignedProposal(proposalBytes: Array[Byte], signature: ByteString): String = {
     val proposal: Proposal = Proposal.parseFrom(proposalBytes)
 
     val (transaction, context, signedProposal) = createProposal(proposal, signature)
     val proposalResponses = sendProposalToPeers(context, signedProposal)
     val validResponses = ReflectionHelper.callPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
-    commitTransaction(transaction, proposalResponses, validResponses)
+
+    val result = commitTransaction(transaction, proposalResponses, validResponses)
+    this.wrapTransactionResult(transaction.getName, result)
   }
 
   private final def createUnsignedTransaction(transactionName: String, params: String*): Proposal = {

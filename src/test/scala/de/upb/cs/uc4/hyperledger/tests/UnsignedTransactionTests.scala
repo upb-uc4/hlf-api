@@ -44,7 +44,7 @@ class UnsignedTransactionTests extends TestBase {
         val transactionContext: TransactionContext = chaincodeConnection.contract.getNetwork.getChannel.newTransactionContext()
         val signature = transactionContext.signByteString(proposalBytes)
         val result = chaincodeConnection.submitSignedProposal(proposalBytes, signature)
-        println("\n\n\n##########################\nResult:\n##########################\n\n" + new String(result, StandardCharsets.UTF_8))
+        println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
       }
     }
   }
