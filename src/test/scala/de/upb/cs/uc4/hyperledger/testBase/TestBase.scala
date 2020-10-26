@@ -10,7 +10,7 @@ import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
 class TestBase extends TestBaseTrait {
   private val testBase: TestBaseTrait = tryRetrieveEnvVar("Target") match {
     case "ProductionNetwork" => new TestBaseProductionNetwork
-    case _ => new TestBaseDevNetwork
+    case _                   => new TestBaseDevNetwork
   }
   override val networkDescriptionPath: Path = testBase.networkDescriptionPath
   override val caURL: String = testBase.caURL
@@ -22,16 +22,16 @@ class TestBase extends TestBaseTrait {
   override val chaincode: String = testBase.chaincode
 
   protected[hyperledger] def tryEnrollment(
-                                            caURL: String,
-                                            caCert: Path,
-                                            walletPath: Path,
-                                            enrollmentID: String,
-                                            enrollmentSecret: String,
-                                            organisationId: String,
-                                            channel: String,
-                                            chaincode: String,
-                                            networkDescriptionPath: Path
-                                          ): Unit = {
+      caURL: String,
+      caCert: Path,
+      walletPath: Path,
+      enrollmentID: String,
+      enrollmentSecret: String,
+      organisationId: String,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
+  ): Unit = {
     debug("Try Enrollment")
     if (!WalletManager.containsIdentity(this.walletPath, this.username)) {
       try {
