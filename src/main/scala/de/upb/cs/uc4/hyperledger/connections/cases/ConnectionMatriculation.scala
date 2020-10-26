@@ -8,33 +8,32 @@ import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 case class ConnectionMatriculation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path) extends ConnectionMatriculationTrait {
   final override val contractName: String = "UC4.MatriculationData"
   override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
-  override val (draftContract, draftGateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.draftContractName, walletPath, networkDescriptionPath)
+  override val approvalConnection = Some(ConnectionApprovals(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   def getProposalAddMatriculationData(jSonMatriculationData: String): (Array[Byte], String) = {
-    // TODO: submit only to draft-contract
-    // addMatriculationData(jSonMatriculationData)
+    // send as admin maintaining the connection
+    addMatriculationData(jSonMatriculationData)
     // TODO: add error handling
     internalGetUnsignedProposal("addMatriculationData", jSonMatriculationData)
   }
 
   def getProposalAddEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String): (Array[Byte], String) = {
-    // TODO: submit only to draft-contract
-    // addEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String)
+    // send as admin maintaining the connection
+    addEntriesToMatriculationData(enrollmentId, subjectMatriculationList)
     // TODO: add error handling
     internalGetUnsignedProposal("addEntriesToMatriculationData", enrollmentId: String, subjectMatriculationList: String)
   }
 
   def getProposalUpdateMatriculationData(jSonMatriculationData: String): (Array[Byte], String) = {
-    // TODO: submit only to draft-contract
-    // updateMatriculationData(jSonMatriculationData)
+    // send as admin maintaining the connection
+    updateMatriculationData(jSonMatriculationData)
     // TODO: add error handling
     internalGetUnsignedProposal("updateMatriculationData", jSonMatriculationData)
   }
 
   def getProposalGetMatriculationData(enrollmentId: String): (Array[Byte], String) = {
-    // TODO: have admin check user can access info?
-    // TODO: submit only to draft-contract
-    // getMatriculationData(enrollmentId)
+    // send as admin maintaining the connection
+    getMatriculationData(enrollmentId)
     // TODO: add error handling
     internalGetUnsignedProposal("getMatriculationData", enrollmentId)
   }

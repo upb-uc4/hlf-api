@@ -16,6 +16,7 @@ import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
 
 import scala.jdk.CollectionConverters.MapHasAsJava
+import scala.util.Try
 
 trait ConnectionTrait extends AutoCloseable {
   // regular contract info
@@ -23,10 +24,7 @@ trait ConnectionTrait extends AutoCloseable {
   val contract: ContractImpl
   val gateway: GatewayImpl
 
-  // draftContract info
-  val draftContractName: String = "UC4.Draft"
-  val draftContract: ContractImpl
-  val draftGateway: GatewayImpl
+  val approvalConnection : Option[ConnectionApprovalsTrait]
 
   /** Gets the version returned by the designated contract.
     * By default all contracts return the version of the chaincode.
@@ -38,30 +36,34 @@ trait ConnectionTrait extends AutoCloseable {
   /** Wrapper for a submission transaction
     * Translates the result byte-array to a string and throws an error if said string contains an error.
     *
-    * @param transient     boolean flag to determine transaction to be transient or not.
-    * @param transactionId transaction to call
-    * @param params        parameters to feed into transaction
+    * @param transient        boolean flag to determine transaction to be transient or not.
+    * @param transactionName  transaction to call
+    * @param params           parameters to feed into transaction
     * @return result as a string
     */
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
-  protected final def wrapSubmitTransaction(transient: Boolean, transactionId: String, params: String*): String = {
-    val result = this.privateSubmitTransaction(transient, transactionId, params: _*)
-    this.wrapTransactionResult(transactionId, result)
+  protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
+    // submit my approval to approvalContract
+    if(approvalConnection.isDefined) approvalConnection.get.approveTransaction("addMatriculationData", params:_*)
+
+    // submit and evaluate response from my "regular" contract
+    val result = this.privateSubmitTransaction(transient, transactionName, params: _*)
+    this.wrapTransactionResult(transactionName, result)
   }
 
   /** Wrapper for an evaluation transaction
     * Translates the result byte-array to a string and throws an error if said string contains an error.
     *
-    * @param transactionId transaction to call
+    * @param transactionName transaction to call
     * @param params        parameters to feed into transaction
     * @return result as a string
     */
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
-  protected final def wrapEvaluateTransaction(transactionId: String, params: String*): String = {
-    val result = this.privateEvaluateTransaction(transactionId, params: _*)
-    this.wrapTransactionResult(transactionId, result)
+  protected final def wrapEvaluateTransaction(transactionName: String, params: String*): String = {
+    val result = this.privateEvaluateTransaction(transactionName, params: _*)
+    this.wrapTransactionResult(transactionName, result)
   }
 
   protected final def internalGetUnsignedProposal(transactionName: String, params: String*): (Array[Byte], String) = {

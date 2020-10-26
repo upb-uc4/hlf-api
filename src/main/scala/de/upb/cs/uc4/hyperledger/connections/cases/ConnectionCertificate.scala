@@ -9,26 +9,25 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 case class ConnectionCertificate(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path) extends ConnectionCertificateTrait {
   final override val contractName: String = "UC4.Certificate"
   override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
-  override val (draftContract, draftGateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.draftContractName, walletPath, networkDescriptionPath)
+  override val approvalConnection = Some(ConnectionApprovals(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   override def getProposalAddCertificate(enrollmentID: String, certificate: String): (Array[Byte], String) = {
-    // TODO: submit only to draft-contract
-    // addCertificate(enrollmentID, certificate)
+    // send as admin maintaining the connection
+    addCertificate(enrollmentID, certificate)
     // TODO: add error handling
     internalGetUnsignedProposal("addCertificate", enrollmentID, certificate)
   }
 
   override def getProposalUpdateCertificate(enrollmentID: String, certificate: String): (Array[Byte], String) = {
-    // TODO: submit only to draft-contract
-    // updateCertificate(enrollmentID, certificate)
+    // send as admin maintaining the connection
+    updateCertificate(enrollmentID, certificate)
     // TODO: add error handling
     internalGetUnsignedProposal("updateCertificate", enrollmentID, certificate)
   }
 
   override def getProposalGetCertificate(enrollmentID: String): (Array[Byte], String) = {
-    // TODO: have admin check user can access info?
-    // TODO: submit only to draft-contract
-    // updateCertificate(enrollmentID, certificate)
+    // send as admin maintaining the connection
+    val _: String = getCertificate(enrollmentID)
     // TODO: add error handling
     internalGetUnsignedProposal("getCertificate", enrollmentID)
   }
