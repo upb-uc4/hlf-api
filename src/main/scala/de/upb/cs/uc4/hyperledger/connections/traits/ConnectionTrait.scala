@@ -137,7 +137,7 @@ trait ConnectionTrait extends AutoCloseable {
   private def getTransactionNameFromProposal(proposal: Proposal): String = {
     val args = getArgsFromProposal(proposal)
     val fcnName: String = args.head
-    val transactionName = fcnName.substring(fcnName.indexOf(":")+1)
+    val transactionName = fcnName.substring(fcnName.indexOf(":") + 1)
     transactionName
   }
 
