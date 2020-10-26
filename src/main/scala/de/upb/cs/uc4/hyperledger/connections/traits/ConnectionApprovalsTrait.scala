@@ -6,6 +6,7 @@ protected[connections] trait ConnectionApprovalsTrait extends ConnectionTrait {
 
   /** Submits the "approveTransaction" query.
     *
+    * @param contractName Information about the transaction.
     * @param transactionName Information about the transaction.
     * @param params Information about the transaction.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
@@ -14,11 +15,11 @@ protected[connections] trait ConnectionApprovalsTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def approveTransaction(transactionName: String, params: String*): String
-
+  def approveTransaction(contractName: String, transactionName: String, params: String*): String
 
   /** Submits the "getApprovals" query.
     *
+    * @param contractName Information about the transaction.
     * @param transactionName Information about the transaction.
     * @param params Information about the transaction.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
@@ -27,5 +28,5 @@ protected[connections] trait ConnectionApprovalsTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getApprovals(transactionName: String, params: String*): String
+  def getApprovals(contractName: String, transactionName: String, params: String*): String
 }

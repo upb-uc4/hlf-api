@@ -2,14 +2,14 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionApprovalsTrait, ConnectionCertificateTrait }
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 case class ConnectionCertificate(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path) extends ConnectionCertificateTrait {
   final override val contractName: String = "UC4.Certificate"
   override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
-  override val approvalConnection = Some(ConnectionApprovals(username, channel, chaincode, walletPath, networkDescriptionPath))
+  override val approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApprovals(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   override def getProposalAddCertificate(enrollmentID: String, certificate: String): (Array[Byte], String) = {
     // send as admin maintaining the connection

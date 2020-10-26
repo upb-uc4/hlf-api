@@ -16,7 +16,6 @@ import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
 
 import scala.jdk.CollectionConverters.MapHasAsJava
-import scala.util.Try
 
 trait ConnectionTrait extends AutoCloseable {
   // regular contract info
@@ -24,7 +23,8 @@ trait ConnectionTrait extends AutoCloseable {
   val contract: ContractImpl
   val gateway: GatewayImpl
 
-  val approvalConnection : Option[ConnectionApprovalsTrait]
+  // approval contract
+  val approvalConnection: Option[ConnectionApprovalsTrait]
 
   /** Gets the version returned by the designated contract.
     * By default all contracts return the version of the chaincode.
@@ -45,7 +45,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[HyperledgerExceptionTrait]
   protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
     // submit my approval to approvalContract
-    if(approvalConnection.isDefined) approvalConnection.get.approveTransaction("addMatriculationData", params:_*)
+    if (approvalConnection.isDefined) approvalConnection.get.approveTransaction(contractName, transactionName, params: _*)
 
     // submit and evaluate response from my "regular" contract
     val result = this.privateSubmitTransaction(transient, transactionName, params: _*)
@@ -62,6 +62,9 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapEvaluateTransaction(transactionName: String, params: String*): String = {
+    // submit my approval to approvalContract
+    if (approvalConnection.isDefined) approvalConnection.get.approveTransaction(contractName, transactionName, params: _*)
+
     val result = this.privateEvaluateTransaction(transactionName, params: _*)
     this.wrapTransactionResult(transactionName, result)
   }
