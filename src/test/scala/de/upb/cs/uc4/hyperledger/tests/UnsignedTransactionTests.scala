@@ -26,7 +26,7 @@ class UnsignedTransactionTests extends TestBase {
       "return an unsigned transaction" in {
         val enrollmentId = "100"
         val certificate = "Whatever"
-        val (proposalBytes, _) = chaincodeConnection.getProposalAddCertificate(enrollmentId, certificate)
+        val proposalBytes: Array[Byte] = chaincodeConnection.getProposalAddCertificate(enrollmentId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
@@ -35,16 +35,15 @@ class UnsignedTransactionTests extends TestBase {
 
     "passing a signed transaction" should {
       "submit the transaction to the ledger" in {
-        val transactionName = "addCertificate"
         val enrollmentId = "101"
         val certificate = "Whatever"
-        val (proposalBytes, transactionId) = chaincodeConnection.getProposalAddCertificate(enrollmentId, certificate)
+        val proposalBytes = chaincodeConnection.getProposalAddCertificate(enrollmentId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
         val transactionContext: TransactionContext = chaincodeConnection.contract.getNetwork.getChannel.newTransactionContext()
         val signature = transactionContext.signByteString(proposalBytes)
-        val result = chaincodeConnection.submitSignedProposal(proposalBytes, signature, transactionName, transactionId, enrollmentId, certificate)
+        val result = chaincodeConnection.submitSignedProposal(proposalBytes, signature)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + new String(result, StandardCharsets.UTF_8))
       }
     }

@@ -10,11 +10,13 @@ import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkExcep
 import de.upb.cs.uc4.hyperledger.utilities.helper.ReflectionHelper
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.{ ContractException, GatewayRuntimeException, Transaction }
-import org.hyperledger.fabric.protos.peer.ProposalPackage
-import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
+import org.hyperledger.fabric.protos.common.Common
+import org.hyperledger.fabric.protos.peer.{ Chaincode, ProposalPackage }
+import org.hyperledger.fabric.protos.peer.ProposalPackage.{ ChaincodeProposalPayload, Proposal }
 import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
 
+import scala.collection.convert.ImplicitConversions.`iterator asScala`
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
@@ -64,30 +66,36 @@ trait ConnectionTrait extends AutoCloseable {
     this.wrapTransactionResult(transactionId, result)
   }
 
-  protected final def internalGetUnsignedProposal(transactionName: String, params: String*): (Array[Byte], String) = {
-    val (proposal: Proposal, id: String) = this.createUnsignedTransaction(transactionName, params: _*)
-    (proposal.toByteArray, id)
+  protected final def internalGetUnsignedProposal(transactionName: String, params: String*): Array[Byte] = {
+    val proposal: Proposal = this.createUnsignedTransaction(transactionName, params: _*)
+    proposal.toByteArray
   }
 
-  final def submitSignedProposal(proposalBytes: Array[Byte], signature: ByteString, transactionName: String, transactionId: String, params: String*): Array[Byte] = {
+  final def submitSignedProposal(proposalBytes: Array[Byte], signature: ByteString): Array[Byte] = {
     val proposal: Proposal = Proposal.parseFrom(proposalBytes)
-    val (transaction, context, signedProposal) = createProposal(proposal, signature, transactionName, transactionId, params: _*)
+
+    val (transaction, context, signedProposal) = createProposal(proposal, signature)
     val proposalResponses = sendProposalToPeers(context, signedProposal)
     val validResponses = ReflectionHelper.callPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
     commitTransaction(transaction, proposalResponses, validResponses)
   }
 
-  private final def createUnsignedTransaction(transactionName: String, params: String*): (Proposal, String) = {
+  private final def createUnsignedTransaction(transactionName: String, params: String*): Proposal = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
     val request: TransactionProposalRequest = ReflectionHelper.callPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
     val context: TransactionContext = ReflectionHelper.callPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
     val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder()
     proposalBuilder.context(context)
     proposalBuilder.request(request)
-    (proposalBuilder.build(), context.getTxID)
+    val proposal: Proposal = proposalBuilder.build()
+    proposal
   }
 
-  private def createProposal(proposal: ProposalPackage.Proposal, signature: ByteString, transactionName: String, transactionId: String, params: String*) = {
+  private def createProposal(proposal: ProposalPackage.Proposal, signature: ByteString) = {
+    val transactionId: String = getTransactionIdFromProposal(proposal)
+    val transactionName: String = getTransactionNameFromProposal(proposal)
+    val params: Seq[String] = getTransactionParamsFromProposal(proposal)
+
     val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
     val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
@@ -117,6 +125,35 @@ trait ConnectionTrait extends AutoCloseable {
     //  case e@(_: InvalidArgumentException | _: ProposalException | _: ServiceDiscoveryException) =>
     //   throw new GatewayRuntimeException(e)
     //}
+  }
+
+  private def getTransactionIdFromProposal(proposal: Proposal): String = {
+    val header = Common.Header.parseFrom(proposal.getHeader)
+    val channelHeader = Common.ChannelHeader.parseFrom(header.getChannelHeader)
+    val transactionId = channelHeader.getTxId
+    transactionId
+  }
+
+  private def getTransactionNameFromProposal(proposal: Proposal): String = {
+    val args = getArgsFromProposal(proposal)
+    val fcnName: String = args.head
+    val transactionName = fcnName.substring(fcnName.indexOf(":")+1)
+    transactionName
+  }
+
+  private def getTransactionParamsFromProposal(proposal: Proposal): Seq[String] = {
+    val args = getArgsFromProposal(proposal)
+    val params = args.tail
+    params
+  }
+
+  private def getArgsFromProposal(proposal: Proposal): Seq[String] = {
+    val payloadBytes: ByteString = proposal.getPayload
+    val payload: ChaincodeProposalPayload = ProposalPackage.ChaincodeProposalPayload.parseFrom(payloadBytes)
+    val invocationSpec: Chaincode.ChaincodeInvocationSpec = Chaincode.ChaincodeInvocationSpec.parseFrom(payload.getInput)
+    val chaincodeInput = invocationSpec.getChaincodeSpec.getInput
+    val args: util.List[ByteString] = chaincodeInput.getArgsList
+    args.iterator().map[String](b => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
   }
 
   @throws[HyperledgerExceptionTrait]
