@@ -42,7 +42,7 @@ protected[hyperledger] object ReflectionHelper {
       callPrivateMethod(instance)(methodName)(args)
     }
     catch {
-      case ex: Exception => throw HyperledgerException(methodName, ex.getCause)
+      case ex: Exception => throw HyperledgerException(methodName, ex)
     }
   }
 }
