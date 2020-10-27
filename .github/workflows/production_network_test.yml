@@ -31,7 +31,7 @@ on:
   pull_request:
     branches: 
       - develop
-      - master
+      - main
     # except for these files
     paths-ignore:
       - README.md
