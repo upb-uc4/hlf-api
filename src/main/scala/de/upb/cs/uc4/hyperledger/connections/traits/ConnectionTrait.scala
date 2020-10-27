@@ -82,7 +82,8 @@ trait ConnectionTrait extends AutoCloseable {
       val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
       val result = ReflectionHelper.safeCallPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
       this.wrapTransactionResult(transaction.getName, result)
-    } catch {
+    }
+    catch {
       case ex: HyperledgerExceptionTrait => throw HyperledgerException(transaction.getName, ex)
     }
   }
