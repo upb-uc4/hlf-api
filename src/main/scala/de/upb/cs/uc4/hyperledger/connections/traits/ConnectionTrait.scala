@@ -74,13 +74,17 @@ trait ConnectionTrait extends AutoCloseable {
   final def submitSignedProposal(proposalBytes: Array[Byte], signature: ByteString): String = {
     val proposal: Proposal = Proposal.parseFrom(proposalBytes)
 
-    val (transaction, context, signedProposal) = createProposal(proposal, signature)
-    val transactionName = transaction.getName
-    val proposalResponses = sendProposalToPeers(context, signedProposal)
-    val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+    val (transaction, context, signedProposal) = this.createProposal(proposal, signature)
+    val proposalResponses = this.sendProposalToPeers(context, signedProposal)
 
-    val result = ReflectionHelper.safeCallPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
-    this.wrapTransactionResult(transactionName, result)
+    // evaluate proposal
+    try {
+      val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+      val result = ReflectionHelper.safeCallPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
+      this.wrapTransactionResult(transaction.getName, result)
+    } catch {
+      case ex: HyperledgerExceptionTrait => throw HyperledgerException(transaction.getName, ex)
+    }
   }
 
   private final def createUnsignedTransaction(transactionName: String, params: String*): Proposal = {
