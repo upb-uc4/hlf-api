@@ -12,7 +12,8 @@ protected[hyperledger] object ReflectionHelper {
     val methods: List[Method] = parents.flatMap(_.getDeclaredMethods)
     val method = methods.find(
       method => method.getName == methodName
-        && method.getParameterCount == args.length)
+        && method.getParameterCount == args.length
+    )
       .getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
     method.setAccessible(true)
     method.invoke(instance, args: _*)
@@ -31,7 +32,7 @@ protected[hyperledger] object ReflectionHelper {
 
   def safeCallPrivateMethod(instance: AnyRef)(methodName: String)(args: AnyRef*): AnyRef = {
     try {
-      callPrivateMethod(instance)(methodName)(args:_*)
+      callPrivateMethod(instance)(methodName)(args: _*)
     }
     catch {
       case ex: Throwable => throw HyperledgerException(methodName, ex)
