@@ -123,7 +123,8 @@ trait ConnectionTrait extends AutoCloseable {
     val peers: util.Collection[Peer] = ReflectionHelper.callPrivateMethod(channel)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
     try {
       ReflectionHelper.callPrivateMethod(channel)("sendProposalToPeers")(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
-    } catch {
+    }
+    catch {
       case ex: Exception => throw HyperledgerException("sendProposalToPeers", ex)
     }
 
@@ -164,7 +165,7 @@ trait ConnectionTrait extends AutoCloseable {
     val invocationSpec: Chaincode.ChaincodeInvocationSpec = Chaincode.ChaincodeInvocationSpec.parseFrom(payload.getInput)
     val chaincodeInput = invocationSpec.getChaincodeSpec.getInput
     val args: util.List[ByteString] = chaincodeInput.getArgsList
-    args.iterator().map[String](b => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
+    args.listIterator().map[String](b => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
   }
 
   @throws[HyperledgerExceptionTrait]
