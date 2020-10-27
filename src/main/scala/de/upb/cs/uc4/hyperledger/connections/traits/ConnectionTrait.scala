@@ -74,7 +74,7 @@ trait ConnectionTrait extends AutoCloseable {
     val (transaction, context, signedProposal) = createProposal(proposal, signature, transactionName, transactionId, params: _*)
     val proposalResponses = sendProposalToPeers(context, signedProposal)
     val validResponses = ReflectionHelper.callPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
-    commitTransaction(transaction, proposalResponses, validResponses)
+    commitTransaction(transaction, validResponses)
   }
 
   private final def createUnsignedTransaction(transactionName: String, params: String*): (Proposal, String) = {
@@ -106,17 +106,8 @@ trait ConnectionTrait extends AutoCloseable {
     ReflectionHelper.callPrivateMethod(channel)("sendProposalToPeers")(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
   }
 
-  private def commitTransaction(transaction: Transaction, proposalResponses: util.Collection[ProposalResponse], validResponses: util.Collection[ProposalResponse]) = {
-    try ReflectionHelper.callPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
-    catch {
-      case e: ContractException =>
-        e.setProposalResponses(proposalResponses)
-        throw e
-    }
-    //} catch {
-    //  case e@(_: InvalidArgumentException | _: ProposalException | _: ServiceDiscoveryException) =>
-    //   throw new GatewayRuntimeException(e)
-    //}
+  private def commitTransaction(transaction: Transaction, validResponses: util.Collection[ProposalResponse]) = {
+    ReflectionHelper.callPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
   }
 
   @throws[HyperledgerExceptionTrait]
