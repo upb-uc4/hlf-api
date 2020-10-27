@@ -2,6 +2,7 @@ package de.upb.cs.uc4.hyperledger.utilities.helper
 
 import java.lang.reflect.{ Field, Method }
 
+import com.google.common.reflect.Invokable
 import de.upb.cs.uc4.hyperledger.exceptions.HyperledgerException
 
 protected[hyperledger] object ReflectionHelper {
@@ -41,7 +42,7 @@ protected[hyperledger] object ReflectionHelper {
       callPrivateMethod(instance)(methodName)(args)
     }
     catch {
-      case ex: Exception => throw HyperledgerException(methodName, ex.getCause.getCause)
+      case ex: Exception => throw HyperledgerException(methodName, ex.getCause)
     }
   }
 }
