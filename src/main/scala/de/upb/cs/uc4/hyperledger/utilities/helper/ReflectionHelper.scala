@@ -16,7 +16,7 @@ protected[hyperledger] object ReflectionHelper {
       method.invoke(instance, args: _*)
     }
     catch {
-      case ex: Throwable => throw Logger.err("Inner Exception on private method call: ", ex)
+      case ex: Throwable => throw Logger.err("Inner Exception on private method call: ", ex.getCause)
     }
   }
 
