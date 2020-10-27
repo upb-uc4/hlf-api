@@ -2,7 +2,6 @@ package de.upb.cs.uc4.hyperledger.utilities.helper
 
 import java.lang.reflect.{ Field, Method }
 
-import com.google.common.reflect.Invokable
 import de.upb.cs.uc4.hyperledger.exceptions.HyperledgerException
 
 protected[hyperledger] object ReflectionHelper {
@@ -15,12 +14,7 @@ protected[hyperledger] object ReflectionHelper {
       .find(method => method.getName == methodName && method.getParameterCount == args.length)
       .getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
     method.setAccessible(true)
-    try {
-      method.invoke(instance, args: _*)
-    }
-    catch {
-      case ex: Throwable => throw Logger.err("Inner Exception on private method call: ", ex.getCause)
-    }
+    method.invoke(instance, args: _*)
   }
 
   def setPrivateField(instance: AnyRef)(fieldName: String)(arg: AnyRef): Unit = {
@@ -42,7 +36,7 @@ protected[hyperledger] object ReflectionHelper {
       callPrivateMethod(instance)(methodName)(args)
     }
     catch {
-      case ex: Exception => throw HyperledgerException(methodName, ex)
+      case ex: Throwable => throw HyperledgerException(methodName, ex)
     }
   }
 }

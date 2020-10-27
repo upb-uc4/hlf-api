@@ -12,7 +12,7 @@ import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, Transact
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.protos.common.Common
 import org.hyperledger.fabric.protos.peer.{ Chaincode, ProposalPackage }
-import org.hyperledger.fabric.protos.peer.ProposalPackage.{ ChaincodeProposalPayload, Proposal }
+import org.hyperledger.fabric.protos.peer.ProposalPackage.{ ChaincodeProposalPayload, Proposal, SignedProposal }
 import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
 
@@ -85,7 +85,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   private final def createUnsignedTransaction(transactionName: String, params: String*): Proposal = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params:_*).asInstanceOf[TransactionProposalRequest]
     val context: TransactionContext = ReflectionHelper.safeCallPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
     val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder()
     proposalBuilder.context(context)
@@ -94,15 +94,15 @@ trait ConnectionTrait extends AutoCloseable {
     proposal
   }
 
-  private def createProposal(proposal: ProposalPackage.Proposal, signature: ByteString) = {
+  private def createProposal(proposal: ProposalPackage.Proposal, signature: ByteString): (TransactionImpl, TransactionContext, SignedProposal) = {
     val transactionId: String = getTransactionIdFromProposal(proposal)
     val transactionName: String = getTransactionNameFromProposal(proposal)
     val params: Seq[String] = getTransactionParamsFromProposal(proposal)
 
-    val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
-    val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
+    val signedProposalBuilder: SignedProposal.Builder = SignedProposal.newBuilder
+    val signedProposal: SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params:_*).asInstanceOf[TransactionProposalRequest]
     val context: TransactionContext = ReflectionHelper.safeCallPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
     ReflectionHelper.setPrivateField(context)("txID")(transactionId)
     context.verify(request.doVerify())
