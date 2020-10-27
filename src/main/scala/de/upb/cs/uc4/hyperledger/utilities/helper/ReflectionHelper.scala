@@ -14,7 +14,7 @@ protected[hyperledger] object ReflectionHelper {
       .find(method => method.getName == methodName && method.getParameterCount == args.length)
       .getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
     method.setAccessible(true)
-    try{
+    try {
       method.invoke(instance, args: _*)
     }
     catch {
@@ -36,8 +36,8 @@ protected[hyperledger] object ReflectionHelper {
   // ex => Logger exception
   // ex.getCause => InvocationException
   // ex.getCause.getCause => actual error
-  def safeCallPrivateMethod(instance: AnyRef)(methodName: String)(args: AnyRef*):AnyRef = {
-    try{
+  def safeCallPrivateMethod(instance: AnyRef)(methodName: String)(args: AnyRef*): AnyRef = {
+    try {
       callPrivateMethod(instance)(methodName)(args)
     }
     catch {
