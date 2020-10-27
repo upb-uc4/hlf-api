@@ -129,7 +129,7 @@ val signedCertificate: String = EnrollmentManager.enrollSecure(caURL, tlsCert, e
 ```
 
 ### 2. Connection Initialization
-Simply create an object of the connection for the contract that you want to access.
+Simply create an object of the connection for the contract that you want to access and provide the credentials for your username in the given wallet.
 ```scala
 def createConnection: ConnectionMatriculationTrait =
   de.upb.cs.uc4.hyperledger.connections.cases.ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
@@ -146,4 +146,4 @@ try {
 }
 ```
 
-### [4. All Connections and Transactions](https://github.com/upb-uc4/api)
+### [4. All Connections and Transactions](https://github.com/upb-uc4/api/tree/develop/hlf/scala)
