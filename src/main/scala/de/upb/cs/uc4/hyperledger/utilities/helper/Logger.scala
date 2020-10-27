@@ -38,13 +38,14 @@ protected[hyperledger] object Logger {
   }
 
   def getInfoFromException(exception: Throwable): String = {
-    if(exception != null){
+    if (exception != null) {
       s"""
         Exception-Message :: ${exception.getMessage}
         Exception-StackTrace :: ${exception.getStackTrace.mkString("Array(", ", ", ")")}
         Exception-Inner :: ${getInfoFromException(exception.getCause)}
       """
-    } else {
+    }
+    else {
       ""
     }
   }
