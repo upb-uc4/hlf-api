@@ -18,7 +18,7 @@
 
 ## Configuration / Initialization
 
-### 1. Dependencies (Maven)[https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api]
+### 1. Dependencies [Maven](https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api)
 ```sbt
 val hlf_api_version = "0.10.2"
 val hlf_api = "de.upb.cs.uc4" % "hlf-api" % hlf_api_version
