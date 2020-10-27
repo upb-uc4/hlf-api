@@ -1,4 +1,4 @@
-# <a id="v0.11.0" />[v0.11.0 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.2...develop) (TBD)
+# <a id="v0.11.1" />[v0.11.1 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.0...develop) (TBD)
 
 ## Feature
 
@@ -15,6 +15,27 @@
 ## Usability
 
 - 
+
+# <a id="v0.11.0" />[v0.11.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.2...v0.11.0) (2020-10-27)
+
+## Feature
+
+- Provide Approval-connection
+- Support MultiSigned Transactions by storing info to approval connections
+- Provide UnsignedTransactionAPI as defined in API-doc
+
+## Bug Fixes
+
+- fix test interoperability
+
+## Refactor
+
+- Test folder structure
+
+## Usability
+
+- Additional Tests for unsigned transactions
+- Additional TEst for full round trip (register user, enroll user, matriculate user as himself)
 
 # <a id="v0.10.2" />[v0.10.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.1...v0.10.2) (2020-10-21)
 
