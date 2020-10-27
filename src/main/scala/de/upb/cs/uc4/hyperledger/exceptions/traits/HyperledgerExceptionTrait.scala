@@ -9,5 +9,5 @@ trait HyperledgerExceptionTrait extends UC4ExceptionTrait {
   def actionName: String
 
   /**  Inner Exception thrown from the Hyperledger Framework */
-  def innerException: Exception
+  def innerException: Throwable
 }

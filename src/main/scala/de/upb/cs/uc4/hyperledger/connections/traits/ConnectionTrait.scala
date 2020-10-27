@@ -9,7 +9,7 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, 
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.helper.ReflectionHelper
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
-import org.hyperledger.fabric.gateway.{ ContractException, GatewayRuntimeException, Transaction }
+import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.protos.common.Common
 import org.hyperledger.fabric.protos.peer.{ Chaincode, ProposalPackage }
 import org.hyperledger.fabric.protos.peer.ProposalPackage.{ ChaincodeProposalPayload, Proposal }
@@ -77,23 +77,16 @@ trait ConnectionTrait extends AutoCloseable {
     val (transaction, context, signedProposal) = createProposal(proposal, signature)
     val transactionName = transaction.getName
     val proposalResponses = sendProposalToPeers(context, signedProposal)
-    val validResponses = ReflectionHelper.callPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+    val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
 
-    try {
-      val result = commitTransaction(transaction, proposalResponses, validResponses)
-      this.wrapTransactionResult(transactionName, result)
-    }
-    catch {
-      case ex: TimeoutException  => throw NetworkException(innerException = ex)
-      case ex: ContractException => throw HyperledgerException(transactionName, ex)
-      case ex: Exception         => throw HyperledgerException(transactionName, ex)
-    }
+    val result = ReflectionHelper.safeCallPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
+    this.wrapTransactionResult(transactionName, result)
   }
 
   private final def createUnsignedTransaction(transactionName: String, params: String*): Proposal = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = ReflectionHelper.callPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
-    val context: TransactionContext = ReflectionHelper.callPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
+    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val context: TransactionContext = ReflectionHelper.safeCallPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
     val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder()
     proposalBuilder.context(context)
     proposalBuilder.request(request)
@@ -109,8 +102,8 @@ trait ConnectionTrait extends AutoCloseable {
     val signedProposalBuilder: ProposalPackage.SignedProposal.Builder = ProposalPackage.SignedProposal.newBuilder
     val signedProposal: ProposalPackage.SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = ReflectionHelper.callPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
-    val context: TransactionContext = ReflectionHelper.callPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
+    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val context: TransactionContext = ReflectionHelper.safeCallPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
     ReflectionHelper.setPrivateField(context)("txID")(transactionId)
     context.verify(request.doVerify())
     context.setProposalWaitTime(request.getProposalWaitTime)
@@ -120,23 +113,8 @@ trait ConnectionTrait extends AutoCloseable {
 
   private def sendProposalToPeers(context: TransactionContext, signedProposal: ProposalPackage.SignedProposal) = {
     val channel: Channel = contract.getNetwork.getChannel
-    val peers: util.Collection[Peer] = ReflectionHelper.callPrivateMethod(channel)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
-    try {
-      ReflectionHelper.callPrivateMethod(channel)("sendProposalToPeers")(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
-    }
-    catch {
-      case ex: Exception => throw HyperledgerException("sendProposalToPeers", ex)
-    }
-
-  }
-
-  private def commitTransaction(transaction: Transaction, proposalResponses: util.Collection[ProposalResponse], validResponses: util.Collection[ProposalResponse]) = {
-    try ReflectionHelper.callPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
-    catch {
-      case e: ContractException =>
-        e.setProposalResponses(proposalResponses)
-        throw e
-    }
+    val peers: util.Collection[Peer] = ReflectionHelper.safeCallPrivateMethod(channel)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
+    ReflectionHelper.safeCallPrivateMethod(channel)("sendProposalToPeers")(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
   }
 
   private def getTransactionIdFromProposal(proposal: Proposal): String = {
@@ -165,7 +143,7 @@ trait ConnectionTrait extends AutoCloseable {
     val invocationSpec: Chaincode.ChaincodeInvocationSpec = Chaincode.ChaincodeInvocationSpec.parseFrom(payload.getInput)
     val chaincodeInput = invocationSpec.getChaincodeSpec.getInput
     val args: util.List[ByteString] = chaincodeInput.getArgsList
-    args.listIterator().map[String](b => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
+    args.iterator().map[String](b => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
   }
 
   @throws[HyperledgerExceptionTrait]

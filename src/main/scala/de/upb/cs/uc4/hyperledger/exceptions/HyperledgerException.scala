@@ -5,7 +5,7 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 case class HyperledgerException(
     actionName: String,
-    innerException: Exception
+    innerException: Throwable
 ) extends HyperledgerExceptionTrait {
   override def toString: String =
     s"""
