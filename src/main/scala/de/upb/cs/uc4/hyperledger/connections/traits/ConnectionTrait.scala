@@ -85,7 +85,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   private final def createUnsignedTransaction(transactionName: String, params: String*): Proposal = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params:_*).asInstanceOf[TransactionProposalRequest]
+    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
     val context: TransactionContext = ReflectionHelper.safeCallPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
     val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder()
     proposalBuilder.context(context)
@@ -102,7 +102,7 @@ trait ConnectionTrait extends AutoCloseable {
     val signedProposalBuilder: SignedProposal.Builder = SignedProposal.newBuilder
     val signedProposal: SignedProposal = signedProposalBuilder.setProposalBytes(proposal.toByteString).setSignature(signature).build
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params:_*).asInstanceOf[TransactionProposalRequest]
+    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
     val context: TransactionContext = ReflectionHelper.safeCallPrivateMethod(contract.getNetwork.getChannel)("getTransactionContext")(request).asInstanceOf[TransactionContext]
     ReflectionHelper.setPrivateField(context)("txID")(transactionId)
     context.verify(request.doVerify())
