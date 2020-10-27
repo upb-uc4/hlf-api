@@ -12,7 +12,12 @@ protected[hyperledger] object ReflectionHelper {
       .find(method => method.getName == methodName && method.getParameterCount == args.length)
       .getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
     method.setAccessible(true)
-    method.invoke(instance, args: _*)
+    try {
+      method.invoke(instance, args: _*)
+    }
+    catch {
+      case ex: Throwable => throw Logger.err("Inner Exception on private method call: ", ex)
+    }
   }
 
   def setPrivateField(instance: AnyRef)(fieldName: String)(arg: AnyRef): Unit = {

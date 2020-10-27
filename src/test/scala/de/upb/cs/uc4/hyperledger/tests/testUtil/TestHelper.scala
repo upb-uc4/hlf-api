@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.testUtil
+package de.upb.cs.uc4.hyperledger.tests.testUtil
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 import org.scalatest.matchers.should.Matchers._

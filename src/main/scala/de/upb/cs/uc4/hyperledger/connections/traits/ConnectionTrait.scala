@@ -75,11 +75,19 @@ trait ConnectionTrait extends AutoCloseable {
     val proposal: Proposal = Proposal.parseFrom(proposalBytes)
 
     val (transaction, context, signedProposal) = createProposal(proposal, signature)
+    val transactionName = transaction.getName
     val proposalResponses = sendProposalToPeers(context, signedProposal)
     val validResponses = ReflectionHelper.callPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
 
-    val result = commitTransaction(transaction, proposalResponses, validResponses)
-    this.wrapTransactionResult(transaction.getName, result)
+    try {
+      val result = commitTransaction(transaction, proposalResponses, validResponses)
+      this.wrapTransactionResult(transactionName, result)
+    }
+    catch {
+      case ex: TimeoutException  => throw NetworkException(innerException = ex)
+      case ex: ContractException => throw HyperledgerException(transactionName, ex)
+      case ex: Exception         => throw HyperledgerException(transactionName, ex)
+    }
   }
 
   private final def createUnsignedTransaction(transactionName: String, params: String*): Proposal = {
@@ -113,7 +121,12 @@ trait ConnectionTrait extends AutoCloseable {
   private def sendProposalToPeers(context: TransactionContext, signedProposal: ProposalPackage.SignedProposal) = {
     val channel: Channel = contract.getNetwork.getChannel
     val peers: util.Collection[Peer] = ReflectionHelper.callPrivateMethod(channel)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
-    ReflectionHelper.callPrivateMethod(channel)("sendProposalToPeers")(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
+    try {
+      ReflectionHelper.callPrivateMethod(channel)("sendProposalToPeers")(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
+    } catch {
+      case ex: Exception => throw HyperledgerException("sendProposalToPeers", ex)
+    }
+
   }
 
   private def commitTransaction(transaction: Transaction, proposalResponses: util.Collection[ProposalResponse], validResponses: util.Collection[ProposalResponse]) = {
@@ -123,10 +136,6 @@ trait ConnectionTrait extends AutoCloseable {
         e.setProposalResponses(proposalResponses)
         throw e
     }
-    //} catch {
-    //  case e@(_: InvalidArgumentException | _: ProposalException | _: ServiceDiscoveryException) =>
-    //   throw new GatewayRuntimeException(e)
-    //}
   }
 
   private def getTransactionIdFromProposal(proposal: Proposal): String = {
