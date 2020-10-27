@@ -10,28 +10,28 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
   override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
   override val (draftContract, draftGateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.draftContractName, walletPath, networkDescriptionPath)
 
-  def getProposalAddMatriculationData(jSonMatriculationData: String): (Array[Byte], String) = {
+  def getProposalAddMatriculationData(jSonMatriculationData: String): Array[Byte] = {
     // TODO: submit only to draft-contract
     // addMatriculationData(jSonMatriculationData)
     // TODO: add error handling
     internalGetUnsignedProposal("addMatriculationData", jSonMatriculationData)
   }
 
-  def getProposalAddEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String): (Array[Byte], String) = {
+  def getProposalAddEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String): Array[Byte] = {
     // TODO: submit only to draft-contract
     // addEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String)
     // TODO: add error handling
     internalGetUnsignedProposal("addEntriesToMatriculationData", enrollmentId: String, subjectMatriculationList: String)
   }
 
-  def getProposalUpdateMatriculationData(jSonMatriculationData: String): (Array[Byte], String) = {
+  def getProposalUpdateMatriculationData(jSonMatriculationData: String): Array[Byte] = {
     // TODO: submit only to draft-contract
     // updateMatriculationData(jSonMatriculationData)
     // TODO: add error handling
     internalGetUnsignedProposal("updateMatriculationData", jSonMatriculationData)
   }
 
-  def getProposalGetMatriculationData(enrollmentId: String): (Array[Byte], String) = {
+  def getProposalGetMatriculationData(enrollmentId: String): Array[Byte] = {
     // TODO: have admin check user can access info?
     // TODO: submit only to draft-contract
     // getMatriculationData(enrollmentId)
