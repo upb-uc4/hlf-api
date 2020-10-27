@@ -18,12 +18,12 @@
 
 ## Configuration / Initialization
 
-### 1. Dependencies
+### 1. Dependencies (Maven)[https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api]
 ```sbt
-val hyperledgerApiVersion = "v0.9.1"
-val hyperledger_api = RootProject(uri("https://github.com/upb-uc4/hlf-api.git#%s".format(hyperledgerApiVersion)))
+val hlf_api_version = "0.10.2"
+val hlf_api = "de.upb.cs.uc4" % "hlf-api" % hlf_api_version
 
-lazy val yourProject = (project in file(".")).dependsOn(hyperledger_api)
+lazy val yourProject = (project in file(".")).dependencies(hyperledger_api)
 ```
 ### 2. Imports
 - the Connections (Class and Trait) you want to access
