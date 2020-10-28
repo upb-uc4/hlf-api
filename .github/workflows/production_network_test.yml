@@ -81,7 +81,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-network'
-        ref: 'v0.10.0'
+        ref: 'v0.11.1'
         path: 'hlf-network'
         
     # Prepare for mounts
@@ -99,7 +99,7 @@ jobs:
     - name: (Temporary) install faketime to prevent clockdrifts
       run: sudo apt-get install faketime
 
-    # Setup Network
+      # Setup Network
     - name: setup production network
       uses: ./.github/actions/production_network_setup
       with:
