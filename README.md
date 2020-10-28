@@ -7,7 +7,7 @@
 
 ![Code Format](https://github.com/upb-uc4/hlf-api/workflows/Code%20Format%20Check%20Pipeline/badge.svg)
 
-[Maven](https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api)
+Released via [Maven](https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api)
 
 ## Prerequisites
 
