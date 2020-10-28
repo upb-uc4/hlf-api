@@ -7,6 +7,8 @@
 
 ![Code Format](https://github.com/upb-uc4/hlf-api/workflows/Code%20Format%20Check%20Pipeline/badge.svg)
 
+[![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
+
 ## Prerequisites
 
 1. Have a working UC4-chaincode-network running 
@@ -18,12 +20,12 @@
 
 ## Configuration / Initialization
 
-### 1. Dependencies
+### 1. Dependencies [Maven](https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api)
 ```sbt
-val hyperledgerApiVersion = "v0.9.1"
-val hyperledger_api = RootProject(uri("https://github.com/upb-uc4/hlf-api.git#%s".format(hyperledgerApiVersion)))
+val hlf_api_version = "0.11.0"
+val hlf_api = "de.upb.cs.uc4" % "hlf-api" % hlf_api_version
 
-lazy val yourProject = (project in file(".")).dependsOn(hyperledger_api)
+lazy val yourProject = (project in file(".")).dependencies(hyperledger_api)
 ```
 ### 2. Imports
 - the Connections (Class and Trait) you want to access
@@ -129,7 +131,7 @@ val signedCertificate: String = EnrollmentManager.enrollSecure(caURL, tlsCert, e
 ```
 
 ### 2. Connection Initialization
-Simply create an object of the connection for the contract that you want to access.
+Simply create an object of the connection for the contract that you want to access and provide the credentials for your username in the given wallet.
 ```scala
 def createConnection: ConnectionMatriculationTrait =
   de.upb.cs.uc4.hyperledger.connections.cases.ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
@@ -146,4 +148,4 @@ try {
 }
 ```
 
-### [4. All Connections and Transactions](https://github.com/upb-uc4/api)
+### [4. All Connections and Transactions](https://github.com/upb-uc4/api/tree/develop/hlf/scala)

@@ -1,7 +1,7 @@
 package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.TestHelper
+import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
@@ -12,18 +12,37 @@ class UserManagementTests extends TestBase {
 
   "The enrollmentManager" when {
     "enrolling a User without csr" should {
-      "allow for the new User to access the chain [102]" in {
-        Logger.info("Enroll Admin as user.")
-        EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
-
+      "allow for the new User to access the chain [300]" in {
+        val enrollmentID = "300"
+        super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
         val connection = super.initializeCertificate(username)
-        TestHelper.testAddCertificateAccess("102", connection)
+
+        TestHelper.testAddCertificateAccess(enrollmentID, connection)
+      }
+      "allow for the new User to matriculate himself [301]" in {
+        val enrollmentID = "301"
+        super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
+
+        // register test user 301
+        val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentID, username, walletPath, "org1")
+        // enroll test user 301
+        EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentID, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
+
+        // access chaincode as test user 301
+        val matriculationConnectionUser = super.initializeMatriculation(enrollmentID)
+        matriculationConnectionUser.addMatriculationData(TestDataMatriculation.validMatriculationData1(enrollmentID))
+        matriculationConnectionUser.close();
+
+        // access chaincode as admin user
+        // TODO: enable once dualSigning is supported
+        // val matriculationConnectionAdmin = super.initializeMatriculation(username)
+        // matriculationConnectionAdmin.addMatriculationData(TestDataMatriculation.validMatriculationData1(enrollmentID))
+        // matriculationConnectionAdmin.close();
       }
     }
     "enrolling a User with csr" should {
-      "not directly allow for the new User to access the chain [103]" in {
-        Logger.info("EnrollAdmin")
-        EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
+      "not directly allow for the new User to access the chain [testid]" in {
+        super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
         Logger.info("Register TestUser")
         val testUserName = "testid"
@@ -51,13 +70,14 @@ class UserManagementTests extends TestBase {
   }
 
   "The registrationManager" when {
-    "performing a registration [104]" should {
+    "performing a registration [302]" should {
       "not throw exceptions" in {
+        val enrollmentID = "302"
         Logger.info("Enroll as admin and store cert to wallet")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
         Logger.info("Register TestUser")
-        val testUserName = "Tester104"
+        val testUserName = s"Tester$enrollmentID"
         val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.info("Enroll TestUser")
@@ -65,7 +85,7 @@ class UserManagementTests extends TestBase {
 
         Logger.info("Access Chain as TestUser")
         val connection = super.initializeCertificate(testUserName)
-        TestHelper.testAddCertificateAccess("104", connection)
+        TestHelper.testAddCertificateAccess(enrollmentID, connection)
       }
     }
   }
