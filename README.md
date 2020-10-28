@@ -7,8 +7,6 @@
 
 ![Code Format](https://github.com/upb-uc4/hlf-api/workflows/Code%20Format%20Check%20Pipeline/badge.svg)
 
-Released via [Maven](https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api)
-
 ## Prerequisites
 
 1. Have a working UC4-chaincode-network running 
@@ -22,7 +20,7 @@ Released via [Maven](https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api)
 
 ### 1. Dependencies [Maven](https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api)
 ```sbt
-val hlf_api_version = "0.10.2"
+val hlf_api_version = "0.11.0"
 val hlf_api = "de.upb.cs.uc4" % "hlf-api" % hlf_api_version
 
 lazy val yourProject = (project in file(".")).dependencies(hyperledger_api)
