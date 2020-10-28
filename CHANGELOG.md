@@ -17,6 +17,7 @@
 - 
 
 # <a id="v0.11.0" />[v0.11.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.2...v0.11.0) (2020-10-27)
+https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api/0.11.0/jar
 
 ## Feature
 
@@ -38,12 +39,14 @@
 - Additional TEst for full round trip (register user, enroll user, matriculate user as himself)
 
 # <a id="v0.10.2" />[v0.10.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.1...v0.10.2) (2020-10-21)
+https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api/0.10.2/jar
 
 ## Usability
 
 - Release to Maven via Pipeline (with SBT-CI-RELEASE Plugin)
 
 # <a id="v0.10.1" />[v0.10.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.0...v0.10.1) (2020-10-20)
+https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api/0.10.1/jar
 
 ## Feature
 
