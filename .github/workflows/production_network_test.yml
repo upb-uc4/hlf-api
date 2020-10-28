@@ -99,10 +99,6 @@ jobs:
     - name: (Temporary) install faketime to prevent clockdrifts
       run: sudo apt-get install faketime
 
-    - name: Check kubernetes nodes
-      run: |
-        kubectl get nodes -o wide
-
       # Setup Network
     - name: setup production network
       uses: ./.github/actions/production_network_setup
