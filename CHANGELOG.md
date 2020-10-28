@@ -1,4 +1,4 @@
-# <a id="v0.11.1" />[v0.11.1 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.0...develop) (TBD)
+# <a id="v0.11.2" />[v0.11.2 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.0...develop) (TBD)
 
 ## Feature
 
@@ -15,6 +15,10 @@
 ## Usability
 
 - 
+
+# <a id="v0.11.1" />[v0.11.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.0...develop) (2020-10-28)
+
+Deployment via organization secrets.
 
 # <a id="v0.11.0" />[v0.11.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.10.2...v0.11.0) (2020-10-27)
 https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api/0.11.0/jar
