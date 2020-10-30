@@ -1,3 +1,9 @@
+# <a id="v0.11.3" />[v0.11.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.2...0.11.3) (2020-10-29)
+
+## Refactor
+
+- remove ```final``` from ```submitSignedTransaction``` to allow for mocking
+
 # <a id="v0.11.2" />[v0.11.2 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.0...develop) (TBD)
 
 ## Feature
