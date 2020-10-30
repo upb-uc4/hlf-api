@@ -110,7 +110,7 @@ jobs:
       run: |
         export NODE_IP=$(kubectl get nodes -l kubernetes.io/hostname=kind-worker -o jsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}')
         ./setup_node_ip.sh
-        printf "Using worker node at: %s" $NODE_IP
+        printf "Using worker node at: %s\n" $NODE_IP
         cat src/test/resources/connection_profile_kubernetes.yaml
 
     # Setup Network
