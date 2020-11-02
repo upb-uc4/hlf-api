@@ -10,28 +10,28 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
   override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
   override val approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
 
-  def getProposalAddMatriculationData(jSonMatriculationData: String): (Array[Byte], String) = {
+  def getProposalAddMatriculationData(jSonMatriculationData: String): Array[Byte] = {
     // send as admin maintaining the connection
     addMatriculationData(jSonMatriculationData)
     // TODO: add error handling
     internalGetUnsignedProposal("addMatriculationData", jSonMatriculationData)
   }
 
-  def getProposalAddEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String): (Array[Byte], String) = {
+  def getProposalAddEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String): Array[Byte] = {
     // send as admin maintaining the connection
     addEntriesToMatriculationData(enrollmentId, subjectMatriculationList)
     // TODO: add error handling
     internalGetUnsignedProposal("addEntriesToMatriculationData", enrollmentId: String, subjectMatriculationList: String)
   }
 
-  def getProposalUpdateMatriculationData(jSonMatriculationData: String): (Array[Byte], String) = {
+  def getProposalUpdateMatriculationData(jSonMatriculationData: String): Array[Byte] = {
     // send as admin maintaining the connection
     updateMatriculationData(jSonMatriculationData)
     // TODO: add error handling
     internalGetUnsignedProposal("updateMatriculationData", jSonMatriculationData)
   }
 
-  def getProposalGetMatriculationData(enrollmentId: String): (Array[Byte], String) = {
+  def getProposalGetMatriculationData(enrollmentId: String): Array[Byte] = {
     // send as admin maintaining the connection
     getMatriculationData(enrollmentId)
     // TODO: add error handling

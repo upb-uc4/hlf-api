@@ -12,6 +12,8 @@ import org.hyperledger.fabric.sdk.TransactionProposalRequest
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
+import scala.jdk.CollectionConverters._
+
 
 protected[hyperledger] object TransactionHelper {
 
@@ -53,7 +55,7 @@ protected[hyperledger] object TransactionHelper {
     val invocationSpec: Chaincode.ChaincodeInvocationSpec = Chaincode.ChaincodeInvocationSpec.parseFrom(payload.getInput)
     val chaincodeInput = invocationSpec.getChaincodeSpec.getInput
     val args: util.List[ByteString] = chaincodeInput.getArgsList
-    args.iterator().map(b => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
+    args.iterator().map[String]((b: ByteString) => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
   }
 
 }

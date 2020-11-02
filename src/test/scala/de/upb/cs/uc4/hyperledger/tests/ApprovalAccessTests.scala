@@ -2,7 +2,6 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionApprovalsTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelper }
 
 class ApprovalAccessTests extends TestBase {
 
