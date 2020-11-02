@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.utilities.helper
 import java.nio.charset.StandardCharsets
 import java.util
 
+import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, TransactionImpl }
 import org.hyperledger.fabric.protos.common.Common
@@ -12,9 +13,20 @@ import org.hyperledger.fabric.sdk.TransactionProposalRequest
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
-import scala.jdk.CollectionConverters._
 
 protected[hyperledger] object TransactionHelper {
+
+  def getApprovalTransactionFromParameters(contractName: String, transactionName: String, params: String*): Seq[String] = {
+    val jsonParams = new Gson().toJson(params.toArray)
+    val info = List[String](contractName, transactionName, jsonParams)
+    Logger.info(s"approval info: ${info.foldLeft("")((A, B) => A + "::" + B)}")
+    info
+  }
+
+  def createApprovalTransactionInfo(approvalContract: ContractImpl, contractName: String, transactionName: String, params: Array[String], transactionId: Option[String]): (TransactionImpl, TransactionContext, TransactionProposalRequest) ={
+    val approvalParams: Seq[String] = getApprovalTransactionFromParameters(contractName, transactionName, params:_*)
+    createTransactionInfo(approvalContract, "approveTransaction", approvalParams.toArray, transactionId)
+  }
 
   def createTransactionInfo(contract: ContractImpl, transactionName: String, params: Array[String], transactionId: Option[String]): (TransactionImpl, TransactionContext, TransactionProposalRequest) = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]

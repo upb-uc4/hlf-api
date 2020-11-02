@@ -77,21 +77,43 @@ trait ConnectionTrait extends AutoCloseable {
     approvalConnection.get.approveTransaction(contractName, "addCertificate", params: _*)
 
     // gather info
-    val (transaction, context, request) = TransactionHelper.createTransactionInfo(contract, transactionName, params.toArray, None)
+    val (transaction, context, request) = TransactionHelper.createApprovalTransactionInfo(contract, transactionName, params.toArray, None)
 
     // create proposal
-    val proposalBuilder: ProposalBuilder = ProposalBuilder.newBuilder()
-      .request(request)
-      .context(context)
-    val proposal: Proposal = proposalBuilder.build()
+    val proposal: Proposal = ProposalBuilder.newBuilder().request(request).context(context).build()
     proposal.toByteArray
   }
 
   def submitSignedProposal(proposalBytes: Array[Byte], signature: ByteString): String = {
     val proposal: Proposal = Proposal.parseFrom(proposalBytes)
 
-    val (transaction, context, signedProposal) = this.createProposal(proposal, signature)
+    val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) = this.createProposal(proposal, signature)
+
+    // submit both and try to get perfect answer
+    val approvalResult = this.internalSubmitApprovalProposal(transaction, context, signedProposal)
+    var transactionResult = approvalResult
+    try {
+      transactionResult = this.internalSubmitRealTransactionFromApprovalProposal(transaction)
+    } catch {
+      case e: TransactionExceptionTrait => throw e
+    }
+    transactionResult
+  }
+
+  def internalSubmitRealTransactionFromApprovalProposal(transaction: TransactionImpl): String = {
+    val result: String = ""
+    // TODO: get real transaction info and send appropriate transaction to contract.
+    // result = realTransaction.Submit()
+    // steps:
+    // 1. map all the contractNames to contract
+    // 2. map all the transactionNames to contract methods.
+    // 3. transfer the parameters
+    result
+  }
+
+  def internalSubmitApprovalProposal(transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal): String = {
     val transactionName = TransactionHelper.getTransactionNameFromFcn(transaction.getName)
+    if(transactionName != "approveTransaction") throw new Exception("submitSigned Proposal was invoked with a non approval transaction.")
     val proposalResponses = this.sendProposalToPeers(context, signedProposal)
 
     // evaluate proposal
@@ -115,7 +137,7 @@ trait ConnectionTrait extends AutoCloseable {
       .setSignature(signature)
     val signedProposal: SignedProposal = signedProposalBuilder.build
 
-    val (transaction, context, request) = TransactionHelper.createTransactionInfo(contract, transactionName, params.toArray, Some(transactionId))
+    val (transaction, context, request) = TransactionHelper.createTransactionInfo(approvalConnection.get.contract, transactionName, params.toArray, Some(transactionId))
 
     (transaction, context, signedProposal)
   }
