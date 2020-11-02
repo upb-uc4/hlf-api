@@ -2,22 +2,19 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 
 import java.nio.charset.StandardCharsets
 import java.util
-import java.util.Optional
 import java.util.concurrent.TimeoutException
 
-import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ ReflectionHelper, TransactionHelper }
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
-import org.hyperledger.fabric.protos.peer.{ Chaincode, ProposalPackage }
+import org.hyperledger.fabric.protos.peer.ProposalPackage
 import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
 import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
 
-import scala.collection.convert.ImplicitConversions.`iterator asScala`
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
@@ -77,7 +74,7 @@ trait ConnectionTrait extends AutoCloseable {
     approvalConnection.get.approveTransaction(contractName, "addCertificate", params: _*)
 
     // gather info
-    val (transaction, context, request) = TransactionHelper.createApprovalTransactionInfo(contract, transactionName, params.toArray, None)
+    val (transaction, context, request) = TransactionHelper.createApprovalTransactionInfo(approvalConnection.get.contract, contractName, transactionName, params.toArray, None)
 
     // create proposal
     val proposal: Proposal = ProposalBuilder.newBuilder().request(request).context(context).build()
@@ -89,10 +86,11 @@ trait ConnectionTrait extends AutoCloseable {
 
     val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) = this.createProposal(proposal, signature)
 
-    // submit both and try to get perfect answer
+    // submit approval
     val approvalResult = this.internalSubmitApprovalProposal(transaction, context, signedProposal)
     var transactionResult = approvalResult
     try {
+      // submit real transaction as admin
       transactionResult = this.internalSubmitRealTransactionFromApprovalProposal(transaction)
     }
     catch {
