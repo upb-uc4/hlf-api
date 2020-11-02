@@ -94,7 +94,8 @@ trait ConnectionTrait extends AutoCloseable {
     var transactionResult = approvalResult
     try {
       transactionResult = this.internalSubmitRealTransactionFromApprovalProposal(transaction)
-    } catch {
+    }
+    catch {
       case e: TransactionExceptionTrait => throw e
     }
     transactionResult
@@ -113,7 +114,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   def internalSubmitApprovalProposal(transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal): String = {
     val transactionName = TransactionHelper.getTransactionNameFromFcn(transaction.getName)
-    if(transactionName != "approveTransaction") throw new Exception("submitSigned Proposal was invoked with a non approval transaction.")
+    if (transactionName != "approveTransaction") throw new Exception("submitSigned Proposal was invoked with a non approval transaction.")
     val proposalResponses = this.sendProposalToPeers(context, signedProposal)
 
     // evaluate proposal

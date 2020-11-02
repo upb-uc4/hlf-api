@@ -23,8 +23,8 @@ protected[hyperledger] object TransactionHelper {
     info
   }
 
-  def createApprovalTransactionInfo(approvalContract: ContractImpl, contractName: String, transactionName: String, params: Array[String], transactionId: Option[String]): (TransactionImpl, TransactionContext, TransactionProposalRequest) ={
-    val approvalParams: Seq[String] = getApprovalTransactionFromParameters(contractName, transactionName, params:_*)
+  def createApprovalTransactionInfo(approvalContract: ContractImpl, contractName: String, transactionName: String, params: Array[String], transactionId: Option[String]): (TransactionImpl, TransactionContext, TransactionProposalRequest) = {
+    val approvalParams: Seq[String] = getApprovalTransactionFromParameters(contractName, transactionName, params: _*)
     createTransactionInfo(approvalContract, "approveTransaction", approvalParams.toArray, transactionId)
   }
 

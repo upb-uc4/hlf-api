@@ -22,5 +22,4 @@ protected[hyperledger] case class ConnectionApproval(username: String, channel: 
     wrapEvaluateTransaction("getApprovals", transactionValues: _*)
   }
 
-
 }
