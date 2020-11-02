@@ -10,7 +10,6 @@ Commons.gpgSettings()
 // dependencies
 libraryDependencies ++= Dependencies.scalaTestDependencies
 libraryDependencies ++= Dependencies.hyperledgerDependencies
-libraryDependencies += Dependencies.json
 
 // plugins
 enablePlugins(GitVersioning, BuildInfoPlugin)
