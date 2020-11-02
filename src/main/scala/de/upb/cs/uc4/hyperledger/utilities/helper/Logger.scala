@@ -7,7 +7,7 @@ protected[hyperledger] object Logger {
     *
     * @return A new Exception encapsulating the error.
     */
-  def err(message: String, e: Exception = null): Exception = {
+  def err(message: String, e: Throwable = null): Exception = {
     val msg = s"""
               [MESSAGE] :: $message
               [ERROR] :: ${getInfoFromException(e)}
@@ -37,10 +37,16 @@ protected[hyperledger] object Logger {
     println(s"[INFO] :: $message")
   }
 
-  def getInfoFromException(exception: Exception): String = {
-    s"""
+  def getInfoFromException(exception: Throwable): String = {
+    if (exception != null) {
+      s"""
         Exception-Message :: ${exception.getMessage}
         Exception-StackTrace :: ${exception.getStackTrace.mkString("Array(", ", ", ")")}
-     """
+        Exception-Inner :: ${getInfoFromException(exception.getCause)}
+      """
+    }
+    else {
+      ""
+    }
   }
 }

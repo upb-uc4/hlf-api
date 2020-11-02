@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.testUtil
+package de.upb.cs.uc4.hyperledger.tests.testUtil
 
 object TestDataMatriculation {
   def validMatriculationData1(id: String): String = "{\n  \"enrollmentId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"SS2020\"\n      ]\n    }\n  ]\n}"

@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation
+import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class MatriculationErrorTests extends TestBase {
