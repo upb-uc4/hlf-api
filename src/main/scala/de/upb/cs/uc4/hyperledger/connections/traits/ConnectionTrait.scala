@@ -220,6 +220,6 @@ trait ConnectionTrait extends AutoCloseable {
     */
   @throws[TransactionExceptionTrait]
   private def testAnyParamsNull(transactionName: String, params: String*): Unit = {
-    if(params.exists(a => a == null)) throw TransactionException.CreateUnknownException(transactionName, "A parameter was null.")
+    if (params.exists(a => a == null)) throw TransactionException.CreateUnknownException(transactionName, "A parameter was null.")
   }
 }
