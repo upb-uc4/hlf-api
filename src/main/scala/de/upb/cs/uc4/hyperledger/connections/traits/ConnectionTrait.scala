@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets
 import java.util
 import java.util.concurrent.TimeoutException
 
+import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
@@ -45,7 +46,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[HyperledgerExceptionTrait]
   protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
     // submit my approval to approvalContract
-    if (approvalConnection.isDefined) approvalConnection.get.approveTransaction(contractName, transactionName, params: _*)
+    if (approvalConnection.isDefined) approvalConnection.get.approveTransaction(contractName, transactionName)
 
     // submit and evaluate response from my "regular" contract
     val result = this.privateSubmitTransaction(transient, transactionName, params: _*)

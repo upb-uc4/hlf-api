@@ -2,6 +2,7 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
 
+import com.google.gson.Gson
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionApprovalsTrait
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
@@ -13,7 +14,9 @@ protected[hyperledger] case class ConnectionApproval(username: String, channel: 
 
   override def approveTransaction(contractName: String, transactionName: String, params: String*): String = {
     Logger.info(s"Approving: $contractName ::: $transactionName ::: ${params.toArray[String].foldLeft[String]("")((B,A)=> B+";"+A)}")
-    wrapSubmitTransaction(false, "approveTransaction", params.prepended(transactionName).prepended(contractName): _*)
+    val jsonParams = new Gson().toJson(params.toArray)
+    Logger.info(s"JSONPARAMS: $jsonParams")
+    wrapSubmitTransaction(false, "approveTransaction", List[String](contractName, transactionName, jsonParams):_*)
   }
 
   override def getApprovals(contractName: String, transactionName: String, params: String*): String =
