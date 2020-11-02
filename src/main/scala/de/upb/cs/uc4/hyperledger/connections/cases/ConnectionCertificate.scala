@@ -12,22 +12,16 @@ case class ConnectionCertificate(username: String, channel: String, chaincode: S
   override val approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   override def getProposalAddCertificate(enrollmentID: String, certificate: String): Array[Byte] = {
-    // send as admin maintaining the connection
-    addCertificate(enrollmentID, certificate)
     // TODO: add error handling
     internalGetUnsignedProposal("addCertificate", enrollmentID, certificate)
   }
 
   override def getProposalUpdateCertificate(enrollmentID: String, certificate: String): Array[Byte] = {
-    // send as admin maintaining the connection
-    updateCertificate(enrollmentID, certificate)
     // TODO: add error handling
     internalGetUnsignedProposal("updateCertificate", enrollmentID, certificate)
   }
 
   override def getProposalGetCertificate(enrollmentID: String): Array[Byte] = {
-    // send as admin maintaining the connection
-    val _: String = getCertificate(enrollmentID)
     // TODO: add error handling
     internalGetUnsignedProposal("getCertificate", enrollmentID)
   }
