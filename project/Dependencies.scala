@@ -6,7 +6,6 @@ object Dependencies {
   private val hyperledgerGateway = "org.hyperledger.fabric" % "fabric-gateway-java" % "2.2.0"
   private val scalaTest = "org.scalatest" %% "scalatest" % "3.2.0" % Test
   private val flexmark = "com.vladsch.flexmark" % "flexmark-all" % "0.35.10" % Test
-  val json = "net.liftweb" %% "lift-json" % "2.5+"
 
   // dependency groups
   val hyperledgerDependencies = Seq(hyperledgerSDK, hyperledgerGateway)
