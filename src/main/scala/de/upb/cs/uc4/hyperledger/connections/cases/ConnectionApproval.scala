@@ -13,12 +13,19 @@ protected[hyperledger] case class ConnectionApproval(username: String, channel: 
   override val approvalConnection: Option[ConnectionApprovalsTrait] = None
 
   override def approveTransaction(contractName: String, transactionName: String, params: String*): String = {
-    Logger.info(s"Approving: $contractName ::: $transactionName ::: ${params.toArray[String].foldLeft[String]("")((B,A)=> B+";"+A)}")
-    val jsonParams = new Gson().toJson(params.toArray)
-    Logger.info(s"JSONPARAMS: $jsonParams")
-    wrapSubmitTransaction(false, "approveTransaction", List[String](contractName, transactionName, jsonParams):_*)
+    val transactionValues = getTransactionInfo(contractName, transactionName, params:_*)
+    wrapSubmitTransaction(false, "approveTransaction", transactionValues:_*)
   }
 
-  override def getApprovals(contractName: String, transactionName: String, params: String*): String =
-    wrapEvaluateTransaction("getApprovals", params.prepended(transactionName).prepended(contractName): _*)
+  override def getApprovals(contractName: String, transactionName: String, params: String*): String = {
+    val transactionValues = getTransactionInfo(contractName, transactionName, params:_*)
+    wrapEvaluateTransaction("getApprovals", transactionValues:_*)
+  }
+
+  private def getTransactionInfo(contractName: String, transactionName: String, params: String*) : Seq[String] = {
+    val jsonParams = new Gson().toJson(params.toArray)
+    val info = List[String](contractName, transactionName, jsonParams)
+    Logger.info(s"approval info: ${info.foldLeft("")((A,B)=> A + "::" + B)}")
+    info
+  }
 }
