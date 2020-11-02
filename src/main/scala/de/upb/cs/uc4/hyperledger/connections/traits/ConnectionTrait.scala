@@ -149,15 +149,20 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   private def privateSubmitTransaction(transient: Boolean, transactionName: String, params: String*): Array[Byte] = {
-    testParamsNull(transactionName, params: _*)
+    testAnyParamsNull(transactionName, params: _*)
     try {
       if (transient) {
-        var transMap: Map[String, Array[Byte]] = Map()
         var i = 0
+        var transMap: Map[String, Array[Byte]] = Map()
         params.foreach(param => {
           transMap += i.toString -> param.toCharArray.map(_.toByte)
           i = i + 1
         })
+
+        // TODO: once transient is reenabled, test this
+        // var i = 0
+        // val transMap2 = params.toList.map((entry: String) =>
+        // ((i+=1).toString -> entry.toCharArray.map(_.toByte)))
 
         contract.createTransaction(transactionName).setTransient(transMap.asJava).submit()
       }
@@ -174,7 +179,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   private def privateEvaluateTransaction(transactionName: String, params: String*): Array[Byte] = {
-    testParamsNull(transactionName, params: _*)
+    testAnyParamsNull(transactionName, params: _*)
     try {
       contract.evaluateTransaction(transactionName, params: _*)
     }
@@ -214,7 +219,7 @@ trait ConnectionTrait extends AutoCloseable {
     * @throws TransactionException if a parameter is null.
     */
   @throws[TransactionExceptionTrait]
-  private def testParamsNull(transactionName: String, params: String*): Unit = {
-    params.foreach(param => if (param == null) throw TransactionException.CreateUnknownException(transactionName, "A parameter was null."))
+  private def testAnyParamsNull(transactionName: String, params: String*): Unit = {
+    if(params.exists(a => a == null)) throw TransactionException.CreateUnknownException(transactionName, "A parameter was null.")
   }
 }
