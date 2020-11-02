@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 
-protected[connections] trait ConnectionApprovalsTrait extends ConnectionTrait {
+protected[hyperledger] trait ConnectionApprovalsTrait extends ConnectionTrait {
 
   /** Submits the "approveTransaction" query.
     *
