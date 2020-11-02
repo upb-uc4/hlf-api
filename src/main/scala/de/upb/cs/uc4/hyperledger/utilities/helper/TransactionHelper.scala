@@ -14,7 +14,6 @@ import org.hyperledger.fabric.sdk.transaction.TransactionContext
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
 import scala.jdk.CollectionConverters._
 
-
 protected[hyperledger] object TransactionHelper {
 
   def createTransactionInfo(contract: ContractImpl, transactionName: String, params: Array[String], transactionId: Option[String]): (TransactionImpl, TransactionContext, TransactionProposalRequest) = {
