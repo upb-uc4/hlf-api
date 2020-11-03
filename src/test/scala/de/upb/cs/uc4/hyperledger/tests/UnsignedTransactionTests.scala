@@ -42,7 +42,7 @@ class UnsignedTransactionTests extends TestBase {
     }
 
     "passing a signed transaction" should {
-      "submit the transaction to the ledger" in {
+      "submit the proposal transaction to the proposal contract" in {
         val enrollmentId = "102"
         val certificate = "Whatever"
         val proposalBytes = certificateConnection.getProposalAddCertificate(enrollmentId, certificate)
@@ -56,6 +56,19 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
         val result = certificateConnection.submitSignedProposal(proposalBytes, signature)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
+      }
+      "submit the real transaction to the real contract" in {
+        // store info
+        val enrollmentId = "103"
+        val certificate = "Whatever"
+        val proposalBytes = certificateConnection.getProposalAddCertificate(enrollmentId, certificate)
+        val transactionContext: TransactionContext = certificateConnection.contract.getNetwork.getChannel.newTransactionContext()
+        val signature = transactionContext.signByteString(proposalBytes)
+        val result = certificateConnection.submitSignedProposal(proposalBytes, signature)
+
+        // test info stored
+        val storedCert = certificateConnection.getCertificate(enrollmentId)
+        storedCert should be(certificate)
       }
     }
 
