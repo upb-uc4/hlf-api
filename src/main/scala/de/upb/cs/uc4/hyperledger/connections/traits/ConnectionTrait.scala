@@ -81,8 +81,9 @@ trait ConnectionTrait extends AutoCloseable {
     proposal.toByteArray
   }
 
-  def submitSignedProposal(proposalBytes: Array[Byte], signature: ByteString): String = {
+  def submitSignedProposal(proposalBytes: Array[Byte], signatureBytes: Array[Byte]): String = {
     val proposal: Proposal = Proposal.parseFrom(proposalBytes)
+    val signature: ByteString = ByteString.copyFrom(signatureBytes)
 
     val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) = this.createSignedProposal(proposal, signature)
 
