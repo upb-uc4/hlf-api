@@ -80,19 +80,19 @@ class UnsignedTransactionTests extends TestBase {
         val inputMatJSon = TestDataMatriculation.validMatriculationData1("500")
         val proposalBytes = matriculationConnection.getProposalAddMatriculationData(inputMatJSon)
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
-        Logger.warn(info)
+        Logger.debug(s"AddMatriculationDataProposal:: $info")
       }
       "not fail 2" in {
         val inputMatJSon = TestDataMatriculation.validMatriculationData2("500")
         val proposalBytes = matriculationConnection.getProposalUpdateMatriculationData(inputMatJSon)
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
-        Logger.warn(info)
+        Logger.debug(s"UpdateMatriculationDataProposal:: $info")
       }
       "not fail 3" in {
         val inputMatJSon = TestDataMatriculation.validMatriculationData1("500")
         val proposalBytes = matriculationConnection.getProposalAddEntriesToMatriculationData("500", TestDataMatriculation.getSubjectMatriculationList("Computer Science", "SS2010"))
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
-        Logger.warn(info)
+        Logger.debug(s"AddEntriesToMatriculationDataProposal:: $info")
       }
     }
   }
