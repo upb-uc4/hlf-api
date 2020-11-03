@@ -91,7 +91,8 @@ class UnsignedTransactionTests extends TestBase {
       "not fail 3" in {
         val proposalBytes = matriculationConnection.getProposalAddEntriesToMatriculationData(
           "500",
-          TestDataMatriculation.validMatriculationEntry)
+          TestDataMatriculation.validMatriculationEntry
+        )
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddEntriesToMatriculationDataProposal:: $info")
       }
