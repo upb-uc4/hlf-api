@@ -43,7 +43,7 @@ protected[hyperledger] object TransactionHelper {
     val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params).asInstanceOf[TransactionProposalRequest]
     val context: TransactionContext = request.getTransactionContext.get()
     if (transactionId.isDefined) ReflectionHelper.setPrivateField(context)("txID")(transactionId.get)
-    if(request.getTransientMap != null) transaction.setTransient(request.getTransientMap)
+    if (request.getTransientMap != null) transaction.setTransient(request.getTransientMap)
     context.verify(request.doVerify())
     context.setProposalWaitTime(request.getProposalWaitTime)
     ReflectionHelper.setPrivateField(transaction)("transactionContext")(context)
