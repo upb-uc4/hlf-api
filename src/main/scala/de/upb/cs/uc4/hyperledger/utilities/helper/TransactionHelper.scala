@@ -15,6 +15,17 @@ import scala.jdk.CollectionConverters._
 
 protected[hyperledger] object TransactionHelper {
 
+  def getParametersFromApprovalProposal(proposal: Proposal): (String, String, Array[String]) = {
+    // read transaction info
+    val proposalParameters = TransactionHelper.getTransactionParamsFromProposal(proposal)
+    val proposalContractName = proposalParameters.head
+    val transactionName = proposalParameters.tail.head
+    val paramsGson = proposalParameters.tail.tail.head
+    println("GSON:::: " + paramsGson)
+    val params = new Gson().fromJson[Array[String]](paramsGson, classOf[Array[String]])
+    (proposalContractName, transactionName, params)
+  }
+
   def getApprovalTransactionFromParameters(contractName: String, transactionName: String, params: Array[String]): Seq[String] = {
     val jsonParams = new Gson().toJson(params)
     val info = List[String](contractName, transactionName, jsonParams)

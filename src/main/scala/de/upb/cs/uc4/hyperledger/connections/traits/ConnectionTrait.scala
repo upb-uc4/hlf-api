@@ -101,21 +101,18 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   def internalSubmitRealTransactionFromApprovalProposal(proposal: Proposal): String = {
-    // read transaction info
-    val proposalParameters = TransactionHelper.getTransactionParamsFromProposal(proposal)
-    val proposalContractName = proposalParameters.head
-    val transactionName = proposalParameters.tail.head
-    val params = proposalParameters.tail.tail
+    val (proposalContractName, transactionName, params) = TransactionHelper.getParametersFromApprovalProposal(proposal)
 
+    // Logging
     Logger.warn("contractName" + proposalContractName)
     Logger.warn("transactionName" + transactionName)
-    Logger.warn("params" + params.toString)
+    Logger.warn("params" + params.mkString(";"))
 
     // check contract match
     if (proposalContractName != contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $proposalContractName")
 
     // submit transaction
-    wrapEvaluateTransaction(transactionName, params: _*)
+    wrapEvaluateTransaction(transactionName, params.toIndexedSeq: _*)
   }
 
   def internalSubmitApprovalProposal(transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal): String = {

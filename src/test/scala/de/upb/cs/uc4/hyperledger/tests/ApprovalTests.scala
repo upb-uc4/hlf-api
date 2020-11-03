@@ -43,7 +43,10 @@ class ApprovalTests extends TestBase {
     "invoked for empty Contract " should {
       "prohibit manipulation" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait](
-          () => Logger.debug("APPROVAL RESULT :: " + chaincodeConnection.approveTransaction("", "addCertificate", "000001", "totally valid cert"))
+          () => {
+            val result = chaincodeConnection.approveTransaction("", "addCertificate", "000001", "totally valid cert")
+            Logger.debug("APPROVAL RESULT :: " + result)
+          }
         )
         exceptionResult.transactionName should be("approveTransaction")
         Logger.info(s"PAYLOAD :: ${exceptionResult.payload}")
