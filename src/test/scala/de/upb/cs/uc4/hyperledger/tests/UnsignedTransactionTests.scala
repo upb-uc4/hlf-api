@@ -48,7 +48,7 @@ class UnsignedTransactionTests extends TestBase {
         val signature = transactionContext.signByteString(proposalBytes)
         val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signature.toByteArray)).toStringUtf8
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
-        val result = chaincodeConnection.submitSignedProposal(proposalBytes, signature)
+        val result = chaincodeConnection.submitSignedProposal(proposalBytes, signature.toByteArray)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
       }
     }
@@ -64,7 +64,7 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
         val signature = ByteString.copyFrom(Base64.getDecoder.decode("MEUCIQD92OsJsVVFqFfifMV14ROiL5Ni/RaOBkR0DqzetvPfkQIgcrgu9vxr5TuZY6lft5adCETaC3CSE8QA+bs9MheeLcI="))
-        val result = intercept[HyperledgerExceptionTrait](chaincodeConnection.submitSignedProposal(proposalBytes, signature))
+        val result = intercept[HyperledgerExceptionTrait](chaincodeConnection.submitSignedProposal(proposalBytes, signature.toByteArray))
         result.actionName should be(transactionName)
       }
     }
