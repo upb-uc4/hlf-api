@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.utilities.helper
 import java.lang.reflect.{ Field, Method }
 
 import de.upb.cs.uc4.hyperledger.exceptions.HyperledgerException
+import scala.language.existentials
 
 protected[hyperledger] object ReflectionHelper {
 

@@ -2,33 +2,26 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionApprovalsTrait, ConnectionCertificateTrait }
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 case class ConnectionCertificate(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path) extends ConnectionCertificateTrait {
   final override val contractName: String = "UC4.Certificate"
   override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
-  override val (draftContract, draftGateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.draftContractName, walletPath, networkDescriptionPath)
+  override val approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   override def getProposalAddCertificate(enrollmentID: String, certificate: String): Array[Byte] = {
-    // TODO: submit only to draft-contract
-    // addCertificate(enrollmentID, certificate)
     // TODO: add error handling
     internalGetUnsignedProposal("addCertificate", enrollmentID, certificate)
   }
 
   override def getProposalUpdateCertificate(enrollmentID: String, certificate: String): Array[Byte] = {
-    // TODO: submit only to draft-contract
-    // updateCertificate(enrollmentID, certificate)
     // TODO: add error handling
     internalGetUnsignedProposal("updateCertificate", enrollmentID, certificate)
   }
 
   override def getProposalGetCertificate(enrollmentID: String): Array[Byte] = {
-    // TODO: have admin check user can access info?
-    // TODO: submit only to draft-contract
-    // updateCertificate(enrollmentID, certificate)
     // TODO: add error handling
     internalGetUnsignedProposal("getCertificate", enrollmentID)
   }

@@ -1,10 +1,4 @@
-# <a id="v0.11.3" />[v0.11.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.2...0.11.3) (2020-10-29)
-
-## Refactor
-
-- remove ```final``` from ```submitSignedTransaction``` to allow for mocking
-
-# <a id="v0.11.2" />[v0.11.2 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.0...develop) (TBD)
+# <a id="v0.11.5" />[v0.11.5 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.4...develop) (TBD)
 
 ## Feature
 
@@ -21,6 +15,34 @@
 ## Usability
 
 - 
+
+# <a id="v0.11.4" />[v0.11.4](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.3...v0.11.4) (2020-11-03)
+
+## Feature
+
+- Update Unsigned Transaction API
+- Support sumbission of approvals to the approval contract whenever a transaction is submitted.
+
+## Bug Fixes
+
+- prvent tests from interacting
+
+## Refactor
+
+- test structure
+- connection structure
+
+## Usability
+
+- rely on scala-steward for version updates
+- remove final qualifier from submitSignedProposal-Method to enable mocking
+- support v0.11.2 hlf-network during tests
+
+# <a id="v0.11.3" />[v0.11.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.2...0.11.3) (2020-10-29)
+
+## Refactor
+
+- remove ```final``` from ```submitSignedTransaction``` to allow for mocking
 
 # <a id="v0.11.1" />[v0.11.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.0...develop) (2020-10-28)
 
