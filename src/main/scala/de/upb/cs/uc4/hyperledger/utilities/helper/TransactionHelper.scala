@@ -1,7 +1,6 @@
 package de.upb.cs.uc4.hyperledger.utilities.helper
 
 import java.nio.charset.StandardCharsets
-import java.util
 
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
@@ -12,7 +11,7 @@ import org.hyperledger.fabric.protos.peer.ProposalPackage.{ ChaincodeProposalPay
 import org.hyperledger.fabric.sdk.TransactionProposalRequest
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
-import scala.collection.convert.ImplicitConversions.`iterator asScala`
+import scala.jdk.CollectionConverters._
 
 protected[hyperledger] object TransactionHelper {
 
@@ -30,7 +29,7 @@ protected[hyperledger] object TransactionHelper {
 
   def createTransactionInfo(contract: ContractImpl, transactionName: String, params: Array[String], transactionId: Option[String]): (TransactionImpl, TransactionContext, TransactionProposalRequest) = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
+    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params).asInstanceOf[TransactionProposalRequest]
     val context: TransactionContext = request.getTransactionContext.get()
     if (transactionId.isDefined) ReflectionHelper.setPrivateField(context)("txID")(transactionId.get)
     context.verify(request.doVerify())
@@ -65,8 +64,8 @@ protected[hyperledger] object TransactionHelper {
     val payload: ChaincodeProposalPayload = ProposalPackage.ChaincodeProposalPayload.parseFrom(payloadBytes)
     val invocationSpec: Chaincode.ChaincodeInvocationSpec = Chaincode.ChaincodeInvocationSpec.parseFrom(payload.getInput)
     val chaincodeInput = invocationSpec.getChaincodeSpec.getInput
-    val args: util.List[ByteString] = chaincodeInput.getArgsList
-    args.iterator().map[String]((b: ByteString) => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
+    val args: Array[ByteString] = chaincodeInput.getArgsList.asScala.toArray
+    args.map[String]((b: ByteString) => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
   }
 
 }
