@@ -48,7 +48,7 @@ jobs:
   DeployAndTestProductionNetwork:
     env:
       TEST_SET: "*VersionAccessTests *UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests *ApprovalTests"
-      CHAINCODE_TARGET: "feature/draft_contract"
+      CHAINCODE_TARGET: "develop"
 
     runs-on: ubuntu-latest
 
