@@ -8,7 +8,7 @@ import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.helper.TransactionHelper.getTransactionParamsFromProposal
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ ReflectionHelper, TransactionHelper }
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.protos.peer.ProposalPackage
@@ -106,6 +106,10 @@ trait ConnectionTrait extends AutoCloseable {
     val proposalContractName = proposalParameters.head
     val transactionName = proposalParameters.tail.head
     val params = proposalParameters.tail.tail
+
+    Logger.warn("contractName" + proposalContractName)
+    Logger.warn("transactionName" + transactionName)
+    Logger.warn("params" + params.toString)
 
     // check contract match
     if (proposalContractName != contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $proposalContractName")
