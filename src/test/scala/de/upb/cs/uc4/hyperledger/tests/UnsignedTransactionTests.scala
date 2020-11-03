@@ -66,7 +66,7 @@ class UnsignedTransactionTests extends TestBase {
         val transactionContext: TransactionContext = certificateConnection.contract.getNetwork.getChannel.newTransactionContext()
         val signature = transactionContext.signByteString(proposalBytes)
         println("\n\n\n##########################\nSUBMIT PROPOSAL:\n##########################\n\n")
-        val result = certificateConnection.submitSignedProposal(proposalBytes, signature)
+        val result = certificateConnection.submitSignedProposal(proposalBytes, signature.toByteArray)
         println("\n\n\n##########################\nResult103:\n##########################\n\n" + result)
 
         // test info stored
