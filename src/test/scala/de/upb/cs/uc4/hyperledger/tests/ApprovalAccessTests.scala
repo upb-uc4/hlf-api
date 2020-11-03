@@ -31,19 +31,19 @@ class ApprovalAccessTests extends TestBase {
         chaincodeConnection.approveTransaction("UC4.Certificate", "addCertificate", "000001", "totally valid cert", "weird third parameter")
       }
     }
-    "invoked for not existing transactions " should {
+    "invoked for empty transaction " should {
       "prohibit manipulation" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait](
-          () => chaincodeConnection.approveTransaction("UC4.Matriculation", "addCertificatesssssTYPO", "000001", "totally valid cert")
+          () => chaincodeConnection.approveTransaction("UC4.Matriculation", "", "000001", "totally valid cert")
         )
         exceptionResult.transactionName should be("approveTransaction")
         Logger.info(s"PAYLOAD :: ${exceptionResult.payload}")
       }
     }
-    "invoked for non matching but existing contract-transactions " should {
+    "invoked for empty Contract " should {
       "prohibit manipulation" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait](
-          () => chaincodeConnection.approveTransaction("UC4.Matriculation", "addCertificate", "000001", "totally valid cert")
+          () => chaincodeConnection.approveTransaction("", "addCertificate", "000001", "totally valid cert")
         )
         exceptionResult.transactionName should be("approveTransaction")
         Logger.info(s"PAYLOAD :: ${exceptionResult.payload}")
