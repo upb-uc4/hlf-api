@@ -84,7 +84,7 @@ trait ConnectionTrait extends AutoCloseable {
   def submitSignedProposal(proposalBytes: Array[Byte], signature: ByteString): String = {
     val proposal: Proposal = Proposal.parseFrom(proposalBytes)
 
-    val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) = this.createProposal(proposal, signature)
+    val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) = this.createSignedProposal(proposal, signature)
 
     // submit approval
     val approvalResult = this.internalSubmitApprovalProposal(transaction, context, signedProposal)
@@ -110,8 +110,10 @@ trait ConnectionTrait extends AutoCloseable {
     // check contract match
     if (proposalContractName != contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $proposalContractName")
 
-    // submit transaction
-    wrapEvaluateTransaction(transactionName, params.toIndexedSeq: _*)
+    // submit and evaluate response from my "regular" contract
+    // TODO: pass transient bool
+    val result = this.privateSubmitTransaction(false, transactionName, params: _*)
+    this.wrapTransactionResult(transactionName, result)
   }
 
   def internalSubmitApprovalProposal(transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal): String = {
@@ -130,7 +132,7 @@ trait ConnectionTrait extends AutoCloseable {
     }
   }
 
-  private def createProposal(proposal: ProposalPackage.Proposal, signature: ByteString): (TransactionImpl, TransactionContext, SignedProposal) = {
+  private def createSignedProposal(proposal: ProposalPackage.Proposal, signature: ByteString): (TransactionImpl, TransactionContext, SignedProposal) = {
     val transactionId: String = TransactionHelper.getTransactionIdFromProposal(proposal)
     val transactionName: String = TransactionHelper.getTransactionNameFromProposal(proposal)
     val params: Seq[String] = TransactionHelper.getTransactionParamsFromProposal(proposal)
