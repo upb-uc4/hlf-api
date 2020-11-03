@@ -2,10 +2,11 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
 
-import com.google.gson.Gson
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionApprovalsTrait
+import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, TransactionHelper }
+import de.upb.cs.uc4.hyperledger.utilities.helper.TransactionHelper
+import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
 
 protected[hyperledger] case class ConnectionApproval(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path) extends ConnectionApprovalsTrait {
   final override val contractName: String = "UC4.Approval"
@@ -21,5 +22,4 @@ protected[hyperledger] case class ConnectionApproval(username: String, channel: 
     val transactionValues = TransactionHelper.getApprovalTransactionFromParameters(contractName, transactionName, params.toArray)
     wrapEvaluateTransaction("getApprovals", transactionValues: _*)
   }
-
 }

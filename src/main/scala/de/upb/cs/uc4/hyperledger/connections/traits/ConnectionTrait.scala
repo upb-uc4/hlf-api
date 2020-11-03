@@ -7,6 +7,7 @@ import java.util.concurrent.TimeoutException
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
+import de.upb.cs.uc4.hyperledger.utilities.helper.TransactionHelper.getTransactionParamsFromProposal
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ ReflectionHelper, TransactionHelper }
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
@@ -91,7 +92,7 @@ trait ConnectionTrait extends AutoCloseable {
     var transactionResult = approvalResult
     try {
       // submit real transaction as admin
-      transactionResult = this.internalSubmitRealTransactionFromApprovalProposal(transaction)
+      transactionResult = this.internalSubmitRealTransactionFromApprovalProposal(proposal)
     }
     catch {
       case e: TransactionExceptionTrait => throw e
@@ -99,15 +100,18 @@ trait ConnectionTrait extends AutoCloseable {
     transactionResult
   }
 
-  def internalSubmitRealTransactionFromApprovalProposal(transaction: TransactionImpl): String = {
-    val result: String = ""
-    // TODO: get real transaction info and send appropriate transaction to contract.
-    // result = realTransaction.Submit()
-    // steps:
-    // 1. map all the contractNames to contract
-    // 2. map all the transactionNames to contract methods.
-    // 3. transfer the parameters
-    result
+  def internalSubmitRealTransactionFromApprovalProposal(proposal: Proposal): String = {
+    // read transaction info
+    val proposalParameters = TransactionHelper.getTransactionParamsFromProposal(proposal)
+    val proposalContractName = proposalParameters.head
+    val transactionName = proposalParameters.tail.head
+    val params = proposalParameters.tail.tail
+
+    // check contract match
+    if (proposalContractName != contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $proposalContractName")
+
+    // submit transaction
+    wrapEvaluateTransaction(transactionName, params: _*)
   }
 
   def internalSubmitApprovalProposal(transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal): String = {
