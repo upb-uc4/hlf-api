@@ -54,7 +54,7 @@ class UnsignedTransactionTests extends TestBase {
         val signature = transactionContext.signByteString(proposalBytes)
         val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signature.toByteArray)).toStringUtf8
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
-        val result = chaincodeConnection.submitSignedProposal(proposalBytes, signature.toByteArray)
+        val result = certificateConnection.submitSignedProposal(proposalBytes, signature.toByteArray)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
       }
       "submit the real transaction to the real contract" in {
