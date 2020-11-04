@@ -23,6 +23,7 @@ runs:
         echo "#  start deploy script   #"
         echo "##########################"
         ./restart.sh -b ${{ inputs.chaincode_branch }} -t
+        export $UC4_KIND_NODE_IP=$(source ./scripts/utils.sh && get_worker_ip)
         popd
       shell: 
         bash

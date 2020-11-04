@@ -101,6 +101,13 @@ jobs:
     - name: (Temporary) install faketime to prevent clockdrifts
       run: sudo apt-get install faketime
 
+    # Setup Network
+    - name: setup production network
+      uses: ./.github/actions/production_network_setup
+      with:
+        network_folder: 'hlf-network'
+        chaincode_branch: $CHAINCODE_TARGET
+
     # check nodes
     - name: Check kubernetes nodes
       run: kubectl get nodes -o wide
@@ -109,13 +116,6 @@ jobs:
     - name: Check kind worker ip
       run: |
         printf "Using worker node at: %s\n" $UC4_KIND_NODE_IP
-
-    # Setup Network
-    - name: setup production network
-      uses: ./.github/actions/production_network_setup
-      with:
-        network_folder: 'hlf-network'
-        chaincode_branch: $CHAINCODE_TARGET
     # ################### PRODUCTION NETWORK ############ #
 
     # ################### TEST WITH REPORTS ############# #
