@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 
 trait ConnectionCertificateTrait extends ConnectionTrait {
+  final override val contractName: String = "UC4.Certificate"
 
   /** Retrieves a proposal for the designated query
     * Also submits the "addCertificate" query as current user (admin).

@@ -2,13 +2,11 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionApprovalsTrait, ConnectionMatriculationTrait }
-import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 
-case class ConnectionMatriculation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path) extends ConnectionMatriculationTrait {
+case class ConnectionMatriculation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
+  extends ConnectionMatriculationTrait {
   final override val contractName: String = "UC4.MatriculationData"
-  override val (contract, gateway) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
-  override val approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   def getProposalAddMatriculationData(jSonMatriculationData: String): Array[Byte] = {
     // TODO: add error handling

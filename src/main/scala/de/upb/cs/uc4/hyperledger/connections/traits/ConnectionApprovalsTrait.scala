@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 
 protected[hyperledger] trait ConnectionApprovalsTrait extends ConnectionTrait {
+  final override val contractName: String = "UC4.Approval"
 
   /** Submits the "approveTransaction" query.
     *
