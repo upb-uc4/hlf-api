@@ -1,12 +1,15 @@
 package de.upb.cs.uc4.hyperledger.connections.traits
 
 import java.nio.charset.StandardCharsets
+import java.nio.file.Path
 import java.util
 import java.util.concurrent.TimeoutException
 
 import com.google.protobuf.ByteString
+import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionApproval
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
+import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
@@ -18,13 +21,20 @@ import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionCont
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
-  // regular contract info
-  val contractName: String
-  val contract: ContractImpl
-  val gateway: GatewayImpl
+  // regular info used to set up any connection
+  val username: String
+  val channel: String
+  val chaincode: String
+  val walletPath: Path
+  val networkDescriptionPath: Path
 
-  // approval contract
-  val approvalConnection: Option[ConnectionApprovalsTrait]
+  // contract info for specific connections
+  val contractName: String
+
+  // setting up connections
+  val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
+  val approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
+
 
   /** Gets the version returned by the designated contract.
     * By default all contracts return the version of the chaincode.
