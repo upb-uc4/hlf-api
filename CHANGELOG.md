@@ -1,4 +1,4 @@
-# <a id="v0.11.5" />[v0.11.5 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.4...develop) (TBD)
+# <a id="v0.11.6" />[v0.11.6 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.5...develop) (TBD)
 
 ## Feature
 
@@ -15,6 +15,16 @@
 ## Usability
 
 - 
+
+# <a id="v0.11.5" />[v0.11.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.4...v0.11.5) (2020-11-04)
+
+## Feature
+
+- Add connection for ExaminationMatriculation ("Prüfungsordnung")
+
+## Refactor
+
+- outsourcing some code from individual connections to general connectionTrait
 
 # <a id="v0.11.4" />[v0.11.4](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.3...v0.11.4) (2020-11-03)
 
