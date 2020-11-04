@@ -2,8 +2,8 @@ package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionMatriculation, ConnectionApproval }
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait, ConnectionApprovalsTrait }
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionApproval, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionMatriculation }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionApprovalsTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
 
@@ -60,10 +60,9 @@ class TestBase extends TestBaseTrait {
   }
 
   def initializeMatriculation(userName: String = this.username): ConnectionMatriculationTrait = ConnectionMatriculation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-
   def initializeCertificate(userName: String = this.username): ConnectionCertificateTrait = ConnectionCertificate(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-
   def initializeApproval(userName: String = this.username): ConnectionApprovalsTrait = ConnectionApproval(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeExaminationRegulation(userName: String = this.username): ConnectionExaminationRegulationTrait = ConnectionExaminationRegulation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
 
   private def tryRetrieveEnvVar(varName: String, fallBack: String = ""): String = {
     if (sys.env.contains(varName)) {
