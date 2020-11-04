@@ -24,7 +24,10 @@ runs:
         echo "##########################"
         echo $UC4_KIND_NODE_IP
         ./deploy.sh -b ${{ inputs.chaincode_branch }} -t
-        export UC4_KIND_NODE_IP=$(source ./scripts/util.sh && get_worker_ip)
+        export NODE_IP=$(source ./scripts/util.sh && get_worker_ip)
+        echo "::set-env name=UC4_KIND_NODE_IP::$NODE_IP"
+        echo "NODE_IP=$NODE_IP"
+        echo "UC4_KIND_NODE_IP=$UC4_KIND_NODE_IP"
         popd
       shell: 
         bash
