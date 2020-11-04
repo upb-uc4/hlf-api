@@ -48,7 +48,7 @@ jobs:
   DeployAndTestDevNetwork:
     env:
       TEST_SET: "*ExaminationRegulationAccessTests *VersionAccessTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests *ApprovalTests"
-      CHAINCODE_TARGET: "feature/examination_regulation"
+      CHAINCODE_TARGET: "develop"
 
     runs-on: ubuntu-latest
 
