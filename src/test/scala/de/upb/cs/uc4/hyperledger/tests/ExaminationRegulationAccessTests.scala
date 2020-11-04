@@ -74,7 +74,7 @@ class ExaminationRegulationAccessTests extends TestBase {
         val testResultList = chaincodeConnection.getExaminationRegulations(names)
         val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, false)
         val expectedResultList = TestHelper.getJsonList(Array(expectedResult))
-        TestHelper.compareJson(testResultList, expectedResultList)
+        TestHelper.compareJson(expectedResultList, testResultList)
       }
       "allow for closing an already closed ExaminationRegulation [001] " in {
         val name = "001"
@@ -91,7 +91,7 @@ class ExaminationRegulationAccessTests extends TestBase {
         val testResultList = chaincodeConnection.getExaminationRegulations(names)
         val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, false)
         val expectedResultList = TestHelper.getJsonList(Array(expectedResult))
-        TestHelper.compareJson(testResultList, expectedResultList)
+        TestHelper.compareJson(expectedResultList, testResultList)
       }
     }
   }
