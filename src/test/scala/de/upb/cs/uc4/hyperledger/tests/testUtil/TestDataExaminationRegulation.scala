@@ -7,6 +7,6 @@ object TestDataExaminationRegulation {
     "{\"name\":\"" + name + ",\"active\":" + state + ",\"modules\":" + modules + "}"
 
   def getModule(id: String, name: String): String = {
-    "{\"id\":\"" + id + "\",name\":\"" + name + "\"}"
+    "{\"id\":\"" + id + "\",\"name\":\"" + name + "\"}"
   }
 }
