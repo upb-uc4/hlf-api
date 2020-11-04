@@ -81,7 +81,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-network'
-        ref: 'feature/local_usage'
+        ref: 'develop'
         path: 'hlf-network'
         
     # Prepare mounts
