@@ -41,6 +41,6 @@ object TestHelper {
       .replace(" ", "")
   }
   def getJsonList(modules: Array[String]): String = {
-    "[" + modules.tail.fold(modules.head)((A, B) => A + "," + B) +"]"
+    "[" + modules.tail.fold(modules.head)((A, B) => A + "," + B) + "]"
   }
 }

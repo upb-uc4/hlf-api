@@ -42,7 +42,7 @@ class ExaminationRegulationAccessTests extends TestBase {
         val name = "001"
         val names = TestHelper.getJsonList(Array(name))
         val testResult = chaincodeConnection.getExaminationRegulations(names)
-        testResult should not be(null)
+        testResult should not be (null)
       }
       "read the correct ExaminationRegulations [001] " in {
         val name = "001"

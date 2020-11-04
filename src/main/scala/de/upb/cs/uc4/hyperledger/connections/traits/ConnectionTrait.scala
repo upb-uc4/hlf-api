@@ -35,7 +35,6 @@ trait ConnectionTrait extends AutoCloseable {
   val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, this.contractName, walletPath, networkDescriptionPath)
   val approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
 
-
   /** Gets the version returned by the designated contract.
     * By default all contracts return the version of the chaincode.
     *
