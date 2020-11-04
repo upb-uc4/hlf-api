@@ -104,14 +104,11 @@ jobs:
     # check nodes
     - name: Check kubernetes nodes
       run: kubectl get nodes -o wide
-      
-    # set kind worker ip  
-    - name: Set kind worker ip
+
+    # check kind worker ip
+    - name: Check kind worker ip
       run: |
-        export NODE_IP=$(kubectl get nodes -l kubernetes.io/hostname=kind-worker -o jsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}')
-        ./setup_node_ip.sh
-        printf "Using worker node at: %s\n" $NODE_IP
-        cat src/test/resources/connection_profile_kubernetes.yaml
+        printf "Using worker node at: %s\n" $UC4_KIND_NODE_IP
 
     # Setup Network
     - name: setup production network
