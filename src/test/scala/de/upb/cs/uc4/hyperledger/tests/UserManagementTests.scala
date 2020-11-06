@@ -1,5 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests
 
+import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
@@ -9,6 +10,12 @@ import org.hyperledger.fabric_ca.sdk.HFCAClient
 import scala.io.Source
 
 class UserManagementTests extends TestBase {
+
+  private def testEnrollmentException(signedCert: String, f: () => Any) = {
+    val result = intercept[HyperledgerExceptionTrait](f.apply())
+    //result.content should not be(signedCert)
+    assert(result.getMessage === "Error")
+  }
 
   "The enrollmentManager" when {
     "enrolling a User without csr" should {
@@ -40,8 +47,8 @@ class UserManagementTests extends TestBase {
         // matriculationConnectionAdmin.close();
       }
     }
-    "enrolling a User with csr" should {
-      "not directly allow for the new User to access the chain [testid]" in {
+    "enrolling a User with a valid csr" should {
+      "successfully return the signed certificate [testid]" in {
         super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 
         Logger.info("Register TestUser")
@@ -65,6 +72,40 @@ class UserManagementTests extends TestBase {
         Logger.info("Finished enrolling new user")
 
         signedCert should not be null
+      }
+    }
+    "enrolling a User with an invalid csr" should {
+      "throw an exception [testid, testId2]" in {
+        super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
+
+        Logger.info("Register TestUser and EvilUser")
+        val testUserName = "testid"
+        val evilUserName = "testid2"
+        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
+        val evilUserPw = RegistrationManager.register(caURL, tlsCert, evilUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
+
+        Logger.debug("get csr_pem")
+        val resource = getClass.getResource("/testid.csr")
+        Logger.debug(s"file: ${resource.getFile}")
+        val source = Source.fromURL(resource)
+        var content: String = null
+        try {
+          content = source.mkString
+        }
+        finally {
+          source.close()
+        }
+        Logger.debug(s"content: $content")
+
+        testEnrollmentException(
+          "enrollSecure",
+          () => EnrollmentManager.enrollSecure(caURL, tlsCert, evilUserName, evilUserPw, content, adminName = username, adminWalletPath = walletPath, channel, chaincode, networkDescriptionPath)
+        )
+
+        //val signedCert: String = EnrollmentManager.enrollSecure(caURL, tlsCert, evilUserName, evilUserPw, content, adminName = username, adminWalletPath = walletPath, channel, chaincode, networkDescriptionPath)
+        // Logger.info("Finished enrolling evil user with test user's csr")
+
+        //signedCert should not be null// throw exception
       }
     }
   }
