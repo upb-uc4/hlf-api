@@ -98,6 +98,8 @@ jobs:
       uses: NikoBergemann/action-sbt-test-report@v2
       with:
         what-to-test: $TEST_SET
+      env:
+        UC4_TESTBASE_TARGET: 'DEV_NETWORK'
 
     # Combine reports
     - name: Scalatest multiproject HTML merger

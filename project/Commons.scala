@@ -10,7 +10,7 @@ object Commons {
     scalaVersion := "2.13.0",
     // append -deprecation to the options passed to the Scala compiler
     scalacOptions += "-deprecation",
-    // append -deprecation to the options passed to the Scala compiler
+    // append -feature to the options passed to the Scala compiler
     scalacOptions += "-feature",
     // testOption for test-reports
     testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test_reports/" + project),
