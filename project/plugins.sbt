@@ -6,7 +6,7 @@ addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.3")
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.10.0")
 // ---------------------------
 // release plugin
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.3")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.4")
 // public key generation
 // addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1")
 /* below plugins are already brought in by sbt-ci-release
