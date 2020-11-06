@@ -10,7 +10,7 @@ import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
 class TestBase extends TestBaseTrait {
   private val testBase: TestBaseTrait = sys.env.getOrElse("UC4_TESTBASE_TARGET", "not relevant") match {
     case "PRODUCTION_NETWORK" => new TestBaseProductionNetwork
-    case _                   => new TestBaseDevNetwork
+    case _                    => new TestBaseDevNetwork
   }
   override val networkDescriptionPath: Path = testBase.networkDescriptionPath
   override val caURL: String = testBase.caURL
