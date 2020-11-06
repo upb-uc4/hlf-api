@@ -73,7 +73,7 @@ jobs:
       with:
         what-to-test: $TEST_SET
       env:
-        Target: 'not relevant'
+        UC4_TESTBASE_TARGET: 'not relevant'
 
     # Combine reports
     - name: Scalatest multiproject HTML merger

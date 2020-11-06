@@ -94,7 +94,9 @@ trait ConnectionTrait extends AutoCloseable {
     val proposal: Proposal = Proposal.parseFrom(proposalBytes)
     val signature: ByteString = ByteString.copyFrom(signatureBytes)
 
-    val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) = this.createSignedProposal(proposal, signature)
+    // create signedProposal Object and get Info Objects
+    val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) =
+      TransactionHelper.createSignedProposal(approvalConnection.get, proposal, signature)
 
     // submit approval
     val approvalResult = this.internalSubmitApprovalProposal(transaction, context, signedProposal)
@@ -140,21 +142,6 @@ trait ConnectionTrait extends AutoCloseable {
     catch {
       case ex: HyperledgerExceptionTrait => throw HyperledgerException(transactionName, ex)
     }
-  }
-
-  private def createSignedProposal(proposal: ProposalPackage.Proposal, signature: ByteString): (TransactionImpl, TransactionContext, SignedProposal) = {
-    val transactionId: String = TransactionHelper.getTransactionIdFromProposal(proposal)
-    val transactionName: String = TransactionHelper.getTransactionNameFromProposal(proposal)
-    val params: Seq[String] = TransactionHelper.getTransactionParamsFromProposal(proposal)
-
-    val signedProposalBuilder: SignedProposal.Builder = SignedProposal.newBuilder
-      .setProposalBytes(proposal.toByteString)
-      .setSignature(signature)
-    val signedProposal: SignedProposal = signedProposalBuilder.build
-
-    val (transaction, context, request) = TransactionHelper.createTransactionInfo(approvalConnection.get.contract, transactionName, params.toArray, Some(transactionId))
-
-    (transaction, context, signedProposal)
   }
 
   private def sendProposalToPeers(context: TransactionContext, signedProposal: ProposalPackage.SignedProposal) = {

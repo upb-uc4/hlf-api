@@ -8,8 +8,8 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
 
 class TestBase extends TestBaseTrait {
-  private val testBase: TestBaseTrait = tryRetrieveEnvVar("Target") match {
-    case "ProductionNetwork" => new TestBaseProductionNetwork
+  private val testBase: TestBaseTrait = sys.env.getOrElse("UC4_TESTBASE_TARGET", "not relevant") match {
+    case "PRODUCTION_NETWORK" => new TestBaseProductionNetwork
     case _                   => new TestBaseDevNetwork
   }
   override val networkDescriptionPath: Path = testBase.networkDescriptionPath
@@ -63,18 +63,6 @@ class TestBase extends TestBaseTrait {
   def initializeCertificate(userName: String = this.username): ConnectionCertificateTrait = ConnectionCertificate(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeApproval(userName: String = this.username): ConnectionApprovalsTrait = ConnectionApproval(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeExaminationRegulation(userName: String = this.username): ConnectionExaminationRegulationTrait = ConnectionExaminationRegulation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-
-  private def tryRetrieveEnvVar(varName: String, fallBack: String = ""): String = {
-    if (sys.env.contains(varName)) {
-      val value = sys.env(varName)
-      debug("####### Retrieved variable: " + varName + " with value: " + value)
-      value
-    }
-    else {
-      debug("####### Returned default fallback")
-      fallBack
-    }
-  }
 
   private def debug(message: String): Unit = {
     Logger.debug("[TestBase] :: " + message)

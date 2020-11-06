@@ -1,12 +1,14 @@
 package de.upb.cs.uc4.hyperledger.tests
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionApprovalsTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 
 class VersionAccessTests extends TestBase {
 
   var certificateConnection: ConnectionCertificateTrait = _
   var matriculationConnection: ConnectionMatriculationTrait = _
+  var approvalConnection: ConnectionApprovalsTrait = _
+  var ERConnection: ConnectionExaminationRegulationTrait = _
 
   override def afterAll(): Unit = {
     certificateConnection.close()
@@ -29,6 +31,18 @@ class VersionAccessTests extends TestBase {
         val version: String = matriculationConnection.getChaincodeVersion
         version should fullyMatch regex regexVersionString
         matriculationConnection.close()
+      }
+      "provide a valid endpoint [Approval] " in {
+        approvalConnection = initializeApproval()
+        val version: String = approvalConnection.getChaincodeVersion
+        version should fullyMatch regex regexVersionString
+        approvalConnection.close()
+      }
+      "provide a valid endpoint [ExaminationRegulation] " in {
+        ERConnection = initializeExaminationRegulation()
+        val version: String = ERConnection.getChaincodeVersion
+        version should fullyMatch regex regexVersionString
+        ERConnection.close()
       }
     }
   }

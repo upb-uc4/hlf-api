@@ -3,7 +3,8 @@ package de.upb.cs.uc4.hyperledger.testBase
 import java.nio.file.{ Path, Paths }
 
 protected class TestBaseProductionNetwork extends TestBaseTrait {
-  val networkDescriptionPath: Path = Paths.get("./hlf-network/assets/connection_profile_kubernetes_local.yaml")
+  val networkDescriptionPath: Path = Paths.get(
+    sys.env.getOrElse("UC4_CONNECTION_PROFILE", "./hlf-network/assets/connection_profile_kubernetes_local.yaml"))
   val channel: String = "mychannel"
   val chaincode: String = "uc4-cc"
   // productionNetwork variables
