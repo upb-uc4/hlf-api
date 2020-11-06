@@ -78,7 +78,7 @@ object EnrollmentManager extends EnrollmentManagerTrait {
           val caClient = CAClientManager.getCAClient(caURL, caCert)
 
           val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest(enrollmentID, "tls")
-          val enrollment = caClient.enroll(enrollmentID, enrollmentSecret, enrollmentRequestTLS)
+          val enrollment = caClient.enroll(enrollmentID, enrollmentSecret, enrollmentRequestTLS) // throw exception for abortive enrollment
           certificate = enrollment.getCert
           Logger.info("Successfully performed and retrieved enrollment")
 
