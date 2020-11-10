@@ -48,7 +48,7 @@ jobs:
   DeployAndTestDevNetwork:
     env:
       TEST_SET: "*ExaminationRegulationAccessTests *VersionAccessTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests *ApprovalTests"
-      CHAINCODE_TARGET: "develop"
+      CHAINCODE_TARGET: "v0.12.2"
 
     runs-on: ubuntu-latest
 
@@ -81,7 +81,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-dev-network'
-        ref: 'develop'
+        ref: 'feature/update_chaincode_project'
         path: 'hlf-dev-network'
     
     # Setup Network
