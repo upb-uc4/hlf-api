@@ -28,7 +28,7 @@ runs:
         echo "##########################"
         echo "#    begin sleep         #"
         echo "##########################"
-        sleep 180
+        sleep 100
         echo "#    finish sleep        #"
         echo "##########################"
         popd
