@@ -10,7 +10,7 @@ on:
       chaincode_target:
         description: 'Chaincode Target Branch'
         required: true
-        default: 'develop'
+        default: 'v0.12.2'
       test_set:
         description: 'Define which tests to run'
         required: true
@@ -48,7 +48,7 @@ jobs:
   DeployAndTestDevNetwork:
     env:
       TEST_SET: "*ExaminationRegulationAccessTests *VersionAccessTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests *ApprovalTests"
-      CHAINCODE_TARGET: "v0.12.2"
+      CHAINCODE_TARGET: ""
 
     runs-on: ubuntu-latest
 
@@ -81,7 +81,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-dev-network'
-        ref: 'feature/update_chaincode_project'
+        ref: 'develop'
         path: 'hlf-dev-network'
     
     # Setup Network
