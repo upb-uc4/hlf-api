@@ -15,6 +15,10 @@ runs:
     using: "composite"
     
     steps:    
+    - name: rewrite chaincode_target_flag if manual invocation
+      if: github.event.inputs.chaincode_branch != ''
+      run: echo "::set-env name=CHAINCODE_TARGET_FLAG::-b ${{ github.event.inputs.chaincode_branch }}"
+
     # start network
     - name: Start Network
       run: |
@@ -23,8 +27,7 @@ runs:
         echo "#  start deploy script   #"
         echo "##########################"
         echo "UC4_KIND_NODE_IP before script = $UC4_KIND_NODE_IP"
-
-        ./deploy.sh -b ${{ inputs.chaincode_branch }} -t
+        ./deploy.sh $CHAINCODE_TARGET_FLAG -t
         export NODE_IP=$(source ./scripts/util.sh && get_worker_ip)
         echo "::set-env name=UC4_KIND_NODE_IP::$NODE_IP"
         echo "NODE_IP=$NODE_IP"
