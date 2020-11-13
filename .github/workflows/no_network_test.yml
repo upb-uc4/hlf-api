@@ -44,7 +44,6 @@ jobs:
   DeployAndTestNoNetwork:
     env:
       TEST_SET: "*NonExistentNetworkTests"
-      CHAINCODE_TARGET: "develop"
 
     runs-on: ubuntu-latest
 

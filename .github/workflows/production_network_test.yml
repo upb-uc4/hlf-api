@@ -10,7 +10,7 @@ on:
       chaincode_target:
         description: 'Chaincode Target Branch'
         required: true
-        default: 'develop'
+        default: 'v0.12.2'
       test_set:
         description: 'Define which tests to run'
         required: true
@@ -48,7 +48,7 @@ jobs:
   DeployAndTestProductionNetwork:
     env:
       TEST_SET: "*ExaminationRegulationAccessTests *VersionAccessTests *UserManagementTests *InternalManagerTests *CertificateAccessTests *CertificateErrorTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests *ApprovalTests"
-      CHAINCODE_TARGET: "develop"
+      CHAINCODE_TARGET: ""
 
     runs-on: ubuntu-latest
 

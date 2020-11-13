@@ -9,7 +9,7 @@ inputs:
   chaincode_branch:
     description: 'branch of the chaincode repo you want to checkout.'
     required: true
-    default: 'develop'
+    default: ''
 
 runs:
     using: "composite"
@@ -28,7 +28,7 @@ runs:
         echo "##########################"
         echo "#    begin sleep         #"
         echo "##########################"
-        sleep 180
+        sleep 100
         echo "#    finish sleep        #"
         echo "##########################"
         popd

@@ -9,12 +9,12 @@ inputs:
   chaincode_branch:
     description: 'branch of the chaincode repo you want to checkout.'
     required: true
-    default: 'develop'
+    default: ''
 
 runs:
     using: "composite"
     
-    steps:    
+    steps: 
     # start network
     - name: Start Network
       run: |
@@ -23,8 +23,12 @@ runs:
         echo "#  start deploy script   #"
         echo "##########################"
         echo "UC4_KIND_NODE_IP before script = $UC4_KIND_NODE_IP"
-
-        ./deploy.sh -b ${{ inputs.chaincode_branch }} -t
+        if ${{ github.event.inputs.chaincode_branch != '' }}
+        then
+            ./deploy.sh -b ${{ github.event.inputs.chaincode_branch }} -t
+        else
+            ./deploy.sh -t
+        fi
         export NODE_IP=$(source ./scripts/util.sh && get_worker_ip)
         echo "::set-env name=UC4_KIND_NODE_IP::$NODE_IP"
         echo "NODE_IP=$NODE_IP"
