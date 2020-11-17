@@ -30,9 +30,12 @@ runs:
             ./deploy.sh -t
         fi
         export NODE_IP=$(source ./scripts/util.sh && get_worker_ip)
-        echo "::set-env name=UC4_KIND_NODE_IP::$NODE_IP"
-        echo "NODE_IP=$NODE_IP"
-        echo "UC4_KIND_NODE_IP=$UC4_KIND_NODE_IP"
+        
+        # set env var for subsequent actions
+        echo "UC4_KIND_NODE_IP=$NODE_IP" >> $GITHUB_ENV
+        #echo "::set-env name=UC4_KIND_NODE_IP::$NODE_IP"
+        #echo "NODE_IP=$NODE_IP"
+        #echo "UC4_KIND_NODE_IP=$UC4_KIND_NODE_IP"
         popd
       shell: 
         bash
