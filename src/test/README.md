@@ -1,5 +1,26 @@
 # Scala Hyperledger API - Running Tests
 
+## Running test locally using the production network
+
+1. Checkout the [hlf-network](https://github.com/upb-uc4/hlf-network).
+2. Execute `./restart -t` of the hlf-network.
+3. Export the environment variables from the end of the output. They look similar to
+    ```
+    export UC4_KIND_NODE_IP=172.17.0.2
+    export UC4_CONNECTION_PROFILE=/tmp/hyperledger/connection_profile_kubernetes_local.yaml
+    export UC4_TESTBASE_TARGET=PRODUCTION_NETWORK
+    ```
+4. Run test from the hlf-api directory using:
+    ```
+    sbt testOnly "*ApprovalTests *CertificateErrorTests"
+    ```
+5. Troubleshooting:
+    - If tests fail, try running 
+      ```
+      sbt clean
+      ```
+      before testing.
+
 ## Prerequisites
 0. Have a working UC4-chaincode-network running 
     (download from [hlf-network](https://github.com/upb-uc4/hlf-network)
