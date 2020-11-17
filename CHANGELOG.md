@@ -15,6 +15,7 @@
 ## Usability
 
 - Adjust pipelines to new networks / chaincode
+- bump setup-kind github action version to execute pipeline
 
 # <a id="v0.11.5" />[v0.11.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.4...v0.11.5) (2020-11-04)
 
