@@ -12,14 +12,12 @@
     ```
 4. Run test from the hlf-api directory using:
     ```
-    sbt testOnly "*ApprovalTests *CertificateErrorTests"
+    sbt clean compile testOnly "*ApprovalTests *CertificateErrorTests"
     ```
-5. Troubleshooting:
-    - If tests fail, try running 
-      ```
-      sbt clean
-      ```
-      before testing.
+   
+### Troubleshooting:
+
+Without `sbt clean`, tests might fail without obvious reasons.
 
 ## Prerequisites
 0. Have a working UC4-chaincode-network running 
