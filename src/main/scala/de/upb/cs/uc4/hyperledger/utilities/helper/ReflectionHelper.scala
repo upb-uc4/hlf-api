@@ -30,6 +30,17 @@ protected[hyperledger] object ReflectionHelper {
     field.set(instance, arg)
   }
 
+  def getPrivateField(instance: AnyRef)(fieldName: String)(): Unit = {
+    def _parents: LazyList[Class[_]] = LazyList(instance.getClass) #::: _parents.map(_.getSuperclass)
+    val parents: List[Class[_]] = _parents.takeWhile(_ != null).toList
+    val fields: List[Field] = parents.flatMap(_.getDeclaredFields)
+    val field: Field = fields
+      .find(_.getName == fieldName)
+      .getOrElse(throw new IllegalArgumentException("Method " + fieldName + " not found"))
+    field.setAccessible(true)
+    field.get(instance)
+  }
+
   def safeCallPrivateMethod(instance: AnyRef)(methodName: String)(args: AnyRef*): AnyRef = {
     try {
       callPrivateMethod(instance)(methodName)(args: _*)

@@ -1,15 +1,24 @@
 package de.upb.cs.uc4.hyperledger.tests
 
 import java.nio.charset.StandardCharsets
+import java.security.PrivateKey
+import java.security.cert.X509Certificate
+import java.security.interfaces.ECPrivateKey
 import java.util.Base64
 
 import com.google.protobuf.ByteString
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait }
-import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
+import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionCertificateTrait, ConnectionMatriculationTrait}
+import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
+import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
+import de.upb.cs.uc4.hyperledger.utilities.WalletManager
+import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, ReflectionHelper, TransactionHelper}
+import org.hyperledger.fabric.gateway.impl.TransactionImpl
+import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
+import org.hyperledger.fabric.gateway.{Identities, Identity, Wallet, X509Identity}
+import org.hyperledger.fabric.protos.peer.ProposalPackage.{Proposal, SignedProposal}
+import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
 class UnsignedTransactionTests extends TestBase {
@@ -42,6 +51,58 @@ class UnsignedTransactionTests extends TestBase {
     }
 
     "passing a signed transaction" should {
+      "submit the proposal transaction to the proposal contract, even if the signature was not created using the private key belonging to the connection" in {
+        val argEnrollmentId = "102"
+        val argCertificate = "Whatever"
+        val proposalBytes = certificateConnection.getProposalAddCertificate(argEnrollmentId, argCertificate)
+        val proposal: Proposal = Proposal.parseFrom(proposalBytes)
+        println("\n\n\n##########################\nPROPOSALBYTES:\n##########################\n\n" + proposal.toByteString.toStringUtf8)
+        println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
+        println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
+
+        // sign proposal with identity provided by mspId, certificatePem, and privateKeyPem
+        val crypto: CryptoPrimitives = new CryptoPrimitives()
+        val securityLevel: Integer = 256
+        ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
+        //val mspId: String = ""
+        //val certificatePem: String = ""
+        val privateKeyPem: String = "" // TODO set dynamically
+        val certificatePem: String = "" // TODO set dynamically
+        val privateKey: PrivateKey = Identities.readPrivateKey(privateKeyPem)
+        val certificate: X509Certificate = Identities.readX509Certificate(certificatePem)
+        //val identity: X509Identity = Identities.newX509Identity(mspId, certificate, privateKey)
+        val signatureBytes = crypto.sign(privateKey, proposalBytes)
+
+        val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signatureBytes)).toStringUtf8
+        println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
+
+        // submit only signed transaction to approval contract
+        val signature: ByteString = ByteString.copyFrom(signatureBytes)
+        // create signedProposal Object and get Info Objects
+        val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) =
+          TransactionHelper.createSignedProposal(certificateConnection.approvalConnection.get, proposal, signature)
+        // submit approval
+
+        // mock private key
+        val wallet: Wallet = WalletManager.getWallet(this.walletPath)
+        val identity: X509IdentityImpl = wallet.get(this.username).asInstanceOf[X509IdentityImpl]
+        val originalCertificate: X509Certificate = identity.getCertificate()
+        ReflectionHelper.setPrivateField(identity)("certificate")(certificate)
+        wallet.remove(this.username)
+        wallet.put(this.username, identity)
+
+        val approvalResult = try {
+          certificateConnection.internalSubmitApprovalProposal(transaction, context, signedProposal)
+        } catch {
+          case e: TransactionExceptionTrait => e.payload
+        }
+        // reset private key
+        ReflectionHelper.setPrivateField(identity)("certificate")(originalCertificate)
+        wallet.remove(this.username)
+        wallet.put(this.username, identity)
+
+        println("\n\n\n##########################\nResult:\n##########################\n\n" + approvalResult)
+      }
       "submit the proposal transaction to the proposal contract" in {
         val enrollmentId = "102"
         val certificate = "Whatever"
