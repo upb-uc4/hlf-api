@@ -22,19 +22,17 @@ class ExaminationRegulationErrorTests extends TestBase {
 
   "The ScalaAPI for ExaminationRegulations" when {
     "invoked with addExaminationRegulation incorrectly " should {
-      val testData: Seq[(String, String, Array[String], Boolean)] = Seq(
-        ("throw an exception for ExaminationRegulations with empty Modules", "001", new Array[String](0), true),
-        ("throw an exception for ExaminationRegulations with empty Modules", "001", new Array[String](0), false),
+      val testData: Seq[(String, String, Seq[String], Boolean)] = Seq(
+        ("throw an exception for ExaminationRegulations with empty Modules", "001", Seq(), true),
+        ("throw an exception for ExaminationRegulations with empty Modules", "001", Seq(), false),
         ("throw an exception for ExaminationRegulations with null Modules", "001", null, true),
         ("throw an exception for ExaminationRegulations with null Modules", "001", null, false),
-        ("throw an exception for ExaminationRegulations with illegal Name", "000", Array(validTestModule("1")), true),
-        ("throw an exception for ExaminationRegulations with illegal Name", "000", Array(validTestModule("1")), false),
-        ("throw an exception for ExaminationRegulations with empty Name", "", Array(validTestModule("1")), true),
-        ("throw an exception for ExaminationRegulations with empty Name", "", Array(validTestModule("1")), false),
-        ("throw an exception for ExaminationRegulations with null Name", null, Array(validTestModule("1")), true),
-        ("throw an exception for ExaminationRegulations with null Name", null, Array(validTestModule("1")), false),
+        ("throw an exception for ExaminationRegulations with empty Name", "", Seq(validTestModule("1")), true),
+        ("throw an exception for ExaminationRegulations with empty Name", "", Seq(validTestModule("1")), false),
+        ("throw an exception for ExaminationRegulations with null Name", null, Seq(validTestModule("1")), true),
+        ("throw an exception for ExaminationRegulations with null Name", null, Seq(validTestModule("1")), false),
       )
-      for ((testDescription: String, name: String, modules: Array[String], open: Boolean) <- testData) {
+      for ((testDescription: String, name: String, modules: Seq[String], open: Boolean) <- testData) {
         s"$testDescription [$name][${TestHelper.nullableSeqToString(modules)}][$open]" in {
           val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, modules, open)
           TestHelper.testTransactionException(
