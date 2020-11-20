@@ -69,7 +69,7 @@ class ExaminationRegulationAccessTests extends TestBase {
         TestHelper.compareJson(testResultList, expectedResultList)
       }
       "read the correct ExaminationRegulations [] " in {
-        val name = ""
+        val name = "001"
         val modules = Seq(
           TestDataExaminationRegulation.getModule("M.1", "shortName"),
           TestDataExaminationRegulation.getModule("M.2", "shortName"),
@@ -78,7 +78,7 @@ class ExaminationRegulationAccessTests extends TestBase {
         val names = TestHelper.getJsonList(Seq(name))
 
         // read and compare data
-        val testResultList = chaincodeConnection.getExaminationRegulations(names)
+        val testResultList = chaincodeConnection.getExaminationRegulations("[]")
         val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = true)
         val expectedResultList = TestHelper.getJsonList(Seq(expectedResult))
         TestHelper.compareJson(testResultList, expectedResultList)
