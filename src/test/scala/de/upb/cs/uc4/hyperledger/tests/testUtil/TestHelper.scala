@@ -1,6 +1,7 @@
 package de.upb.cs.uc4.hyperledger.tests.testUtil
 
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
+import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import org.scalatest.matchers.should.Matchers._
 
 object TestHelper {
@@ -40,7 +41,18 @@ object TestHelper {
       .replace("\n", "")
       .replace(" ", "")
   }
-  def getJsonList(modules: Array[String]): String = {
-    "[" + modules.tail.fold(modules.head)((A, B) => A + "," + B) + "]"
+  def getJsonList(items: Seq[String]): String = {
+    "[" + items.tail.fold(items.head)((A, B) => A + "," + B) + "]"
+  }
+
+  // Exception
+  def testTransactionException(transactionName: String, f: () => Any) = {
+    val result = intercept[TransactionExceptionTrait](f.apply())
+    result.transactionName should be(transactionName)
+  }
+
+  def nullableSeqToString(input: Seq[String]): String = {
+    if(input == null) "null"
+    else input.mkString(", ")
   }
 }

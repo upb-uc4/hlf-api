@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
+import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class MatriculationErrorTests extends TestBase {
@@ -27,72 +27,71 @@ class MatriculationErrorTests extends TestBase {
     super.afterAll()
   }
 
-  private def testTransactionException(transactionName: String, f: () => Any) = {
-    val result = intercept[TransactionExceptionTrait](f.apply())
-    result.transactionName should be(transactionName)
-  }
-
   "The ScalaAPI for Matriculation" when {
     "invoking getMatriculationData" should {
-      "throw TransactionException for not existing enrollmentId " in {
-        testTransactionException("getMatriculationData", () => chaincodeConnection.getMatriculationData("110"))
-      }
-      "throw TransactionException for empty enrollmentId-String " in {
-        testTransactionException("getMatriculationData", () => chaincodeConnection.getMatriculationData(""))
+      val testData: Seq[(String, String)] = Seq(
+        ("throw TransactionException for enrollmentId not existing [110]", "110"),
+        ("throw TransactionException for enrollmentId empty []", ""),
+        ("throw TransactionException for enrollmentId null [null]", null)
+      )
+      for ((statement: String, data: String) <- testData) {
+        s"$statement" in {
+          TestHelper.testTransactionException("getCertificate", () => chaincodeConnection.getMatriculationData(data))
+        }
       }
     }
 
     "invoking addMatriculationData" should {
       "throw TransactionException for malformed json Input (missing Semester) " in {
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addMatriculationData",
           () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoSemester("120"))
         )
       }
       "throw TransactionException for malformed json Input (missing Field of Study) " in {
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addMatriculationData",
           () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoFieldOfStudy("121"))
         )
       }
       "throw TransactionException for malformed json Input (missing matriculationStatus) " in {
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addMatriculationData",
           () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoMatriculationStatus("122"))
         )
       }
       "throw TransactionException for malformed json Input (missing enrollmentId) " in {
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addMatriculationData",
           () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonNoMatriculationId)
         )
       }
       "throw TransactionException for malformed json Input (invalid enrollmentId) " in {
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addMatriculationData",
           () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonInvalidId)
         )
       }
       "throw TransactionException for malformed json Input (invalid data 1) " in {
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addMatriculationData",
           () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData1("131"))
         )
       }
       "throw TransactionException for malformed json Input (invalid data 2) " in {
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addMatriculationData",
           () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData2("132"))
         )
       }
       "throw TransactionException for malformed json Input (invalid data 3) " in {
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addMatriculationData",
           () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData3("133"))
         )
       }
       "throw TransactionException for malformed json Input (invalid data 4) " in {
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addMatriculationData",
           () => chaincodeConnection.addMatriculationData(TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData4("134"))
         )
@@ -100,65 +99,29 @@ class MatriculationErrorTests extends TestBase {
     }
 
     "invoking addEntriesToMatriculationData" should {
-      "throw TransactionException for not existing enrollmentId " in {
-        val id = "140"
-        val fieldOfStudy = "ComputerScience"
-        val semester = "SS2020"
-        testTransactionException(
-          "addEntriesToMatriculationData",
-          () => chaincodeConnection.addEntriesToMatriculationData(
-            id, TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
+      val testData: Seq[(String, String, String, String)] = Seq(
+        ("throw TransactionException for enrollmentId not existing", "140", "ComputerScience", "SS2020"),
+        ("throw TransactionException for enrollmentId empty", "", "ComputerScience", "SS2020"),
+        ("throw TransactionException for enrollmentId null", "", "ComputerScience", "SS2020"),
+        ("throw TransactionException for semester Entry malformed", existingMatriculationId, "ComputerScience", "S2020"),
+        ("throw TransactionException for semester Entry empty", existingMatriculationId, "ComputerScience", ""),
+        ("throw TransactionException for semester Entry null", existingMatriculationId, "ComputerScience", ""),
+        ("throw TransactionException for fieldOfStudy Entry empty", existingMatriculationId, "", "SS2020"),
+        ("throw TransactionException for fieldOfStudy Entry null", existingMatriculationId, null, "SS2020"),
+      )
+      for ((statement: String, id: String, fieldOfStudy: String, semester: String) <- testData) {
+        s"$statement" in {
+          TestHelper.testTransactionException(
+            "addEntriesToMatriculationData",
+            () => chaincodeConnection.addEntriesToMatriculationData(
+              id, TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
+            )
           )
-        )
+        }
       }
-      "throw TransactionException for empty enrollmentId " in {
-        val id = ""
-        val fieldOfStudy = "ComputerScience"
-        val semester = "SS2020"
-        testTransactionException(
-          "addEntriesToMatriculationData",
-          () => chaincodeConnection.addEntriesToMatriculationData(
-            id, TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
-          )
-        )
-      }
-      "throw TransactionException for malformed semester Entry " in {
-        val id = existingMatriculationId
-        val fieldOfStudy = "ComputerScience"
-        val semester = "S2020"
-        testTransactionException(
-          "addEntriesToMatriculationData",
-          () => chaincodeConnection.addEntriesToMatriculationData(
-            id, TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
-          )
-        )
-      }
-      "throw TransactionException for empty semester Entry " in {
-        val id = existingMatriculationId
-        val fieldOfStudy = "ComputerScience"
-        val semester = ""
-        testTransactionException(
-          "addEntriesToMatriculationData",
-          () => chaincodeConnection.addEntriesToMatriculationData(
-            id, TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
-          )
-        )
-      }
-      "throw TransactionException for empty fieldOfStudy Entry " in {
-        val id = existingMatriculationId
-        val fieldOfStudy = ""
-        val semester = "SS2020"
-        testTransactionException(
-          "addEntriesToMatriculationData",
-          () => chaincodeConnection.addEntriesToMatriculationData(
-            id, TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
-          )
-        )
-      }
-
       "throw TransactionException for super empty matriculationList " in {
         val id = "001"
-        testTransactionException(
+        TestHelper.testTransactionException(
           "addEntriesToMatriculationData",
           () => chaincodeConnection.addEntriesToMatriculationData(id, "[]")
         )

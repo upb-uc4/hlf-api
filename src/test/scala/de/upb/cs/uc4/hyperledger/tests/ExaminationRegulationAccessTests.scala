@@ -19,8 +19,8 @@ class ExaminationRegulationAccessTests extends TestBase {
   }
 
   "The ScalaAPI for ExaminationRegulations" when {
-    "invoked with correct transactions " should {
-      "allow for adding new ExaminationRegulations [001][1,2,3][true] " in {
+    "invoked with addExaminationRegulation correctly " should {
+      "allow for adding open ExaminationRegulations [001][1,2,3][true] " in {
         val name = "001"
         val modules = Array(
           TestDataExaminationRegulation.getModule("M.1", "shortName"),
@@ -29,7 +29,7 @@ class ExaminationRegulationAccessTests extends TestBase {
         )
         TestHelper.testAddExaminationRegulationAccess(chaincodeConnection, name, modules, true)
       }
-      "allow for adding new ExaminationRegulations [002][4,5,6][false] " in {
+      "allow for adding closed ExaminationRegulations [002][4,5,6][false] " in {
         val name = "002"
         val modules = Array(
           TestDataExaminationRegulation.getModule("M.4", "shortName"),
@@ -38,7 +38,9 @@ class ExaminationRegulationAccessTests extends TestBase {
         )
         TestHelper.testAddExaminationRegulationAccess(chaincodeConnection, name, modules, true)
       }
-      "allow for reading ExaminationRegulations [001] " in {
+    }
+    "invoked with getExaminationRegulations correctly " should {
+      "allow for reading existing ExaminationRegulations [001] " in {
         val name = "001"
         val names = TestHelper.getJsonList(Array(name))
         val testResult = chaincodeConnection.getExaminationRegulations(names)
@@ -59,6 +61,8 @@ class ExaminationRegulationAccessTests extends TestBase {
         val expectedResultList = TestHelper.getJsonList(Array(expectedResult))
         TestHelper.compareJson(testResultList, expectedResultList)
       }
+    }
+    "invoked with closeExaminationRegulation correctly " should {
       "allow for closing an ExaminationRegulation [001] " in {
         val name = "001"
         val modules = Array(
