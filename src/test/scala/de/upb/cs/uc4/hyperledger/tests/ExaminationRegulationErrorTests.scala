@@ -33,7 +33,6 @@ class ExaminationRegulationErrorTests extends TestBase {
         ("throw an exception for ExaminationRegulations with empty Name", "", Array(validTestModule("1")), false),
         ("throw an exception for ExaminationRegulations with null Name", null, Array(validTestModule("1")), true),
         ("throw an exception for ExaminationRegulations with null Name", null, Array(validTestModule("1")), false),
-        ("throw an exception for ExaminationRegulations with null open state", "001", Array(validTestModule("1")), null),
       )
       for ((testDescription: String, name: String, modules: Array[String], open: Boolean) <- testData) {
         s"$testDescription [$name][${TestHelper.nullableSeqToString(modules)}][$open]" in {
