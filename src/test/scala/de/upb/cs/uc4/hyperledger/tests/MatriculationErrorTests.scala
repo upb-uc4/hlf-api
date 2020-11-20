@@ -36,7 +36,7 @@ class MatriculationErrorTests extends TestBase {
       )
       for ((statement: String, data: String) <- testData) {
         s"$statement" in {
-          TestHelper.testTransactionException("getCertificate", () => chaincodeConnection.getMatriculationData(data))
+          TestHelper.testTransactionException("getMatriculationData", () => chaincodeConnection.getMatriculationData(data))
         }
       }
     }
