@@ -30,7 +30,7 @@ protected[hyperledger] object ReflectionHelper {
     field.set(instance, arg)
   }
 
-  def getPrivateField(instance: AnyRef)(fieldName: String)(): Unit = {
+  def getPrivateField(instance: AnyRef)(fieldName: String)(): AnyRef = {
     def _parents: LazyList[Class[_]] = LazyList(instance.getClass) #::: _parents.map(_.getSuperclass)
     val parents: List[Class[_]] = _parents.takeWhile(_ != null).toList
     val fields: List[Field] = parents.flatMap(_.getDeclaredFields)

@@ -12,7 +12,7 @@ import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
-import de.upb.cs.uc4.hyperledger.utilities.WalletManager
+import de.upb.cs.uc4.hyperledger.utilities.{EnrollmentManager, RegistrationManager, WalletManager}
 import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, ReflectionHelper, TransactionHelper}
 import org.hyperledger.fabric.gateway.impl.TransactionImpl
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
@@ -54,23 +54,54 @@ class UnsignedTransactionTests extends TestBase {
       "submit the proposal transaction to the proposal contract, even if the signature was not created using the private key belonging to the connection" in {
         val argEnrollmentId = "102"
         val argCertificate = "Whatever"
+        val testAffiliation = "org1"
+
+        val wallet: Wallet = WalletManager.getWallet(this.walletPath)
+
+        super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
+        // try register and enroll test user 102
+        try {
+          val testUserPw = RegistrationManager.register(caURL, tlsCert, argEnrollmentId, username, walletPath, testAffiliation)
+          EnrollmentManager.enroll(caURL, tlsCert, walletPath, argEnrollmentId, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
+        } catch {
+          case _: Throwable =>
+        }
+
+        // initialize crypto primitives
+        val crypto: CryptoPrimitives = new CryptoPrimitives()
+        val securityLevel: Integer = 256
+        ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
+        //val mspId: String = ""
+        //val certificatePem: String = ""
+
+        // get testUser certificate and private key
+        val testUserIdentity: X509IdentityImpl = wallet.get(argEnrollmentId).asInstanceOf[X509IdentityImpl]
+        // val privateKeyPem: String = ""
+        //val certificatePem: String = ""
+        // val privateKey: PrivateKey = Identities.readPrivateKey(privateKeyPem)
+        // val certificate: X509Certificate = Identities.readX509Certificate(certificatePem)
+        //val identity: X509Identity = Identities.newX509Identity(mspId, certificate, privateKey)
+
+        val privateKey: PrivateKey = testUserIdentity.getPrivateKey()
+        val certificate: X509Certificate = testUserIdentity.getCertificate()
+
+        // mock certificate (replace admin mspId by testUser mspId)
+        val adminIdentity: X509IdentityImpl = wallet.get(this.username).asInstanceOf[X509IdentityImpl]
+        val originalCertificate: X509Certificate = adminIdentity.getCertificate()
+        ReflectionHelper.setPrivateField(adminIdentity)("certificate")(certificate)
+        val originalMspId: String = adminIdentity.getMspId()
+        ReflectionHelper.setPrivateField(adminIdentity)("mspId")(testUserIdentity.getMspId())
+        wallet.remove(this.username)
+        wallet.put(this.username, adminIdentity)
+
+        // get proposal
         val proposalBytes = certificateConnection.getProposalAddCertificate(argEnrollmentId, argCertificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         println("\n\n\n##########################\nPROPOSALBYTES:\n##########################\n\n" + proposal.toByteString.toStringUtf8)
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
 
-        // sign proposal with identity provided by mspId, certificatePem, and privateKeyPem
-        val crypto: CryptoPrimitives = new CryptoPrimitives()
-        val securityLevel: Integer = 256
-        ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
-        //val mspId: String = ""
-        //val certificatePem: String = ""
-        val privateKeyPem: String = "" // TODO set dynamically
-        val certificatePem: String = "" // TODO set dynamically
-        val privateKey: PrivateKey = Identities.readPrivateKey(privateKeyPem)
-        val certificate: X509Certificate = Identities.readX509Certificate(certificatePem)
-        //val identity: X509Identity = Identities.newX509Identity(mspId, certificate, privateKey)
+        // sign proposal with testUser privateKey
         val signatureBytes = crypto.sign(privateKey, proposalBytes)
 
         val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signatureBytes)).toStringUtf8
@@ -83,23 +114,17 @@ class UnsignedTransactionTests extends TestBase {
           TransactionHelper.createSignedProposal(certificateConnection.approvalConnection.get, proposal, signature)
         // submit approval
 
-        // mock private key
-        val wallet: Wallet = WalletManager.getWallet(this.walletPath)
-        val identity: X509IdentityImpl = wallet.get(this.username).asInstanceOf[X509IdentityImpl]
-        val originalCertificate: X509Certificate = identity.getCertificate()
-        ReflectionHelper.setPrivateField(identity)("certificate")(certificate)
-        wallet.remove(this.username)
-        wallet.put(this.username, identity)
-
         val approvalResult = try {
           certificateConnection.internalSubmitApprovalProposal(transaction, context, signedProposal)
         } catch {
           case e: TransactionExceptionTrait => e.payload
+          case e: Throwable => e.toString
         }
-        // reset private key
-        ReflectionHelper.setPrivateField(identity)("certificate")(originalCertificate)
+        // reset certificate of admin user
+        ReflectionHelper.setPrivateField(adminIdentity)("certificate")(originalCertificate)
+        ReflectionHelper.setPrivateField(adminIdentity)("mspId")(originalMspId)
         wallet.remove(this.username)
-        wallet.put(this.username, identity)
+        wallet.put(this.username, adminIdentity)
 
         println("\n\n\n##########################\nResult:\n##########################\n\n" + approvalResult)
       }
