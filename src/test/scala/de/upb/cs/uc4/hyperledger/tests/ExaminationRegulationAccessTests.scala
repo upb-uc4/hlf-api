@@ -38,6 +38,15 @@ class ExaminationRegulationAccessTests extends TestBase {
         )
         TestHelper.testAddExaminationRegulationAccess(chaincodeConnection, name, modules, state = true)
       }
+      "allow for adding ExaminationRegulations with null name [null][4,5,6][open] " in {
+        val name = null
+        val modules = Seq(
+          TestDataExaminationRegulation.getModule("M.4", "shortName"),
+          TestDataExaminationRegulation.getModule("M.5", "shortName"),
+          TestDataExaminationRegulation.getModule("M.6", "shortName")
+        )
+        TestHelper.testAddExaminationRegulationAccess(chaincodeConnection, name, modules, state = true)
+      }
     }
     "invoked with getExaminationRegulations correctly " should {
       "allow for reading non existing ExaminationRegulations [010] " in {

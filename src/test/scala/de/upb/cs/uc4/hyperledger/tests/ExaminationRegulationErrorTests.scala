@@ -28,9 +28,7 @@ class ExaminationRegulationErrorTests extends TestBase {
         ("throw an exception for ExaminationRegulations with null Modules", Some("001"), None, true),
         ("throw an exception for ExaminationRegulations with null Modules", Some("001"), None, false),
         ("throw an exception for ExaminationRegulations with empty Name", Some(""), Some(Seq(validTestModule("1"))), true),
-        ("throw an exception for ExaminationRegulations with empty Name", Some(""), Some(Seq(validTestModule("1"))), false),
-        ("throw an exception for ExaminationRegulations with null Name", None, Some(Seq(validTestModule("1"))), true),
-        ("throw an exception for ExaminationRegulations with null Name", None, Some(Seq(validTestModule("1"))), false),
+        ("throw an exception for ExaminationRegulations with empty Name", Some(""), Some(Seq(validTestModule("1"))), false)
       )
       for ((testDescription: String, name: Option[String], modules: Option[Seq[String]], open: Boolean) <- testData) {
         s"$testDescription [${name.orNull}][${TestHelper.nullableSeqToString(modules.orNull)}][$open]" in {
@@ -44,6 +42,7 @@ class ExaminationRegulationErrorTests extends TestBase {
     }
     "invoked with getExaminationRegulations incorrectly " should {
       val testData: Seq[(String, String)] = Seq(
+        /* these are allowed, empty names are ignored
         ("throw TransactionException for malformed examinationRegulationNamesList", "[001,]"),
         ("throw TransactionException for malformed examinationRegulationNamesList", "[001, ]"),
         ("throw TransactionException for malformed examinationRegulationNamesList", "[,001]"),
@@ -52,6 +51,7 @@ class ExaminationRegulationErrorTests extends TestBase {
         ("throw TransactionException for malformed examinationRegulationNamesList", "[ ,001]"),
         ("throw TransactionException for malformed examinationRegulationNamesList", "[ ,001,]"),
         ("throw TransactionException for malformed examinationRegulationNamesList", "[ ,001, ]"),
+        */
         ("throw TransactionException for malformed examinationRegulationNamesList", "[001"),
         ("throw TransactionException for malformed examinationRegulationNamesList", "001]"),
         ("throw TransactionException for malformed examinationRegulationNamesList", "001"),
