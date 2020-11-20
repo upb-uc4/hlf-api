@@ -52,7 +52,7 @@ object TestHelper {
   }
 
   def nullableSeqToString(input: Seq[String]): String = {
-    if(input == null) "null"
+    if (input == null) "null"
     else input.mkString(", ")
   }
 }

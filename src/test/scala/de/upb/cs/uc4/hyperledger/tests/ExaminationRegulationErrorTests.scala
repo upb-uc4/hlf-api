@@ -40,7 +40,8 @@ class ExaminationRegulationErrorTests extends TestBase {
           val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, modules, open)
           TestHelper.testTransactionException(
             "addExaminationRegulation",
-            () => chaincodeConnection.addExaminationRegulation(examinationRegulation))
+            () => chaincodeConnection.addExaminationRegulation(examinationRegulation)
+          )
         }
       }
     }

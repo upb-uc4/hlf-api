@@ -61,12 +61,13 @@ class CertificateErrorTests extends TestBase {
     "invoking updateCertificate" should {
       val testData: Seq[(String, String, String)] = Seq(
         ("throw TransactionException for not existing enrollmentId [004] ", "004", TestCertificate),
-        ("throw TransactionException for empty enrollmentId-String " , "", TestCertificate),
+        ("throw TransactionException for empty enrollmentId-String ", "", TestCertificate),
         ("throw TransactionException if enrollmentId-String equals null", null, TestCertificate),
         ("throw TransactionException for empty certificate-String [001] ", TestEnrollmentID, ""),
         ("throw TransactionException if certificate-String equals null", TestEnrollmentID, null),
-        ("throw TransactionException for empty enrollmentID-String and empty certificate-String " ,"", ""),
-        ("throw TransactionException if enrollmentID-String and certificate-String equal null" ,null, null))
+        ("throw TransactionException for empty enrollmentID-String and empty certificate-String ", "", ""),
+        ("throw TransactionException if enrollmentID-String and certificate-String equal null", null, null)
+      )
       for ((statement: String, enrollmentId: String, certificate: String) <- testData) {
         s"$statement" in {
           TestHelper.testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate(enrollmentId, certificate))
