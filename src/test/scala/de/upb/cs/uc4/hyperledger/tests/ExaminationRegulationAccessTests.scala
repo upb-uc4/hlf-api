@@ -95,22 +95,6 @@ class ExaminationRegulationAccessTests extends TestBase {
         // compare data
         TestHelper.compareJson(expectedResultList, testResultList)
       }
-      "read the correct ExaminationRegulations _ " in {
-        val name = "001"
-        val modules = Seq(
-          TestDataExaminationRegulation.getModule("M.1", "shortName"),
-          TestDataExaminationRegulation.getModule("M.2", "shortName"),
-          TestDataExaminationRegulation.getModule("M.3", "shortName")
-        )
-        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = true)
-        val expectedResultList = TestHelper.getJsonList(Seq(expectedResult))
-
-        // read data
-        val testResultList = chaincodeConnection.getExaminationRegulations("")
-
-        // compare data
-        TestHelper.compareJson(expectedResultList, testResultList)
-      }
     }
     "invoked with closeExaminationRegulation correctly " should {
       "allow for closing an ExaminationRegulation [001] " in {
