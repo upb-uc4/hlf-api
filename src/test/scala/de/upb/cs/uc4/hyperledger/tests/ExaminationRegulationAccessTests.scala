@@ -95,7 +95,7 @@ class ExaminationRegulationAccessTests extends TestBase {
         // compare data
         TestHelper.compareJson(expectedResultList, testResultList)
       }
-      "read the correct ExaminationRegulations [] " in {
+      "read the correct ExaminationRegulations _ " in {
         val name = "001"
         val modules = Seq(
           TestDataExaminationRegulation.getModule("M.1", "shortName"),
