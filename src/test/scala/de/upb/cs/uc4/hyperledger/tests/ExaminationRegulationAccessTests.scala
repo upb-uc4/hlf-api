@@ -40,6 +40,13 @@ class ExaminationRegulationAccessTests extends TestBase {
       }
     }
     "invoked with getExaminationRegulations correctly " should {
+      "allow for reading non existing ExaminationRegulations [010] " in {
+        val name = "010"
+        val names = TestHelper.getJsonList(Seq(name))
+        val testResult = chaincodeConnection.getExaminationRegulations(names)
+        testResult should not be null
+        testResult should be("[]")
+      }
       "allow for reading existing ExaminationRegulations [001] " in {
         val name = "001"
         val names = TestHelper.getJsonList(Seq(name))
@@ -48,6 +55,21 @@ class ExaminationRegulationAccessTests extends TestBase {
       }
       "read the correct ExaminationRegulations [001] " in {
         val name = "001"
+        val modules = Seq(
+          TestDataExaminationRegulation.getModule("M.1", "shortName"),
+          TestDataExaminationRegulation.getModule("M.2", "shortName"),
+          TestDataExaminationRegulation.getModule("M.3", "shortName")
+        )
+        val names = TestHelper.getJsonList(Seq(name))
+
+        // read and compare data
+        val testResultList = chaincodeConnection.getExaminationRegulations(names)
+        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = true)
+        val expectedResultList = TestHelper.getJsonList(Seq(expectedResult))
+        TestHelper.compareJson(testResultList, expectedResultList)
+      }
+      "read the correct ExaminationRegulations [] " in {
+        val name = ""
         val modules = Seq(
           TestDataExaminationRegulation.getModule("M.1", "shortName"),
           TestDataExaminationRegulation.getModule("M.2", "shortName"),
