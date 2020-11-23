@@ -36,7 +36,7 @@ class ExaminationRegulationAccessTests extends TestBase {
           TestDataExaminationRegulation.getModule("M.5", "shortName"),
           TestDataExaminationRegulation.getModule("M.6", "shortName")
         )
-        TestHelper.testAddExaminationRegulationAccess(chaincodeConnection, name, modules, state = true)
+        TestHelper.testAddExaminationRegulationAccess(chaincodeConnection, name, modules, state = false)
       }
       "allow for adding ExaminationRegulations with null name [null][4,5,6][open] " in {
         val name = null
