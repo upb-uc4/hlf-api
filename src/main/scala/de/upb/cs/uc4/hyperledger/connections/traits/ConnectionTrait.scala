@@ -63,7 +63,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
-    approveTransaction(transactionName, params:_*)
+    approveTransaction(transactionName, params: _*)
 
     // submit and evaluate response from my "regular" contract
     val result = this.privateSubmitTransaction(transient, transactionName, params: _*)
@@ -80,7 +80,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapEvaluateTransaction(transactionName: String, params: String*): String = {
-    approveTransaction(transactionName, params:_*)
+    approveTransaction(transactionName, params: _*)
 
     val result = this.privateEvaluateTransaction(transactionName, params: _*)
     this.wrapTransactionResult(transactionName, result)
