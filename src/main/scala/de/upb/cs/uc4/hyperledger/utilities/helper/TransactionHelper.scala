@@ -37,7 +37,7 @@ protected[hyperledger] object TransactionHelper {
   def getApprovalTransactionFromParameters(contractName: String, transactionName: String, params: Array[String]): Seq[String] = {
     val jsonParams = new Gson().toJson(params)
     val info = List[String](contractName, transactionName, jsonParams)
-    Logger.info(s"approval info: ${info.foldLeft("")((A, B) => A + "::" + B)}")
+    Logger.info(s"PREPARE APPROVAL:: ${info.foldLeft("")((A, B) => A + "::" + B)}")
     info
   }
 
