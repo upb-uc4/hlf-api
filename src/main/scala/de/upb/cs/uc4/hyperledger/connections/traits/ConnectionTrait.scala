@@ -84,7 +84,6 @@ trait ConnectionTrait extends AutoCloseable {
     val result = this.privateEvaluateTransaction(transactionName, params: _*)
     Logger.info("BBBBBBBBBBB")
     this.wrapTransactionResult(transactionName, result)
-    Logger.info("CCCCCCCCCCC")
   }
 
   protected final def internalGetUnsignedProposal(transactionName: String, params: String*): Array[Byte] = {
@@ -211,6 +210,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   private def wrapTransactionResult(transactionName: String, result: Array[Byte]): String = {
     val resultString = new String(result, StandardCharsets.UTF_8)
+    Logger.info("TRANSACTION RESULT:: " + resultString)
     if (containsError(resultString)) throw TransactionException(transactionName, resultString)
     else resultString
   }
