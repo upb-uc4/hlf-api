@@ -16,7 +16,7 @@ class VersionAccessTests extends TestBase {
     super.afterAll()
   }
 
-  var regexVersionString: String = """v((\d)+\.){2}(\d)+"""
+  var regexVersionString: String = """((\d)+\.){2}(\d)+"""
 
   "The ScalaAPI for Connections" when {
     "asked for chaincode version " should {
