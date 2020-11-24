@@ -11,7 +11,7 @@ class MatriculationErrorTests extends TestBase {
   var chaincodeConnection: ConnectionMatriculationTrait = _
   val existingMatriculationId = "501"
 
-  private def establishExistingMatriculation(): Unit ={
+  private def establishExistingMatriculation(): Unit = {
     try {
       chaincodeConnection = initializeMatriculation()
       chaincodeConnection.addMatriculationData(TestDataMatriculation.validMatriculationData1(existingMatriculationId))
