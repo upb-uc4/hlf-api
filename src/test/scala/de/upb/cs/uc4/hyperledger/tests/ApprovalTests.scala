@@ -34,10 +34,11 @@ class ApprovalTests extends TestBase {
     "invoked for empty transaction " should {
       "prohibit manipulation" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
-          chaincodeConnection.approveTransaction("UC4.Matriculation", "", "000001", "totally valid cert")
+          chaincodeConnection.approveTransaction("UC4.Certificate", "", "000001", "totally valid cert")
         }
         exceptionResult.transactionName should be("approveTransaction")
-        Logger.info(s"PAYLOAD :: ${exceptionResult.payload}")
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"Transaction name must not be empty\"}]}"
+        exceptionResult.payload should be(expectedPayload)
       }
     }
     "invoked for empty Contract " should {
@@ -47,7 +48,8 @@ class ApprovalTests extends TestBase {
           Logger.debug("APPROVAL RESULT :: " + result)
         }
         exceptionResult.transactionName should be("approveTransaction")
-        Logger.info(s"PAYLOAD :: ${exceptionResult.payload}")
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"contractName\",\"reason\":\"Contract name must not be empty\"}]}"
+        exceptionResult.payload should be(expectedPayload)
       }
     }
   }
