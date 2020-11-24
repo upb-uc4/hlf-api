@@ -11,6 +11,7 @@ class MatriculationAccessTests extends TestBase {
   override def beforeAll(): Unit = {
     super.beforeAll()
     chaincodeConnection = initializeMatriculation()
+    TestDataMatriculation.establishExaminationRegulations(initializeExaminationRegulation())
   }
 
   override def afterAll(): Unit = {

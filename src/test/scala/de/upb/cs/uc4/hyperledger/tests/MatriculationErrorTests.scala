@@ -20,6 +20,7 @@ class MatriculationErrorTests extends TestBase {
     catch {
       case e: Exception => Logger.err("[MatriculationErrorTests] :: ", e)
     }
+    TestDataMatriculation.establishExaminationRegulations(initializeExaminationRegulation())
   }
 
   override def afterAll(): Unit = {
