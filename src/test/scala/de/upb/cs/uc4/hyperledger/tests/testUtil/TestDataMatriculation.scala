@@ -40,7 +40,7 @@ object TestDataMatriculation {
   def establishExaminationRegulation(connection: ConnectionExaminationRegulationTrait, name: String): Unit = {
     val existingValue = connection.getExaminationRegulations(TestHelper.getJsonList(Array("\"" + name + "\"")))
     if (existingValue == "[]") {
-      val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, Array(testModule("M.1"), testModule("M.2")), state = true)
+      val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, Array(testModule("MatriculationTestModule.1"), testModule("MatriculationTestModule.2")), state = true)
       connection.addExaminationRegulation(examinationRegulation)
     }
   }
