@@ -26,9 +26,14 @@ object TestDataMatriculation {
   def validMatriculationEntry: String = "[{\"fieldOfStudy\":\"Computer Science\",\"semesters\":[\"SS2022\"]}]"
 
   def establishExaminationRegulations(connection: ConnectionExaminationRegulationTrait): Unit = {
-    val names = Seq("Computer Science", "Mathematics", "Media Sciences")
-    for (name: String <- names) {
-      establishExaminationRegulation(connection, name)
+    try{
+      val names = Seq("\"Computer Science\"", "\"Mathematics\"", "\"Media Sciences\"")
+      for (name: String <- names) {
+        establishExaminationRegulation(connection, name)
+      }
+    }
+    catch{
+      case e: Throwable => Logger.err("Error during estblishing Regulations: ", e)
     }
   }
 
