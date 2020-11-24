@@ -45,5 +45,5 @@ object TestDataMatriculation {
     }
   }
 
-  def testModule(id: String): String = TestDataExaminationRegulation.getModule(id, "Module." + id)
+  def testModule(id: String): String = TestDataExaminationRegulation.getModule(id, id)
 }
