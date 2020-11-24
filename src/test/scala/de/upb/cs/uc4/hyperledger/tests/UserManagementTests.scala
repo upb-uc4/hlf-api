@@ -10,6 +10,11 @@ import scala.io.Source
 
 class UserManagementTests extends TestBase {
 
+  override def beforeAll(): Unit ={
+    super.beforeAll()
+    super.establishExaminationRegulations()
+  }
+
   "The enrollmentManager" when {
     "enrolling a User without csr" should {
       "allow for the new User to access the chain [300]" in {
@@ -19,7 +24,8 @@ class UserManagementTests extends TestBase {
 
         TestHelper.testAddCertificateAccess(enrollmentID, connection)
       }
-      "allow for the new User to matriculate himself [301]" in {
+      "allow for the new User to matriculate themselves [301]" in {
+
         val enrollmentID = "301"
         super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
 

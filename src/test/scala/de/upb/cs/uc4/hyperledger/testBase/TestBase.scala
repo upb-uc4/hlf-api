@@ -4,6 +4,7 @@ import java.nio.file.Path
 
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionApproval, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionMatriculation }
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionApprovalsTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
 
@@ -66,5 +67,11 @@ class TestBase extends TestBaseTrait {
 
   private def debug(message: String): Unit = {
     Logger.debug("[TestBase] :: " + message)
+  }
+
+  protected def establishExaminationRegulations(): Unit ={
+    val examinationRegulationConnection = initializeExaminationRegulation()
+    TestDataMatriculation.establishExaminationRegulations(initializeExaminationRegulation())
+    examinationRegulationConnection.close()
   }
 }

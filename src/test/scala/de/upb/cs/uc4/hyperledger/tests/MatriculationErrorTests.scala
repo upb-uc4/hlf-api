@@ -11,20 +11,21 @@ class MatriculationErrorTests extends TestBase {
   var chaincodeConnection: ConnectionMatriculationTrait = _
   val existingMatriculationId = "501"
 
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-    val examinationRegulationConnection = initializeExaminationRegulation()
-    TestDataMatriculation.establishExaminationRegulations(initializeExaminationRegulation())
-    examinationRegulationConnection.close()
-
+  private def establishExistingMatriculation(): Unit ={
     try {
       chaincodeConnection = initializeMatriculation()
       chaincodeConnection.addMatriculationData(TestDataMatriculation.validMatriculationData1(existingMatriculationId))
       chaincodeConnection.close()
     }
     catch {
-      case e: Exception => Logger.err("[MatriculationErrorTests] :: ", e)
+      case e: Exception => Logger.err("[EstablishExistingMatriculation] :: ", e)
     }
+  }
+
+  override def beforeAll(): Unit = {
+    super.beforeAll()
+    super.establishExaminationRegulations()
+    this.establishExistingMatriculation()
   }
 
   override def beforeEach(): Unit = {
