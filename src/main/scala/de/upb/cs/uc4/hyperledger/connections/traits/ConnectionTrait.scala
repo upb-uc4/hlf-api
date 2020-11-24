@@ -42,6 +42,16 @@ trait ConnectionTrait extends AutoCloseable {
     */
   final def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
 
+  private def approveTransaction(transactionName: String, params: String*) = {
+    // setup approvalConnection and
+    // submit my approval to approvalContract
+    val approvalConnectionObject = approvalConnection
+    if (approvalConnectionObject.isDefined) {
+      approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
+      approvalConnectionObject.get.close()
+    }
+  }
+
   /** Wrapper for a submission transaction
     * Translates the result byte-array to a string and throws an error if said string contains an error.
     *
@@ -53,16 +63,10 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
-    // setup approvalConnection and
-    // submit my approval to approvalContract
-    val approvalConnectionObject = approvalConnection
-    if (approvalConnectionObject.isDefined) {
-      val approvalResult = approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
-      approvalConnectionObject.get.close()
-      Logger.info("APPROVAL RESULT:: " + approvalResult)
-    }
+    approveTransaction(transactionName, params:_*)
 
     // submit and evaluate response from my "regular" contract
+    // TODO: test
     val result = this.privateSubmitTransaction(transient, transactionName, params: _*)
     this.wrapTransactionResult(transactionName, result)
   }
@@ -77,14 +81,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapEvaluateTransaction(transactionName: String, params: String*): String = {
-    // setup approvalConnection and
-    // submit my approval to approvalContract
-    val approvalConnectionObject = approvalConnection
-    if (approvalConnectionObject.isDefined) {
-      val approvalResult = approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
-      approvalConnectionObject.get.close()
-      Logger.info("APPROVAL RESULT:: " + approvalResult)
-    }
+    approveTransaction(transactionName, params:_*)
 
     val result = this.privateEvaluateTransaction(transactionName, params: _*)
     this.wrapTransactionResult(transactionName, result)
