@@ -13,6 +13,8 @@ class VersionAccessTests extends TestBase {
   override def afterAll(): Unit = {
     certificateConnection.close()
     matriculationConnection.close()
+    approvalConnection.close()
+    ERConnection.close()
     super.afterAll()
   }
 
