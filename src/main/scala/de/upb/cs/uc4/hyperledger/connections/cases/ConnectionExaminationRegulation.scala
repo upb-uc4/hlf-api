@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 import java.nio.file.Path
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionExaminationRegulationTrait
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 case class ConnectionExaminationRegulation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionExaminationRegulationTrait {
@@ -25,8 +26,10 @@ case class ConnectionExaminationRegulation(username: String, channel: String, ch
   def addExaminationRegulation(examinationRegulation: String): String =
     wrapSubmitTransaction(false, "addExaminationRegulation", examinationRegulation)
 
-  def getExaminationRegulations(namesList: String): String =
+  def getExaminationRegulations(namesList: String): String = {
+    Logger.warn("GET EXAMINATION REGULATION:: " + namesList)
     wrapEvaluateTransaction("getExaminationRegulations", namesList)
+  }
 
   def closeExaminationRegulation(name: String): String =
     wrapSubmitTransaction(false, "closeExaminationRegulation", name)
