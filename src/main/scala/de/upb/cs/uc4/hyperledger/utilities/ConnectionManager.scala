@@ -33,7 +33,7 @@ protected[hyperledger] object ConnectionManager {
   ): (ContractImpl, GatewayImpl) = {
     PublicExceptionHelper.wrapInvocationWithNetworkException[(ContractImpl, GatewayImpl)](
       () => {
-        Logger.info(s"Try to get connection for '$contractName' with: '$networkDescriptionPath' and: '$walletPath' as user '$username'.")
+        // TODO: Logger.info(s"Try to get connection for '$contractName' with: '$networkDescriptionPath' and: '$walletPath' as user '$username'.")
         // get gateway
         val gateway: GatewayImpl = GatewayManager.createGateway(walletPath, networkDescriptionPath, username)
 
