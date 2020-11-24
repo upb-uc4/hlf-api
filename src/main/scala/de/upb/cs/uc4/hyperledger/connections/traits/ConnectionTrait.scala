@@ -53,8 +53,14 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
+    // setup approvalConnection and
     // submit my approval to approvalContract
-    if (approvalConnection.isDefined) approvalConnection.get.approveTransaction(contractName, transactionName, params: _*)
+    val approvalConnectionObject = approvalConnection
+    if (approvalConnectionObject.isDefined) {
+      val approvalResult = approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
+      approvalConnectionObject.get.close()
+      Logger.info("APPROVAL RESULT:: " + approvalResult)
+    }
 
     // submit and evaluate response from my "regular" contract
     val result = this.privateSubmitTransaction(transient, transactionName, params: _*)
