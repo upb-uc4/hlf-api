@@ -10,8 +10,11 @@ class MatriculationAccessTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    chaincodeConnection = initializeMatriculation()
+    val examinationRegulationConnection = initializeExaminationRegulation()
     TestDataMatriculation.establishExaminationRegulations(initializeExaminationRegulation())
+    examinationRegulationConnection.close()
+
+    chaincodeConnection = initializeMatriculation()
   }
 
   override def afterAll(): Unit = {
