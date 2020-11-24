@@ -66,7 +66,6 @@ trait ConnectionTrait extends AutoCloseable {
     approveTransaction(transactionName, params:_*)
 
     // submit and evaluate response from my "regular" contract
-    // TODO: test
     val result = this.privateSubmitTransaction(transient, transactionName, params: _*)
     this.wrapTransactionResult(transactionName, result)
   }
