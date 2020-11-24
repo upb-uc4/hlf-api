@@ -1,5 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests
 
+import java.io.File
 import java.nio.charset.StandardCharsets
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
@@ -15,11 +16,16 @@ import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
 import de.upb.cs.uc4.hyperledger.utilities.{EnrollmentManager, RegistrationManager, WalletManager}
 import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, ReflectionHelper, TransactionHelper}
 import org.hyperledger.fabric.gateway.impl.TransactionImpl
-import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
+import org.hyperledger.fabric.gateway.impl.identity.{GatewayUser, X509IdentityImpl}
 import org.hyperledger.fabric.gateway.{Identities, Identity, Wallet, X509Identity}
+import org.hyperledger.fabric.protos.peer.Chaincode
 import org.hyperledger.fabric.protos.peer.ProposalPackage.{Proposal, SignedProposal}
+import org.hyperledger.fabric.sdk.identity.X509Enrollment
+import org.hyperledger.fabric.sdk.{ChaincodeID, Channel, HFClient, NetworkConfig, TransactionProposalRequest, User}
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
-import org.hyperledger.fabric.sdk.transaction.TransactionContext
+import org.hyperledger.fabric.sdk.transaction.{ProposalBuilder, TransactionContext}
+
+import scala.io.Source
 
 class UnsignedTransactionTests extends TestBase {
 
@@ -52,9 +58,9 @@ class UnsignedTransactionTests extends TestBase {
 
     "passing a signed transaction" should {
       "submit the proposal transaction to the proposal contract, even if the signature was not created using the private key belonging to the connection" in {
-        val argEnrollmentId = "102"
+        val argEnrollmentId = "113"
         val argCertificate = "Whatever"
-        val testAffiliation = "org1"
+        val testAffiliation = "org1MSP"
 
         val wallet: Wallet = WalletManager.getWallet(this.walletPath)
 
@@ -71,6 +77,7 @@ class UnsignedTransactionTests extends TestBase {
         val crypto: CryptoPrimitives = new CryptoPrimitives()
         val securityLevel: Integer = 256
         ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
+        // TODO use get- and set properties
         //val mspId: String = ""
         //val certificatePem: String = ""
 
@@ -84,25 +91,48 @@ class UnsignedTransactionTests extends TestBase {
 
         val privateKey: PrivateKey = testUserIdentity.getPrivateKey()
         val certificate: X509Certificate = testUserIdentity.getCertificate()
+        // TODO proper values here?
 
         // mock certificate (replace admin mspId by testUser mspId)
         val adminIdentity: X509IdentityImpl = wallet.get(this.username).asInstanceOf[X509IdentityImpl]
-        val originalCertificate: X509Certificate = adminIdentity.getCertificate()
-        ReflectionHelper.setPrivateField(adminIdentity)("certificate")(certificate)
-        val originalMspId: String = adminIdentity.getMspId()
-        ReflectionHelper.setPrivateField(adminIdentity)("mspId")(testUserIdentity.getMspId())
-        wallet.remove(this.username)
-        wallet.put(this.username, adminIdentity)
+        // val originalCertificate: X509Certificate = adminIdentity.getCertificate()
+        // ReflectionHelper.setPrivateField(adminIdentity)("certificate")(certificate)
+        // val originalMspId: String = adminIdentity.getMspId()
+        // ReflectionHelper.setPrivateField(adminIdentity)("mspId")(testUserIdentity.getMspId())
+        // wallet.remove(this.username)
+        // wallet.put(this.username, adminIdentity)
 
         // get proposal
-        val proposalBytes = certificateConnection.getProposalAddCertificate(argEnrollmentId, argCertificate)
-        val proposal: Proposal = Proposal.parseFrom(proposalBytes)
+        //val proposalBytes = certificateConnection.getProposalAddCertificate(argEnrollmentId, argCertificate)
+        val enrollment: X509Enrollment = new X509Enrollment(new PrivateKey {
+          override def getAlgorithm: String = null
+          override def getFormat: String = null
+          override def getEncoded: Array[Byte] = null
+        }, Identities.toPemString(certificate))
+        val user: User = new GatewayUser(argEnrollmentId, testAffiliation, enrollment);
+        // val user: User = new GatewayUser(argEnrollmentId, testAffiliation, new X509Enrollment(adminIdentity.getPrivateKey, Identities.toPemString(adminIdentity.getCertificate)))
+        val request = TransactionProposalRequest.newInstance(user)
+        request.setChaincodeName(this.chaincode)
+        request.setFcn("UC4.Approval:approveTransaction")
+        request.setArgs("UC4.Certificate" ,"addCertificate", "[\"" + argEnrollmentId + "\",\"" + argCertificate + "\"]")
+        val networkConfigFile: File = networkDescriptionPath.toFile()
+        val networkConfig: NetworkConfig = NetworkConfig.fromYamlFile(networkConfigFile)
+        val hfClient: HFClient = HFClient.createNewInstance()
+        hfClient.setCryptoSuite(crypto)
+        hfClient.setUserContext(user)
+        val channelObj: Channel = hfClient.loadChannelFromConfig(channel, networkConfig)
+        val ctx: TransactionContext = new TransactionContext(channelObj, user, crypto)
+        val chaincodeId: Chaincode.ChaincodeID = Chaincode.ChaincodeID.newBuilder().setName(this.chaincode).build()
+        val proposal = ProposalBuilder.newBuilder().context(ctx).request(request).chaincodeID(chaincodeId).build()
+        //val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         println("\n\n\n##########################\nPROPOSALBYTES:\n##########################\n\n" + proposal.toByteString.toStringUtf8)
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
 
+        val proposalBytes: Array[Byte] = proposal.toByteArray
         // sign proposal with testUser privateKey
         val signatureBytes = crypto.sign(privateKey, proposalBytes)
+        // val signatureBytes = crypto.sign(adminIdentity.getPrivateKey, proposalBytes)
 
         val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signatureBytes)).toStringUtf8
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
@@ -114,17 +144,12 @@ class UnsignedTransactionTests extends TestBase {
           TransactionHelper.createSignedProposal(certificateConnection.approvalConnection.get, proposal, signature)
         // submit approval
 
-        val approvalResult = try {
-          certificateConnection.internalSubmitApprovalProposal(transaction, context, signedProposal)
-        } catch {
-          case e: TransactionExceptionTrait => e.payload
-          case e: Throwable => e.toString
-        }
+        val approvalResult = certificateConnection.internalSubmitApprovalProposal(transaction, context, signedProposal)
         // reset certificate of admin user
-        ReflectionHelper.setPrivateField(adminIdentity)("certificate")(originalCertificate)
-        ReflectionHelper.setPrivateField(adminIdentity)("mspId")(originalMspId)
-        wallet.remove(this.username)
-        wallet.put(this.username, adminIdentity)
+        // ReflectionHelper.setPrivateField(adminIdentity)("certificate")(originalCertificate)
+        // ReflectionHelper.setPrivateField(adminIdentity)("mspId")(originalMspId)
+        // wallet.remove(this.username)
+        // wallet.put(this.username, adminIdentity)
 
         println("\n\n\n##########################\nResult:\n##########################\n\n" + approvalResult)
       }

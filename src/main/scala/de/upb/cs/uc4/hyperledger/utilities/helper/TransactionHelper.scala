@@ -1,16 +1,23 @@
 package de.upb.cs.uc4.hyperledger.utilities.helper
 
+import java.io.File
 import java.nio.charset.StandardCharsets
+import java.nio.file.Path
+import java.security.PrivateKey
 
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionApprovalsTrait
-import org.hyperledger.fabric.gateway.impl.{ ContractImpl, TransactionImpl }
+import org.hyperledger.fabric.gateway.Identities
+import org.hyperledger.fabric.gateway.impl.identity.GatewayUser
+import org.hyperledger.fabric.gateway.impl.{ContractImpl, TransactionImpl}
 import org.hyperledger.fabric.protos.common.Common
-import org.hyperledger.fabric.protos.peer.{ Chaincode, ProposalPackage }
-import org.hyperledger.fabric.protos.peer.ProposalPackage.{ ChaincodeProposalPayload, Proposal, SignedProposal }
-import org.hyperledger.fabric.sdk.TransactionProposalRequest
-import org.hyperledger.fabric.sdk.transaction.TransactionContext
+import org.hyperledger.fabric.protos.peer.{Chaincode, ProposalPackage}
+import org.hyperledger.fabric.protos.peer.ProposalPackage.{ChaincodeProposalPayload, Proposal, SignedProposal}
+import org.hyperledger.fabric.sdk.{Channel, HFClient, NetworkConfig, TransactionProposalRequest, User}
+import org.hyperledger.fabric.sdk.identity.X509Enrollment
+import org.hyperledger.fabric.sdk.security.CryptoPrimitives
+import org.hyperledger.fabric.sdk.transaction.{ProposalBuilder, TransactionContext}
 
 import scala.jdk.CollectionConverters._
 
@@ -94,6 +101,40 @@ protected[hyperledger] object TransactionHelper {
     val (transaction, context, request) = TransactionHelper.createTransactionInfo(approvalConnection.contract, transactionName, params.toArray, Some(transactionId))
 
     (transaction, context, signedProposal)
+  }
+
+  def getUnsignedProposalNew(
+                              certificate: String,
+                              userAffiliation: String,
+                              chaincodeName: String,
+                              channelName: String,
+                              function: String,
+                              networkDescriptionPath: Path,
+                              args: String*): Proposal = {
+    val enrollment: X509Enrollment = new X509Enrollment(new PrivateKey {
+      override def getAlgorithm: String = null
+      override def getFormat: String = null
+      override def getEncoded: Array[Byte] = null
+    }, certificate)
+    val user: User = new GatewayUser("gateway", userAffiliation, enrollment);
+    // val user: User = new GatewayUser(argEnrollmentId, testAffiliation, new X509Enrollment(adminIdentity.getPrivateKey, Identities.toPemString(adminIdentity.getCertificate)))
+    val request = TransactionProposalRequest.newInstance(user)
+    request.setChaincodeName(chaincodeName)
+    request.setFcn(function)
+    request.setArgs(args: _*)
+    val networkConfigFile: File = networkDescriptionPath.toFile()
+    val networkConfig: NetworkConfig = NetworkConfig.fromYamlFile(networkConfigFile)
+    val hfClient: HFClient = HFClient.createNewInstance()
+    val crypto: CryptoPrimitives = new CryptoPrimitives()
+    val securityLevel: Integer = 256
+    ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
+    // TODO use get- and set properties
+    hfClient.setCryptoSuite(crypto)
+    hfClient.setUserContext(user)
+    val channelObj: Channel = hfClient.loadChannelFromConfig(channelName, networkConfig)
+    val ctx: TransactionContext = new TransactionContext(channelObj, user, crypto)
+    val chaincodeId: Chaincode.ChaincodeID = Chaincode.ChaincodeID.newBuilder().setName(chaincodeName).build()
+    ProposalBuilder.newBuilder().context(ctx).request(request).chaincodeID(chaincodeId).build()
   }
 
 }
