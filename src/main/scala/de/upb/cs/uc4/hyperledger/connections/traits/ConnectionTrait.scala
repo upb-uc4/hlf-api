@@ -87,8 +87,7 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   protected final def internalGetUnsignedProposal(transactionName: String, params: String*): Array[Byte] = {
-    // send approval as admin maintaining the connection
-    approvalConnection.get.approveTransaction(contractName, transactionName, params: _*)
+    approveTransaction(transactionName, params: _*)
 
     // gather info
     val (transaction, context, request) = TransactionHelper.createApprovalTransactionInfo(approvalConnection.get.contract, contractName, transactionName, params.toArray, None)
