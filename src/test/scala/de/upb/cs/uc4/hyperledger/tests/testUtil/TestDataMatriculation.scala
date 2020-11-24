@@ -35,7 +35,7 @@ object TestDataMatriculation {
   def establishExaminationRegulation(connection: ConnectionExaminationRegulationTrait, name: String): Unit = {
     val existingValue = connection.getExaminationRegulations(TestHelper.getJsonList(Array(name)))
     Logger.warn("RETRIEVED EXAMINATION REGULATION: " + existingValue)
-    if(existingValue != "[[]]"){
+    if (existingValue != "[[]]") {
       val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, Array("M.1", "M.2"), true)
       connection.addExaminationRegulation(examinationRegulation)
     }
