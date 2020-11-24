@@ -13,8 +13,14 @@ class MatriculationAccessTests extends TestBase {
     val examinationRegulationConnection = initializeExaminationRegulation()
     TestDataMatriculation.establishExaminationRegulations(initializeExaminationRegulation())
     examinationRegulationConnection.close()
+  }
 
+  override def beforeEach(): Unit = {
     chaincodeConnection = initializeMatriculation()
+  }
+
+  override def afterEach(): Unit = {
+    chaincodeConnection.close()
   }
 
   override def afterAll(): Unit = {
