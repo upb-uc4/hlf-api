@@ -62,7 +62,7 @@ jobs:
     # Rewrite chaincodeTarget if started manually
     - name: rewrite chaincodeTarget if manual invocation
       if: github.event.inputs.chaincode_target != ''
-        run: echo "CHAINCODE_TARGET=${{ github.event.inputs.chaincode_target }}" >> $GITHUB_ENV
+      run: echo "CHAINCODE_TARGET=${{ github.event.inputs.chaincode_target }}" >> $GITHUB_ENV
     # ################### ENV VARS ############################################################ #
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
