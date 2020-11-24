@@ -10,7 +10,7 @@ import scala.io.Source
 
 class UserManagementTests extends TestBase {
 
-  override def beforeAll(): Unit ={
+  override def beforeAll(): Unit = {
     super.beforeAll()
     super.establishExaminationRegulations()
   }

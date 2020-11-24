@@ -69,7 +69,7 @@ class TestBase extends TestBaseTrait {
     Logger.debug("[TestBase] :: " + message)
   }
 
-  protected def establishExaminationRegulations(): Unit ={
+  protected def establishExaminationRegulations(): Unit = {
     val examinationRegulationConnection = initializeExaminationRegulation()
     TestDataMatriculation.establishExaminationRegulations(initializeExaminationRegulation())
     examinationRegulationConnection.close()
