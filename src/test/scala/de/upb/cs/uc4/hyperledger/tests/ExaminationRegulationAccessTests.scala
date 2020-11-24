@@ -10,7 +10,14 @@ class ExaminationRegulationAccessTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
+  }
+
+  override def beforeEach(): Unit = {
     chaincodeConnection = initializeExaminationRegulation()
+  }
+
+  override def afterEach(): Unit = {
+    chaincodeConnection.close()
   }
 
   override def afterAll(): Unit = {

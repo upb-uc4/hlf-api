@@ -33,7 +33,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   // setting up connections
   lazy val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, contractName, walletPath, networkDescriptionPath)
-  lazy val approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
+  def approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   /** Gets the version returned by the designated contract.
     * By default all contracts return the version of the chaincode.
@@ -41,6 +41,16 @@ trait ConnectionTrait extends AutoCloseable {
     * @return String containing versionInfo
     */
   final def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
+
+  private def approveTransaction(transactionName: String, params: String*) = {
+    // setup approvalConnection and
+    // submit my approval to approvalContract
+    val approvalConnectionObject = approvalConnection
+    if (approvalConnectionObject.isDefined) {
+      approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
+      approvalConnectionObject.get.close()
+    }
+  }
 
   /** Wrapper for a submission transaction
     * Translates the result byte-array to a string and throws an error if said string contains an error.
@@ -53,8 +63,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
-    // submit my approval to approvalContract
-    if (approvalConnection.isDefined) approvalConnection.get.approveTransaction(contractName, transactionName, params: _*)
+    approveTransaction(transactionName, params: _*)
 
     // submit and evaluate response from my "regular" contract
     val result = this.privateSubmitTransaction(transient, transactionName, params: _*)
@@ -71,16 +80,14 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapEvaluateTransaction(transactionName: String, params: String*): String = {
-    // submit my approval to approvalContract
-    if (approvalConnection.isDefined) approvalConnection.get.approveTransaction(contractName, transactionName, params: _*)
+    approveTransaction(transactionName, params: _*)
 
     val result = this.privateEvaluateTransaction(transactionName, params: _*)
     this.wrapTransactionResult(transactionName, result)
   }
 
   protected final def internalGetUnsignedProposal(transactionName: String, params: String*): Array[Byte] = {
-    // send approval as admin maintaining the connection
-    approvalConnection.get.approveTransaction(contractName, "addCertificate", params: _*)
+    approveTransaction(transactionName, params: _*)
 
     // gather info
     val (transaction, context, request) = TransactionHelper.createApprovalTransactionInfo(approvalConnection.get.contract, contractName, transactionName, params.toArray, None)
@@ -202,6 +209,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   private def wrapTransactionResult(transactionName: String, result: Array[Byte]): String = {
     val resultString = new String(result, StandardCharsets.UTF_8)
+    Logger.info("TRANSACTION RESULT:: " + resultString)
     if (containsError(resultString)) throw TransactionException(transactionName, resultString)
     else resultString
   }

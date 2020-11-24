@@ -57,12 +57,12 @@ jobs:
     # Rewrite test_Set if started manually
     - name: rewrite test_set if manual invocation
       if: github.event.inputs.test_set != ''
-      run: echo "::set-env name=TEST_SET::${{ github.event.inputs.test_set }}"
+      run: echo "TEST_SET=${{ github.event.inputs.test_set }}" >> $GITHUB_ENV
 
     # Rewrite chaincodeTarget if started manually
     - name: rewrite chaincodeTarget if manual invocation
       if: github.event.inputs.chaincode_target != ''
-      run: echo "::set-env name=CHAINCODE_TARGET::${{ github.event.inputs.chaincode_target }}"
+      run: echo "CHAINCODE_TARGET=${{ github.event.inputs.chaincode_target }}" >> $GITHUB_ENV
     # ################### ENV VARS ############################################################ #
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
