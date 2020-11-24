@@ -27,7 +27,7 @@ object TestDataMatriculation {
 
   def establishExaminationRegulations(connection: ConnectionExaminationRegulationTrait): Unit = {
     try{
-      val names = Seq("\"Computer Science\"", "\"Mathematics\"", "\"Media Sciences\"")
+      val names = Seq("Computer Science", "Mathematics", "Media Sciences")
       for (name: String <- names) {
         establishExaminationRegulation(connection, name)
       }
@@ -38,9 +38,8 @@ object TestDataMatriculation {
   }
 
   def establishExaminationRegulation(connection: ConnectionExaminationRegulationTrait, name: String): Unit = {
-    val existingValue = connection.getExaminationRegulations(TestHelper.getJsonList(Array(name)))
-    Logger.warn("RETRIEVED EXAMINATION REGULATION: " + existingValue)
-    if (existingValue != "[[]]") {
+    val existingValue = connection.getExaminationRegulations(TestHelper.getJsonList(Array(s"\"$name\"")))
+    if (existingValue == "[]") {
       val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, Array("M.1", "M.2"), true)
       connection.addExaminationRegulation(examinationRegulation)
     }
