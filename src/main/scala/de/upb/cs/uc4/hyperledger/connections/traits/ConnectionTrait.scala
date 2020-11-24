@@ -74,7 +74,7 @@ trait ConnectionTrait extends AutoCloseable {
     // setup approvalConnection and
     // submit my approval to approvalContract
     val approvalConnectionObject = approvalConnection
-    if (approvalConnectionObject.isDefined){
+    if (approvalConnectionObject.isDefined) {
       approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
       approvalConnectionObject.get.close()
     }
