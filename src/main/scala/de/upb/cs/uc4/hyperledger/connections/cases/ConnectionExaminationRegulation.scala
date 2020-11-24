@@ -26,10 +26,8 @@ case class ConnectionExaminationRegulation(username: String, channel: String, ch
   def addExaminationRegulation(examinationRegulation: String): String =
     wrapSubmitTransaction(false, "addExaminationRegulation", examinationRegulation)
 
-  def getExaminationRegulations(namesList: String): String = {
-    Logger.warn("GET EXAMINATION REGULATION:: " + namesList)
+  def getExaminationRegulations(namesList: String): String =
     wrapEvaluateTransaction("getExaminationRegulations", namesList)
-  }
 
   def closeExaminationRegulation(name: String): String =
     wrapSubmitTransaction(false, "closeExaminationRegulation", name)

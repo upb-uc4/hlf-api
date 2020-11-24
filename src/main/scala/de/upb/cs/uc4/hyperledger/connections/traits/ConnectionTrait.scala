@@ -80,9 +80,7 @@ trait ConnectionTrait extends AutoCloseable {
       Logger.info("APPROVAL RESULT:: " + approvalResult)
     }
 
-    Logger.info("AAAAAAAAAa")
     val result = this.privateEvaluateTransaction(transactionName, params: _*)
-    Logger.info("BBBBBBBBBBB")
     this.wrapTransactionResult(transactionName, result)
   }
 
