@@ -1,11 +1,14 @@
 package de.upb.cs.uc4.hyperledger.tests
 
 import java.io.File
+import java.lang.String.format
 import java.nio.charset.StandardCharsets
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
 import java.security.interfaces.ECPrivateKey
-import java.util.Base64
+import java.util
+import java.util.{ArrayList, Base64, Collection, Collections, HashSet, LinkedList, List}
+import java.util.concurrent.{CompletableFuture, TimeUnit, TimeoutException}
 
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionCertificateTrait, ConnectionMatriculationTrait}
@@ -15,15 +18,22 @@ import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
 import de.upb.cs.uc4.hyperledger.utilities.{EnrollmentManager, RegistrationManager, WalletManager}
 import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, ReflectionHelper, TransactionHelper}
-import org.hyperledger.fabric.gateway.impl.TransactionImpl
+import org.hyperledger.fabric.gateway.impl.{ContractImpl, GatewayImpl, TimePeriod, TransactionImpl}
 import org.hyperledger.fabric.gateway.impl.identity.{GatewayUser, X509IdentityImpl}
-import org.hyperledger.fabric.gateway.{Identities, Identity, Wallet, X509Identity}
-import org.hyperledger.fabric.protos.peer.Chaincode
+import org.hyperledger.fabric.gateway.spi.CommitHandler
+import org.hyperledger.fabric.gateway.{ContractException, GatewayRuntimeException, Identities, Identity, Wallet, X509Identity}
+import org.hyperledger.fabric.protos.common.Common.{Envelope, Payload, Status}
+import org.hyperledger.fabric.protos.orderer.Ab.BroadcastResponse
+import org.hyperledger.fabric.protos.peer.{Chaincode, ProposalResponsePackage}
 import org.hyperledger.fabric.protos.peer.ProposalPackage.{Proposal, SignedProposal}
+import org.hyperledger.fabric.sdk.Channel.NOfEvents
+import org.hyperledger.fabric.sdk.User.userContextCheck
+import org.hyperledger.fabric.sdk.exception.InvalidArgumentException
+import org.hyperledger.fabric.sdk.helper.Config
 import org.hyperledger.fabric.sdk.identity.X509Enrollment
-import org.hyperledger.fabric.sdk.{ChaincodeID, Channel, HFClient, NetworkConfig, TransactionProposalRequest, User}
+import org.hyperledger.fabric.sdk.{BlockEvent, ChaincodeID, Channel, HFClient, NetworkConfig, Orderer, Peer, ProposalResponse, SDKUtils, TransactionProposalRequest, User}
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
-import org.hyperledger.fabric.sdk.transaction.{ProposalBuilder, TransactionContext}
+import org.hyperledger.fabric.sdk.transaction.{ProposalBuilder, TransactionBuilder, TransactionContext}
 
 import scala.io.Source
 
@@ -58,7 +68,9 @@ class UnsignedTransactionTests extends TestBase {
 
     "passing a signed transaction" should {
       "submit the proposal transaction to the proposal contract, even if the signature was not created using the private key belonging to the connection" in {
-        val argEnrollmentId = "113"
+        // TODO dont use admin here!
+        val argEnrollmentId = "100"
+        //val argEnrollmentId = this.username
         val argCertificate = "Whatever"
         val testAffiliation = "org1MSP"
 
@@ -120,7 +132,8 @@ class UnsignedTransactionTests extends TestBase {
         val hfClient: HFClient = HFClient.createNewInstance()
         hfClient.setCryptoSuite(crypto)
         hfClient.setUserContext(user)
-        val channelObj: Channel = hfClient.loadChannelFromConfig(channel, networkConfig)
+        // val channelObj: Channel = hfClient.loadChannelFromConfig(channel, networkConfig)
+        val channelObj: Channel = certificateConnection.gateway.getNetwork(channel).getChannel
         val ctx: TransactionContext = new TransactionContext(channelObj, user, crypto)
         val chaincodeId: Chaincode.ChaincodeID = Chaincode.ChaincodeID.newBuilder().setName(this.chaincode).build()
         val proposal = ProposalBuilder.newBuilder().context(ctx).request(request).chaincodeID(chaincodeId).build()
@@ -142,16 +155,180 @@ class UnsignedTransactionTests extends TestBase {
         // create signedProposal Object and get Info Objects
         val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) =
           TransactionHelper.createSignedProposal(certificateConnection.approvalConnection.get, proposal, signature)
-        // submit approval
 
-        val approvalResult = certificateConnection.internalSubmitApprovalProposal(transaction, context, signedProposal)
+        // get rid of connection with identity by:
+        //val gateway: GatewayImpl = new GatewayImpl.Builder().networkConfig(networkDescriptionPath).connect()
+        //val contract: ContractImpl = new ContractImpl(network, chaincodeId, "UC4.Approval")
+
+
+        // submit approval
+        // propose transaction
+        // TODO comment out next line
+        // val result = certificateConnection.internalSubmitApprovalProposal(transaction, ctx, signedProposal)
+        // get rid of connection with identity by:
+        val peers: util.Collection[Peer] = ReflectionHelper.safeCallPrivateMethod(channelObj)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
+        val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
+        // commit transaction
+        val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+        // dissect val result = ReflectionHelper.safeCallPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
+        val response: Array[Byte] = {
+          val proposalResponse: ProposalResponse = validResponses.iterator().next()
+          val commitHandler: CommitHandler = certificateConnection.gateway.getCommitHandlerFactory().create(ctx.getTxID(), certificateConnection.gateway.getNetwork(channel))
+          commitHandler.startListening()
+          def sendTransaction(channel: Channel, validResponses: util.Collection[ProposalResponse], transactionOptions: Channel.TransactionOptions): CompletableFuture[BlockEvent#TransactionEvent] = {
+            try {
+              if (null == transactionOptions) throw new InvalidArgumentException("Parameter transactionOptions can't be null")
+              ReflectionHelper.safeCallPrivateMethod(channel)("checkChannelState")()
+              if (null == proposalResponses) throw new InvalidArgumentException("sendTransaction proposalResponses was null")
+              val orderers = if (ReflectionHelper.getPrivateField(transactionOptions)("orderers")() != null) ReflectionHelper.getPrivateField(transactionOptions)("orderers")().asInstanceOf[util.List[Orderer]]
+              else new util.ArrayList[Orderer](channelObj.getOrderers())
+              // make certain we have our own copy
+              val shuffeledOrderers: util.ArrayList[Orderer] = new util.ArrayList[Orderer](orderers)
+              if (ReflectionHelper.getPrivateField(transactionOptions)("shuffleOrders")().asInstanceOf[Boolean]) Collections.shuffle(shuffeledOrderers)
+              if (ReflectionHelper.getPrivateField(channelObj)("config")().asInstanceOf[Config].getProposalConsistencyValidation) {
+                val invalid = new util.HashSet[ProposalResponse]
+                val consistencyGroups = SDKUtils.getProposalConsistencySets(proposalResponses, invalid).size
+                if (consistencyGroups != 1 || !invalid.isEmpty) throw new IllegalArgumentException(format("The proposal responses have %d inconsistent groups with %d that are invalid." + " Expected all to be consistent and none to be invalid.", consistencyGroups, invalid.size))
+              }
+              val ed = new util.LinkedList[ProposalResponsePackage.Endorsement]
+              var proposal: Proposal = null
+              var proposalResponsePayload: ByteString = null
+              var proposalTransactionID: String = null
+              var transactionContext: TransactionContext = null
+              // import scala.collection.JavaConversions._
+              proposalResponses.forEach (
+                (sdkProposalResponse: ProposalResponse) => {
+                  ed.add(sdkProposalResponse.getProposalResponse.getEndorsement)
+                  if (proposal == null) {
+                    proposal = sdkProposalResponse.getProposal
+                    proposalTransactionID = sdkProposalResponse.getTransactionID
+                    if (proposalTransactionID == null) throw new InvalidArgumentException("Proposals with missing transaction ID")
+                    proposalResponsePayload = sdkProposalResponse.getProposalResponse.getPayload
+                    if (proposalResponsePayload == null) throw new InvalidArgumentException("Proposals with missing payload.")
+                    transactionContext = ReflectionHelper.safeCallPrivateMethod(sdkProposalResponse)("getTransactionContext")().asInstanceOf[TransactionContext]
+                    if (transactionContext == null) throw new InvalidArgumentException("Proposals with missing transaction context.")
+                  }
+                  else {
+                    val transactionID = sdkProposalResponse.getTransactionID
+                    if (transactionID == null) throw new InvalidArgumentException("Proposals with missing transaction id.")
+                    if (!(proposalTransactionID == transactionID)) throw new InvalidArgumentException(format("Proposals with different transaction IDs %s,  and %s", proposalTransactionID, transactionID))
+                  }
+                }
+              )
+              val transactionBuilder = TransactionBuilder.newBuilder
+              val transactionPayload = transactionBuilder.chaincodeProposal(proposal).endorsements(ed).proposalResponsePayload(proposalResponsePayload).build
+              def createTransactionEnvelope(transactionPayload: Payload, transactionContext: TransactionContext): Envelope = {
+                Envelope.newBuilder.setPayload(transactionPayload.toByteString).setSignature(ByteString.copyFrom(crypto.sign(privateKey, transactionPayload.toByteString.toByteArray))).build
+              }
+              val transactionEnvelope = createTransactionEnvelope(transactionPayload, transactionContext)
+              var nOfEvents = ReflectionHelper.getPrivateField(transactionOptions)("nOfEvents")().asInstanceOf[NOfEvents]
+              if (nOfEvents == null) {
+                nOfEvents = NOfEvents.createNofEvents
+                val eventingPeers = ReflectionHelper.safeCallPrivateMethod(channelObj)("getEventingPeers")().asInstanceOf[util.Collection[Peer]]
+                var anyAdded = false
+                if (!eventingPeers.isEmpty) {
+                  anyAdded = true
+                  nOfEvents.addPeers(eventingPeers)
+                }
+                if (!anyAdded) nOfEvents = NOfEvents.createNoEvents
+              }
+              else if (nOfEvents ne NOfEvents.nofNoEvents) {
+                val issues = new StringBuilder(100)
+                val eventingPeers = ReflectionHelper.safeCallPrivateMethod(channelObj)("getEventingPeers")().asInstanceOf[util.Collection[Peer]]
+                ReflectionHelper.safeCallPrivateMethod(nOfEvents)("unSeenPeers")().asInstanceOf[util.Collection[Peer]].forEach((peer: Peer) => {
+                  def foo(peer: Peer) = if (ReflectionHelper.safeCallPrivateMethod(peer)("getChannel")() ne this) issues.append(format("Peer %s added to NOFEvents does not belong this channel. ", peer.getName))
+                  else if (!eventingPeers.contains(peer)) issues.append(format("Peer %s added to NOFEvents is not a eventing Peer in this channel. ", peer.getName))
+
+                  foo(peer)
+                })
+                if (ReflectionHelper.safeCallPrivateMethod(nOfEvents)("unSeenPeers")().asInstanceOf[util.Collection[Peer]].isEmpty) issues.append("NofEvents had no added  Peer eventing services.")
+                val foundIssues = issues.toString
+                if (!foundIssues.isEmpty) throw new InvalidArgumentException(foundIssues)
+              }
+              val replyonly = (nOfEvents eq NOfEvents.nofNoEvents) || ReflectionHelper.safeCallPrivateMethod(channelObj)("getEventingPeers")().asInstanceOf[util.Collection[Peer]].isEmpty
+              var sret: CompletableFuture[BlockEvent#TransactionEvent] = null
+              if (replyonly) { //If there are no eventsto complete the future, complete it
+                // immediately but give no transaction event
+                //logger.debug(format("Completing transaction id %s immediately no peer eventing services found in channel %s.", proposalTransactionID, name))
+                sret = new CompletableFuture[BlockEvent#TransactionEvent]
+              }
+              else sret = ReflectionHelper.safeCallPrivateMethod(channelObj)("registerTxListener")(proposalTransactionID, nOfEvents, ReflectionHelper.getPrivateField(transactionOptions)("failFast")()).asInstanceOf[CompletableFuture[BlockEvent#TransactionEvent]]
+              //logger.debug(format("Channel %s sending transaction to orderer(s) with TxID %s ", name, proposalTransactionID))
+              var success: Boolean = false
+              var lException: Exception = null // Save last exception to report to user .. others are just logged.
+              var resp: BroadcastResponse = null
+              var failed: Orderer = null
+              //import scala.collection.JavaConversions._
+              shuffeledOrderers.forEach((orderer: Orderer) =>  {
+                  //if (failed != null) logger.warn(format("Channel %s  %s failed. Now trying %s.", name, failed, orderer))
+                  failed = orderer
+                  try {
+                    //if (null != diagnosticFileDumper) logger.trace(format("Sending to channel %s, orderer: %s, transaction: %s", name, orderer.getName, diagnosticFileDumper.createDiagnosticProtobufFile(transactionEnvelope.toByteArray)))
+                    resp = ReflectionHelper.safeCallPrivateMethod(orderer)("sendTransaction")(transactionEnvelope).asInstanceOf[BroadcastResponse]
+                    lException = null // no longer last exception .. maybe just failed.
+
+                    if (resp.getStatus eq Status.SUCCESS) {
+                      success = true
+                      //break //todo: break is not supported
+                    }
+                    //else logger.warn(format("Channel %s %s failed. Status returned %s", name, orderer, getRespData(resp)))
+                  } catch {
+                    case e: Exception =>
+                      var emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s)", channelObj.getName(), orderer.getName, orderer.getUrl)
+                      if (resp != null) emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s).  %s", channelObj.getName, orderer.getName, orderer.getUrl, ReflectionHelper.safeCallPrivateMethod(channelObj)("getRespData")(resp).asInstanceOf[String])
+                      //logger.error(emsg)
+                      lException = new Exception(emsg, e)
+                  }
+                }
+              )
+              if (success) {
+                //logger.debug(format("Channel %s successful sent to Orderer transaction id: %s", name, proposalTransactionID))
+                if (replyonly) sret.complete(null) // just say we're done.
+                return sret
+              }
+              else {
+                val emsg = format("Channel %s failed to place transaction %s on Orderer. Cause: UNSUCCESSFUL. %s", channelObj.getName, proposalTransactionID, ReflectionHelper.safeCallPrivateMethod(channelObj)("getRespData")(resp).asInstanceOf[String])
+                ReflectionHelper.safeCallPrivateMethod(channelObj)("unregisterTxListener")(proposalTransactionID)
+                val ret = new CompletableFuture[BlockEvent#TransactionEvent]
+                ret.completeExceptionally(if (lException != null) new Exception(emsg, lException)
+                else new Exception(emsg))
+                return ret
+              }
+            } catch {
+              case e: Exception =>
+                val future = new CompletableFuture[BlockEvent#TransactionEvent]
+                future.completeExceptionally(e)
+                return future
+            }
+          }
+          try {
+            val transactionOptions: Channel.TransactionOptions = Channel.TransactionOptions.createTransactionOptions()
+              .nOfEvents(Channel.NOfEvents.createNoEvents()); // Disable default commit wait behaviour
+            sendTransaction(channelObj, validResponses, transactionOptions)
+              .get(60, TimeUnit.SECONDS);
+          } catch {
+            case e: TimeoutException => commitHandler.cancelListening()
+              throw e
+            case e: Exception => commitHandler.cancelListening()
+              throw new ContractException("Failed to send transaction to the orderer", e);
+          }
+          val commitTimeout: TimePeriod = new TimePeriod(5, TimeUnit.MINUTES)
+          commitHandler.waitForEvents(commitTimeout.getTime(), commitTimeout.getTimeUnit());
+
+          try {
+            proposalResponse.getChaincodeActionResponsePayload();
+          } catch {
+            case e: InvalidArgumentException => throw new GatewayRuntimeException(e)
+          }
+        }
+        val result = new String(response, StandardCharsets.UTF_8)
         // reset certificate of admin user
         // ReflectionHelper.setPrivateField(adminIdentity)("certificate")(originalCertificate)
         // ReflectionHelper.setPrivateField(adminIdentity)("mspId")(originalMspId)
         // wallet.remove(this.username)
         // wallet.put(this.username, adminIdentity)
 
-        println("\n\n\n##########################\nResult:\n##########################\n\n" + approvalResult)
+        println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
       }
       "submit the proposal transaction to the proposal contract" in {
         val enrollmentId = "102"
