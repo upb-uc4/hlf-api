@@ -69,7 +69,7 @@ class UnsignedTransactionTests extends TestBase {
     "passing a signed transaction" should {
       "submit the proposal transaction to the proposal contract, even if the signature was not created using the private key belonging to the connection" in {
         // TODO dont use admin here!
-        val argEnrollmentId = "100"
+        val argEnrollmentId = "101"
         //val argEnrollmentId = this.username
         val argCertificate = "Whatever"
         val testAffiliation = "org1MSP"
@@ -171,7 +171,10 @@ class UnsignedTransactionTests extends TestBase {
         // commit transaction
         val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
         // dissect val result = ReflectionHelper.safeCallPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
-        val response: Array[Byte] = {
+        val (transactionPayload, proposalTransactionID) = TransactionHelper.getTransaction(validResponses, channelObj)
+        val transactionSignature: Array[Byte] = crypto.sign(privateKey, transactionPayload.toByteString.toByteArray)
+        val response: Array[Byte] = TransactionHelper.sendTransaction(validResponses, certificateConnection, channel, ctx, channelObj, transactionPayload, transactionSignature, proposalTransactionID)
+        /*val response: Array[Byte] = {
           val proposalResponse: ProposalResponse = validResponses.iterator().next()
           val commitHandler: CommitHandler = certificateConnection.gateway.getCommitHandlerFactory().create(ctx.getTxID(), certificateConnection.gateway.getNetwork(channel))
           commitHandler.startListening()
@@ -320,7 +323,7 @@ class UnsignedTransactionTests extends TestBase {
           } catch {
             case e: InvalidArgumentException => throw new GatewayRuntimeException(e)
           }
-        }
+        }*/
         val result = new String(response, StandardCharsets.UTF_8)
         // reset certificate of admin user
         // ReflectionHelper.setPrivateField(adminIdentity)("certificate")(originalCertificate)
