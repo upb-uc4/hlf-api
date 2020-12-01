@@ -100,33 +100,8 @@ class UnsignedTransactionTests extends TestBase {
 
         // get proposal
         // TODO overwrite getProposal to do the stuff below
-        //val proposalBytes = certificateConnection.getProposalAddCertificate(argEnrollmentId, argCertificate)
-        val enrollment: X509Enrollment = new X509Enrollment(new PrivateKey {
-          override def getAlgorithm: String = null
-          override def getFormat: String = null
-          override def getEncoded: Array[Byte] = null
-        }, Identities.toPemString(certificate))
-        val user: User = new GatewayUser(argEnrollmentId, testAffiliation, enrollment)
-        val request = TransactionProposalRequest.newInstance(user)
-        request.setChaincodeName(this.chaincode)
-        request.setFcn("UC4.Approval:approveTransaction")
-        request.setArgs("UC4.Certificate" ,"addCertificate", "[\"" + argEnrollmentId + "\",\"" + argCertificate + "\"]")
-        val networkConfigFile: File = networkDescriptionPath.toFile()
-        val hfClient: HFClient = HFClient.createNewInstance()
-        hfClient.setCryptoSuite(crypto)
-        hfClient.setUserContext(user)
-        val channelObj: Channel = certificateConnection.gateway.getNetwork(channel).getChannel
-        val ctx: TransactionContext = new TransactionContext(channelObj, user, crypto)
-        val chaincodeId: Chaincode.ChaincodeID = Chaincode.ChaincodeID.newBuilder().setName(this.chaincode).build()
-        val proposal = ProposalBuilder.newBuilder().context(ctx).request(request).chaincodeID(chaincodeId).build()
-        println("\n\n\n##########################\nPROPOSALBYTES:\n##########################\n\n" + proposal.toByteString.toStringUtf8)
-        println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
-        println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
+        val proposalBytes = certificateConnection.internalGetUnsignedProposal(Identities.toPemString(certificate), testAffiliation, "UC4.Certificate" ,"addCertificate", "[\"" + argEnrollmentId + "\",\"" + argCertificate + "\"]")
 
-
-
-
-        val proposalBytes: Array[Byte] = proposal.toByteArray
         println("\n\n\n##########################\nProposal Bytes:\n##########################\n\n" + Base64.getEncoder.encodeToString(proposalBytes))
 
         // sign proposal with testUser privateKey
@@ -135,41 +110,16 @@ class UnsignedTransactionTests extends TestBase {
         val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signatureBytes)).toStringUtf8
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
 
-        // submit only signed transaction to approval contract
-        val signature: ByteString = ByteString.copyFrom(signatureBytes)
-
-
-
-
-        // create signedProposal Object and get Info Objects
-        val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) =
-          TransactionHelper.createSignedProposal(certificateConnection.approvalConnection.get, proposal, signature)
-
-        // submit approval
-        // propose transaction
-        // val result = certificateConnection.internalSubmitApprovalProposal(transaction, ctx, signedProposal)
-        // TODO do this stuff in submitSignedTransaction
-        val peers: util.Collection[Peer] = ReflectionHelper.safeCallPrivateMethod(channelObj)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
-        val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
-        // commit transaction
-        val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
-        val (transactionPayload, proposalTransactionID) = TransactionHelper.getTransaction(validResponses, channelObj)
-        val transactionPayloadBytes: Array[Byte] = transactionPayload.toByteArray
+        val transactionPayloadBytes: Array[Byte] = certificateConnection.getUnsignedTransaction(proposalBytes, signatureBytes)
         println("\n\n\n##########################\nTransactionPayload:\n##########################\n\n" + Base64.getEncoder.encodeToString(transactionPayloadBytes))
-
-
 
         val transactionSignature: Array[Byte] = crypto.sign(privateKey, transactionPayloadBytes)
 
-
-        
-        val parsedTransactionPayload: Payload = Payload.parseFrom(transactionPayloadBytes)
-        val soTransactionId: String = TransactionHelper.getTransactionIdFromHeader(parsedTransactionPayload.getHeader)
-        val (soTransactionName, soParams) = TransactionHelper.getParametersFromTransactionPayload(parsedTransactionPayload)
-        val (_, reconstructedCtx, _) = TransactionHelper.createTransactionInfo(certificateConnection.approvalConnection.get.contract, soTransactionName, soParams, Some(soTransactionId))
-        val response: Array[Byte] = TransactionHelper.sendTransaction(certificateConnection, channel, reconstructedCtx, channelObj, ByteString.copyFrom(transactionPayloadBytes), transactionSignature, proposalTransactionID)
-        val result = new String(response, StandardCharsets.UTF_8)
+        val result = certificateConnection.submitSignedTransaction(transactionPayloadBytes, transactionSignature)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
+
+        val getResult = initializeApproval(username).getApprovals("UC4.Certificate" ,"addCertificate", argEnrollmentId, argCertificate)
+        println("\n\n\n##########################\nCompareResult:\n##########################\n\n" + getResult)
       }
       "submit the proposal transaction to the proposal contract" in {
         val enrollmentId = "102"

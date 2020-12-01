@@ -138,7 +138,6 @@ protected[hyperledger] object TransactionHelper {
   }
 
   /**
-    * TODO remove, for this moethod is likely unnecessary
     * @param certificate
     * @param userAffiliation
     * @param chaincodeName
