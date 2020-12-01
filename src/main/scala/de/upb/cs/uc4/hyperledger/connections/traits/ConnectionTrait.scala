@@ -97,7 +97,7 @@ trait ConnectionTrait extends AutoCloseable {
     proposal.toByteArray
   }
 
-  def submitSignedProposal(proposalBytes: Array[Byte], signatureBytes: Array[Byte]): String = {
+  def getUnsignedTransaction(proposalBytes: Array[Byte], signatureBytes: Array[Byte]): String = {
     val proposal: Proposal = Proposal.parseFrom(proposalBytes)
     val signature: ByteString = ByteString.copyFrom(signatureBytes)
 
@@ -117,6 +117,11 @@ trait ConnectionTrait extends AutoCloseable {
     }
     transactionResult
   }
+
+  /*def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte], proposalTransactionId: String): String = {
+    val response: Array[Byte] = TransactionHelper.sendTransaction(validResponses, this.approvalConnection.get, channel, ctx, channelObj, ByteString.copyFrom(transactionBytes), signature, proposalTransactionId)
+    new String(response, StandardCharsets.UTF_8)
+  }*/
 
   def internalSubmitRealTransactionFromApprovalProposal(proposal: Proposal): String = {
     val (proposalContractName, transactionName, params) = TransactionHelper.getParametersFromApprovalProposal(proposal)

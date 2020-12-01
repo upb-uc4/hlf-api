@@ -68,9 +68,7 @@ class UnsignedTransactionTests extends TestBase {
 
     "passing a signed transaction" should {
       "submit the proposal transaction to the proposal contract, even if the signature was not created using the private key belonging to the connection" in {
-        // TODO dont use admin here!
         val argEnrollmentId = "101"
-        //val argEnrollmentId = this.username
         val argCertificate = "Whatever"
         val testAffiliation = "org1MSP"
 
@@ -90,29 +88,14 @@ class UnsignedTransactionTests extends TestBase {
         val securityLevel: Integer = 256
         ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
         // TODO use get- and set properties
-        //val mspId: String = ""
-        //val certificatePem: String = ""
 
         // get testUser certificate and private key
         val testUserIdentity: X509IdentityImpl = wallet.get(argEnrollmentId).asInstanceOf[X509IdentityImpl]
-        // val privateKeyPem: String = ""
-        //val certificatePem: String = ""
-        // val privateKey: PrivateKey = Identities.readPrivateKey(privateKeyPem)
-        // val certificate: X509Certificate = Identities.readX509Certificate(certificatePem)
-        //val identity: X509Identity = Identities.newX509Identity(mspId, certificate, privateKey)
 
         val privateKey: PrivateKey = testUserIdentity.getPrivateKey()
         val certificate: X509Certificate = testUserIdentity.getCertificate()
-        // TODO proper values here?
 
-        // mock certificate (replace admin mspId by testUser mspId)
         val adminIdentity: X509IdentityImpl = wallet.get(this.username).asInstanceOf[X509IdentityImpl]
-        // val originalCertificate: X509Certificate = adminIdentity.getCertificate()
-        // ReflectionHelper.setPrivateField(adminIdentity)("certificate")(certificate)
-        // val originalMspId: String = adminIdentity.getMspId()
-        // ReflectionHelper.setPrivateField(adminIdentity)("mspId")(testUserIdentity.getMspId())
-        // wallet.remove(this.username)
-        // wallet.put(this.username, adminIdentity)
 
         // get proposal
         //val proposalBytes = certificateConnection.getProposalAddCertificate(argEnrollmentId, argCertificate)
@@ -143,8 +126,13 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
 
         val proposalBytes: Array[Byte] = proposal.toByteArray
+        println("\n\n\n##########################\nProposal Bytes:\n##########################\n\n" + Base64.getEncoder.encodeToString(proposalBytes))
+
         // sign proposal with testUser privateKey
         val signatureBytes = crypto.sign(privateKey, proposalBytes)
+        /*val proposalSignatureString: String = scala.io.Source.fromFile("/tmp/api-test/proposal_sign.txt").mkString.trim
+        val signatureBytes: Array[Byte] = Base64.getDecoder.decode(proposalSignatureString)*/
+
         // val signatureBytes = crypto.sign(adminIdentity.getPrivateKey, proposalBytes)
 
         val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signatureBytes)).toStringUtf8
@@ -152,6 +140,7 @@ class UnsignedTransactionTests extends TestBase {
 
         // submit only signed transaction to approval contract
         val signature: ByteString = ByteString.copyFrom(signatureBytes)
+
         // create signedProposal Object and get Info Objects
         val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) =
           TransactionHelper.createSignedProposal(certificateConnection.approvalConnection.get, proposal, signature)
@@ -172,164 +161,16 @@ class UnsignedTransactionTests extends TestBase {
         val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
         // dissect val result = ReflectionHelper.safeCallPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
         val (transactionPayload, proposalTransactionID) = TransactionHelper.getTransaction(validResponses, channelObj)
-        val transactionSignature: Array[Byte] = crypto.sign(privateKey, transactionPayload.toByteString.toByteArray)
-        val response: Array[Byte] = TransactionHelper.sendTransaction(validResponses, certificateConnection, channel, ctx, channelObj, transactionPayload, transactionSignature, proposalTransactionID)
-        /*val response: Array[Byte] = {
-          val proposalResponse: ProposalResponse = validResponses.iterator().next()
-          val commitHandler: CommitHandler = certificateConnection.gateway.getCommitHandlerFactory().create(ctx.getTxID(), certificateConnection.gateway.getNetwork(channel))
-          commitHandler.startListening()
-          def sendTransaction(channel: Channel, validResponses: util.Collection[ProposalResponse], transactionOptions: Channel.TransactionOptions): CompletableFuture[BlockEvent#TransactionEvent] = {
-            try {
-              if (null == transactionOptions) throw new InvalidArgumentException("Parameter transactionOptions can't be null")
-              ReflectionHelper.safeCallPrivateMethod(channel)("checkChannelState")()
-              if (null == proposalResponses) throw new InvalidArgumentException("sendTransaction proposalResponses was null")
-              val orderers = if (ReflectionHelper.getPrivateField(transactionOptions)("orderers")() != null) ReflectionHelper.getPrivateField(transactionOptions)("orderers")().asInstanceOf[util.List[Orderer]]
-              else new util.ArrayList[Orderer](channelObj.getOrderers())
-              // make certain we have our own copy
-              val shuffeledOrderers: util.ArrayList[Orderer] = new util.ArrayList[Orderer](orderers)
-              if (ReflectionHelper.getPrivateField(transactionOptions)("shuffleOrders")().asInstanceOf[Boolean]) Collections.shuffle(shuffeledOrderers)
-              if (ReflectionHelper.getPrivateField(channelObj)("config")().asInstanceOf[Config].getProposalConsistencyValidation) {
-                val invalid = new util.HashSet[ProposalResponse]
-                val consistencyGroups = SDKUtils.getProposalConsistencySets(proposalResponses, invalid).size
-                if (consistencyGroups != 1 || !invalid.isEmpty) throw new IllegalArgumentException(format("The proposal responses have %d inconsistent groups with %d that are invalid." + " Expected all to be consistent and none to be invalid.", consistencyGroups, invalid.size))
-              }
-              val ed = new util.LinkedList[ProposalResponsePackage.Endorsement]
-              var proposal: Proposal = null
-              var proposalResponsePayload: ByteString = null
-              var proposalTransactionID: String = null
-              var transactionContext: TransactionContext = null
-              // import scala.collection.JavaConversions._
-              proposalResponses.forEach (
-                (sdkProposalResponse: ProposalResponse) => {
-                  ed.add(sdkProposalResponse.getProposalResponse.getEndorsement)
-                  if (proposal == null) {
-                    proposal = sdkProposalResponse.getProposal
-                    proposalTransactionID = sdkProposalResponse.getTransactionID
-                    if (proposalTransactionID == null) throw new InvalidArgumentException("Proposals with missing transaction ID")
-                    proposalResponsePayload = sdkProposalResponse.getProposalResponse.getPayload
-                    if (proposalResponsePayload == null) throw new InvalidArgumentException("Proposals with missing payload.")
-                    transactionContext = ReflectionHelper.safeCallPrivateMethod(sdkProposalResponse)("getTransactionContext")().asInstanceOf[TransactionContext]
-                    if (transactionContext == null) throw new InvalidArgumentException("Proposals with missing transaction context.")
-                  }
-                  else {
-                    val transactionID = sdkProposalResponse.getTransactionID
-                    if (transactionID == null) throw new InvalidArgumentException("Proposals with missing transaction id.")
-                    if (!(proposalTransactionID == transactionID)) throw new InvalidArgumentException(format("Proposals with different transaction IDs %s,  and %s", proposalTransactionID, transactionID))
-                  }
-                }
-              )
-              val transactionBuilder = TransactionBuilder.newBuilder
-              val transactionPayload = transactionBuilder.chaincodeProposal(proposal).endorsements(ed).proposalResponsePayload(proposalResponsePayload).build
-              def createTransactionEnvelope(transactionPayload: Payload, transactionContext: TransactionContext): Envelope = {
-                Envelope.newBuilder.setPayload(transactionPayload.toByteString).setSignature(ByteString.copyFrom(crypto.sign(privateKey, transactionPayload.toByteString.toByteArray))).build
-              }
-              val transactionEnvelope = createTransactionEnvelope(transactionPayload, transactionContext)
-              var nOfEvents = ReflectionHelper.getPrivateField(transactionOptions)("nOfEvents")().asInstanceOf[NOfEvents]
-              if (nOfEvents == null) {
-                nOfEvents = NOfEvents.createNofEvents
-                val eventingPeers = ReflectionHelper.safeCallPrivateMethod(channelObj)("getEventingPeers")().asInstanceOf[util.Collection[Peer]]
-                var anyAdded = false
-                if (!eventingPeers.isEmpty) {
-                  anyAdded = true
-                  nOfEvents.addPeers(eventingPeers)
-                }
-                if (!anyAdded) nOfEvents = NOfEvents.createNoEvents
-              }
-              else if (nOfEvents ne NOfEvents.nofNoEvents) {
-                val issues = new StringBuilder(100)
-                val eventingPeers = ReflectionHelper.safeCallPrivateMethod(channelObj)("getEventingPeers")().asInstanceOf[util.Collection[Peer]]
-                ReflectionHelper.safeCallPrivateMethod(nOfEvents)("unSeenPeers")().asInstanceOf[util.Collection[Peer]].forEach((peer: Peer) => {
-                  def foo(peer: Peer) = if (ReflectionHelper.safeCallPrivateMethod(peer)("getChannel")() ne this) issues.append(format("Peer %s added to NOFEvents does not belong this channel. ", peer.getName))
-                  else if (!eventingPeers.contains(peer)) issues.append(format("Peer %s added to NOFEvents is not a eventing Peer in this channel. ", peer.getName))
+        val transactionPayloadBytes: Array[Byte] = transactionPayload.toByteArray
+        println("\n\n\n##########################\nTransactionPayload:\n##########################\n\n" + Base64.getEncoder.encodeToString(transactionPayloadBytes))
 
-                  foo(peer)
-                })
-                if (ReflectionHelper.safeCallPrivateMethod(nOfEvents)("unSeenPeers")().asInstanceOf[util.Collection[Peer]].isEmpty) issues.append("NofEvents had no added  Peer eventing services.")
-                val foundIssues = issues.toString
-                if (!foundIssues.isEmpty) throw new InvalidArgumentException(foundIssues)
-              }
-              val replyonly = (nOfEvents eq NOfEvents.nofNoEvents) || ReflectionHelper.safeCallPrivateMethod(channelObj)("getEventingPeers")().asInstanceOf[util.Collection[Peer]].isEmpty
-              var sret: CompletableFuture[BlockEvent#TransactionEvent] = null
-              if (replyonly) { //If there are no eventsto complete the future, complete it
-                // immediately but give no transaction event
-                //logger.debug(format("Completing transaction id %s immediately no peer eventing services found in channel %s.", proposalTransactionID, name))
-                sret = new CompletableFuture[BlockEvent#TransactionEvent]
-              }
-              else sret = ReflectionHelper.safeCallPrivateMethod(channelObj)("registerTxListener")(proposalTransactionID, nOfEvents, ReflectionHelper.getPrivateField(transactionOptions)("failFast")()).asInstanceOf[CompletableFuture[BlockEvent#TransactionEvent]]
-              //logger.debug(format("Channel %s sending transaction to orderer(s) with TxID %s ", name, proposalTransactionID))
-              var success: Boolean = false
-              var lException: Exception = null // Save last exception to report to user .. others are just logged.
-              var resp: BroadcastResponse = null
-              var failed: Orderer = null
-              //import scala.collection.JavaConversions._
-              shuffeledOrderers.forEach((orderer: Orderer) =>  {
-                  //if (failed != null) logger.warn(format("Channel %s  %s failed. Now trying %s.", name, failed, orderer))
-                  failed = orderer
-                  try {
-                    //if (null != diagnosticFileDumper) logger.trace(format("Sending to channel %s, orderer: %s, transaction: %s", name, orderer.getName, diagnosticFileDumper.createDiagnosticProtobufFile(transactionEnvelope.toByteArray)))
-                    resp = ReflectionHelper.safeCallPrivateMethod(orderer)("sendTransaction")(transactionEnvelope).asInstanceOf[BroadcastResponse]
-                    lException = null // no longer last exception .. maybe just failed.
+        val transactionSignature: Array[Byte] = crypto.sign(privateKey, transactionPayloadBytes)
+        /*val transactionSignatureString: String = scala.io.Source.fromFile("/tmp/api-test/transaction_sign.txt").mkString.trim
+        val transactionSignature: Array[Byte]= Base64.getDecoder.decode(transactionSignatureString)*/
 
-                    if (resp.getStatus eq Status.SUCCESS) {
-                      success = true
-                      //break //todo: break is not supported
-                    }
-                    //else logger.warn(format("Channel %s %s failed. Status returned %s", name, orderer, getRespData(resp)))
-                  } catch {
-                    case e: Exception =>
-                      var emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s)", channelObj.getName(), orderer.getName, orderer.getUrl)
-                      if (resp != null) emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s).  %s", channelObj.getName, orderer.getName, orderer.getUrl, ReflectionHelper.safeCallPrivateMethod(channelObj)("getRespData")(resp).asInstanceOf[String])
-                      //logger.error(emsg)
-                      lException = new Exception(emsg, e)
-                  }
-                }
-              )
-              if (success) {
-                //logger.debug(format("Channel %s successful sent to Orderer transaction id: %s", name, proposalTransactionID))
-                if (replyonly) sret.complete(null) // just say we're done.
-                return sret
-              }
-              else {
-                val emsg = format("Channel %s failed to place transaction %s on Orderer. Cause: UNSUCCESSFUL. %s", channelObj.getName, proposalTransactionID, ReflectionHelper.safeCallPrivateMethod(channelObj)("getRespData")(resp).asInstanceOf[String])
-                ReflectionHelper.safeCallPrivateMethod(channelObj)("unregisterTxListener")(proposalTransactionID)
-                val ret = new CompletableFuture[BlockEvent#TransactionEvent]
-                ret.completeExceptionally(if (lException != null) new Exception(emsg, lException)
-                else new Exception(emsg))
-                return ret
-              }
-            } catch {
-              case e: Exception =>
-                val future = new CompletableFuture[BlockEvent#TransactionEvent]
-                future.completeExceptionally(e)
-                return future
-            }
-          }
-          try {
-            val transactionOptions: Channel.TransactionOptions = Channel.TransactionOptions.createTransactionOptions()
-              .nOfEvents(Channel.NOfEvents.createNoEvents()); // Disable default commit wait behaviour
-            sendTransaction(channelObj, validResponses, transactionOptions)
-              .get(60, TimeUnit.SECONDS);
-          } catch {
-            case e: TimeoutException => commitHandler.cancelListening()
-              throw e
-            case e: Exception => commitHandler.cancelListening()
-              throw new ContractException("Failed to send transaction to the orderer", e);
-          }
-          val commitTimeout: TimePeriod = new TimePeriod(5, TimeUnit.MINUTES)
-          commitHandler.waitForEvents(commitTimeout.getTime(), commitTimeout.getTimeUnit());
+        val response: Array[Byte] = TransactionHelper.sendTransaction(validResponses, certificateConnection, channel, ctx, channelObj, transactionPayload.toByteString, transactionSignature, proposalTransactionID)
 
-          try {
-            proposalResponse.getChaincodeActionResponsePayload();
-          } catch {
-            case e: InvalidArgumentException => throw new GatewayRuntimeException(e)
-          }
-        }*/
         val result = new String(response, StandardCharsets.UTF_8)
-        // reset certificate of admin user
-        // ReflectionHelper.setPrivateField(adminIdentity)("certificate")(originalCertificate)
-        // ReflectionHelper.setPrivateField(adminIdentity)("mspId")(originalMspId)
-        // wallet.remove(this.username)
-        // wallet.put(this.username, adminIdentity)
 
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
       }
@@ -345,7 +186,7 @@ class UnsignedTransactionTests extends TestBase {
         val signature = transactionContext.signByteString(proposalBytes)
         val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signature.toByteArray)).toStringUtf8
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
-        val result = certificateConnection.submitSignedProposal(proposalBytes, signature.toByteArray)
+        val result = certificateConnection.getUnsignedTransaction(proposalBytes, signature.toByteArray)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
       }
       "submit the real transaction to the real contract" in {
@@ -357,7 +198,7 @@ class UnsignedTransactionTests extends TestBase {
         val transactionContext: TransactionContext = certificateConnection.contract.getNetwork.getChannel.newTransactionContext()
         val signature = transactionContext.signByteString(proposalBytes)
         println("\n\n\n##########################\nSUBMIT PROPOSAL:\n##########################\n\n")
-        val result = certificateConnection.submitSignedProposal(proposalBytes, signature.toByteArray)
+        val result = certificateConnection.getUnsignedTransaction(proposalBytes, signature.toByteArray)
         println("\n\n\n##########################\nResult103:\n##########################\n\n" + result)
 
         // test info stored
@@ -377,7 +218,7 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
         val signature = ByteString.copyFrom(Base64.getDecoder.decode("MEUCIQD92OsJsVVFqFfifMV14ROiL5Ni/RaOBkR0DqzetvPfkQIgcrgu9vxr5TuZY6lft5adCETaC3CSE8QA+bs9MheeLcI="))
-        val result = intercept[HyperledgerExceptionTrait](certificateConnection.submitSignedProposal(proposalBytes, signature.toByteArray))
+        val result = intercept[HyperledgerExceptionTrait](certificateConnection.getUnsignedTransaction(proposalBytes, signature.toByteArray))
         result.actionName should be(approvalTransactionName)
       }
     }

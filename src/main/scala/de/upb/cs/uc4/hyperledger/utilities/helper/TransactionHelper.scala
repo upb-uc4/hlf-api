@@ -158,8 +158,8 @@ protected[hyperledger] object TransactionHelper {
     ProposalBuilder.newBuilder().context(ctx).request(request).chaincodeID(chaincodeId).build()
   }
 
-  def setTransactionSignature(transactionPayload: Payload, signature: Array[Byte]): Envelope = {
-    Envelope.newBuilder.setPayload(transactionPayload.toByteString).setSignature(ByteString.copyFrom(signature)).build
+  def setTransactionSignature(transactionPayload: ByteString, signature: Array[Byte]): Envelope = {
+    Envelope.newBuilder.setPayload(transactionPayload).setSignature(ByteString.copyFrom(signature)).build
   }
 
   def internalGetTransactionPayload(
@@ -210,7 +210,7 @@ protected[hyperledger] object TransactionHelper {
                        signature: Array[Byte],
                        transactionOptions: Channel.TransactionOptions,
                        proposalTransactionID: String,
-                       transactionPayload: Payload
+                       transactionPayload: ByteString
                      ): CompletableFuture[BlockEvent#TransactionEvent] = {
     try {
       val orderers = if (ReflectionHelper.getPrivateField(transactionOptions)("orderers")() != null) ReflectionHelper.getPrivateField(transactionOptions)("orderers")().asInstanceOf[util.List[Orderer]]
@@ -314,7 +314,7 @@ protected[hyperledger] object TransactionHelper {
                        channel: String,
                        ctx: TransactionContext,
                        channelObj: Channel,
-                       transactionPayload: Payload,
+                       transactionPayload: ByteString,
                        signature: Array[Byte],
                        proposalTransactionID: String): Array[Byte] = {
     val proposalResponse: ProposalResponse = validResponses.iterator().next()
