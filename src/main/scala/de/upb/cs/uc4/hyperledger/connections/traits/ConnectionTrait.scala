@@ -119,7 +119,7 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   /*def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte], proposalTransactionId: String): String = {
-    val response: Array[Byte] = TransactionHelper.sendTransaction(validResponses, this.approvalConnection.get, channel, ctx, channelObj, ByteString.copyFrom(transactionBytes), signature, proposalTransactionId)
+    val response: Array[Byte] = TransactionHelper.sendTransaction(validResponses, this.approvalConnection.get, channel, ctx, this.contract.getNetwork.getChannel, ByteString.copyFrom(transactionBytes), signature, proposalTransactionId)
     new String(response, StandardCharsets.UTF_8)
   }*/
 
