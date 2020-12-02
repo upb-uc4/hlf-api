@@ -16,7 +16,7 @@ class AdmissionAccessTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-
+    // TODO: RESET LEDGER
     setupExaminationRegulations()
     setupMatriculations()
   }
@@ -33,6 +33,7 @@ class AdmissionAccessTests extends TestBase {
 
   override def afterAll(): Unit = {
     chaincodeConnection.close()
+    // TODO: RESET LEDGER
     super.afterAll()
   }
 
@@ -74,6 +75,38 @@ class AdmissionAccessTests extends TestBase {
 
           TestHelper.compareJson(expectedResult, testResult)
         }
+      }
+    }
+
+    // IMPORTANT: THESE TESTS HAVE TO BE EXECUTED AFTER THE addAdmission-TESTS.
+    // IMPORTANT: THESE TESTS HAVE TO BE EXECUTED SEQUENTIALLY IN THIS EXACT ORDER.
+    "invoked with dropAdmission correctly " should {
+      "allow for dropping existing Admission 1 " in {
+        val testResult = chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1")
+        testResult should be("")
+
+        // check ledger state
+        val ledgerAdmissions = chaincodeConnection.getAdmissions()
+        val expectedResult = TestHelper.getJsonList(Seq(admission2, admission_noAdmissionId_WithId))
+        TestHelper.compareJson(expectedResult, ledgerAdmissions)
+      }
+      "allow for dropping existing Admission 2 " in {
+        val testResult = chaincodeConnection.dropAdmission("AdmissionStudent_2:C.2")
+        testResult should be("")
+
+        // check ledger state
+        val ledgerAdmissions = chaincodeConnection.getAdmissions()
+        val expectedResult = TestHelper.getJsonList(Seq(admission_noAdmissionId_WithId))
+        TestHelper.compareJson(expectedResult, ledgerAdmissions)
+      }
+      "allow for dropping existing Admission 3 " in {
+        val testResult = chaincodeConnection.dropAdmission("AdmissionStudent_1:C.2")
+        testResult should be("")
+
+        // check ledger state
+        val ledgerAdmissions = chaincodeConnection.getAdmissions()
+        val expectedResult = TestHelper.getJsonList(Seq())
+        TestHelper.compareJson(expectedResult, ledgerAdmissions)
       }
     }
   }
