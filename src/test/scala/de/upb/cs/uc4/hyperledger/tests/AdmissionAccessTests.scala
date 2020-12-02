@@ -2,6 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
+import de.upb.cs.uc4.hyperledger.tests.testUtil.TestHelper.compareAdmissions
 import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataAdmission, TestDataExaminationRegulation, TestDataMatriculation, TestHelper }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
@@ -45,8 +46,14 @@ class AdmissionAccessTests extends TestBase {
         val course = "C.2"
         val module = "AdmissionModule_1"
         val timestamp = "2020-12-31T23:59:59"
-        val admission = TestDataAdmission.validAdmissionNoAdmissionId(student, course, module, timestamp)
-        TestHelper.testAddAdmissionAccess(chaincodeConnection, admission)
+        val insertAdmission = TestDataAdmission.validAdmissionNoAdmissionId(student, course, module, timestamp)
+        val testAdmission = TestDataAdmission.validAdmission(student, course, module, timestamp)
+
+        // add Admission
+        val testResult = chaincodeConnection.addAdmission(insertAdmission)
+
+        // compare test data
+        TestHelper.compareAdmissions(testAdmission, testResult)
       }
       "allow for adding new Admission for closed ER" in {
         val student = "AdmissionStudent_2"
