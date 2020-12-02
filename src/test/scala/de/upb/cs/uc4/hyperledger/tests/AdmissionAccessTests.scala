@@ -42,22 +42,22 @@ class AdmissionAccessTests extends TestBase {
       "allow for adding new Admission with admissionId" in {
         TestHelper.testAddAdmissionAccess(chaincodeConnection, admission1)
       }
-      "allow for adding new Admission for closed ER" in {
-        TestHelper.testAddAdmissionAccess(chaincodeConnection, admission2)
-      }
       "allow for adding new Admission without admissionId" in {
         val testResult = chaincodeConnection.addAdmission(admission_noAdmissionId)
         TestHelper.compareAdmissions(admission_noAdmissionId_WithId, testResult)
+      }
+      "allow for adding new Admission for closed ER" in {
+        TestHelper.testAddAdmissionAccess(chaincodeConnection, admission2)
       }
     }
 
     "invoked with getAdmissions correctly " should {
       val testData: Seq[(String, String, String, String, Seq[String])] = Seq(
-        ("allow for getting all admissions []", "", "", "", Seq(admission1, admission2, admission_noAdmissionId_WithId)),
+        ("allow for getting all admissions []", "", "", "", Seq(admission1, admission_noAdmissionId_WithId, admission2)),
         ("allow for getting all admissions for user [AdmissionStudent_1]", "AdmissionStudent_1", "", "", Seq(admission1, admission_noAdmissionId_WithId)),
         ("allow for getting all admissions for user [AdmissionStudent_2]", "AdmissionStudent_2", "", "", Seq(admission2)),
         ("allow for getting all admissions for course [C.1]", "", "C.1", "", Seq(admission1)),
-        ("allow for getting all admissions for course [C.2]", "", "C.2", "", Seq(admission2, admission_noAdmissionId_WithId)),
+        ("allow for getting all admissions for course [C.2]", "", "C.2", "", Seq(admission_noAdmissionId_WithId, admission2)),
         ("allow for getting all admissions for module [AdmissionModule_1]", "", "", "AdmissionModule_1", Seq(admission1, admission_noAdmissionId_WithId)),
         ("allow for getting all admissions for module [AdmissionModule_2]", "", "", "AdmissionModule_2", Seq()),
         ("allow for getting all admissions for module [AdmissionModule_3]", "", "", "AdmissionModule_3", Seq(admission2)),
@@ -87,7 +87,7 @@ class AdmissionAccessTests extends TestBase {
 
         // check ledger state
         val ledgerAdmissions = chaincodeConnection.getAdmissions()
-        val expectedResult = TestHelper.getJsonList(Seq(admission2, admission_noAdmissionId_WithId))
+        val expectedResult = TestHelper.getJsonList(Seq(admission_noAdmissionId_WithId, admission2))
         TestHelper.compareJson(expectedResult, ledgerAdmissions)
       }
       "allow for dropping existing Admission 2 " in {
