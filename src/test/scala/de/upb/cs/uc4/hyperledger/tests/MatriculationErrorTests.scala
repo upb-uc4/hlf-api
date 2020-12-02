@@ -56,27 +56,27 @@ class MatriculationErrorTests extends TestBase {
     }
 
     "invoking addMatriculationData" should {
-        val testData: Seq[(String, String)] = Seq(
-          ("throw TransactionException for malformed json Input (missing Semester) ", TestDataMatriculation.invalidMatriculationJsonNoSemester("120")),
-          ("throw TransactionException for malformed json Input (missing Field of Study) ", TestDataMatriculation.invalidMatriculationJsonNoFieldOfStudy("121")),
-          ("throw TransactionException for malformed json Input (missing matriculationStatus) ", TestDataMatriculation.invalidMatriculationJsonNoMatriculationStatus("122")),
-          ("throw TransactionException for malformed json Input (missing enrollmentId) ", TestDataMatriculation.invalidMatriculationJsonNoEnrollmentId),
-          ("throw TransactionException for malformed json Input (invalid enrollmentId) ", TestDataMatriculation.invalidMatriculationJsonInvalidId),
-          ("throw TransactionException for malformed json Input (invalid data 1) ", TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData1("131")),
-          ("throw TransactionException for malformed json Input (invalid data 2) ", TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData2("132")),
-          ("throw TransactionException for malformed json Input (invalid data 3) ", TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData3("133")),
-          ("throw TransactionException for malformed json Input (invalid data 4) ", TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData4("134"))
-        )
-        for ((testDescription: String, matriculationData: String) <- testData) {
-          s"$testDescription" in {
-            Logger.info("Begin test: " + testDescription)
-            TestHelper.testTransactionException(
-              "addMatriculationData",
-              () => chaincodeConnection.addMatriculationData(matriculationData)
-            )
-          }
+      val testData: Seq[(String, String)] = Seq(
+        ("throw TransactionException for malformed json Input (missing Semester) ", TestDataMatriculation.invalidMatriculationJsonNoSemester("120")),
+        ("throw TransactionException for malformed json Input (missing Field of Study) ", TestDataMatriculation.invalidMatriculationJsonNoFieldOfStudy("121")),
+        ("throw TransactionException for malformed json Input (missing matriculationStatus) ", TestDataMatriculation.invalidMatriculationJsonNoMatriculationStatus("122")),
+        ("throw TransactionException for malformed json Input (missing enrollmentId) ", TestDataMatriculation.invalidMatriculationJsonNoEnrollmentId),
+        ("throw TransactionException for malformed json Input (invalid enrollmentId) ", TestDataMatriculation.invalidMatriculationJsonInvalidId),
+        ("throw TransactionException for malformed json Input (invalid data 1) ", TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData1("131")),
+        ("throw TransactionException for malformed json Input (invalid data 2) ", TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData2("132")),
+        ("throw TransactionException for malformed json Input (invalid data 3) ", TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData3("133")),
+        ("throw TransactionException for malformed json Input (invalid data 4) ", TestDataMatriculation.invalidMatriculationJsonInvalidMatriculationData4("134"))
+      )
+      for ((testDescription: String, matriculationData: String) <- testData) {
+        s"$testDescription" in {
+          Logger.info("Begin test: " + testDescription)
+          TestHelper.testTransactionException(
+            "addMatriculationData",
+            () => chaincodeConnection.addMatriculationData(matriculationData)
+          )
         }
       }
+    }
 
     "invoking addEntriesToMatriculationData" should {
       val testData: Seq[(String, String, String, String)] = Seq(

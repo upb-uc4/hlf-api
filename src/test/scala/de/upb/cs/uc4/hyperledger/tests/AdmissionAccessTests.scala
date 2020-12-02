@@ -65,26 +65,26 @@ class AdmissionAccessTests extends TestBase {
     }
   }
 
-
-  def setupExaminationRegulations(): Unit ={
+  def setupExaminationRegulations(): Unit = {
     val erConnection = initializeExaminationRegulation()
 
     // prepare data
     val modules1 = Seq(TestDataExaminationRegulation.getModule("AdmissionModule_1"), TestDataExaminationRegulation.getModule("AdmissionModule_2"))
     val modules2 = Seq(TestDataExaminationRegulation.getModule("AdmissionModule_3"), TestDataExaminationRegulation.getModule("AdmissionModule_4"))
     val openER = TestDataExaminationRegulation.validExaminationRegulation("AdmissionER_Open1", modules1, state = true)
-    val closedER =TestDataExaminationRegulation.validExaminationRegulation("AdmissionER_Closed1", modules2, state = false)
+    val closedER = TestDataExaminationRegulation.validExaminationRegulation("AdmissionER_Closed1", modules2, state = false)
 
     // store on chain
     try {
       erConnection.addExaminationRegulation(openER)
       erConnection.addExaminationRegulation(closedER)
-    } catch {
+    }
+    catch {
       case e: Throwable => throw Logger.err("Error during setupExaminationRegulations", e)
     }
   }
 
-  def setupMatriculations(): Unit ={
+  def setupMatriculations(): Unit = {
     val matConnection = initializeMatriculation()
 
     // prepare data
@@ -95,8 +95,9 @@ class AdmissionAccessTests extends TestBase {
     try {
       matConnection.addMatriculationData(mat1)
       matConnection.addMatriculationData(mat2)
-    } catch {
-      case e : Throwable => throw Logger.err("Error during setupMatriculations", e)
+    }
+    catch {
+      case e: Throwable => throw Logger.err("Error during setupMatriculations", e)
     }
   }
 }
