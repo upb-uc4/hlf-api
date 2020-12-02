@@ -17,7 +17,7 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
     internalGetUnsignedProposal("dropAdmission", admissionId)
   }
 
-  override def getProposalGetAdmission(enrollmentId: String, courseId: String, moduleId: String): Array[Byte] = {
+  override def getProposalGetAdmission(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): Array[Byte] = {
     // TODO: add error handling
     internalGetUnsignedProposal("getAdmissions", enrollmentId, courseId, moduleId)
   }
@@ -28,6 +28,6 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
   override def dropAdmission(admissionId: String): String =
     wrapSubmitTransaction(false, "dropAdmission", admissionId)
 
-  override def getAdmissions(enrollmentId: String, courseId: String, moduleId: String): String =
+  override def getAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String =
     wrapSubmitTransaction(false, "getAdmissions", enrollmentId, courseId, moduleId)
 }
