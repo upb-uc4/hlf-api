@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataAdmission, TestDataExaminationRegulation, TestDataMatriculation, TestHelper }
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class AdmissionAccessTests extends TestBase {
 
@@ -68,8 +69,12 @@ class AdmissionAccessTests extends TestBase {
     val closedER =TestDataExaminationRegulation.validExaminationRegulation("AdmissionER_Closed1", modules2, state = false)
 
     // store on chain
-    erConnection.addExaminationRegulation(openER)
-    erConnection.addExaminationRegulation(closedER)
+    try {
+      erConnection.addExaminationRegulation(openER)
+      erConnection.addExaminationRegulation(closedER)
+    } catch {
+      case e: Throwable => throw Logger.err("Error during setupExaminationRegulations", e)
+    }
   }
 
   def setupMatriculations(): Unit ={
@@ -80,7 +85,11 @@ class AdmissionAccessTests extends TestBase {
     val mat2 = TestDataMatriculation.validMatriculationDataCustom("AdmissionStudent_2", "AdmissionER_Closed1")
 
     // store on chain
-    matConnection.addMatriculationData(mat1)
-    matConnection.addMatriculationData(mat2)
+    try {
+      matConnection.addMatriculationData(mat1)
+      matConnection.addMatriculationData(mat2)
+    } catch {
+      case e : Throwable => throw Logger.err("Error during setupMatriculations", e)
+    }
   }
 }
