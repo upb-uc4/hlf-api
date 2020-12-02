@@ -2,9 +2,7 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionApprovalsTrait }
-import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
-import de.upb.cs.uc4.hyperledger.utilities.helper.TransactionHelper
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 
 protected[hyperledger] case class ConnectionAdmission(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionAdmissionTrait {
@@ -14,11 +12,10 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
     internalGetUnsignedProposal("addAdmission", admission)
   }
 
-  override def getProposalDropAdmission(admissionId: String): Array[Byte] =
-    {
-      // TODO: add error handling
-      internalGetUnsignedProposal("dropAdmission", admissionId)
-    }
+  override def getProposalDropAdmission(admissionId: String): Array[Byte] = {
+    // TODO: add error handling
+    internalGetUnsignedProposal("dropAdmission", admissionId)
+  }
 
   override def getProposalGetAdmission(enrollmentId: String, courseId: String, moduleId: String): Array[Byte] = {
     // TODO: add error handling
