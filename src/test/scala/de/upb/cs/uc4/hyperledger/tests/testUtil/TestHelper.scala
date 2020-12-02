@@ -1,15 +1,27 @@
 package de.upb.cs.uc4.hyperledger.tests.testUtil
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers._
 
 object TestHelper {
 
+  /// Admissions
+  def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, student: String, course: String, module: String, timestamp: String): Assertion =
+    testAddAdmissionAccess(connection, TestDataAdmission.validAdmission(student, course, module, timestamp))
+  def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, admission: String): Assertion = {
+    val testResult = connection.addAdmission(admission)
+
+    compareAdmissions(admission, testResult)
+  }
+  def compareAdmissions(testObject: String, testResult: String): Assertion = {
+    compareJson(testObject, testResult)
+  }
+
   /// EXAMINATION REGULATIONS
   def testAddExaminationRegulationAccess(connection: ConnectionExaminationRegulationTrait, name: String, modules: Seq[String], state: Boolean): Assertion = {
-    val testObject = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state);
+    val testObject = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state)
     val testResult = connection.addExaminationRegulation(testObject)
 
     compareExaminationRegulations(testObject, testResult)
