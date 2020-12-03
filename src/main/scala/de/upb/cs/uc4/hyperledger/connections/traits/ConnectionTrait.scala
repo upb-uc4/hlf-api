@@ -18,6 +18,8 @@ import org.hyperledger.fabric.protos.peer.ProposalPackage.{Proposal, SignedPropo
 import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.{ProposalBuilder, TransactionContext}
 
+import scala.::
+import scala.collection.immutable.Nil.:::
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
@@ -86,11 +88,14 @@ trait ConnectionTrait extends AutoCloseable {
     this.wrapTransactionResult(transactionName, result)
   }
 
-  // TODO revert to protected and adjust all connections
+  // TODO revert to protected
+  // TODO read affiliation from certificate
   final def internalGetUnsignedProposal(certificate: String, affiliation: String, params: String*): Array[Byte] = {
-    //approveTransaction(params.head, params.tail: _*) FIXME
+    approveTransaction(params.head, params.tail: _*)
     val fcnName: String = "UC4.Approval:approveTransaction"
-    val proposal = TransactionHelper.getUnsignedProposalNew(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, params: _*)
+    val args: Seq[String] = params.prepended(contractName)
+    print(args.toString())
+    val proposal = TransactionHelper.getUnsignedProposalNew(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args:_*)
     proposal.toByteArray
   }
 
@@ -106,12 +111,12 @@ trait ConnectionTrait extends AutoCloseable {
     // val result = certificateConnection.internalSubmitApprovalProposal(transaction, ctx, signedProposal)
     val channelObj: Channel = this.gateway.getNetwork(channel).getChannel
     val peers: util.Collection[Peer] = ReflectionHelper.safeCallPrivateMethod(channelObj)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
-    val transactionProposal1 = Proposal.parseFrom(proposalBytes)
-    val transactionName1 = TransactionHelper.getTransactionNameFromProposal(transactionProposal1)
-    val transactionParams1 = TransactionHelper.getTransactionParamsFromProposal(transactionProposal1)
-    val transactionId1 = TransactionHelper.getTransactionIdFromProposal(transactionProposal1)
-    val (_, reconstructedCtx1, _) = TransactionHelper.createTransactionInfo(this.approvalConnection.get.contract, transactionName1, transactionParams1.toArray, Some(transactionId1))
-    val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, reconstructedCtx1).asInstanceOf[util.Collection[ProposalResponse]]
+    val transactionProposal = Proposal.parseFrom(proposalBytes)
+    val transactionName = TransactionHelper.getTransactionNameFromProposal(transactionProposal)
+    val transactionParams = TransactionHelper.getTransactionParamsFromProposal(transactionProposal)
+    val transactionId = TransactionHelper.getTransactionIdFromProposal(transactionProposal)
+    val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.approvalConnection.get.contract, transactionName, transactionParams.toArray, Some(transactionId))
+    val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
     // commit transaction
     val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
     val (transactionPayload, _) = TransactionHelper.getTransaction(validResponses, channelObj)

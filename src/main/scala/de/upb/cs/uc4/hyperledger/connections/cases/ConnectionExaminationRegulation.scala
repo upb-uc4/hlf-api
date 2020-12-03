@@ -7,19 +7,19 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionExaminationRegulat
 case class ConnectionExaminationRegulation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionExaminationRegulationTrait {
 
-  def getProposalAddExaminationRegulation(examinationRegulation: String): Array[Byte] = {
+  def getProposalAddExaminationRegulation(certificate: String, examinationRegulation: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("addExaminationRegulation", examinationRegulation)
+    internalGetUnsignedProposal(certificate, "addExaminationRegulation", examinationRegulation)
   }
 
-  def getProposalGetExaminationRegulations(namesList: String): Array[Byte] = {
+  def getProposalGetExaminationRegulations(certificate: String, namesList: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("getExaminationRegulations", namesList)
+    internalGetUnsignedProposal(certificate, "getExaminationRegulations", namesList)
   }
 
-  def getProposalCloseExaminationRegulation(name: String): Array[Byte] = {
+  def getProposalCloseExaminationRegulation(certificate: String, name: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("closeExaminationRegulation", name)
+    internalGetUnsignedProposal(certificate, "closeExaminationRegulation", name)
   }
 
   def addExaminationRegulation(examinationRegulation: String): String =

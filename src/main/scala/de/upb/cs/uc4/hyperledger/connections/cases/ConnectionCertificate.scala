@@ -8,19 +8,19 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 case class ConnectionCertificate(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionCertificateTrait {
 
-  override def getProposalAddCertificate(enrollmentID: String, certificate: String): Array[Byte] = {
+  override def getProposalAddCertificate(certificate: String, enrollmentID: String, newCertificate: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("addCertificate", enrollmentID, certificate)
+    internalGetUnsignedProposal(certificate, "addCertificate", enrollmentID, newCertificate)
   }
 
-  override def getProposalUpdateCertificate(enrollmentID: String, certificate: String): Array[Byte] = {
+  override def getProposalUpdateCertificate(certificate: String, enrollmentID: String, newCertificate: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("updateCertificate", enrollmentID, certificate)
+    internalGetUnsignedProposal(certificate, "updateCertificate", enrollmentID, newCertificate)
   }
 
-  override def getProposalGetCertificate(enrollmentID: String): Array[Byte] = {
+  override def getProposalGetCertificate(certificate: String, enrollmentID: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("getCertificate", enrollmentID)
+    internalGetUnsignedProposal(certificate, "getCertificate", enrollmentID)
   }
 
   override def addCertificate(enrollmentID: String, certificate: String): String =

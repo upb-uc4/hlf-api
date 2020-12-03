@@ -8,24 +8,24 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
   extends ConnectionMatriculationTrait {
   final override val contractName: String = "UC4.MatriculationData"
 
-  def getProposalAddMatriculationData(jSonMatriculationData: String): Array[Byte] = {
+  def getProposalAddMatriculationData(certificate: String, jSonMatriculationData: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("addMatriculationData", jSonMatriculationData)
+    internalGetUnsignedProposal(certificate, "addMatriculationData", jSonMatriculationData)
   }
 
-  def getProposalAddEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String): Array[Byte] = {
+  def getProposalAddEntriesToMatriculationData(certificate: String, enrollmentId: String, subjectMatriculationList: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("addEntriesToMatriculationData", enrollmentId: String, subjectMatriculationList: String)
+    internalGetUnsignedProposal(certificate, "addEntriesToMatriculationData", enrollmentId: String, subjectMatriculationList: String)
   }
 
-  def getProposalUpdateMatriculationData(jSonMatriculationData: String): Array[Byte] = {
+  def getProposalUpdateMatriculationData(certificate: String, jSonMatriculationData: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("updateMatriculationData", jSonMatriculationData)
+    internalGetUnsignedProposal(certificate, "updateMatriculationData", jSonMatriculationData)
   }
 
-  def getProposalGetMatriculationData(enrollmentId: String): Array[Byte] = {
+  def getProposalGetMatriculationData(certificate: String, enrollmentId: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("getMatriculationData", enrollmentId)
+    internalGetUnsignedProposal(certificate, "getMatriculationData", enrollmentId)
   }
 
   override def addMatriculationData(jSonMatriculationData: String): String =

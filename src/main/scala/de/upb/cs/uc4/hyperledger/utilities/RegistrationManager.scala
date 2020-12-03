@@ -54,6 +54,7 @@ object RegistrationManager extends RegistrationManagerTrait {
     )
   }
 
+  // TODO set affiliation?
   private def prepareRegistrationRequest(userName: String, maxEnrollments: Integer = 1, newUserType: String = HFCAClient.HFCA_TYPE_CLIENT): RegistrationRequest = {
     val registrationRequest = new RegistrationRequest(userName)
     registrationRequest.setMaxEnrollments(maxEnrollments)
@@ -61,6 +62,7 @@ object RegistrationManager extends RegistrationManagerTrait {
     registrationRequest
   }
 
+  // TODO read affiliation from identity?
   private def getUserFromX509Identity(identity: X509Identity, affiliationName: String): User = {
     val name = getNameFromIdentity(identity)
     Logger.debug(s"Retrieved Name from identity: '$name'")

@@ -15,7 +15,7 @@ trait ConnectionExaminationRegulationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddExaminationRegulation(examinationRegulation: String): Array[Byte]
+  def getProposalAddExaminationRegulation(certificate: String, examinationRegulation: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     * Also submits approval for the query as current user (admin).
@@ -28,7 +28,7 @@ trait ConnectionExaminationRegulationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetExaminationRegulations(namesList: String): Array[Byte]
+  def getProposalGetExaminationRegulations(certificate: String, namesList: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     * Also submits approval for the query as current user (admin).
@@ -40,7 +40,7 @@ trait ConnectionExaminationRegulationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalCloseExaminationRegulation(name: String): Array[Byte]
+  def getProposalCloseExaminationRegulation(certificate: String, name: String): Array[Byte]
 
   /** Submits the "addExaminationRegulation" query.
     *

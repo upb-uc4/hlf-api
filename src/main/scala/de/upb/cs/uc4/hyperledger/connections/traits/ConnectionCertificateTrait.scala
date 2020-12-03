@@ -16,7 +16,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddCertificate(enrollmentID: String, certificate: String): Array[Byte]
+  def getProposalAddCertificate(certificate: String, enrollmentID: String, newCertificate: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     * Also submits the "updateCertificate" query as current user (admin).
@@ -29,7 +29,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalUpdateCertificate(enrollmentID: String, certificate: String): Array[Byte]
+  def getProposalUpdateCertificate(certificate: String, enrollmentID: String, newCertificate: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     * Also submits the "getCertificate" query as current user (admin).
@@ -41,7 +41,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetCertificate(enrollmentID: String): Array[Byte]
+  def getProposalGetCertificate(certificate: String, enrollmentID: String): Array[Byte]
 
   /** Submits the "addCertificate" query.
     *

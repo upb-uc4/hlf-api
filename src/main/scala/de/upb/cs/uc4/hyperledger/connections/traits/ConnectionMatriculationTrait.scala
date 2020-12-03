@@ -14,7 +14,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddMatriculationData(jSonMatriculationData: String): Array[Byte]
+  def getProposalAddMatriculationData(certificate: String, jSonMatriculationData: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     * Also submits the "addEntriesToMatriculationData" query as current user (admin).
@@ -27,7 +27,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddEntriesToMatriculationData(enrollmentId: String, subjectMatriculationList: String): Array[Byte]
+  def getProposalAddEntriesToMatriculationData(certificate: String, enrollmentId: String, subjectMatriculationList: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     * Also submits the "updateMatriculationData" query as current user (admin).
@@ -39,7 +39,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalUpdateMatriculationData(jSonMatriculationData: String): Array[Byte]
+  def getProposalUpdateMatriculationData(certificate: String, jSonMatriculationData: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     * Also submits the "getMatriculationData" query as current user (admin).
@@ -51,7 +51,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetMatriculationData(enrollmentId: String): Array[Byte]
+  def getProposalGetMatriculationData(certificate: String, enrollmentId: String): Array[Byte]
 
   /** Submits the "addMatriculationData" query.
     *
