@@ -69,7 +69,7 @@ class UnsignedTransactionTests extends TestBase {
 
     "passing a signed transaction" should {
       "submit the proposal transaction to the proposal contract, even if the signature was not created using the private key belonging to the connection" in {
-        val argEnrollmentId = "100"
+        val argEnrollmentId = "frontend-signing-tester"
         val argCertificate = "Whatever"
         val testAffiliation = "org1MSP"
 

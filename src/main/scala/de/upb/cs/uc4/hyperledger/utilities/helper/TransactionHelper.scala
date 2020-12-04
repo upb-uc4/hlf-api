@@ -31,6 +31,7 @@ import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 import org.hyperledger.fabric.sdk.transaction.{ProposalBuilder, TransactionBuilder, TransactionContext}
 
 import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks.{break, breakable}
 
 protected[hyperledger] object TransactionHelper {
 
@@ -172,7 +173,6 @@ protected[hyperledger] object TransactionHelper {
     val crypto: CryptoPrimitives = new CryptoPrimitives()
     val securityLevel: Integer = 256
     ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
-    // TODO use get- and set properties
     hfClient.setCryptoSuite(crypto)
     hfClient.setUserContext(user)
     val channelObj: Channel = hfClient.loadChannelFromConfig(channelName, networkConfig)
@@ -267,7 +267,7 @@ protected[hyperledger] object TransactionHelper {
       }
       val replyonly = (nOfEvents eq NOfEvents.nofNoEvents) || ReflectionHelper.safeCallPrivateMethod(channel)("getEventingPeers")().asInstanceOf[util.Collection[Peer]].isEmpty
       var sret: CompletableFuture[BlockEvent#TransactionEvent] = null
-      if (replyonly) { //If there are no eventsto complete the future, complete it
+      if (replyonly) { //If there are no events to complete the future, complete it
         // immediately but give no transaction event
         //logger.debug(format("Completing transaction id %s immediately no peer eventing services found in channel %s.", proposalTransactionID, name))
         sret = new CompletableFuture[BlockEvent#TransactionEvent]
@@ -279,32 +279,34 @@ protected[hyperledger] object TransactionHelper {
       var resp: BroadcastResponse = null
       var failed: Orderer = null
       //import scala.collection.JavaConversions._
-      shuffeledOrderers.forEach((orderer: Orderer) => {
-        //if (failed != null) logger.warn(format("Channel %s  %s failed. Now trying %s.", name, failed, orderer))
-        failed = orderer
-        try {
-          //if (null != diagnosticFileDumper) logger.trace(format("Sending to channel %s, orderer: %s, transaction: %s", name, orderer.getName, diagnosticFileDumper.createDiagnosticProtobufFile(transactionEnvelope.toByteArray)))
-          resp = ReflectionHelper.safeCallPrivateMethod(orderer)("sendTransaction")(transactionEnvelope).asInstanceOf[BroadcastResponse]
-          lException = null // no longer last exception .. maybe just failed.
+      breakable {
+        shuffeledOrderers.forEach((orderer: Orderer) => {
+          //if (failed != null) logger.warn(format("Channel %s  %s failed. Now trying %s.", name, failed, orderer))
+          failed = orderer
+          try {
+            //if (null != diagnosticFileDumper) logger.trace(format("Sending to channel %s, orderer: %s, transaction: %s", name, orderer.getName, diagnosticFileDumper.createDiagnosticProtobufFile(transactionEnvelope.toByteArray)))
+            resp = ReflectionHelper.safeCallPrivateMethod(orderer)("sendTransaction")(transactionEnvelope).asInstanceOf[BroadcastResponse]
+            lException = null // no longer last exception .. maybe just failed.
 
-          if (resp.getStatus eq Status.SUCCESS) {
-            success = true
-            //break //todo: break is not supported
+            if (resp.getStatus eq Status.SUCCESS) {
+              success = true
+              break
+            }
+            //else logger.warn(format("Channel %s %s failed. Status returned %s", name, orderer, getRespData(resp)))
+          } catch {
+            case e: Exception =>
+              var emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s)", channel.getName(), orderer.getName, orderer.getUrl)
+              if (resp != null) emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s).  %s", channel.getName, orderer.getName, orderer.getUrl, ReflectionHelper.safeCallPrivateMethod(channel)("getRespData")(resp).asInstanceOf[String])
+              //logger.error(emsg)
+              lException = new Exception(emsg, e)
           }
-          //else logger.warn(format("Channel %s %s failed. Status returned %s", name, orderer, getRespData(resp)))
-        } catch {
-          case e: Exception =>
-            var emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s)", channel.getName(), orderer.getName, orderer.getUrl)
-            if (resp != null) emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s).  %s", channel.getName, orderer.getName, orderer.getUrl, ReflectionHelper.safeCallPrivateMethod(channel)("getRespData")(resp).asInstanceOf[String])
-            //logger.error(emsg)
-            lException = new Exception(emsg, e)
         }
+        )
       }
-      )
       if (success) {
         //logger.debug(format("Channel %s successful sent to Orderer transaction id: %s", name, proposalTransactionID))
         if (replyonly) sret.complete(null) // just say we're done.
-        return sret
+        sret
       }
       else {
         val emsg = format("Channel %s failed to place transaction %s on Orderer. Cause: UNSUCCESSFUL. %s", channel.getName, proposalTransactionID, ReflectionHelper.safeCallPrivateMethod(channel)("getRespData")(resp).asInstanceOf[String])
@@ -312,13 +314,13 @@ protected[hyperledger] object TransactionHelper {
         val ret = new CompletableFuture[BlockEvent#TransactionEvent]
         ret.completeExceptionally(if (lException != null) new Exception(emsg, lException)
         else new Exception(emsg))
-        return ret
+        ret
       }
     } catch {
       case e: Exception =>
         val future = new CompletableFuture[BlockEvent#TransactionEvent]
         future.completeExceptionally(e)
-        return future
+        future
     }
   }
 
@@ -342,7 +344,6 @@ protected[hyperledger] object TransactionHelper {
     val commitHandler: CommitHandler = connection.gateway.getCommitHandlerFactory().create(ctx.getTxID(), connection.gateway.getNetwork(channel))
     commitHandler.startListening()
     try {
-      // TODO not sure if we can get it here like this
       val transactionOptions: Channel.TransactionOptions = Channel.TransactionOptions.createTransactionOptions()
         .nOfEvents(Channel.NOfEvents.createNoEvents())
 
@@ -358,7 +359,6 @@ protected[hyperledger] object TransactionHelper {
     commitHandler.waitForEvents(commitTimeout.getTime(), commitTimeout.getTimeUnit());
 
     try {
-      // TODO return transaction response payload
       val transactionPayload: Payload = Payload.parseFrom(transactionPayloadBytes)
       val chaincodeActionPayload = getChaincodeActionPayloadFromTransactionPayload(transactionPayload)
       val proposalResponsePayload = ProposalResponsePayload.parseFrom(chaincodeActionPayload.getAction.getProposalResponsePayload)
