@@ -101,16 +101,16 @@ class AdmissionTests extends TestBase {
     "invoked with addAdmission incorrectly " should {
       "not allow for adding duplicate Admission with admissionId" in {
         // initial Add
-        TestHelper.testAddAdmissionAccess(chaincodeConnection, TestDataAdmission.admission1)
+        chaincodeConnection.addAdmission(TestDataAdmission.admission1)
 
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission1))
         result.transactionName should be("addAdmission")
         // TODO compare errors
         // result.payload should be("")
       }
-      "allow for adding new Admission without admissionId" in {
+      "not allow for adding duplicate Admission without admissionId" in {
         // initial Add
-        TestHelper.testAddAdmissionAccess(chaincodeConnection, TestDataAdmission.admission_noAdmissionId)
+        chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId)
 
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId))
         result.transactionName should be("addAdmission")
