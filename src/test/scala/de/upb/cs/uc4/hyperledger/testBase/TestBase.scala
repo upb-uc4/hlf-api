@@ -1,12 +1,13 @@
 package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
-
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionApproval, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionMatriculation }
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionApprovalsTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.cases.{ConnectionApproval, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionMatriculation}
+import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionApprovalsTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait}
 import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, WalletManager }
+import de.upb.cs.uc4.hyperledger.utilities.{EnrollmentManager, RegistrationManager, WalletManager}
+import org.hyperledger.fabric.gateway.Wallet
+import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 
 class TestBase extends TestBaseTrait {
   private val testBase: TestBaseTrait = sys.env.getOrElse("UC4_TESTBASE_TARGET", "not relevant") match {
@@ -73,5 +74,16 @@ class TestBase extends TestBaseTrait {
     val examinationRegulationConnection = initializeExaminationRegulation()
     TestDataMatriculation.establishExaminationRegulations(initializeExaminationRegulation())
     examinationRegulationConnection.close()
+  }
+
+  def tryRegisterAndEnrollTestUser(enrollmentId: String, affiliation: String): X509IdentityImpl = {
+    try {
+      val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentId, username, walletPath, affiliation)
+      EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
+    } catch {
+      case _: Throwable =>
+    }
+    val wallet: Wallet = WalletManager.getWallet(this.walletPath)
+    wallet.get(enrollmentId).asInstanceOf[X509IdentityImpl]
   }
 }

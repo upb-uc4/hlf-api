@@ -1,42 +1,21 @@
 package de.upb.cs.uc4.hyperledger.tests
 
-import java.io.File
-import java.lang.String.format
 import java.nio.charset.StandardCharsets
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
-import java.security.interfaces.ECPrivateKey
-import java.util
-import java.util.{ArrayList, Base64, Collection, Collections, HashSet, LinkedList, List}
-import java.util.concurrent.{CompletableFuture, TimeUnit, TimeoutException}
+import java.util.Base64
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionCertificateTrait, ConnectionMatriculationTrait}
-import de.upb.cs.uc4.hyperledger.exceptions.TransactionException
-import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
+import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
-import de.upb.cs.uc4.hyperledger.utilities.{EnrollmentManager, RegistrationManager, WalletManager}
-import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, ReflectionHelper, TransactionHelper}
-import org.hyperledger.fabric.gateway.impl.{ContractImpl, GatewayImpl, TimePeriod, TransactionImpl}
-import org.hyperledger.fabric.gateway.impl.identity.{GatewayUser, X509IdentityImpl}
-import org.hyperledger.fabric.gateway.spi.CommitHandler
-import org.hyperledger.fabric.gateway.{ContractException, GatewayRuntimeException, Identities, Identity, Wallet, X509Identity}
-import org.hyperledger.fabric.protos.common.Common.{Envelope, Payload, Status}
-import org.hyperledger.fabric.protos.orderer.Ab.BroadcastResponse
-import org.hyperledger.fabric.protos.peer.{Chaincode, ProposalResponsePackage}
-import org.hyperledger.fabric.protos.peer.ProposalPackage.{Proposal, SignedProposal}
-import org.hyperledger.fabric.protos.peer.TransactionPackage.Transaction
-import org.hyperledger.fabric.sdk.Channel.NOfEvents
-import org.hyperledger.fabric.sdk.User.userContextCheck
-import org.hyperledger.fabric.sdk.exception.InvalidArgumentException
-import org.hyperledger.fabric.sdk.helper.Config
-import org.hyperledger.fabric.sdk.identity.X509Enrollment
-import org.hyperledger.fabric.sdk.{BlockEvent, ChaincodeID, Channel, HFClient, NetworkConfig, Orderer, Peer, ProposalResponse, SDKUtils, TransactionProposalRequest, User}
-import org.hyperledger.fabric.sdk.security.{CryptoPrimitives, CryptoSuiteFactory}
-import org.hyperledger.fabric.sdk.transaction.{ProposalBuilder, TransactionBuilder, TransactionContext}
+import de.upb.cs.uc4.hyperledger.tests.testUtil.{TestDataMatriculation, TestHelper}
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
+import org.hyperledger.fabric.gateway.Identities
+import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
+import org.hyperledger.fabric.sdk.security.CryptoPrimitives
+import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
-import scala.io.Source
-import scala.jdk.CollectionConverters.ListHasAsScala
 
 class UnsignedTransactionTests extends TestBase {
 
@@ -59,7 +38,8 @@ class UnsignedTransactionTests extends TestBase {
     "querying for an unsigned transaction" should {
       "return an unsigned transaction" in {
         val enrollmentId = "100"
-        val certificate = "Whatever"
+        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
+        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
         val proposalBytes = certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
@@ -70,32 +50,21 @@ class UnsignedTransactionTests extends TestBase {
     "passing a signed transaction" should {
       "submit the proposal transaction to the proposal contract, even if the signature was not created using the private key belonging to the connection" in {
         val argEnrollmentId = "frontend-signing-tester"
-        val argCertificate = "Whatever"
-        val testAffiliation = "org1MSP"
-
-        val wallet: Wallet = WalletManager.getWallet(this.walletPath)
+        val testAffiliation = organisationId
 
         super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
-        // try register and enroll test user 102
-        try {
-          val testUserPw = RegistrationManager.register(caURL, tlsCert, argEnrollmentId, username, walletPath, testAffiliation)
-          EnrollmentManager.enroll(caURL, tlsCert, walletPath, argEnrollmentId, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
-        } catch {
-          case _: Throwable =>
-        }
 
         // initialize crypto primitives
-        val crypto: CryptoPrimitives = new CryptoPrimitives()
-        val securityLevel: Integer = 256
-        ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
+        val crypto: CryptoPrimitives = TestHelper.getCryptoPrimitives()
 
         // get testUser certificate and private key
-        val testUserIdentity: X509IdentityImpl = wallet.get(argEnrollmentId).asInstanceOf[X509IdentityImpl]
+        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(argEnrollmentId, testAffiliation)
 
         val privateKey: PrivateKey = testUserIdentity.getPrivateKey()
         val certificate: X509Certificate = testUserIdentity.getCertificate()
 
-
+        val argCertificate = TestHelper.toPemString(certificate)
+        println("\n\n\n##########################\nCertificate:\n##########################\n\n" + argCertificate)
 
         // get proposal
         val proposalBytes = certificateConnection.getProposalAddCertificate(Identities.toPemString(certificate), testAffiliation, argEnrollmentId, argCertificate)
@@ -121,31 +90,38 @@ class UnsignedTransactionTests extends TestBase {
       }
       "submit the proposal transaction to the proposal contract" in {
         val enrollmentId = "102"
-        val certificate = "Whatever"
+        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
+        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
+        val privateKey: PrivateKey = testUserIdentity.getPrivateKey()
+        val crypto: CryptoPrimitives = TestHelper.getCryptoPrimitives()
         val proposalBytes = certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         println("\n\n\n##########################\nPROPOSALBYTES:\n##########################\n\n" + proposal.toByteString.toStringUtf8)
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
         val transactionContext: TransactionContext = certificateConnection.contract.getNetwork.getChannel.newTransactionContext()
-        val signature = transactionContext.signByteString(proposalBytes)
-        val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signature.toByteArray)).toStringUtf8
+        val signature = crypto.sign(privateKey, proposalBytes)
+        val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signature)).toStringUtf8
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
-        val result = certificateConnection.getUnsignedTransaction(proposalBytes, signature.toByteArray)
+        val result = certificateConnection.getUnsignedTransaction(proposalBytes, signature)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
       }
       "submit the real transaction to the real contract" in {
         // store info
         val enrollmentId = "103"
-        val certificate = "Whatever"
+        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
+        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
+        println("\n\n\n##########################\nCertificate:\n##########################\n\n" + certificate)
+        val privateKey: PrivateKey = testUserIdentity.getPrivateKey()
+        val crypto: CryptoPrimitives = TestHelper.getCryptoPrimitives()
         println("\n\n\n##########################\nGET PROPOSAL:\n##########################\n\n")
         val proposalBytes = certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate)
-        val transactionContext: TransactionContext = certificateConnection.contract.getNetwork.getChannel.newTransactionContext()
-        val signature = transactionContext.signByteString(proposalBytes)
+        val signature = crypto.sign(privateKey, proposalBytes)
         println("\n\n\n##########################\nSUBMIT PROPOSAL:\n##########################\n\n")
-        val result = certificateConnection.getUnsignedTransaction(proposalBytes, signature.toByteArray)
+        val transactionBytes = certificateConnection.getUnsignedTransaction(proposalBytes, signature)
+        val transactionSignature = crypto.sign(privateKey, transactionBytes)
+        val result = certificateConnection.submitSignedTransaction(transactionBytes, transactionSignature)
         println("\n\n\n##########################\nResult103:\n##########################\n\n" + result)
-
         // test info stored
         val storedCert = certificateConnection.getCertificate(enrollmentId)
         storedCert should be(certificate)

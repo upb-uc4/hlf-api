@@ -117,7 +117,7 @@ trait ConnectionTrait extends AutoCloseable {
     val transactionId = TransactionHelper.getTransactionIdFromProposal(transactionProposal)
     val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.approvalConnection.get.contract, transactionName, transactionParams.toArray, Some(transactionId))
     val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
-    // commit transaction
+
     val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
     val (transactionPayload, _) = TransactionHelper.getTransaction(validResponses, channelObj)
     transactionPayload.toByteArray
