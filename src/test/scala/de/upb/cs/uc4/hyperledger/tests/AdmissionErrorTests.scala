@@ -35,6 +35,9 @@ class AdmissionErrorTests extends TestBase {
   "The ScalaAPI for Admissions" when {
     "invoked with addAdmission incorrectly " should {
       "not allow for adding duplicate Admission with admissionId" in {
+        // initial Add
+        TestHelper.testAddAdmissionAccess(chaincodeConnection, TestDataAdmission.admission1)
+
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission1))
         result.transactionName should be("addAdmission")
         // TODO compare errors
@@ -59,14 +62,18 @@ class AdmissionErrorTests extends TestBase {
     // IMPORTANT: THESE TESTS HAVE TO BE EXECUTED SEQUENTIALLY IN THIS EXACT ORDER.
     "invoked with dropAdmission incorrectly " should {
       "not allow for dropping existing Admission a second time " in {
+        // prepare empty ledger
+        chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1")
+
+        // test exception
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1"))
         result.transactionName should be("dropAdmission")
         // TODO compare errors
         // result.payload should be("")
 
-        // TODO check ledger state
+        // check ledger state
         val ledgerAdmissions = chaincodeConnection.getAdmissions()
-        val expectedResult = TestHelper.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId, TestDataAdmission.admission2))
+        val expectedResult = TestHelper.getJsonList(Seq())
         TestHelper.compareJson(expectedResult, ledgerAdmissions)
       }
     }

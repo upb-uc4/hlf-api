@@ -76,32 +76,22 @@ class AdmissionAccessTests extends TestBase {
     // IMPORTANT: THESE TESTS HAVE TO BE EXECUTED AFTER THE addAdmission-TESTS.
     // IMPORTANT: THESE TESTS HAVE TO BE EXECUTED SEQUENTIALLY IN THIS EXACT ORDER.
     "invoked with dropAdmission correctly " should {
-      "allow for dropping existing Admission 1 " in {
-        val testResult = chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1")
-        testResult should be("")
+      val testData: Seq[(String, String, Seq[String])] = Seq(
+        ("allow for dropping existing Admission 1", "AdmissionStudent_1:C.1", Seq(TestDataAdmission.admission_noAdmissionId_WithId, TestDataAdmission.admission2)),
+        ("allow for dropping existing Admission 2", "AdmissionStudent_2:C.2", Seq(TestDataAdmission.admission_noAdmissionId_WithId)),
+        ("allow for dropping existing Admission 3", "AdmissionStudent_1:C.2", Seq())
+      )
+      for ((statement: String, admissionId: String, remainingAdmissions: Seq[String]) <- testData) {
+        s"$statement" in {
+          Logger.info("Begin test: " + statement)
+          val testResult = chaincodeConnection.dropAdmission(admissionId)
+          testResult should be("")
 
-        // check ledger state
-        val ledgerAdmissions = chaincodeConnection.getAdmissions()
-        val expectedResult = TestHelper.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId, TestDataAdmission.admission2))
-        TestHelper.compareJson(expectedResult, ledgerAdmissions)
-      }
-      "allow for dropping existing Admission 2 " in {
-        val testResult = chaincodeConnection.dropAdmission("AdmissionStudent_2:C.2")
-        testResult should be("")
-
-        // check ledger state
-        val ledgerAdmissions = chaincodeConnection.getAdmissions()
-        val expectedResult = TestHelper.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId))
-        TestHelper.compareJson(expectedResult, ledgerAdmissions)
-      }
-      "allow for dropping existing Admission 3 " in {
-        val testResult = chaincodeConnection.dropAdmission("AdmissionStudent_1:C.2")
-        testResult should be("")
-
-        // check ledger state
-        val ledgerAdmissions = chaincodeConnection.getAdmissions()
-        val expectedResult = TestHelper.getJsonList(Seq())
-        TestHelper.compareJson(expectedResult, ledgerAdmissions)
+          // check ledger state
+          val ledgerAdmissions = chaincodeConnection.getAdmissions()
+          val expectedResult = TestHelper.getJsonList(remainingAdmissions)
+          TestHelper.compareJson(expectedResult, ledgerAdmissions)
+        }
       }
     }
   }
