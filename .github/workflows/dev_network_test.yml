@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       chaincode_target:
-        description: 'Chaincode Target Branch'
+        description: 'Chaincode Target Version (empty = latest Release)'
         required: true
-        default: 'v0.13.0'
+        default: ''
       test_set:
         description: 'Define which tests to run'
         required: true
