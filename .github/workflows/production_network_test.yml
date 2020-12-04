@@ -10,11 +10,11 @@ on:
       chaincode_target:
         description: 'Chaincode Target Branch'
         required: true
-        default: 'v0.13.1'
+        default: 'v0.13.2'
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: '*ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *CertificateAccessTests *CertificateErrorTests *MatriculationErrorTests *MatriculationAccessTests *VersionAccessTests *UserManagementTests *InternalManagerTests *UnsignedTransactionTests *ApprovalTests'
+        default: '*AdmissionAccessTests *CertificateAccessTests *CertificateErrorTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *MatriculationErrorTests *MatriculationAccessTests *VersionAccessTests *UserManagementTests *InternalManagerTests *UnsignedTransactionTests *ApprovalTests'
   # on push event
   push:
     # except for these files
@@ -47,8 +47,8 @@ jobs:
 
   DeployAndTestProductionNetwork:
     env:
-      TEST_SET: "*ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *CertificateAccessTests *CertificateErrorTests *MatriculationErrorTests *MatriculationAccessTests *VersionAccessTests *UserManagementTests *InternalManagerTests *UnsignedTransactionTests *ApprovalTests"
-      CHAINCODE_TARGET: "v0.13.1"
+      TEST_SET: "*AdmissionAccessTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *CertificateAccessTests *CertificateErrorTests *MatriculationErrorTests *MatriculationAccessTests *VersionAccessTests *UserManagementTests *InternalManagerTests *UnsignedTransactionTests *ApprovalTests"
+      CHAINCODE_TARGET: "v0.13.2"
 
     runs-on: ubuntu-latest
 
