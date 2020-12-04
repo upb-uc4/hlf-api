@@ -69,7 +69,7 @@ object TestHelper {
     result.transactionName should be(transactionName)
   }
 
-  def trySetupConnections(actionName: String, f: ()=>Any): Unit = {
+  def trySetupConnections(actionName: String, f: () => Any): Unit = {
     try {
       f.apply()
     }
