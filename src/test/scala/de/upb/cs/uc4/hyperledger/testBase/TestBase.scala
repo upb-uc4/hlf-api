@@ -10,7 +10,7 @@ import org.hyperledger.fabric.gateway.Wallet
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 
 class TestBase extends TestBaseTrait {
-  private val testBase: TestBaseTrait = sys.env.getOrElse("UC4_TESTBASE_TARGET", "not relevant") match {
+  private val testBase: TestBaseTrait = sys.env.getOrElse("UC4_TESTBASE_TARGET", "not relevant").trim() match {
     case "PRODUCTION_NETWORK" => new TestBaseProductionNetwork
     case _                    => new TestBaseDevNetwork
   }
