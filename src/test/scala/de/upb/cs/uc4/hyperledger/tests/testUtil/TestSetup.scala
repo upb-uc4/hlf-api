@@ -61,7 +61,7 @@ object TestSetup {
   }
 
   private def establishExaminationRegulation(connection: ConnectionExaminationRegulationTrait, name: String): Unit = {
-    val existingValue = connection.getExaminationRegulations(TestHelper.getJsonList(Array("\"" + name + "\"")))
+    val existingValue = connection.getExaminationRegulations(TestHelper.getJsonList(Seq("\"" + name + "\"")))
     if (existingValue == "[]") {
       val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, Array(testModule("MatriculationTestModule.1"), testModule("MatriculationTestModule.2")), state = true)
       connection.addExaminationRegulation(examinationRegulation)

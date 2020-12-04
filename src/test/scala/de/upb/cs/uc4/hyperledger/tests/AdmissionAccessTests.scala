@@ -9,19 +9,11 @@ class AdmissionAccessTests extends TestBase {
 
   var chaincodeConnection: ConnectionAdmissionTrait = _
 
-  def setupExaminationRegulations(): Unit = {
-    TestSetup.setupExaminationRegulations(initializeExaminationRegulation())
-  }
-
-  def setupMatriculations(): Unit = {
-    TestSetup.setupMatriculations(initializeMatriculation())
-  }
-
   override def beforeAll(): Unit = {
     super.beforeAll()
     // TODO: RESET LEDGER
-    setupExaminationRegulations()
-    setupMatriculations()
+    TestSetup.setupExaminationRegulations(initializeExaminationRegulation())
+    TestSetup.setupMatriculations(initializeMatriculation())
   }
 
   override def beforeEach(): Unit = {

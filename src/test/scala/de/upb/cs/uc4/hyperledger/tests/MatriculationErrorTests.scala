@@ -10,18 +10,10 @@ class MatriculationErrorTests extends TestBase {
   var chaincodeConnection: ConnectionMatriculationTrait = _
   val existingMatriculationId = "501"
 
-  def establishExaminationRegulations(): Unit = {
-    TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
-  }
-
-  def establishExistingMatriculation(): Unit = {
-    TestSetup.establishExistingMatriculation(initializeMatriculation(), existingMatriculationId)
-  }
-
   override def beforeAll(): Unit = {
     super.beforeAll()
-    this.establishExaminationRegulations()
-    this.establishExistingMatriculation()
+    TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
+    TestSetup.establishExistingMatriculation(initializeMatriculation(), existingMatriculationId)
   }
 
   override def beforeEach(): Unit = {
