@@ -44,6 +44,9 @@ class AdmissionErrorTests extends TestBase {
         // result.payload should be("")
       }
       "allow for adding new Admission without admissionId" in {
+        // initial Add
+        TestHelper.testAddAdmissionAccess(chaincodeConnection, TestDataAdmission.admission_noAdmissionId)
+
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId))
         result.transactionName should be("addAdmission")
         // TODO compare errors
@@ -73,7 +76,7 @@ class AdmissionErrorTests extends TestBase {
 
         // check ledger state
         val ledgerAdmissions = chaincodeConnection.getAdmissions()
-        val expectedResult = TestHelper.getJsonList(Seq())
+        val expectedResult = TestHelper.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId))
         TestHelper.compareJson(expectedResult, ledgerAdmissions)
       }
     }
