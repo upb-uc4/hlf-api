@@ -8,13 +8,13 @@ on:
   workflow_dispatch:
     inputs:
       chaincode_target:
-        description: 'Chaincode Target Branch'
+        description: 'Chaincode Target Version (empty = latest Release)'
         required: true
-        default: 'v0.13.0'
+        default: ''
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: "*ExaminationRegulationAccessTests *VersionAccessTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests *ApprovalTests"
+        default: "*CertificateAccessTests *CertificateErrorTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *MatriculationErrorTests *MatriculationAccessTests *VersionAccessTests *InternalManagerTests *UnsignedTransactionTests *ApprovalTests"
   # on push event
   push:
     # except for these files
@@ -47,7 +47,7 @@ jobs:
 
   DeployAndTestDevNetwork:
     env:
-      TEST_SET: "*ExaminationRegulationAccessTests *VersionAccessTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *UnsignedTransactionTests *ApprovalTests"
+      TEST_SET: "*CertificateAccessTests *CertificateErrorTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *MatriculationErrorTests *MatriculationAccessTests *VersionAccessTests *InternalManagerTests *UnsignedTransactionTests *ApprovalTests"
       CHAINCODE_TARGET: ""
 
     runs-on: ubuntu-latest

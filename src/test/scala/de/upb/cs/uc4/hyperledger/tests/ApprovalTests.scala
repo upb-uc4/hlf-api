@@ -37,7 +37,7 @@ class ApprovalTests extends TestBase {
           chaincodeConnection.approveTransaction("UC4.Certificate", "", "000001", "totally valid cert")
         }
         exceptionResult.transactionName should be("approveTransaction")
-        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"Transaction name must not be empty\"}]}"
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
         exceptionResult.payload should be(expectedPayload)
       }
     }
@@ -48,7 +48,7 @@ class ApprovalTests extends TestBase {
           Logger.debug("APPROVAL RESULT :: " + result)
         }
         exceptionResult.transactionName should be("approveTransaction")
-        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"contractName\",\"reason\":\"Contract name must not be empty\"}]}"
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"contractName\",\"reason\":\"The given parameter must not be empty\"}]}"
         exceptionResult.payload should be(expectedPayload)
       }
     }

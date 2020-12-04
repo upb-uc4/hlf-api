@@ -1,8 +1,8 @@
-# <a id="v0.11.6" />[v0.11.6 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.5...develop) (TBD)
+# <a id="v0.13.1" />[v0.13.1 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.13.0...develop) (TBD)
 
 ## Feature
 
-- 
+- Support FrontEnd Signing for Users
 
 ## Bug Fixes
 
@@ -11,6 +11,20 @@
 ## Refactor
 
 - 
+
+## Usability
+
+
+# <a id="v0.13.0" />[v0.13.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.5...v0.13.0) (2020-12-04)
+
+## Feature
+
+- Support the UC4 Admission Connection
+
+## Refactor
+
+- CleanUp some tests
+- Add ExaminationRegulation test to check empty filter
 
 ## Usability
 
