@@ -1,5 +1,7 @@
 package de.upb.cs.uc4.hyperledger.connections.traits
 
+import com.google.gson.Gson
+
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import java.util
@@ -88,13 +90,11 @@ trait ConnectionTrait extends AutoCloseable {
     this.wrapTransactionResult(transactionName, result)
   }
 
-  // TODO revert to protected
   // TODO read affiliation from certificate
-  final def internalGetUnsignedProposal(certificate: String, affiliation: String, params: String*): Array[Byte] = {
+  protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, params: String*): Array[Byte] = {
     approveTransaction(params.head, params.tail: _*)
     val fcnName: String = "UC4.Approval:approveTransaction"
-    val args: Seq[String] = params.prepended(contractName)
-    print(args.toString())
+    val args: Seq[String] = Seq(contractName).appended(params.head).appended(new Gson().toJson(params.tail.toArray))
     val proposal = TransactionHelper.getUnsignedProposalNew(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args:_*)
     proposal.toByteArray
   }

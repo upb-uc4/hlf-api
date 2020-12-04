@@ -98,7 +98,7 @@ class UnsignedTransactionTests extends TestBase {
 
 
         // get proposal
-        val proposalBytes = certificateConnection.internalGetUnsignedProposal(Identities.toPemString(certificate), testAffiliation, "addCertificate", "[\"" + argEnrollmentId + "\", \"" + argCertificate + "\"]")
+        val proposalBytes = certificateConnection.getProposalAddCertificate(Identities.toPemString(certificate), testAffiliation, argEnrollmentId, argCertificate)
 
         println("\n\n\n##########################\nProposal Bytes:\n##########################\n\n" + Base64.getEncoder.encodeToString(proposalBytes))
 
