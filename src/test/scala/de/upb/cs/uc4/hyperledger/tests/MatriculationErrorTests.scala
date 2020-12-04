@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataExaminationRegulation, TestDataMatriculation, TestHelper }
+import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class MatriculationErrorTests extends TestBase {
@@ -10,20 +10,17 @@ class MatriculationErrorTests extends TestBase {
   var chaincodeConnection: ConnectionMatriculationTrait = _
   val existingMatriculationId = "501"
 
-  private def establishExistingMatriculation(): Unit = {
-    try {
-      chaincodeConnection = initializeMatriculation()
-      chaincodeConnection.addMatriculationData(TestDataMatriculation.validMatriculationData1(existingMatriculationId))
-      chaincodeConnection.close()
-    }
-    catch {
-      case e: Exception => Logger.err("[EstablishExistingMatriculation] :: ", e)
-    }
+  def establishExaminationRegulations(): Unit = {
+    TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
+  }
+
+  def establishExistingMatriculation(): Unit = {
+    TestSetup.establishExistingMatriculation(initializeMatriculation(), existingMatriculationId)
   }
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    super.establishExaminationRegulations()
+    this.establishExaminationRegulations()
     this.establishExistingMatriculation()
   }
 

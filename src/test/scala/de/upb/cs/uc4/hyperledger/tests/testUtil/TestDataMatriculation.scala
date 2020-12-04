@@ -27,25 +27,5 @@ object TestDataMatriculation {
   }
   def validMatriculationEntry: String = "[{\"fieldOfStudy\":\"Computer Science\",\"semesters\":[\"SS2022\"]}]"
 
-  def establishExaminationRegulations(connection: ConnectionExaminationRegulationTrait): Unit = {
-    try {
-      val names = Seq("Computer Science", "Mathematics", "Media Sciences")
-      for (name: String <- names) {
-        establishExaminationRegulation(connection, name)
-      }
-    }
-    catch {
-      case e: Throwable => Logger.err("Error during estblishing Regulations: ", e)
-    }
-  }
-
-  def establishExaminationRegulation(connection: ConnectionExaminationRegulationTrait, name: String): Unit = {
-    val existingValue = connection.getExaminationRegulations(TestHelper.getJsonList(Array("\"" + name + "\"")))
-    if (existingValue == "[]") {
-      val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, Array(testModule("MatriculationTestModule.1"), testModule("MatriculationTestModule.2")), state = true)
-      connection.addExaminationRegulation(examinationRegulation)
-    }
-  }
-
   def testModule(id: String): String = TestDataExaminationRegulation.getModule(id, id)
 }

@@ -1,7 +1,8 @@
 package de.upb.cs.uc4.hyperledger.tests.testUtil
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers._
 
@@ -66,5 +67,14 @@ object TestHelper {
   def testTransactionException(transactionName: String, f: () => Any): Assertion = {
     val result = intercept[TransactionExceptionTrait](f.apply())
     result.transactionName should be(transactionName)
+  }
+
+  def trySetupConnections(actionName: String, f: ()=>Any): Unit = {
+    try {
+      f.apply()
+    }
+    catch {
+      case e: Throwable => Logger.err(s"Error during $actionName: ", e)
+    }
   }
 }
