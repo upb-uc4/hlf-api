@@ -146,20 +146,29 @@ class UnsignedTransactionTests extends TestBase {
 
     "testing info" should {
       "not fail 1" in {
+        val enrollmentId = "105"
+        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
+        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
         val inputMatJSon = TestDataMatriculation.validMatriculationData3("500")
-        val proposalBytes = matriculationConnection.getProposalAddMatriculationData("", organisationId, inputMatJSon)
+        val proposalBytes = matriculationConnection.getProposalAddMatriculationData(certificate, organisationId, inputMatJSon)
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddMatriculationDataProposal:: $info")
       }
       "not fail 2" in {
+        val enrollmentId = "106"
+        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
+        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4("500")
-        val proposalBytes = matriculationConnection.getProposalUpdateMatriculationData("", organisationId, inputMatJSon)
+        val proposalBytes = matriculationConnection.getProposalUpdateMatriculationData(certificate, organisationId, inputMatJSon)
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"UpdateMatriculationDataProposal:: $info")
       }
       "not fail 3" in {
+        val enrollmentId = "107"
+        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
+        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
         val proposalBytes = matriculationConnection.getProposalAddEntriesToMatriculationData(
-          "",
+          certificate,
           organisationId,
           "500",
           TestDataMatriculation.validMatriculationEntry
