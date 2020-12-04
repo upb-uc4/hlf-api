@@ -40,7 +40,7 @@ trait ConnectionTrait extends AutoCloseable {
     *
     * @return String containing versionInfo
     */
-  final def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
+  def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
 
   private def approveTransaction(transactionName: String, params: String*) = {
     // setup approvalConnection and
