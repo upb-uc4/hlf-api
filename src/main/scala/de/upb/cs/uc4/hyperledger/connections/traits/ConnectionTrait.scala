@@ -1,11 +1,12 @@
 package de.upb.cs.uc4.hyperledger.connections.traits
 
-import com.google.gson.Gson
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import java.util
 import java.util.concurrent.TimeoutException
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionApproval
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
@@ -15,10 +16,8 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, Tr
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.protos.common.Common.Payload
-import org.hyperledger.fabric.protos.peer.ProposalPackage
-import org.hyperledger.fabric.protos.peer.ProposalPackage.{ ChaincodeProposalPayload, Proposal, SignedProposal }
+import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
 import org.hyperledger.fabric.sdk._
-import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
 import scala.jdk.CollectionConverters.MapHasAsJava
 
@@ -131,27 +130,28 @@ trait ConnectionTrait extends AutoCloseable {
     val approvalResult = wrapTransactionResult(transactionName, response)
 
     // TODO: test parse params to execute real transaction
-    approvalResult
-    //val realResult = internalSubmitRealTransactionFromApprovalProposal(params)
-    //new Gson().toJson(Seq(approvalResult, realResult))
+    //approvalResult
+    val realResult = internalSubmitRealTransactionFromApprovalProposal(params)
+    new Gson().toJson(Seq(approvalResult, realResult))
   }
 
   def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
-    val realContractName = params.head
-    val realTransactionName = params.tail.head
-    val realTransactionParams = params.tail.tail
+    val realContractName: String = params.head
+    val realTransactionName: String = params.tail.head
+    val realTransactionParams: String = params.tail.tail.head
+    val parameterList: Seq[String] = new Gson().fromJson(realTransactionParams, classOf[Seq[String]])
 
     // Logging
     Logger.warn("contractName" + realContractName)
     Logger.warn("transactionName" + realTransactionName)
-    Logger.warn("params" + params.mkString(";"))
+    Logger.warn("params" + parameterList.mkString(", "))
 
     // check contract match
     if (realContractName != contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $realContractName")
 
     // submit and evaluate response from my "regular" contract
     // TODO: pass transient bool
-    val result = this.privateSubmitTransaction(false, realTransactionName, realTransactionParams.toIndexedSeq: _*)
+    val result = this.privateSubmitTransaction(false, realTransactionName, parameterList: _*)
     this.wrapTransactionResult(realTransactionName, result)
   }
 
