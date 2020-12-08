@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper }
+import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper, TestSetup }
 
 class MatriculationAccessTests extends TestBase {
 
@@ -10,7 +10,7 @@ class MatriculationAccessTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    super.establishExaminationRegulations()
+    TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
   }
 
   override def beforeEach(): Unit = {
