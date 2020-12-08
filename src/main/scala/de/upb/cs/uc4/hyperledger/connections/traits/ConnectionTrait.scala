@@ -131,8 +131,9 @@ trait ConnectionTrait extends AutoCloseable {
     val approvalResult = wrapTransactionResult(transactionName, response)
 
     // TODO: test parse params to execute real transaction
-    val realResult = internalSubmitRealTransactionFromApprovalProposal(params)
-    new Gson().toJson(Seq(approvalResult, realResult))
+    approvalResult
+    //val realResult = internalSubmitRealTransactionFromApprovalProposal(params)
+    //new Gson().toJson(Seq(approvalResult, realResult))
   }
 
   def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
