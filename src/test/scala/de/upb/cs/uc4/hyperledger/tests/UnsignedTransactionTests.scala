@@ -47,7 +47,7 @@ class UnsignedTransactionTests extends TestBase {
     }
 
     "passing a signed transaction" should {
-      "submit the proposal transaction to the proposal contract, even if the signature was not created using the private key belonging to the connection" in {
+      "submit the proposal transaction to the proposal contract" in {
         val argEnrollmentId = "frontend-signing-tester"
         val testAffiliation = organisationId
         super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
@@ -73,42 +73,43 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
         val getResult = initializeApproval(username).getApprovals("UC4.Certificate", "addCertificate", argEnrollmentId, argCertificate)
         println("\n\n\n##########################\nCompareResult:\n##########################\n\n" + getResult)
-      }
-      "submit the proposal transaction to the proposal contract" in {
-        val enrollmentId = "102"
-        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
-        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
-        val privateKey: PrivateKey = testUserIdentity.getPrivateKey
-        val crypto: CryptoPrimitives = TestHelper.getCryptoPrimitives()
-        val proposalBytes = certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate)
-        val proposal: Proposal = Proposal.parseFrom(proposalBytes)
-        println("\n\n\n##########################\nPROPOSALBYTES:\n##########################\n\n" + proposal.toByteString.toStringUtf8)
-        println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
-        println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
-        val signature = crypto.sign(privateKey, proposalBytes)
-        val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signature)).toStringUtf8
-        println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
-        val result = certificateConnection.getUnsignedTransaction(proposalBytes, signature)
-        println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
+        // test approvals submitted by the right entities
+        getResult should contain(argEnrollmentId)
+        getResult should contain(username)
       }
       "submit the real transaction to the real contract" in {
         // store info
-        val enrollmentId = "103"
-        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
-        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
-        println("\n\n\n##########################\nCertificate:\n##########################\n\n" + certificate)
-        val privateKey: PrivateKey = testUserIdentity.getPrivateKey
+        val argEnrollmentId = "frontend-signing-tester"
+        val testAffiliation = organisationId
+        super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
+        // initialize crypto primitives
         val crypto: CryptoPrimitives = TestHelper.getCryptoPrimitives()
-        println("\n\n\n##########################\nGET PROPOSAL:\n##########################\n\n")
-        val proposalBytes = certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate)
-        val signature = crypto.sign(privateKey, proposalBytes)
-        println("\n\n\n##########################\nSUBMIT PROPOSAL:\n##########################\n\n")
-        val transactionBytes = certificateConnection.getUnsignedTransaction(proposalBytes, signature)
-        val transactionSignature = crypto.sign(privateKey, transactionBytes)
-        val result = certificateConnection.submitSignedTransaction(transactionBytes, transactionSignature)
-        println("\n\n\n##########################\nResult103:\n##########################\n\n" + result)
+        // get testUser certificate and private key
+        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(argEnrollmentId, testAffiliation)
+        val privateKey: PrivateKey = testUserIdentity.getPrivateKey
+        val certificate: X509Certificate = testUserIdentity.getCertificate
+        val argCertificate = TestHelper.toPemString(certificate)
+        println("\n\n\n##########################\nCertificate:\n##########################\n\n" + argCertificate)
+        // get proposal
+        val proposalBytes = certificateConnection.getProposalAddCertificate(Identities.toPemString(certificate), testAffiliation, argEnrollmentId, argCertificate)
+        println("\n\n\n##########################\nProposal Bytes:\n##########################\n\n" + Base64.getEncoder.encodeToString(proposalBytes))
+        // sign proposal with testUser privateKey
+        val signatureBytes = crypto.sign(privateKey, proposalBytes)
+        val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signatureBytes)).toStringUtf8
+        println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
+        val transactionPayloadBytes: Array[Byte] = certificateConnection.getUnsignedTransaction(proposalBytes, signatureBytes)
+        println("\n\n\n##########################\nTransactionPayload:\n##########################\n\n" + Base64.getEncoder.encodeToString(transactionPayloadBytes))
+        val transactionSignature: Array[Byte] = crypto.sign(privateKey, transactionPayloadBytes)
+        val result = certificateConnection.submitSignedTransaction(transactionPayloadBytes, transactionSignature)
+        println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
+        val getResult = initializeApproval(username).getApprovals("UC4.Certificate", "addCertificate", argEnrollmentId, argCertificate)
+        println("\n\n\n##########################\nCompareResult:\n##########################\n\n" + getResult)
+        // test approvals submitted by the right entities
+        getResult should contain(argEnrollmentId)
+        getResult should contain(username)
+
         // test info stored
-        val storedCert = certificateConnection.getCertificate(enrollmentId)
+        val storedCert = certificateConnection.getCertificate(argEnrollmentId)
         storedCert should be(certificate)
       }
     }

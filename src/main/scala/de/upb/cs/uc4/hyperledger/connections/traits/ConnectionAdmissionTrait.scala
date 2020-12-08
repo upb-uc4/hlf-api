@@ -15,7 +15,7 @@ protected[hyperledger] trait ConnectionAdmissionTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddAdmission(admission: String): Array[Byte]
+  def getProposalAddAdmission(certificate: String, affiliation: String, admission: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     * Also submits the "dropAdmission" query as current user (admin).
@@ -27,7 +27,7 @@ protected[hyperledger] trait ConnectionAdmissionTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalDropAdmission(admissionId: String): Array[Byte]
+  def getProposalDropAdmission(certificate: String, affiliation: String, admissionId: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     * Also submits the "getAdmissions" query as current user (admin).
@@ -41,7 +41,7 @@ protected[hyperledger] trait ConnectionAdmissionTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetAdmission(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): Array[Byte]
+  def getProposalGetAdmission(certificate: String, affiliation: String, enrollmentId: String = "", courseId: String = "", moduleId: String = ""): Array[Byte]
 
   /** Submits the "addAdmission" query.
     *
