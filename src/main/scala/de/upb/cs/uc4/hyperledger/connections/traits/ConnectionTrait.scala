@@ -100,6 +100,7 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   def getUnsignedTransaction(proposalBytes: Array[Byte], signatureBytes: Array[Byte]): Array[Byte] = {
+
     // create signedProposal Object and get Info Objects
     val signature = ByteString.copyFrom(signatureBytes)
     val proposal = Proposal.parseFrom(proposalBytes)
