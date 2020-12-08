@@ -79,7 +79,7 @@ class UnsignedTransactionTests extends TestBase {
       }
       "submit the real transaction to the real contract" in {
         // store info
-        val argEnrollmentId = "frontend-signing-tester"
+        val argEnrollmentId = "frontend-signing-tester2"
         val testAffiliation = organisationId
         super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
         // initialize crypto primitives
