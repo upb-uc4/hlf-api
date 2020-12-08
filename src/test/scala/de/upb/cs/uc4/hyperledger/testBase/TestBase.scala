@@ -1,11 +1,11 @@
 package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
-import de.upb.cs.uc4.hyperledger.connections.cases.{ConnectionApproval, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionMatriculation}
-import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionApprovalsTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait}
-import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation
+
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionApproval, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionMatriculation }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionApprovalsTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import de.upb.cs.uc4.hyperledger.utilities.{EnrollmentManager, RegistrationManager, WalletManager}
+import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric.gateway.Wallet
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 
@@ -65,22 +65,18 @@ class TestBase extends TestBaseTrait {
   def initializeCertificate(userName: String = this.username): ConnectionCertificateTrait = ConnectionCertificate(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeApproval(userName: String = this.username): ConnectionApprovalsTrait = ConnectionApproval(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeExaminationRegulation(userName: String = this.username): ConnectionExaminationRegulationTrait = ConnectionExaminationRegulation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeAdmission(userName: String = this.username): ConnectionAdmissionTrait = ConnectionAdmission(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
 
   private def debug(message: String): Unit = {
     Logger.debug("[TestBase] :: " + message)
-  }
-
-  protected def establishExaminationRegulations(): Unit = {
-    val examinationRegulationConnection = initializeExaminationRegulation()
-    TestDataMatriculation.establishExaminationRegulations(initializeExaminationRegulation())
-    examinationRegulationConnection.close()
   }
 
   def tryRegisterAndEnrollTestUser(enrollmentId: String, affiliation: String): X509IdentityImpl = {
     try {
       val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentId, username, walletPath, affiliation)
       EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
-    } catch {
+    }
+    catch {
       case _: Throwable =>
     }
     val wallet: Wallet = WalletManager.getWallet(this.walletPath)

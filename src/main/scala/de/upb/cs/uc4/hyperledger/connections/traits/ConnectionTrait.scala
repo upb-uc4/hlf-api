@@ -8,20 +8,18 @@ import java.util
 import java.util.concurrent.TimeoutException
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionApproval
-import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
-import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerException, NetworkException, TransactionException}
+import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
+import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
-import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, ReflectionHelper, TransactionHelper}
-import org.hyperledger.fabric.gateway.impl.{ContractImpl, GatewayImpl, TransactionImpl}
-import org.hyperledger.fabric.gateway.{GatewayRuntimeException, Identities}
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
+import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
+import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.protos.common.Common.Payload
 import org.hyperledger.fabric.protos.peer.ProposalPackage
-import org.hyperledger.fabric.protos.peer.ProposalPackage.{Proposal, SignedProposal}
+import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
 import org.hyperledger.fabric.sdk._
-import org.hyperledger.fabric.sdk.transaction.{ProposalBuilder, TransactionContext}
+import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
-import scala.::
-import scala.collection.immutable.Nil.:::
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
@@ -44,9 +42,9 @@ trait ConnectionTrait extends AutoCloseable {
     *
     * @return String containing versionInfo
     */
-  final def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
+  def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
 
-  private def approveTransaction(transactionName: String, params: String*) = {
+  private def approveTransaction(transactionName: String, params: String*): Unit = {
     // setup approvalConnection and
     // submit my approval to approvalContract
     val approvalConnectionObject = approvalConnection
@@ -95,7 +93,7 @@ trait ConnectionTrait extends AutoCloseable {
     approveTransaction(params.head, params.tail: _*)
     val fcnName: String = "UC4.Approval:approveTransaction"
     val args: Seq[String] = Seq(contractName).appended(params.head).appended(new Gson().toJson(params.tail.toArray))
-    val proposal = TransactionHelper.getUnsignedProposalNew(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args:_*)
+    val proposal = TransactionHelper.getUnsignedProposalNew(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
     proposal.toByteArray
   }
 
@@ -105,7 +103,7 @@ trait ConnectionTrait extends AutoCloseable {
     val signature = ByteString.copyFrom(signatureBytes)
     val proposal = Proposal.parseFrom(proposalBytes)
     val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) =
-      TransactionHelper.createSignedProposal(this.approvalConnection.get, proposal, signature)
+      TransactionHelper.createSignedProposal(approvalConnection.get, proposal, signature)
 
     // submit approval
     // propose transaction
