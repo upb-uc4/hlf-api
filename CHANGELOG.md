@@ -1,4 +1,4 @@
-# <a id="v0.13.1" />[v0.13.1 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.13.0...develop) (TBD)
+# <a id="v0.14.2" />[v0.14.2 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.14.1...develop) (TBD)
 
 ## Feature
 
@@ -15,7 +15,7 @@
 ## Usability
 
 
-# <a id="v0.13.0" />[v0.13.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.5...v0.13.0) (2020-12-04)
+# <a id="v0.14.1" />[v0.14.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.5...v0.14.1) (2020-12-08)
 
 ## Feature
 
