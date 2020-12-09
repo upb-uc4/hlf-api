@@ -139,22 +139,22 @@ trait ConnectionTrait extends AutoCloseable {
     val realContractName: String = params.head
     val realTransactionName: String = params.tail.head
     val realTransactionParams: String = params.tail.tail.head
-    val listType = new TypeToken[List[String]] {}.getType
-    val parameterList2: List[String] = new Gson().fromJson(realTransactionParams, listType)
-    Logger.warn("params2" + parameterList2.mkString(", "))
-    val parameterList: List[String] = new Gson().fromJson(realTransactionParams, classOf[List[String]])
+    val listType = new TypeToken[util.ArrayList[String]] {}.getType
+    val parameterList2: util.ArrayList[String] = new Gson().fromJson(realTransactionParams, listType)
+    Logger.warn("params2" + parameterList2.toArray.mkString(", "))
+    val parameterList: util.ArrayList[String] = new Gson().fromJson(realTransactionParams, classOf[util.ArrayList[String]])
 
     // Logging
     Logger.warn("contractName" + realContractName)
     Logger.warn("transactionName" + realTransactionName)
-    Logger.warn("params" + parameterList.mkString(", "))
+    Logger.warn("params" + parameterList.toArray.mkString(", "))
 
     // check contract match
     if (realContractName != contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $realContractName")
 
     // submit and evaluate response from my "regular" contract
     // TODO: pass transient bool
-    val result = this.privateSubmitTransaction(false, realTransactionName, parameterList: _*)
+    val result = this.privateSubmitTransaction(false, realTransactionName, parameterList.toArray.asInstanceOf[Array[String]]: _*)
     this.wrapTransactionResult(realTransactionName, result)
   }
 
