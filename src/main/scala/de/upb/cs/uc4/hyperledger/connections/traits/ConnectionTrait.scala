@@ -127,7 +127,7 @@ trait ConnectionTrait extends AutoCloseable {
     transactionPayload.toByteArray
   }
 
-  def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte]): String = {
+  def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte]): (String, String) = {
     val transactionPayload: Payload = Payload.parseFrom(transactionBytes)
     val transactionId: String = TransactionHelper.getTransactionIdFromHeader(transactionPayload.getHeader)
     val (transactionName, params) = TransactionHelper.getParametersFromTransactionPayload(transactionPayload)
@@ -139,7 +139,7 @@ trait ConnectionTrait extends AutoCloseable {
     val realResult = internalSubmitRealTransactionFromApprovalProposal(params)
 
     // return both results
-    new Gson().toJson(Seq(approvalResult, realResult))
+    (approvalResult, realResult)
   }
 
   def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
