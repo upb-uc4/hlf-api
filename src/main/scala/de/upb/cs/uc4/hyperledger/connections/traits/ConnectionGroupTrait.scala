@@ -32,7 +32,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
   def getProposalRemoveUserFromGroup(enrollmentId: String, groupId: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
-    * Also submits the "dropAdmission" query as current user (admin).
+    * Also submits an approval for the transaction as the current user (admin).
     *
     * @param enrollmentId enrollmentId to remove.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
