@@ -8,22 +8,22 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
   extends ConnectionMatriculationTrait {
   final override val contractName: String = "UC4.MatriculationData"
 
-  def getProposalAddMatriculationData(certificate: String, affiliation: String, jSonMatriculationData: String): Array[Byte] = {
+  def getProposalAddMatriculationData(certificate: String, affiliation: String, jSonMatriculationData: String): (String, Array[Byte]) = {
     // TODO: add error handling
     internalGetUnsignedProposal(certificate, affiliation, "addMatriculationData", jSonMatriculationData)
   }
 
-  def getProposalAddEntriesToMatriculationData(certificate: String, affiliation: String, enrollmentId: String, subjectMatriculationList: String): Array[Byte] = {
+  def getProposalAddEntriesToMatriculationData(certificate: String, affiliation: String, enrollmentId: String, subjectMatriculationList: String): (String, Array[Byte]) = {
     // TODO: add error handling
     internalGetUnsignedProposal(certificate, affiliation, "addEntriesToMatriculationData", enrollmentId: String, subjectMatriculationList: String)
   }
 
-  def getProposalUpdateMatriculationData(certificate: String, affiliation: String, jSonMatriculationData: String): Array[Byte] = {
+  def getProposalUpdateMatriculationData(certificate: String, affiliation: String, jSonMatriculationData: String): (String, Array[Byte]) = {
     // TODO: add error handling
     internalGetUnsignedProposal(certificate, affiliation, "updateMatriculationData", jSonMatriculationData)
   }
 
-  def getProposalGetMatriculationData(certificate: String, affiliation: String, enrollmentId: String): Array[Byte] = {
+  def getProposalGetMatriculationData(certificate: String, affiliation: String, enrollmentId: String): (String, Array[Byte]) = {
     // TODO: add error handling
     internalGetUnsignedProposal(certificate, affiliation, "getMatriculationData", enrollmentId)
   }
