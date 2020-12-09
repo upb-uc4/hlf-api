@@ -6,7 +6,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
   final override val contractName: String = "UC4.Admission"
 
   /** Retrieves a proposal for the designated query
-    * Also submits the "addAdmission" query as current user (admin).
+    * Also submits an approval for the transaction as the current user (admin).
     *
     * @param enrollmentId Information about the enrollmentId.
     * @param groupId Information about the groupId.
