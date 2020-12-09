@@ -44,7 +44,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
   def getProposalRemoveUserFromAllGroups(enrollmentId: String): Array[Byte]
 
   /** Retrieves a proposal for the designated query
-    * Also submits the "getAdmissions" query as current user (admin).
+    * Also submits an approval for the transaction as the current user (admin).
     *
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
