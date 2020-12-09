@@ -6,6 +6,7 @@ import java.util
 import java.util.concurrent.TimeoutException
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionApproval
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
@@ -138,6 +139,9 @@ trait ConnectionTrait extends AutoCloseable {
     val realContractName: String = params.head
     val realTransactionName: String = params.tail.head
     val realTransactionParams: String = params.tail.tail.head
+    val listType = new TypeToken[List[String]] {}.getType
+    val parameterList2: List[String] = new Gson().fromJson(realTransactionParams, listType)
+    Logger.warn("params2" + parameterList2.mkString(", "))
     val parameterList: List[String] = new Gson().fromJson(realTransactionParams, classOf[List[String]])
 
     // Logging
