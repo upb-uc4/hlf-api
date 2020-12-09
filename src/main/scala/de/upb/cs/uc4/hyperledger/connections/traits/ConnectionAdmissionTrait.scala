@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 
-protected[hyperledger] trait ConnectionAdmissionTrait extends ConnectionTrait {
+trait ConnectionAdmissionTrait extends ConnectionTrait {
   final override val contractName: String = "UC4.Admission"
 
   /** Retrieves a proposal for the designated query
