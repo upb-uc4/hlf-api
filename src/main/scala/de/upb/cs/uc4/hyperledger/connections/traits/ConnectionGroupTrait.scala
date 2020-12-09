@@ -55,7 +55,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
   def getProposalGetAllGroups: Array[Byte]
 
   /** Retrieves a proposal for the designated query
-    * Also submits the "getAdmissions" query as current user (admin).
+    * Also submits an approval for the transaction as the current user (admin).
     *
     * @param groupId groupId to filter for.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
