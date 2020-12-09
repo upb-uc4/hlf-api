@@ -4,11 +4,12 @@ import java.nio.charset.StandardCharsets
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
 import java.util.Base64
+
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper }
+import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 import org.hyperledger.fabric.gateway.Identities
@@ -25,6 +26,7 @@ class UnsignedTransactionTests extends TestBase {
     super.beforeAll()
     certificateConnection = initializeCertificate()
     matriculationConnection = initializeMatriculation()
+    TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
   }
 
   override def afterAll(): Unit = {
