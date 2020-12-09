@@ -19,6 +19,8 @@ import org.hyperledger.fabric.protos.common.Common.Payload
 import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
 import org.hyperledger.fabric.sdk._
 
+import scala.collection.JavaConverters
+import scala.jdk.CollectionConverters
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
@@ -138,23 +140,21 @@ trait ConnectionTrait extends AutoCloseable {
   def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
     val realContractName: String = params.head
     val realTransactionName: String = params.tail.head
-    val realTransactionParams: String = params.tail.tail.head
-    val listType = new TypeToken[util.ArrayList[String]] {}.getType
-    val parameterList2: util.ArrayList[String] = new Gson().fromJson(realTransactionParams, listType)
-    Logger.warn("params2" + parameterList2.toArray.mkString(", "))
-    val parameterList: util.ArrayList[String] = new Gson().fromJson(realTransactionParams, classOf[util.ArrayList[String]])
+    val realTransactionParamsString: String = params.tail.tail.head
+    val realTransactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(realTransactionParamsString, classOf[util.ArrayList[String]])
+    val realTransactionParams : Seq[String] = CollectionConverters.ListHasAsScala(realTransactionParamsArrayList).asScala.toSeq
 
     // Logging
     Logger.warn("contractName" + realContractName)
     Logger.warn("transactionName" + realTransactionName)
-    Logger.warn("params" + parameterList.toArray.mkString(", "))
+    Logger.warn("params" + realTransactionParams.mkString(", "))
 
     // check contract match
-    if (realContractName != contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $realContractName")
+    if (realContractName != this.contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $realContractName")
 
     // submit and evaluate response from my "regular" contract
     // TODO: pass transient bool
-    val result = this.privateSubmitTransaction(false, realTransactionName, parameterList.toArray.asInstanceOf[Array[String]]: _*)
+    val result = this.privateSubmitTransaction(false, realTransactionName, realTransactionParams: _*)
     this.wrapTransactionResult(realTransactionName, result)
   }
 
