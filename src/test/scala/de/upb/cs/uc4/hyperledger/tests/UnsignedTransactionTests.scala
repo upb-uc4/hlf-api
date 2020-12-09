@@ -104,8 +104,8 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nCompareResult:\n##########################\n\n" + getResult)
 
         // test approvals submitted by the right entities
-        getResult should contain(argEnrollmentId)
-        getResult should contain(username)
+        getResult should include(argEnrollmentId)
+        getResult should include(username)
       }
       "submit the real transaction to the real contract" in {
         // enroll admin
@@ -147,8 +147,8 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nCompareResult:\n##########################\n\n" + getResult)
 
         // test approvals submitted by the right entities
-        getResult should contain(argEnrollmentId)
-        getResult should contain(username)
+        getResult should include(argEnrollmentId)
+        getResult should include(username)
 
         // test info stored
         val storedMatData = matriculationConnection.getMatriculationData(argEnrollmentId)
