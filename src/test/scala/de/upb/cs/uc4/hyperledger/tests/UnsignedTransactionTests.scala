@@ -81,7 +81,7 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nMatriculationTestData:\n##########################\n\n" + testMatData)
 
         // get proposal
-        val (approvalResult, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(Identities.toPemString(certificate), testAffiliation, testMatData)
+        val (approvalResult, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(Identities.toPemString(certificate), jSonMatriculationData=testMatData)
         println("\n\n\n##########################\nProposal Bytes:\n##########################\n\n" + Base64.getEncoder.encodeToString(proposalBytes))
 
         // sign proposal with testUser privateKey

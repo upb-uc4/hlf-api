@@ -23,6 +23,8 @@ import scala.jdk.CollectionConverters
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
+  val AFFILITATION: String = "org1MSP"
+
   // regular info used to set up any connection
   val username: String
   val channel: String

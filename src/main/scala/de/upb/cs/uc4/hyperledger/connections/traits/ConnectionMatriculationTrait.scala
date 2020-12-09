@@ -14,7 +14,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddMatriculationData(certificate: String, affiliation: String, jSonMatriculationData: String): (String, Array[Byte])
+  def getProposalAddMatriculationData(certificate: String, affiliation: String = AFFILITATION, jSonMatriculationData: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits the "addEntriesToMatriculationData" query as current user (admin).
@@ -27,7 +27,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddEntriesToMatriculationData(certificate: String, affiliation: String, enrollmentId: String, subjectMatriculationList: String): (String, Array[Byte])
+  def getProposalAddEntriesToMatriculationData(certificate: String, affiliation: String = AFFILITATION, enrollmentId: String, subjectMatriculationList: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits the "updateMatriculationData" query as current user (admin).
@@ -39,7 +39,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalUpdateMatriculationData(certificate: String, affiliation: String, jSonMatriculationData: String): (String, Array[Byte])
+  def getProposalUpdateMatriculationData(certificate: String, affiliation: String = AFFILITATION, jSonMatriculationData: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits the "getMatriculationData" query as current user (admin).
@@ -51,7 +51,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetMatriculationData(certificate: String, affiliation: String, enrollmentId: String): (String, Array[Byte])
+  def getProposalGetMatriculationData(certificate: String, affiliation: String = AFFILITATION, enrollmentId: String): (String, Array[Byte])
 
   /** Submits the "addMatriculationData" query.
     *
