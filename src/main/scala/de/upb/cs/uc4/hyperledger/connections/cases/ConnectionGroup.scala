@@ -19,7 +19,7 @@ protected[hyperledger] case class ConnectionGroup(username: String, channel: Str
 
   override def getProposalRemoveUserFromAllGroups(enrollmentId: String): Array[Byte] = {
     // TODO: add error handling
-    internalGetUnsignedProposal("getProposalRemoveUserFromAllGroups", enrollmentId)
+    internalGetUnsignedProposal("removeUserFromAllGroups", enrollmentId)
   }
 
   override def getProposalGetAllGroups: Array[Byte] = {
