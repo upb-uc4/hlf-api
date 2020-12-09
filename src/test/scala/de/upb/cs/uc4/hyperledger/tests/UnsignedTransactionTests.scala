@@ -100,7 +100,7 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
 
         // get approvals
-        val getResult = initializeApproval(username).getApprovals("UC4.Matriculation", "addMatriculationData", testMatData)
+        val getResult = initializeApproval(username).getApprovals("UC4.MatriculationData", "addMatriculationData", testMatData)
         println("\n\n\n##########################\nCompareResult:\n##########################\n\n" + getResult)
 
         // test approvals submitted by the right entities
@@ -143,7 +143,7 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
 
         // get approvals
-        val getResult = initializeApproval(username).getApprovals("UC4.Matriculation", "addMatriculationData", testMatData)
+        val getResult = initializeApproval(username).getApprovals("UC4.MatriculationData", "addMatriculationData", testMatData)
         println("\n\n\n##########################\nCompareResult:\n##########################\n\n" + getResult)
 
         // test approvals submitted by the right entities
