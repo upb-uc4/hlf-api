@@ -6,7 +6,6 @@ import java.util
 import java.util.concurrent.TimeoutException
 
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionApproval
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
@@ -19,7 +18,6 @@ import org.hyperledger.fabric.protos.common.Common.Payload
 import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
 import org.hyperledger.fabric.sdk._
 
-import scala.collection.JavaConverters
 import scala.jdk.CollectionConverters
 import scala.jdk.CollectionConverters.MapHasAsJava
 
@@ -142,7 +140,7 @@ trait ConnectionTrait extends AutoCloseable {
     val realTransactionName: String = params.tail.head
     val realTransactionParamsString: String = params.tail.tail.head
     val realTransactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(realTransactionParamsString, classOf[util.ArrayList[String]])
-    val realTransactionParams : Seq[String] = CollectionConverters.ListHasAsScala(realTransactionParamsArrayList).asScala.toSeq
+    val realTransactionParams : Seq[String] = CollectionConverters.IterableHasAsScala(realTransactionParamsArrayList).asScala.toSeq
 
     // Logging
     Logger.warn("contractName" + realContractName)
