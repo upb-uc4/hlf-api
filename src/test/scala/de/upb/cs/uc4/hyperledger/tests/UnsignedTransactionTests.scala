@@ -74,12 +74,12 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
 
         // get transaction
-        val transactionPayloadBytes: Array[Byte] = certificateConnection.getUnsignedTransaction(proposalBytes, signatureBytes)
+        val transactionPayloadBytes: Array[Byte] = matriculationConnection.getUnsignedTransaction(proposalBytes, signatureBytes)
         println("\n\n\n##########################\nTransactionPayload:\n##########################\n\n" + Base64.getEncoder.encodeToString(transactionPayloadBytes))
 
         // sign transaction and submit transaction
         val transactionSignature: Array[Byte] = crypto.sign(privateKey, transactionPayloadBytes)
-        val result = certificateConnection.submitSignedTransaction(transactionPayloadBytes, transactionSignature)
+        val result = matriculationConnection.submitSignedTransaction(transactionPayloadBytes, transactionSignature)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
 
         // get approvals
@@ -117,12 +117,12 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
 
         // get transaction
-        val transactionPayloadBytes: Array[Byte] = certificateConnection.getUnsignedTransaction(proposalBytes, signatureBytes)
+        val transactionPayloadBytes: Array[Byte] = matriculationConnection.getUnsignedTransaction(proposalBytes, signatureBytes)
         println("\n\n\n##########################\nTransactionPayload:\n##########################\n\n" + Base64.getEncoder.encodeToString(transactionPayloadBytes))
 
         // sign transaction and submit transaction
         val transactionSignature: Array[Byte] = crypto.sign(privateKey, transactionPayloadBytes)
-        val result = certificateConnection.submitSignedTransaction(transactionPayloadBytes, transactionSignature)
+        val result = matriculationConnection.submitSignedTransaction(transactionPayloadBytes, transactionSignature)
         println("\n\n\n##########################\nResult:\n##########################\n\n" + result)
 
         // get approvals
