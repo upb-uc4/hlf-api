@@ -140,7 +140,7 @@ trait ConnectionTrait extends AutoCloseable {
     val realTransactionName: String = params.tail.head
     val realTransactionParamsString: String = params.tail.tail.head
     val realTransactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(realTransactionParamsString, classOf[util.ArrayList[String]])
-    val realTransactionParams : Seq[String] = CollectionConverters.IterableHasAsScala(realTransactionParamsArrayList).asScala.toSeq
+    val realTransactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(realTransactionParamsArrayList).asScala.toSeq
 
     // Logging
     Logger.warn("contractName" + realContractName)
