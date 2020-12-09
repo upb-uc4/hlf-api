@@ -1,6 +1,6 @@
 package de.upb.cs.uc4.hyperledger.connections.traits
 
-import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
+import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 
 trait ConnectionGroupTrait extends ConnectionTrait {
   final override val contractName: String = "UC4.Admission"
@@ -113,7 +113,6 @@ trait ConnectionGroupTrait extends ConnectionTrait {
   @throws[TransactionExceptionTrait]
   def removeUserFromAllGroups(enrollmentId: String): String
 
-
   /** Submits the "getAllGroups" query.
     *
     * @throws TransactionExceptionTrait if chaincode throws an exception.
@@ -134,7 +133,6 @@ trait ConnectionGroupTrait extends ConnectionTrait {
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getUsersForGroup(groupId: String): String
-
 
   /** Submits the "getGroupsForUser" query.
     *

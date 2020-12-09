@@ -50,7 +50,7 @@ protected[hyperledger] case class ConnectionGroup(username: String, channel: Str
     wrapEvaluateTransaction("getAllGroups")
 
   override def getUsersForGroup(groupId: String): String =
-    wrapEvaluateTransaction( "getUsersForGroup", groupId)
+    wrapEvaluateTransaction("getUsersForGroup", groupId)
 
   override def getGroupsForUser(enrollmentId: String): String =
     wrapEvaluateTransaction("getGroupsForUser", enrollmentId)
