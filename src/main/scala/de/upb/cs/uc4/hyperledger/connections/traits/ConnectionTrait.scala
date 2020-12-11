@@ -135,7 +135,8 @@ trait ConnectionTrait extends AutoCloseable {
     new Gson().toJson(Seq(approvalResult, realResult))
   }
 
-  def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
+  private def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
+
     val realContractName: String = params.head
     val realTransactionName: String = params.tail.head
     val realTransactionParamsString: String = params.tail.tail.head
