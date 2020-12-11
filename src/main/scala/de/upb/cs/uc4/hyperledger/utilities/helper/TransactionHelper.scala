@@ -46,11 +46,11 @@ protected[hyperledger] object TransactionHelper {
     (proposalContractName, transactionName, params)
   }
 
-  def getParametersFromTransactionPayload(payload: Payload): (String, Array[String]) = {
+  def getParametersFromTransactionPayload(payload: Payload): (String, Seq[String]) = {
     val chaincodeTransactionPayload: ChaincodeActionPayload = getChaincodeActionPayloadFromTransactionPayload(payload)
     val chaincodeProposalPayload: ChaincodeProposalPayload = ChaincodeProposalPayload.parseFrom(chaincodeTransactionPayload.getChaincodeProposalPayload)
     val args: Seq[String] = getArgsFromChaincodeProposalPayload(chaincodeProposalPayload)
-    (args.head, args.tail.toArray)
+    (args.head, args.tail)
   }
 
   def getChaincodeActionPayloadFromTransactionPayload(payload: Payload): ChaincodeActionPayload = {
@@ -65,9 +65,9 @@ protected[hyperledger] object TransactionHelper {
     info
   }
 
-  def createTransactionInfo(contract: ContractImpl, transactionName: String, params: Array[String], transactionId: Option[String]): (TransactionImpl, TransactionContext, TransactionProposalRequest) = {
+  def createTransactionInfo(contract: ContractImpl, transactionName: String, params: Seq[String], transactionId: Option[String]): (TransactionImpl, TransactionContext, TransactionProposalRequest) = {
     val transaction: TransactionImpl = contract.createTransaction(transactionName).asInstanceOf[TransactionImpl]
-    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params).asInstanceOf[TransactionProposalRequest]
+    val request: TransactionProposalRequest = ReflectionHelper.safeCallPrivateMethod(transaction)("newProposalRequest")(params.toArray).asInstanceOf[TransactionProposalRequest]
     val context: TransactionContext = request.getTransactionContext.get()
     if (transactionId.isDefined) ReflectionHelper.setPrivateField(context)("txID")(transactionId.get)
     if (request.getTransientMap != null) transaction.setTransient(request.getTransientMap)
@@ -124,7 +124,7 @@ protected[hyperledger] object TransactionHelper {
       .setSignature(signature)
     val signedProposal: SignedProposal = signedProposalBuilder.build
 
-    val (transaction, _, _) = TransactionHelper.createTransactionInfo(approvalConnection.contract, transactionName, params.toArray, Some(transactionId))
+    val (transaction, _, _) = TransactionHelper.createTransactionInfo(approvalConnection.contract, transactionName, params, Some(transactionId))
 
     (transaction, signedProposal)
   }

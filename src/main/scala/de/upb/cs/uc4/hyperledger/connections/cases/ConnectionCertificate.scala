@@ -8,17 +8,17 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 case class ConnectionCertificate(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionCertificateTrait {
 
-  override def getProposalAddCertificate(certificate: String, affiliation: String, enrollmentID: String, newCertificate: String): Array[Byte] = {
+  override def getProposalAddCertificate(certificate: String, affiliation: String = AFFILITATION, enrollmentID: String, newCertificate: String): (String, Array[Byte]) = {
     // TODO: add error handling
     internalGetUnsignedProposal(certificate, affiliation, "addCertificate", enrollmentID, newCertificate)
   }
 
-  override def getProposalUpdateCertificate(certificate: String, affiliation: String, enrollmentID: String, newCertificate: String): Array[Byte] = {
+  override def getProposalUpdateCertificate(certificate: String, affiliation: String = AFFILITATION, enrollmentID: String, newCertificate: String): (String, Array[Byte]) = {
     // TODO: add error handling
     internalGetUnsignedProposal(certificate, affiliation, "updateCertificate", enrollmentID, newCertificate)
   }
 
-  override def getProposalGetCertificate(certificate: String, affiliation: String, enrollmentID: String): Array[Byte] = {
+  override def getProposalGetCertificate(certificate: String, affiliation: String = AFFILITATION, enrollmentID: String): (String, Array[Byte]) = {
     // TODO: add error handling
     internalGetUnsignedProposal(certificate, affiliation, "getCertificate", enrollmentID)
   }
