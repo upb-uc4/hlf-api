@@ -95,8 +95,10 @@ class UnsignedTransactionTests extends TestBase {
         // get proposal
         val (proposalApprovalResult, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(Identities.toPemString(certificate), jSonMatriculationData = testMatData)
         val approvalProposalPayload = Proposal.parseFrom(proposalBytes).getPayload.toStringUtf8
-        TestHelper.testApprovalPayloadContainsInfo(approvalProposalPayload,
-          Seq("UC4.MatriculationData", "addMatriculationData", testMatData))
+        TestHelper.testApprovalPayloadContainsInfo(
+          approvalProposalPayload,
+          Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
+        )
         proposalApprovalResult should include(username)
 
         // sign proposal with testUser privateKey

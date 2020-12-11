@@ -13,7 +13,7 @@ import scala.util.matching.Regex
 
 object TestHelper {
 
-  def testApprovalPayloadContainsInfo(payload: String, contents: Seq[String]): Unit ={
+  def testApprovalPayloadContainsInfo(payload: String, contents: Seq[String]): Unit = {
     // payload contains Approval TransactionInfo
     payload should include("UC4.Approval")
     payload should include("approveTransaction")
