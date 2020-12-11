@@ -42,6 +42,10 @@ class UnsignedTransactionTests extends TestBase {
         val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
         val (approvalResult, proposalBytes) = certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
+        val header = proposal.getHeader.toStringUtf8
+        val payload = proposal.getPayload.toStringUtf8
+        header should include("")
+        payload should include("")
         println("\n\n\n##########################\nHeader:\n##########################\n\n" + proposal.getHeader.toStringUtf8)
         println("\n\n\n##########################\nPayload:\n##########################\n\n" + proposal.getPayload.toStringUtf8)
       }
