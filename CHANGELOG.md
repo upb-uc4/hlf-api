@@ -1,21 +1,20 @@
-# <a id="v0.14.2" />[v0.14.2 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.14.1...develop) (TBD)
+# <a id="v0.14.3" />[v0.14.3 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.14.2...v0.14.3) (2020-12-09)
 
 ## Feature
 
 - Support FrontEnd Signing for Users
 
-## Bug Fixes
-
-- 
-
-## Refactor
-
-- 
-
 ## Usability
 
+- Tests for frontend Signing
 
-# <a id="v0.14.1" />[v0.14.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.5...v0.14.1) (2020-12-08)
+# <a id="v0.14.2" />[v0.14.2](https://github.com/upb-uc4/hyperledger_api/compare/v014.1...v0.14.2) (2020-12-09)
+
+## Bug Fixes
+
+- remove protected from on trait
+
+# <a id="v0.14.1" />[v0.14.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.11.5...v014.1) (2020-12-08)
 
 ## Feature
 
