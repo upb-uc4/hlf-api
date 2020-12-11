@@ -16,7 +16,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddUserToGroup(enrollmentId: String, groupId: String): Array[Byte]
+  def getProposalAddUserToGroup(certificate: String, affiliation: String, enrollmentId: String, groupId: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits an approval for the transaction as the current user (admin).
@@ -29,7 +29,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalRemoveUserFromGroup(enrollmentId: String, groupId: String): Array[Byte]
+  def getProposalRemoveUserFromGroup(certificate: String, affiliation: String, enrollmentId: String, groupId: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits an approval for the transaction as the current user (admin).
@@ -41,7 +41,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalRemoveUserFromAllGroups(enrollmentId: String): Array[Byte]
+  def getProposalRemoveUserFromAllGroups(certificate: String, affiliation: String, enrollmentId: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits an approval for the transaction as the current user (admin).
@@ -52,7 +52,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetAllGroups: Array[Byte]
+  def getProposalGetAllGroups(certificate: String, affiliation: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits an approval for the transaction as the current user (admin).
@@ -64,7 +64,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetUsersForGroup(groupId: String): Array[Byte]
+  def getProposalGetUsersForGroup(certificate: String, affiliation: String, groupId: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits an approval for the transaction as the current user (admin).
@@ -76,7 +76,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetGroupsForUser(enrollmentId: String): Array[Byte]
+  def getProposalGetGroupsForUser(certificate: String, affiliation: String, enrollmentId: String): (String, Array[Byte])
 
   /** Submits the "addUserToGroup" query.
     *
@@ -144,5 +144,4 @@ trait ConnectionGroupTrait extends ConnectionTrait {
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getGroupsForUser(enrollmentId: String): String
-
 }
