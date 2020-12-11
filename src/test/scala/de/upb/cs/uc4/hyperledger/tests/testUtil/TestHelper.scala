@@ -13,6 +13,14 @@ import scala.util.matching.Regex
 
 object TestHelper {
 
+  def testApprovalPayloadContainsInfo(payload: String, contents: Seq[String]): Unit ={
+    // payload contains Approval TransactionInfo
+    payload should include("UC4.Approval")
+    payload should include("approveTransaction")
+    // payload contains approval parameters (target TransactionInfo)
+    contents.foreach(item => payload should include(item))
+  }
+
   /// Admissions
   def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, student: String, course: String, module: String, timestamp: String): Assertion =
     testAddAdmissionAccess(connection, TestDataAdmission.validAdmission(student, course, module, timestamp))

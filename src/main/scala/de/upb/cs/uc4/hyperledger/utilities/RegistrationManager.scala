@@ -27,9 +27,9 @@ object RegistrationManager extends RegistrationManagerTrait {
       () => {
         // retrieve Admin Identity as a User
         val adminIdentity: X509Identity = WalletManager.getX509Identity(adminWalletPath, adminName)
-        Logger.debug(s"AdminIdentity: '${adminIdentity.getCertificate.toString}'")
+        Logger.debug(s"AdminCertificate: '${adminIdentity.getCertificate.toString}'")
         val admin: User = RegistrationManager.getUserFromX509Identity(adminIdentity, affiliation)
-        Logger.debug(s"AdminUser: '${admin.toString}'")
+        Logger.debug(s"Retrieved AdminUser from Identity: '${admin.toString}'")
 
         // prepare registrationRequest
         val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName, maxEnrollments, newUserType)
@@ -65,7 +65,6 @@ object RegistrationManager extends RegistrationManagerTrait {
   // TODO read affiliation from identity?
   private def getUserFromX509Identity(identity: X509Identity, affiliationName: String): User = {
     val name = getNameFromIdentity(identity)
-    Logger.debug(s"Retrieved Name from identity: '$name'")
     new User() {
       override def getName: String = name
       override def getRoles: util.Set[String] = null
@@ -76,6 +75,15 @@ object RegistrationManager extends RegistrationManagerTrait {
         override def getCert: String = Identities.toPemString(identity.getCertificate)
       }
       override def getMspId: String = identity.getMspId
+
+      override def toString: String =
+        s"""Name: $getName
+           |Roles: ${getRoles.toString}
+           |Account: $getAccount
+           |Affiliation: $getAffiliation
+           |Enrollment: ${getEnrollment.toString}
+           |MspId: $getMspId
+           |""".stripMargin
     }
   }
 

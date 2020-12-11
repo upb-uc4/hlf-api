@@ -145,17 +145,11 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   private def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
-
     val realContractName: String = params.head
     val realTransactionName: String = params.tail.head
     val realTransactionParamsString: String = params.tail.tail.head
     val realTransactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(realTransactionParamsString, classOf[util.ArrayList[String]])
     val realTransactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(realTransactionParamsArrayList).asScala.toSeq
-
-    // Logging
-    Logger.warn("contractName" + realContractName)
-    Logger.warn("transactionName" + realTransactionName)
-    Logger.warn("params" + realTransactionParams.mkString(", "))
 
     // check contract match
     if (realContractName != this.contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $realContractName")
@@ -168,6 +162,8 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   private def privateSubmitTransaction(transient: Boolean, transactionName: String, params: String*): Array[Byte] = {
+    Logger.info(s"Submit Real Transaction: '$transactionName' with parameters: $params")
+
     testAnyParamsNull(transactionName, params: _*)
     try {
       if (transient) {
