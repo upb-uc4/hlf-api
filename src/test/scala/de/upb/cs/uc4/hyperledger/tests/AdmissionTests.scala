@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataAdmission, TestHelper, TestSetup }
+import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataAdmission, TestHelper, TestHelperStrings, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class AdmissionTests extends TestBase {
@@ -67,9 +67,9 @@ class AdmissionTests extends TestBase {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
           val testResult = chaincodeConnection.getAdmissions(enrollmentId, courseId, moduleId)
-          val expectedResult = TestHelper.getJsonList(admissions)
+          val expectedResult = TestHelperStrings.getJsonList(admissions)
 
-          TestHelper.compareJson(expectedResult, testResult)
+          TestHelperStrings.compareJson(expectedResult, testResult)
         }
       }
     }
@@ -90,8 +90,8 @@ class AdmissionTests extends TestBase {
 
           // check ledger state
           val ledgerAdmissions = chaincodeConnection.getAdmissions()
-          val expectedResult = TestHelper.getJsonList(remainingAdmissions)
-          TestHelper.compareJson(expectedResult, ledgerAdmissions)
+          val expectedResult = TestHelperStrings.getJsonList(remainingAdmissions)
+          TestHelperStrings.compareJson(expectedResult, ledgerAdmissions)
         }
       }
     }
@@ -141,8 +141,8 @@ class AdmissionTests extends TestBase {
 
         // check ledger state
         val ledgerAdmissions = chaincodeConnection.getAdmissions()
-        val expectedResult = TestHelper.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId))
-        TestHelper.compareJson(expectedResult, ledgerAdmissions)
+        val expectedResult = TestHelperStrings.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId))
+        TestHelperStrings.compareJson(expectedResult, ledgerAdmissions)
       }
     }
   }

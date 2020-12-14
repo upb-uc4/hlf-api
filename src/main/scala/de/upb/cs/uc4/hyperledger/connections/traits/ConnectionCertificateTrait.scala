@@ -16,7 +16,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddCertificate(enrollmentID: String, certificate: String): Array[Byte]
+  def getProposalAddCertificate(certificate: String, affiliation: String = AFFILITATION, enrollmentID: String, newCertificate: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits the "updateCertificate" query as current user (admin).
@@ -29,7 +29,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalUpdateCertificate(enrollmentID: String, certificate: String): Array[Byte]
+  def getProposalUpdateCertificate(certificate: String, affiliation: String = AFFILITATION, enrollmentID: String, newCertificate: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits the "getCertificate" query as current user (admin).
@@ -41,7 +41,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetCertificate(enrollmentID: String): Array[Byte]
+  def getProposalGetCertificate(certificate: String, affiliation: String = AFFILITATION, enrollmentID: String): (String, Array[Byte])
 
   /** Submits the "addCertificate" query.
     *
@@ -77,16 +77,4 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getCertificate(enrollmentId: String): String
-
-  /** Stores a new certificate on the chain. If no certificate for the user exists, we add it, else update.
-    *
-    * @param enrollmentID enrollmentID to add or update
-    * @param certificate certificate to add or update
-    * @throws TransactionExceptionTrait if chaincode throws an exception.
-    * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
-    * @return success_state
-    */
-  @throws[HyperledgerExceptionTrait]
-  @throws[TransactionExceptionTrait]
-  def addOrUpdateCertificate(enrollmentID: String, certificate: String): String
 }

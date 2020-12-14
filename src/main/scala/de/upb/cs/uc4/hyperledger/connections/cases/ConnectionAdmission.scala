@@ -7,19 +7,19 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 protected[hyperledger] case class ConnectionAdmission(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionAdmissionTrait {
 
-  override def getProposalAddAdmission(admission: String): Array[Byte] = {
+  override def getProposalAddAdmission(certificate: String, affiliation: String = AFFILITATION, admission: String): (String, Array[Byte]) = {
     // TODO: add error handling
-    internalGetUnsignedProposal("addAdmission", admission)
+    internalGetUnsignedProposal(certificate, affiliation, "addAdmission", admission)
   }
 
-  override def getProposalDropAdmission(admissionId: String): Array[Byte] = {
+  override def getProposalDropAdmission(certificate: String, affiliation: String = AFFILITATION, admissionId: String): (String, Array[Byte]) = {
     // TODO: add error handling
-    internalGetUnsignedProposal("dropAdmission", admissionId)
+    internalGetUnsignedProposal(certificate, affiliation, "dropAdmission", admissionId)
   }
 
-  override def getProposalGetAdmission(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): Array[Byte] = {
+  override def getProposalGetAdmission(certificate: String, affiliation: String = AFFILITATION, enrollmentId: String = "", courseId: String = "", moduleId: String = ""): (String, Array[Byte]) = {
     // TODO: add error handling
-    internalGetUnsignedProposal("getAdmissions", enrollmentId, courseId, moduleId)
+    internalGetUnsignedProposal(certificate, affiliation, "getAdmissions", enrollmentId, courseId, moduleId)
   }
 
   override def addAdmission(admission: String): String =

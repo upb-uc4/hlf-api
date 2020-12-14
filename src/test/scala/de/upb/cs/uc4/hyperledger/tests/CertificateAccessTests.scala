@@ -40,18 +40,6 @@ class CertificateAccessTests extends TestBase {
         TestHelper.compareCertificates(newCertificate, chaincodeConnection.updateCertificate(enrollmentId, newCertificate))
         TestHelper.compareCertificates(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
       }
-      "support update on addOrUpdate-Command [200] " in {
-        val enrollmentId = "200"
-        val newCertificate = "Whatever3"
-        TestHelper.compareCertificates(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
-        TestHelper.compareCertificates(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
-      }
-      "support add on addOrUpdate-Command [201] " in {
-        val enrollmentId = "201"
-        val newCertificate = "Whatever1"
-        TestHelper.compareCertificates(newCertificate, chaincodeConnection.addOrUpdateCertificate(enrollmentId, newCertificate))
-        TestHelper.compareCertificates(newCertificate, chaincodeConnection.getCertificate(enrollmentId))
-      }
     }
   }
 }

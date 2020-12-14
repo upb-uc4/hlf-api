@@ -4,10 +4,12 @@ import java.nio.file.Path
 import java.util.Properties
 
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory
+import org.hyperledger.fabric.sdk.security.{ CryptoSuite, CryptoSuiteFactory }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
 
 protected[utilities] object CAClientManager {
+
+  val cryptoSuite: CryptoSuite = CryptoSuiteFactory.getDefault.getCryptoSuite
 
   /** Retrieves a clientObject for a CA spec.
     * @param caURL Address to find the CA.
@@ -16,20 +18,18 @@ protected[utilities] object CAClientManager {
     */
   def getCAClient(caURL: String, tlsCert: Path): HFCAClient = {
     // Create a CA client for interacting with the CA
-    val props = CAClientManager.prepareCAClientProperties(tlsCert)
-    val caClient = HFCAClient.createNewInstance(caURL, props)
+    val props: Properties = CAClientManager.prepareCAClientProperties(tlsCert)
+    val caClient: HFCAClient = HFCAClient.createNewInstance(caURL, props)
 
     // set up crypto suite for CAClient
-    val cryptoSuite = CryptoSuiteFactory.getDefault.getCryptoSuite
     caClient.setCryptoSuite(cryptoSuite)
 
     // return
-    Logger.info("Created CAClient-Object")
     caClient
   }
 
   private def prepareCAClientProperties(tlsCert: Path): Properties = {
-    val props = new Properties
+    val props: Properties = new Properties
     props.put("pemFile", tlsCert.toAbsolutePath.toString)
     props.put("allowAllHostNames", "true")
     props

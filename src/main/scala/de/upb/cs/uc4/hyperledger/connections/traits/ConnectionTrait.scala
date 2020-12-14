@@ -5,6 +5,7 @@ import java.nio.file.Path
 import java.util
 import java.util.concurrent.TimeoutException
 
+import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionApproval
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
@@ -13,14 +14,17 @@ import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
-import org.hyperledger.fabric.protos.peer.ProposalPackage
+import org.hyperledger.fabric.protos.common.Common.Payload
 import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
 import org.hyperledger.fabric.sdk._
-import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionContext }
+import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
+import scala.jdk.CollectionConverters
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
+  val AFFILITATION: String = "org1MSP"
+
   // regular info used to set up any connection
   val username: String
   val channel: String
@@ -42,14 +46,16 @@ trait ConnectionTrait extends AutoCloseable {
     */
   def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
 
-  private def approveTransaction(transactionName: String, params: String*) = {
+  private def approveTransaction(transactionName: String, params: String*): String = {
+    var approvalResult: String = ""
     // setup approvalConnection and
     // submit my approval to approvalContract
     val approvalConnectionObject = approvalConnection
     if (approvalConnectionObject.isDefined) {
-      approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
+      approvalResult = approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
       approvalConnectionObject.get.close()
     }
+    approvalResult
   }
 
   /** Wrapper for a submission transaction
@@ -86,79 +92,84 @@ trait ConnectionTrait extends AutoCloseable {
     this.wrapTransactionResult(transactionName, result)
   }
 
-  protected final def internalGetUnsignedProposal(transactionName: String, params: String*): Array[Byte] = {
-    approveTransaction(transactionName, params: _*)
+  // TODO read affiliation from certificate
+  protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, transactionName: String, params: String*): (String, Array[Byte]) = {
+    // approve transaction as ADMIN managing the current connection
+    val approvalResult: String = approveTransaction(transactionName, params: _*)
 
-    // gather info
-    val (transaction, context, request) = TransactionHelper.createApprovalTransactionInfo(approvalConnection.get.contract, contractName, transactionName, params.toArray, None)
+    // prepare the approvalTransaction for the user.
+    val fcnName: String = "UC4.Approval:approveTransaction"
+    val args: Seq[String] = Seq(this.contractName).appended(transactionName).appended(new Gson().toJson(params.toArray))
+    val proposal = TransactionHelper.getUnsignedProposalNew(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
+    val proposalBytes = proposal.toByteArray
 
-    // create proposal
-    val proposal: Proposal = ProposalBuilder.newBuilder().request(request).context(context).build()
-    proposal.toByteArray
+    // return both (approvalResult and proposal)
+    (approvalResult, proposalBytes)
   }
 
-  def submitSignedProposal(proposalBytes: Array[Byte], signatureBytes: Array[Byte]): String = {
-    val proposal: Proposal = Proposal.parseFrom(proposalBytes)
-    val signature: ByteString = ByteString.copyFrom(signatureBytes)
-
+  def getUnsignedTransaction(proposalBytes: Array[Byte], signatureBytes: Array[Byte]): Array[Byte] = {
     // create signedProposal Object and get Info Objects
-    val (transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal) =
+    val signature = ByteString.copyFrom(signatureBytes)
+    val proposal = Proposal.parseFrom(proposalBytes)
+    val (transaction: TransactionImpl, signedProposal: SignedProposal) =
       TransactionHelper.createSignedProposal(approvalConnection.get, proposal, signature)
 
-    // submit approval
-    val approvalResult = this.internalSubmitApprovalProposal(transaction, context, signedProposal)
-    var transactionResult = approvalResult
-    try {
-      // submit real transaction as admin
-      transactionResult = this.internalSubmitRealTransactionFromApprovalProposal(proposal)
-    }
-    catch {
-      case e: TransactionExceptionTrait => throw e
-    }
-    transactionResult
+    // submit approval proposal
+    val channelObj: Channel = this.gateway.getNetwork(channel).getChannel
+    val peers: util.Collection[Peer] = ReflectionHelper.safeCallPrivateMethod(channelObj)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
+    val transactionProposal = Proposal.parseFrom(proposalBytes)
+    val transactionName = TransactionHelper.getTransactionNameFromProposal(transactionProposal)
+    val transactionParams = TransactionHelper.getTransactionParamsFromProposal(transactionProposal)
+    val transactionId = TransactionHelper.getTransactionIdFromProposal(transactionProposal)
+    val (_, ctx: TransactionContext, _) = TransactionHelper.createTransactionInfo(this.approvalConnection.get.contract, transactionName, transactionParams, Some(transactionId))
+    val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
+
+    val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
+    val transactionPayload = TransactionHelper.getTransaction(validResponses, channelObj)
+    transactionPayload.toByteArray
   }
 
-  def internalSubmitRealTransactionFromApprovalProposal(proposal: Proposal): String = {
-    val (proposalContractName, transactionName, params) = TransactionHelper.getParametersFromApprovalProposal(proposal)
+  /** Submits a given approval transaction and it's corresponding "real" transaction
+    *
+    * @param transactionBytes approvalTransaction bytes submitted
+    * @param signature the signature authenticating the user
+    * @return Tuple containing (approvalResult, realTransactionResult)
+    */
+  def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte]): (String, String) = {
+    val transactionPayload: Payload = Payload.parseFrom(transactionBytes)
+    val transactionId: String = TransactionHelper.getTransactionIdFromHeader(transactionPayload.getHeader)
+    val (transactionName, params) = TransactionHelper.getParametersFromTransactionPayload(transactionPayload)
+    val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.approvalConnection.get.contract, transactionName, params, Some(transactionId))
+    val response: Array[Byte] = TransactionHelper.sendTransaction(this, channel, ctx, this.gateway.getNetwork(channel).getChannel, ByteString.copyFrom(transactionBytes), signature, transactionId)
+    val approvalResult = wrapTransactionResult(transactionName, response)
 
-    // Logging
-    Logger.warn("contractName" + proposalContractName)
-    Logger.warn("transactionName" + transactionName)
-    Logger.warn("params" + params.mkString(";"))
+    // execute real Transaction
+    val realResult = internalSubmitRealTransactionFromApprovalProposal(params)
+
+    // return both results
+    (approvalResult, realResult)
+  }
+
+  private def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
+    val realContractName: String = params.head
+    val realTransactionName: String = params.tail.head
+    val realTransactionParamsString: String = params.tail.tail.head
+    val realTransactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(realTransactionParamsString, classOf[util.ArrayList[String]])
+    val realTransactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(realTransactionParamsArrayList).asScala.toSeq
 
     // check contract match
-    if (proposalContractName != contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $proposalContractName")
+    if (realContractName != this.contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $realContractName")
 
     // submit and evaluate response from my "regular" contract
     // TODO: pass transient bool
-    val result = this.privateSubmitTransaction(false, transactionName, params.toIndexedSeq: _*)
-    this.wrapTransactionResult(transactionName, result)
-  }
-
-  def internalSubmitApprovalProposal(transaction: TransactionImpl, context: TransactionContext, signedProposal: SignedProposal): String = {
-    val transactionName = TransactionHelper.getTransactionNameFromFcn(transaction.getName)
-    if (transactionName != "approveTransaction") throw new Exception("submitSigned Proposal was invoked with a non approval transaction.")
-    val proposalResponses = this.sendProposalToPeers(context, signedProposal)
-
-    // evaluate proposal
-    try {
-      val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
-      val result = ReflectionHelper.safeCallPrivateMethod(transaction)("commitTransaction")(validResponses).asInstanceOf[Array[Byte]]
-      this.wrapTransactionResult(transactionName, result)
-    }
-    catch {
-      case ex: HyperledgerExceptionTrait => throw HyperledgerException(transactionName, ex)
-    }
-  }
-
-  private def sendProposalToPeers(context: TransactionContext, signedProposal: ProposalPackage.SignedProposal) = {
-    val channel: Channel = contract.getNetwork.getChannel
-    val peers: util.Collection[Peer] = ReflectionHelper.safeCallPrivateMethod(channel)("getEndorsingPeers")().asInstanceOf[util.Collection[Peer]]
-    ReflectionHelper.safeCallPrivateMethod(channel)("sendProposalToPeers")(peers, signedProposal, context).asInstanceOf[util.Collection[ProposalResponse]]
+    val result = this.privateSubmitTransaction(false, realTransactionName, realTransactionParams: _*)
+    this.wrapTransactionResult(realTransactionName, result)
   }
 
   @throws[HyperledgerExceptionTrait]
   private def privateSubmitTransaction(transient: Boolean, transactionName: String, params: String*): Array[Byte] = {
+    Logger.info(s"Submit Transaction: '$transactionName' with parameters: $params")
+
     testAnyParamsNull(transactionName, params: _*)
     try {
       if (transient) {
@@ -231,6 +242,6 @@ trait ConnectionTrait extends AutoCloseable {
     */
   @throws[TransactionExceptionTrait]
   private def testAnyParamsNull(transactionName: String, params: String*): Unit = {
-    if (params.exists(a => a == null)) throw TransactionException.CreateUnknownException(transactionName, "A parameter was null.")
+    if (params.contains(null)) throw TransactionException.CreateUnknownException(transactionName, "A parameter was null.")
   }
 }
