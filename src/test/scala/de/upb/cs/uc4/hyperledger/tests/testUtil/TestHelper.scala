@@ -18,7 +18,7 @@ object TestHelper {
     payload should include("UC4.Approval")
     payload should include("approveTransaction")
     // payload contains approval parameters (target TransactionInfo)
-    contents.foreach(item => payload should include(item.stripLineEnd.stripMargin))
+    contents.foreach(item => payload.stripLineEnd.stripMargin should include(item.stripLineEnd.stripMargin))
   }
 
   /// Admissions
