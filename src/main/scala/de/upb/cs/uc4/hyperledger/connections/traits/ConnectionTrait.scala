@@ -162,7 +162,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   private def privateSubmitTransaction(transient: Boolean, transactionName: String, params: String*): Array[Byte] = {
-    Logger.info(s"Submit Real Transaction: '$transactionName' with parameters: $params")
+    Logger.info(s"Submit Transaction: '$transactionName' with parameters: $params")
 
     testAnyParamsNull(transactionName, params: _*)
     try {
