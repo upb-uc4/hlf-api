@@ -77,16 +77,4 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getCertificate(enrollmentId: String): String
-
-  /** Stores a new certificate on the chain. If no certificate for the user exists, we add it, else update.
-    *
-    * @param enrollmentID enrollmentID to add or update
-    * @param certificate certificate to add or update
-    * @throws TransactionExceptionTrait if chaincode throws an exception.
-    * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
-    * @return success_state
-    */
-  @throws[HyperledgerExceptionTrait]
-  @throws[TransactionExceptionTrait]
-  def addOrUpdateCertificate(enrollmentID: String, certificate: String): String
 }

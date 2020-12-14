@@ -23,14 +23,13 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       chaincode: String,
       networkDescriptionPath: Path
   ): String = {
+    Logger.debug(s"Begin Secure Enrollment process (CSR). Enrolling User '$enrollmentID' as Admin '$adminName'")
+
     var certificate: String = ""
     PublicExceptionHelper.wrapInvocationWithNetworkException(
       () => {
-        Logger.info(s"Try to sign the certificate for the user $enrollmentID.")
         val caClient = CAClientManager.getCAClient(caURL, caCert)
-        Logger.info("Successfully created a communication channel with the CA.")
         val enrollmentRequestTLS = EnrollmentManager.prepareEnrollmentRequest(enrollmentID, "tls", csr_pem)
-        Logger.info("Successfully prepared the enrollmentRequest.")
         val enrollment = caClient.enroll(enrollmentID, enrollmentSecret, enrollmentRequestTLS)
         Logger.info("Successfully performed and retrieved enrollment.")
         certificate = enrollment.getCert
@@ -41,9 +40,9 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       networkDescriptionPath.toString,
       adminName
     )
-
     putNewCertificateOnChain(adminName, channel, chaincode, adminWalletPath, networkDescriptionPath, enrollmentID, certificate)
 
+    Logger.debug(s"Finished Enrollment process (CSR).")
     certificate
   }
 
@@ -58,6 +57,7 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       chaincode: String,
       networkDescriptionPath: Path
   ): String = {
+    Logger.debug(s"Begin regular Enrollment process (no CSR). Enrolling User '$enrollmentID'")
     // return certificate
     var certificate: String = ""
 
@@ -86,7 +86,7 @@ object EnrollmentManager extends EnrollmentManagerTrait {
           val identity = Identities.newX509Identity(organisationId, enrollment)
           Logger.info("Created identity from enrollment.")
           WalletManager.putIdentity(walletPath, enrollmentID, identity)
-          Logger.info(s"Successfully enrolled user $enrollmentID and inserted it into the wallet.")
+          Logger.info(s"Successfully enrolled user $enrollmentID and inserted the certificate into the wallet.")
         },
         channel,
         chaincode,
@@ -97,6 +97,7 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       putNewCertificateOnChain(enrollmentID, channel, chaincode, walletPath, networkDescriptionPath, enrollmentID, certificate)
     }
 
+    Logger.debug(s"Finished Enrollment process (no CSR).")
     certificate
   }
 
@@ -104,7 +105,7 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       newEnrollmentID: String, newCertificate: String): Unit = {
     // store certificate on chaincode
     val certificateConnection = ConnectionCertificate(connectionName, channel, chaincode, connectionWalletPath, networkDescriptionPath)
-    certificateConnection.addOrUpdateCertificate(newEnrollmentID, newCertificate)
+    addOrUpdateCertificate(certificateConnection, newEnrollmentID, newCertificate)
   }
 
   private def prepareEnrollmentRequest(
@@ -124,5 +125,19 @@ object EnrollmentManager extends EnrollmentManagerTrait {
 
   private def generateGarbageKeyPair(): KeyPair = {
     KeyPairGenerator.getInstance("RSA").generateKeyPair()
+  }
+
+  private def addOrUpdateCertificate(certificateConnection: ConnectionCertificate, enrollmentID: String, enrollmentCertificate: String): String = {
+    try {
+      Logger.info(s"Try add new certificate for enrollmentID: $enrollmentID")
+      certificateConnection.addCertificate(enrollmentID, enrollmentCertificate)
+    }
+    catch {
+      case _: Throwable => {
+        Logger.info(s"Certificate for user aleady exists: $enrollmentID")
+        Logger.info(s"Update Certificate")
+        certificateConnection.updateCertificate(enrollmentID, enrollmentCertificate)
+      }
+    }
   }
 }

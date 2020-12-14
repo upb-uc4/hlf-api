@@ -129,6 +129,12 @@ trait ConnectionTrait extends AutoCloseable {
     transactionPayload.toByteArray
   }
 
+  /** Submits a given approval transaction and it's corresponding "real" transaction
+    *
+    * @param transactionBytes approvalTransaction bytes submitted
+    * @param signature the signature authenticating the user
+    * @return Tuple containing (approvalResult, realTransactionResult)
+    */
   def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte]): (String, String) = {
     val transactionPayload: Payload = Payload.parseFrom(transactionBytes)
     val transactionId: String = TransactionHelper.getTransactionIdFromHeader(transactionPayload.getHeader)
@@ -145,17 +151,11 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   private def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
-
     val realContractName: String = params.head
     val realTransactionName: String = params.tail.head
     val realTransactionParamsString: String = params.tail.tail.head
     val realTransactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(realTransactionParamsString, classOf[util.ArrayList[String]])
     val realTransactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(realTransactionParamsArrayList).asScala.toSeq
-
-    // Logging
-    Logger.warn("contractName" + realContractName)
-    Logger.warn("transactionName" + realTransactionName)
-    Logger.warn("params" + realTransactionParams.mkString(", "))
 
     // check contract match
     if (realContractName != this.contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $realContractName")
@@ -168,6 +168,8 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   private def privateSubmitTransaction(transient: Boolean, transactionName: String, params: String*): Array[Byte] = {
+    Logger.info(s"Submit Transaction: '$transactionName' with parameters: $params")
+
     testAnyParamsNull(transactionName, params: _*)
     try {
       if (transient) {

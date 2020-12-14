@@ -23,21 +23,15 @@ object RegistrationManager extends RegistrationManagerTrait {
       maxEnrollments: Integer = 1,
       newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
   ): String = {
+    Logger.debug(s"Begin Registration process. Adding User '$userName' as Admin '$adminName'")
     PublicExceptionHelper.wrapInvocationWithNetworkException[String](
       () => {
-        // retrieve Admin Identity as a User
         val adminIdentity: X509Identity = WalletManager.getX509Identity(adminWalletPath, adminName)
-        Logger.debug(s"AdminIdentity: '${adminIdentity.getCertificate.toString}'")
         val admin: User = RegistrationManager.getUserFromX509Identity(adminIdentity, affiliation)
-        Logger.debug(s"AdminUser: '${admin.toString}'")
-
-        // prepare registrationRequest
         val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName, maxEnrollments, newUserType)
-
-        // get caClient
         val caClient: HFCAClient = CAClientManager.getCAClient(caURL, caCert)
 
-        // actually perform the registration process
+        // registration process
         try {
           caClient.register(registrationRequest, admin)
         }
@@ -65,7 +59,6 @@ object RegistrationManager extends RegistrationManagerTrait {
   // TODO read affiliation from identity?
   private def getUserFromX509Identity(identity: X509Identity, affiliationName: String): User = {
     val name = getNameFromIdentity(identity)
-    Logger.debug(s"Retrieved Name from identity: '$name'")
     new User() {
       override def getName: String = name
       override def getRoles: util.Set[String] = null

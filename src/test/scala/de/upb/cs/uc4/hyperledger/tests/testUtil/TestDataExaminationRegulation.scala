@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests.testUtil
 
 object TestDataExaminationRegulation {
   def validExaminationRegulation(name: String, modules: Seq[String], state: Boolean): String = {
-    val modulesString = TestHelper.getJsonList(modules)
+    val modulesString = TestHelperStrings.getJsonList(modules)
     "{\"name\":\"" + name + "\",\"active\":" + state + ",\"modules\":" + modulesString + "}"
   }
 

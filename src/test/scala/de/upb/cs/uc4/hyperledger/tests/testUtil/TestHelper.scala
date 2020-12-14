@@ -1,17 +1,35 @@
 package de.upb.cs.uc4.hyperledger.tests.testUtil
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper }
-import org.hyperledger.fabric.sdk.security.CryptoPrimitives
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
+import org.hyperledger.fabric.protos.peer.TransactionPackage.Transaction
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers._
 
-import java.security.cert.X509Certificate
-import java.util.Base64
-import scala.util.matching.Regex
-
 object TestHelper {
+
+  def testTransactionBytesContainsInfo(transactionBytes: Array[Byte], contents: Seq[String]): Unit = {
+    val transaction = Transaction.parseFrom(transactionBytes).toString
+    TestHelper.testProtobufContainsInfo(transaction, contents)
+  }
+  def testProposalPayloadBytesContainsInfo(proposalBytes: Array[Byte], contents: Seq[String]): Unit = {
+    val approvalProposalPayload = Proposal.parseFrom(proposalBytes).getPayload.toStringUtf8
+    TestHelper.testProtobufContainsInfo(approvalProposalPayload, contents)
+  }
+  private def testProtobufContainsInfo(payload: String, contents: Seq[String]): Unit = {
+    // payload contains Approval TransactionInfo
+    payload should include("UC4.Approval")
+    payload should include("approveTransaction")
+    // payload contains approval parameters (target TransactionInfo)
+    contents.foreach(item => clearProtobufInfo(payload) should include(clearProtobufInfo(item)))
+  }
+  private def clearProtobufInfo(item: String): String = {
+    TestHelperStrings.removeNewLinesAndSpaces(item)
+      .replace("\\u003d", "=")
+      .replace("\\", "")
+  }
 
   /// Admissions
   def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, student: String, course: String, module: String, timestamp: String): Assertion =
@@ -22,7 +40,7 @@ object TestHelper {
     compareAdmissions(admission, testResult)
   }
   def compareAdmissions(testObject: String, testResult: String): Assertion = {
-    compareJson(testObject, testResult)
+    TestHelperStrings.compareJson(testObject, testResult)
   }
 
   /// EXAMINATION REGULATIONS
@@ -33,7 +51,7 @@ object TestHelper {
     compareExaminationRegulations(testObject, testResult)
   }
   def compareExaminationRegulations(testObject: String, testResult: String): Assertion = {
-    compareJson(testObject, testResult)
+    TestHelperStrings.compareJson(testObject, testResult)
   }
 
   /// CERTIFICATES
@@ -49,25 +67,6 @@ object TestHelper {
     cleanActual should be(cleanExpected)
   }
 
-  /// GENERAL
-  def compareJson(expected: String, actual: String): Assertion = {
-    val cleanExpected = cleanJson(expected)
-    val cleanActual = cleanJson(actual)
-    cleanActual should be(cleanExpected)
-  }
-  def cleanJson(input: String): String = {
-    input
-      .replace("\n", "")
-      .replace(" ", "")
-  }
-  def getJsonList(items: Seq[String]): String = {
-    "[" + TestHelper.nullableSeqToString(items) + "]"
-  }
-  def nullableSeqToString(input: Seq[String]): String = {
-    if (input == null) ""
-    else input.mkString(", ")
-  }
-
   // Exception
   def testTransactionException(transactionName: String, f: () => Any): Assertion = {
     val result = intercept[TransactionExceptionTrait](f.apply())
@@ -81,17 +80,5 @@ object TestHelper {
     catch {
       case e: Throwable => Logger.err(s"Error during $actionName: ", e)
     }
-  }
-
-  def toPemString(certificate: X509Certificate): String = {
-    import sun.security.provider.X509Factory
-    s"${X509Factory.BEGIN_CERT}\n${Base64.getEncoder.encodeToString(certificate.getEncoded).replaceAll(".{64}", "$0\n")}\n${X509Factory.END_CERT}\n"
-  }
-
-  def getCryptoPrimitives(): CryptoPrimitives = {
-    val crypto: CryptoPrimitives = new CryptoPrimitives()
-    val securityLevel: Integer = 256
-    ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
-    crypto
   }
 }
