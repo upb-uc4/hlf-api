@@ -78,9 +78,6 @@ class UnsignedTransactionTests extends TestBase {
   "The ConnectionMatriculation" when {
     "passing a signed transaction" should {
       "submit the approval transaction to the approval contract" in {
-        // enroll admin
-        super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
-
         // create user
         // get testUser certificate and private key
         val argEnrollmentId = "frontend-signing-tester"
@@ -121,9 +118,6 @@ class UnsignedTransactionTests extends TestBase {
         getResult should include(username)
       }
       "submit the real transaction to the real contract" in {
-        // enroll admin
-        super.tryEnrollment(caURL, tlsCert, walletPath, username, password, organisationId, channel, chaincode, networkDescriptionPath)
-
         // create user
         // get testUser certificate and private key
         val argEnrollmentId = "frontend-signing-tester2"
@@ -169,8 +163,8 @@ class UnsignedTransactionTests extends TestBase {
       }
     }
   }
-  "PrintTests" when {
-    "testing info" should {
+  "PrintTest info " when {
+    "preparing data " should {
       "not fail 1" in {
         val enrollmentId = "105"
         val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)

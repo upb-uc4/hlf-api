@@ -31,28 +31,4 @@ case class ConnectionCertificate(username: String, channel: String, chaincode: S
 
   override def getCertificate(enrollmentId: String): String =
     wrapEvaluateTransaction("getCertificate", enrollmentId)
-
-  override def addOrUpdateCertificate(enrollmentID: String, enrollmentCertificate: String): String = {
-    val alreadyContained = containsCertificate(enrollmentID)
-
-    // store
-    if (!alreadyContained) {
-      Logger.info(s"Storing new certificate for enrollmentID: $enrollmentID")
-      addCertificate(enrollmentID, enrollmentCertificate)
-    }
-    else {
-      Logger.info(s"Updating existing certificate for enrollmentID: $enrollmentID")
-      updateCertificate(enrollmentID, enrollmentCertificate)
-    }
-  }
-
-  private def containsCertificate(enrollmentID: String): Boolean = {
-    try {
-      getCertificate(enrollmentID)
-      true
-    }
-    catch {
-      case _: Throwable => false
-    }
-  }
 }

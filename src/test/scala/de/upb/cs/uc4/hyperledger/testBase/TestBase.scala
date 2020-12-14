@@ -23,41 +23,11 @@ class TestBase extends TestBaseTrait {
   override val channel: String = testBase.channel
   override val chaincode: String = testBase.chaincode
 
-  protected[hyperledger] def tryEnrollment(
-      caURL: String,
-      caCert: Path,
-      walletPath: Path,
-      enrollmentID: String,
-      enrollmentSecret: String,
-      organisationId: String,
-      channel: String,
-      chaincode: String,
-      networkDescriptionPath: Path
-  ): Unit = {
-    debug("Try Enrollment")
-    if (!WalletManager.containsIdentity(this.walletPath, this.username)) {
-      try {
-        debug("Try enrollment with: "
-          + " " + caURL
-          + " " + caCert
-          + " " + walletPath
-          + " " + enrollmentID
-          + " " + enrollmentSecret
-          + " " + organisationId)
-
-        EnrollmentManager.enroll(caURL, caCert, walletPath, enrollmentID, enrollmentSecret, organisationId, channel, chaincode, networkDescriptionPath)
-      }
-      catch {
-        case e: Exception => Logger.warn("Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage)
-      }
-    }
-    debug("Finished Enrollment")
-  }
-
   override def beforeAll(): Unit = {
-    debug("Begin test with testBase Name = " + testBase.getClass.getName)
+    super.beforeAll()
+    Logger.debug("Begin test with testBase Name = " + testBase.getClass.getName)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
-      tryEnrollment(this.caURL, this.tlsCert, this.walletPath, this.username, this.password, this.organisationId, this.channel, this.chaincode, this.networkDescriptionPath)
+      tryAdminEnrollment(this.caURL, this.tlsCert, this.walletPath, this.username, this.password, this.organisationId, this.channel, this.chaincode, this.networkDescriptionPath)
     }
   }
 
@@ -66,10 +36,6 @@ class TestBase extends TestBaseTrait {
   def initializeApproval(userName: String = this.username): ConnectionApprovalsTrait = ConnectionApproval(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeExaminationRegulation(userName: String = this.username): ConnectionExaminationRegulationTrait = ConnectionExaminationRegulation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeAdmission(userName: String = this.username): ConnectionAdmissionTrait = ConnectionAdmission(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-
-  private def debug(message: String): Unit = {
-    Logger.debug("[TestBase] :: " + message)
-  }
 
   def tryRegisterAndEnrollTestUser(enrollmentId: String, affiliation: String): X509IdentityImpl = {
     try {
@@ -81,5 +47,26 @@ class TestBase extends TestBaseTrait {
     }
     val wallet: Wallet = WalletManager.getWallet(this.walletPath)
     wallet.get(enrollmentId).asInstanceOf[X509IdentityImpl]
+  }
+
+  protected[hyperledger] def tryAdminEnrollment(
+      caURL: String,
+      caCert: Path,
+      walletPath: Path,
+      enrollmentID: String,
+      enrollmentSecret: String,
+      organisationId: String,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
+  ): Unit = {
+    if (!WalletManager.containsIdentity(this.walletPath, this.username)) {
+      try {
+        EnrollmentManager.enroll(caURL, caCert, walletPath, enrollmentID, enrollmentSecret, organisationId, channel, chaincode, networkDescriptionPath)
+      }
+      catch {
+        case e: Exception => Logger.warn("Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage)
+      }
+    }
   }
 }
