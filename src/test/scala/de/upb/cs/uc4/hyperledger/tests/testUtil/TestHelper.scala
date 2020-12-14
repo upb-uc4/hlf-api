@@ -19,7 +19,7 @@ object TestHelper {
     payload should include("approveTransaction")
     // payload contains approval parameters (target TransactionInfo)
     contents.foreach(item =>
-      TestHelperStrings.removeNewLines(payload) should include(TestHelperStrings.removeNewLines(item)))
+      TestHelperStrings.removeNewLinesAndSpaces(payload) should include(TestHelperStrings.removeNewLinesAndSpaces(item)))
   }
 
   /// Admissions

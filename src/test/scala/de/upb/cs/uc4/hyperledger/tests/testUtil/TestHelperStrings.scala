@@ -17,12 +17,9 @@ object TestHelperStrings {
     "[" + nullableSeqToString(items) + "]"
   }
   def compareJson(expected: String, actual: String): Assertion = {
-    val cleanExpected = cleanJson(expected)
-    val cleanActual = cleanJson(actual)
+    val cleanExpected = removeNewLinesAndSpaces(expected)
+    val cleanActual = removeNewLinesAndSpaces(actual)
     cleanActual should be(cleanExpected)
-  }
-  def cleanJson(input: String): String = {
-    removeSpaces(removeNewLines(input))
   }
   def nullableSeqToString(input: Seq[String]): String = {
     if (input == null) ""
@@ -30,6 +27,9 @@ object TestHelperStrings {
   }
 
   // ADJUSTMENT
+  def removeNewLinesAndSpaces(input: String): String = {
+    removeSpaces(removeNewLines(input))
+  }
   def normalizeLineEnds(item: String): String = {
     item
       .replace("\r\n", "\n")
