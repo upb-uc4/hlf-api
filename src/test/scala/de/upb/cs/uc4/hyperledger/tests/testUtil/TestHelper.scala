@@ -1,21 +1,31 @@
 package de.upb.cs.uc4.hyperledger.tests.testUtil
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
+import org.hyperledger.fabric.protos.peer.TransactionPackage.Transaction
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers._
 
 object TestHelper {
 
-  def testApprovalPayloadContainsInfo(payload: String, contents: Seq[String]): Unit = {
+  def testTransactionBytesContainsInfo(transactionBytes: Array[Byte], contents: Seq[String]): Unit = {
+    val transaction = Transaction.parseFrom(transactionBytes).toString
+    TestHelper.testProtobufContainsInfo(transaction, contents)
+  }
+  def testProposalPayloadBytesContainsInfo(proposalBytes: Array[Byte], contents: Seq[String]): Unit = {
+    val approvalProposalPayload = Proposal.parseFrom(proposalBytes).getPayload.toStringUtf8
+    TestHelper.testProtobufContainsInfo(approvalProposalPayload, contents)
+  }
+  private def testProtobufContainsInfo(payload: String, contents: Seq[String]): Unit = {
     // payload contains Approval TransactionInfo
     payload should include("UC4.Approval")
     payload should include("approveTransaction")
     // payload contains approval parameters (target TransactionInfo)
-    contents.foreach(item => clearPayloadInfo(payload) should include(clearPayloadInfo(item)))
+    contents.foreach(item => clearProtobufInfo(payload) should include(clearProtobufInfo(item)))
   }
-  private def clearPayloadInfo(item: String): String = {
+  private def clearProtobufInfo(item: String): String = {
     TestHelperStrings.removeNewLinesAndSpaces(item)
       .replace("\\u003d", "=")
       .replace("\\", "")

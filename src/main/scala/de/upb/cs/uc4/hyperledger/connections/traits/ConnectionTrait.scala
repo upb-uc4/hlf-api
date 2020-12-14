@@ -129,6 +129,12 @@ trait ConnectionTrait extends AutoCloseable {
     transactionPayload.toByteArray
   }
 
+  /** Submits a given approval transaction and it's corresponding "real" transaction
+    *
+    * @param transactionBytes approvalTransaction bytes submitted
+    * @param signature the signature authenticating the user
+    * @return Tuple containing (approvalResult, realTransactionResult)
+    */
   def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte]): (String, String) = {
     val transactionPayload: Payload = Payload.parseFrom(transactionBytes)
     val transactionId: String = TransactionHelper.getTransactionIdFromHeader(transactionPayload.getHeader)
