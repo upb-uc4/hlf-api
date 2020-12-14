@@ -90,23 +90,27 @@ class UnsignedTransactionTests extends TestBase {
         // get proposal
         val (proposalApprovalResult, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(
           Identities.toPemString(certificate),
-          jSonMatriculationData = testMatData)
+          jSonMatriculationData = testMatData
+        )
         TestHelper.testProposalPayloadBytesContainsInfo(
           proposalBytes,
-          Seq("UC4.MatriculationData", "addMatriculationData", testMatData))
+          Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
+        )
         proposalApprovalResult should include(username)
 
         // get transaction for signature
         val transactionBytes: Array[Byte] = matriculationConnection.getUnsignedTransaction(
           proposalBytes,
-          crypto.sign(privateKey, proposalBytes))
+          crypto.sign(privateKey, proposalBytes)
+        )
         TestHelper.testTransactionBytesContainsInfo(
           transactionBytes,
-          Seq("UC4.MatriculationData", "addMatriculationData", testMatData))
+          Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
+        )
 
         // sign transaction and submit transaction
-        val transactionSignature: Array[Byte] = crypto.sign(privateKey, transactionBytes)
-        val (transactionApprovalResult: String, transactionResult: String) = matriculationConnection.submitSignedTransaction(transactionBytes, transactionSignature)
+        val (transactionApprovalResult, transactionResult) = matriculationConnection.submitSignedTransaction(
+          transactionBytes, crypto.sign(privateKey, transactionBytes))
         transactionApprovalResult should include(argEnrollmentId)
         transactionApprovalResult should include(username)
         TestHelperStrings.compareJson(testMatData, transactionResult)
@@ -132,12 +136,14 @@ class UnsignedTransactionTests extends TestBase {
         val (_, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(Identities.toPemString(certificate), testAffiliation, testMatData)
         TestHelper.testProposalPayloadBytesContainsInfo(
           proposalBytes,
-          Seq("UC4.MatriculationData", "addMatriculationData", testMatData))
+          Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
+        )
 
         // get transaction for signature
         val transactionBytes: Array[Byte] = matriculationConnection.getUnsignedTransaction(
           proposalBytes,
-          crypto.sign(privateKey, proposalBytes))
+          crypto.sign(privateKey, proposalBytes)
+        )
         TestHelper.testTransactionBytesContainsInfo(
           transactionBytes,
           Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
@@ -146,7 +152,8 @@ class UnsignedTransactionTests extends TestBase {
         // sign transaction and submit transaction
         val (transactionApprovalResult, realTransactionResult) = matriculationConnection.submitSignedTransaction(
           transactionBytes,
-          crypto.sign(privateKey, transactionBytes))
+          crypto.sign(privateKey, transactionBytes)
+        )
         // check real result
         TestHelperStrings.compareJson(testMatData, realTransactionResult)
         // check approvalResult
