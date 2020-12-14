@@ -32,7 +32,11 @@ object TestHelperStrings {
   }
   def normalizeLineEnds(item: String): String = {
     item
+      .replace("\\r\\n", "\n")
+      .replace("\\r\n", "\n")
+      .replace("\r\\n", "\n")
       .replace("\r\n", "\n")
+      .replace("\\r", "\n")
       .replace("\r", "\n")
   }
   def removeSpaces(item: String): String = {
@@ -41,6 +45,7 @@ object TestHelperStrings {
   }
   def removeNewLines(item: String): String = {
     normalizeLineEnds(item)
+      .replace("\\n", "")
       .replace("\n", "")
   }
 }
