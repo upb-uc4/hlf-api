@@ -2,8 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests.testUtil
 
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper }
-import org.hyperledger.fabric.sdk.security.CryptoPrimitives
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers._
 
@@ -18,8 +17,10 @@ object TestHelper {
     payload should include("UC4.Approval")
     payload should include("approveTransaction")
     // payload contains approval parameters (target TransactionInfo)
-    contents.foreach(item =>
-      TestHelperStrings.removeNewLinesAndSpaces(payload) should include(TestHelperStrings.removeNewLinesAndSpaces(item)))
+    contents.foreach(item => clearPayloadInfo(payload) should include(clearPayloadInfo(item)))
+  }
+  private def clearPayloadInfo(item: String): String = {
+    TestHelperStrings.removeNewLinesAndSpaces(item).replace("\\u003d", "=")
   }
 
   /// Admissions
