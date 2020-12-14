@@ -9,7 +9,7 @@ import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper, TestSetup }
+import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper, TestHelperCrypto, TestHelperStrings, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 import org.hyperledger.fabric.gateway.Identities
@@ -19,7 +19,7 @@ import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 
 class UnsignedTransactionTests extends TestBase {
 
-  val crypto: CryptoPrimitives = TestHelper.getCryptoPrimitives()
+  val crypto: CryptoPrimitives = TestHelperCrypto.getCryptoPrimitives
   var certificateConnection: ConnectionCertificateTrait = _
   var matriculationConnection: ConnectionMatriculationTrait = _
 
@@ -41,7 +41,7 @@ class UnsignedTransactionTests extends TestBase {
       "return an unsigned proposal" in {
         val enrollmentId = "100"
         val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
-        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
+        val certificate = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
         val (approvalResult, proposalBytes) = certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         val header = proposal.getHeader.toStringUtf8
@@ -135,7 +135,7 @@ class UnsignedTransactionTests extends TestBase {
         println("\n\n\n##########################\nProposal Bytes:\n##########################\n\n" + Base64.getEncoder.encodeToString(proposalBytes))
 
         // sign proposal with testUser privateKey
-        val crypto: CryptoPrimitives = TestHelper.getCryptoPrimitives()
+        val crypto: CryptoPrimitives = TestHelperCrypto.getCryptoPrimitives
         val signatureBytes = crypto.sign(privateKey, proposalBytes)
         val b64Sig = ByteString.copyFrom(Base64.getEncoder.encode(signatureBytes)).toStringUtf8
         println("\n\n\n##########################\nSignature:\n##########################\n\n" + b64Sig)
@@ -159,7 +159,7 @@ class UnsignedTransactionTests extends TestBase {
 
         // test info stored
         val storedMatData = matriculationConnection.getMatriculationData(argEnrollmentId)
-        TestHelper.compareJson(testMatData, storedMatData)
+        TestHelperStrings.compareJson(testMatData, storedMatData)
       }
     }
   }
@@ -168,7 +168,7 @@ class UnsignedTransactionTests extends TestBase {
       "not fail 1" in {
         val enrollmentId = "105"
         val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
-        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
+        val certificate = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
         val inputMatJSon = TestDataMatriculation.validMatriculationData3("500")
         val (approvalResult, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(certificate, organisationId, inputMatJSon)
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
@@ -177,7 +177,7 @@ class UnsignedTransactionTests extends TestBase {
       "not fail 2" in {
         val enrollmentId = "106"
         val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
-        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
+        val certificate = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4("500")
         val (approvalResult, proposalBytes) = matriculationConnection.getProposalUpdateMatriculationData(certificate, organisationId, inputMatJSon)
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
@@ -186,7 +186,7 @@ class UnsignedTransactionTests extends TestBase {
       "not fail 3" in {
         val enrollmentId = "107"
         val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
-        val certificate = TestHelper.toPemString(testUserIdentity.getCertificate)
+        val certificate = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
         val (approvalResult, proposalBytes) = matriculationConnection.getProposalAddEntriesToMatriculationData(
           certificate,
           organisationId,
