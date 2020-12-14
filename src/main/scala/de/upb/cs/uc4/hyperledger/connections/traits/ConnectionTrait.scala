@@ -95,11 +95,12 @@ trait ConnectionTrait extends AutoCloseable {
   // TODO read affiliation from certificate
   protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, transactionName: String, params: String*): (String, Array[Byte]) = {
     // throw if transaction is faulty / illegal
-    try{
+    try {
       val executionTest = this.privateEvaluateTransaction(transactionName, params: _*)
       this.wrapTransactionResult(transactionName, executionTest)
-    } catch {
-      case e: TransactionExceptionTrait => if(!e.payload.contains("HLInsufficientApprovals")) throw e
+    }
+    catch {
+      case e: TransactionExceptionTrait => if (!e.payload.contains("HLInsufficientApprovals")) throw e
     }
 
     // approve transaction as ADMIN managing the current connection
