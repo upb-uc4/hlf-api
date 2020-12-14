@@ -18,7 +18,10 @@ object TestHelper {
     payload should include("UC4.Approval")
     payload should include("approveTransaction")
     // payload contains approval parameters (target TransactionInfo)
-    contents.foreach(item => payload.stripLineEnd.stripMargin should include(item.stripLineEnd.stripMargin))
+    contents.foreach(item => normalizeLineEnds(payload).stripMargin should include(normalizeLineEnds(item).stripMargin))
+  }
+  private def normalizeLineEnds(item: String): String = {
+    item.replace("\r\n", "\n").replace("\r", "\n")
   }
 
   /// Admissions
