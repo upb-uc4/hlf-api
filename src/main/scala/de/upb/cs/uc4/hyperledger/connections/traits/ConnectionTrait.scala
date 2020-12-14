@@ -99,7 +99,7 @@ trait ConnectionTrait extends AutoCloseable {
       val executionTest = this.privateEvaluateTransaction(transactionName, params: _*)
       this.wrapTransactionResult(transactionName, executionTest)
     } catch {
-      case e: TransactionExceptionTrait => if(!e.payload.contains("insufficientApprovals")) throw e
+      case e: TransactionExceptionTrait => if(!e.payload.contains("HLInsufficientApprovals")) throw e
     }
 
     // approve transaction as ADMIN managing the current connection
