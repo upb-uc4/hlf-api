@@ -110,7 +110,8 @@ class UnsignedTransactionTests extends TestBase {
 
         // sign transaction and submit transaction
         val (transactionApprovalResult, transactionResult) = matriculationConnection.submitSignedTransaction(
-          transactionBytes, crypto.sign(privateKey, transactionBytes))
+          transactionBytes, crypto.sign(privateKey, transactionBytes)
+        )
         transactionApprovalResult should include(argEnrollmentId)
         transactionApprovalResult should include(username)
         TestHelperStrings.compareJson(testMatData, transactionResult)
