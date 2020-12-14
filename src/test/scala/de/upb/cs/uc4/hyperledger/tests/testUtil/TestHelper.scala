@@ -6,10 +6,6 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers._
 
-import java.security.cert.X509Certificate
-import java.util.Base64
-import scala.util.matching.Regex
-
 object TestHelper {
 
   def testApprovalPayloadContainsInfo(payload: String, contents: Seq[String]): Unit = {
@@ -20,7 +16,9 @@ object TestHelper {
     contents.foreach(item => clearPayloadInfo(payload) should include(clearPayloadInfo(item)))
   }
   private def clearPayloadInfo(item: String): String = {
-    TestHelperStrings.removeNewLinesAndSpaces(item).replace("\\u003d", "=")
+    TestHelperStrings.removeNewLinesAndSpaces(item)
+      .replace("\\u003d", "=")
+      .replace("\\", "")
   }
 
   /// Admissions
