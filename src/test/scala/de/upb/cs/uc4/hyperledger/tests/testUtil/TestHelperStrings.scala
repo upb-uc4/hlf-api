@@ -41,6 +41,6 @@ object TestHelperStrings {
   }
   def removeNewLines(item: String): String = {
     normalizeLineEnds(item)
-      .replace(" ", "")
+      .replace("\n", "")
   }
 }
