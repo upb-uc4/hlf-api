@@ -2,17 +2,14 @@ package de.upb.cs.uc4.hyperledger.tests
 
 import java.nio.charset.StandardCharsets
 import java.security.PrivateKey
-import java.security.cert.X509Certificate
 import java.util.Base64
 
-import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper, TestHelperCrypto, TestHelperStrings, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
-import org.hyperledger.fabric.gateway.Identities
 import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 
@@ -36,7 +33,7 @@ class UnsignedTransactionTests extends TestBase {
   }
 
   private def prepareUser(userName: String): (PrivateKey, String) = {
-    // create user
+    Logger.info(s"prepare User:: $userName")
     // get testUser certificate and private key
     val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(userName, organisationId)
     val privateKey: PrivateKey = testUserIdentity.getPrivateKey
@@ -178,6 +175,7 @@ class UnsignedTransactionTests extends TestBase {
       }
     }
   }
+
   "PrintTest info " when {
     "preparing data for matriculation " should {
       "print info for addMatriculationData" in {
@@ -195,7 +193,7 @@ class UnsignedTransactionTests extends TestBase {
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddMatriculationDataTransaction:: $transactionInfo")
       }
-      "print info for addMatriculationData" in {
+      "print info for updateMatriculationData" in {
         val testUserId = "frontend-signing-tester-info-updateMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
@@ -210,7 +208,7 @@ class UnsignedTransactionTests extends TestBase {
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
         Logger.debug(s"UpdateMatriculationDataTransaction:: $transactionInfo")
       }
-      "print info for addMatriculationData" in {
+      "print info for addEntriesToMatriculationData" in {
         val testUserId = "frontend-signing-tester-info-addEntriesToMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
@@ -228,4 +226,5 @@ class UnsignedTransactionTests extends TestBase {
       }
     }
   }
+  
 }
