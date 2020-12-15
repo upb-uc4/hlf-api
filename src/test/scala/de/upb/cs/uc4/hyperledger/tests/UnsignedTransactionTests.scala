@@ -27,8 +27,7 @@ class UnsignedTransactionTests extends TestBase {
     certificateConnection = initializeCertificate()
     matriculationConnection = initializeMatriculation()
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
-    // prepare ledger State
-    matriculationConnection.addMatriculationData(TestDataMatriculation.validMatriculationData3("501"))
+    TestSetup.establishExistingMatriculation(matriculationConnection, "601")
   }
 
   override def afterAll(): Unit = {
@@ -199,7 +198,7 @@ class UnsignedTransactionTests extends TestBase {
         val enrollmentId = "106"
         val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
         val certificate = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
-        val inputMatJSon = TestDataMatriculation.validMatriculationData4("501")
+        val inputMatJSon = TestDataMatriculation.validMatriculationData4("601")
         val (approvalResult, proposalBytes) = matriculationConnection.getProposalUpdateMatriculationData(certificate, organisationId, inputMatJSon)
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"UpdateMatriculationDataProposal:: $info")
@@ -211,7 +210,7 @@ class UnsignedTransactionTests extends TestBase {
         val (approvalResult, proposalBytes) = matriculationConnection.getProposalAddEntriesToMatriculationData(
           certificate,
           organisationId,
-          "501",
+          "601",
           TestDataMatriculation.validMatriculationEntry
         )
         val info = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
