@@ -140,7 +140,8 @@ class UnsignedTransactionTests extends TestBase {
         // get proposal
         val (_, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(
           certificate,
-          jSonMatriculationData = testMatData)
+          jSonMatriculationData = testMatData
+        )
         TestHelper.testProposalPayloadBytesContainsInfo(
           proposalBytes,
           Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
@@ -252,7 +253,7 @@ class UnsignedTransactionTests extends TestBase {
         admissionConnection.addAdmission(inputAdmissionJson)
 
         // Log proposal
-        val (approvalResult, proposalBytes) = admissionConnection.getProposalDropAdmission(certificate, organisationId, testUserId+":C1")
+        val (approvalResult, proposalBytes) = admissionConnection.getProposalDropAdmission(certificate, organisationId, testUserId + ":C1")
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"DropAdmissionProposal:: $proposalInfo")
 
@@ -279,5 +280,5 @@ class UnsignedTransactionTests extends TestBase {
       }
     }
   }
-  
+
 }
