@@ -7,7 +7,7 @@ import java.util.concurrent.TimeoutException
 
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
-import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionApproval
+import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionOperation
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
@@ -37,7 +37,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   // setting up connections
   lazy val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, contractName, walletPath, networkDescriptionPath)
-  def approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
+  def operationsConnection: Option[ConnectionOperationsTrait] = Some(ConnectionOperation(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   /** Gets the version returned by the designated contract.
     * By default all contracts return the version of the chaincode.
@@ -49,11 +49,11 @@ trait ConnectionTrait extends AutoCloseable {
   private def approveTransaction(transactionName: String, params: String*): String = {
     var approvalResult: String = ""
     // setup approvalConnection and
-    // submit my approval to approvalContract
-    val approvalConnectionObject = approvalConnection
-    if (approvalConnectionObject.isDefined) {
-      approvalResult = approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
-      approvalConnectionObject.get.close()
+    // submit my approval to operationsContract
+    val operationsConnectionObject = operationsConnection
+    if (operationsConnectionObject.isDefined) {
+      approvalResult = operationsConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
+      operationsConnectionObject.get.close()
     }
     approvalResult
   }
@@ -112,7 +112,7 @@ trait ConnectionTrait extends AutoCloseable {
     val signature = ByteString.copyFrom(signatureBytes)
     val proposal = Proposal.parseFrom(proposalBytes)
     val (transaction: TransactionImpl, signedProposal: SignedProposal) =
-      TransactionHelper.createSignedProposal(approvalConnection.get, proposal, signature)
+      TransactionHelper.createSignedProposal(operationsConnection.get, proposal, signature)
 
     // submit approval proposal
     val channelObj: Channel = this.gateway.getNetwork(channel).getChannel
@@ -121,7 +121,7 @@ trait ConnectionTrait extends AutoCloseable {
     val transactionName = TransactionHelper.getTransactionNameFromProposal(transactionProposal)
     val transactionParams = TransactionHelper.getTransactionParamsFromProposal(transactionProposal)
     val transactionId = TransactionHelper.getTransactionIdFromProposal(transactionProposal)
-    val (_, ctx: TransactionContext, _) = TransactionHelper.createTransactionInfo(this.approvalConnection.get.contract, transactionName, transactionParams, Some(transactionId))
+    val (_, ctx: TransactionContext, _) = TransactionHelper.createTransactionInfo(this.operationsConnection.get.contract, transactionName, transactionParams, Some(transactionId))
     val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
 
     val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
@@ -139,7 +139,7 @@ trait ConnectionTrait extends AutoCloseable {
     val transactionPayload: Payload = Payload.parseFrom(transactionBytes)
     val transactionId: String = TransactionHelper.getTransactionIdFromHeader(transactionPayload.getHeader)
     val (transactionName, params) = TransactionHelper.getParametersFromTransactionPayload(transactionPayload)
-    val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.approvalConnection.get.contract, transactionName, params, Some(transactionId))
+    val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.operationsConnection.get.contract, transactionName, params, Some(transactionId))
     val response: Array[Byte] = TransactionHelper.sendTransaction(this, channel, ctx, this.gateway.getNetwork(channel).getChannel, ByteString.copyFrom(transactionBytes), signature, transactionId)
     val approvalResult = wrapTransactionResult(transactionName, response)
 
