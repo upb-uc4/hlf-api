@@ -8,14 +8,14 @@ import java.util.concurrent.TimeoutException
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionOperation
-import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
-import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
+import de.upb.cs.uc4.hyperledger.exceptions.traits.{HyperledgerExceptionTrait, TransactionExceptionTrait}
+import de.upb.cs.uc4.hyperledger.exceptions.{HyperledgerException, NetworkException, TransactionException}
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
-import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
+import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, ReflectionHelper, TransactionHelper}
+import org.hyperledger.fabric.gateway.impl.{ContractImpl, GatewayImpl, TransactionImpl}
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.protos.common.Common.Payload
-import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
+import org.hyperledger.fabric.protos.peer.ProposalPackage.{Proposal, SignedProposal}
 import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
@@ -37,6 +37,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   // setting up connections
   lazy val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, contractName, walletPath, networkDescriptionPath)
+
   def operationsConnection: Option[ConnectionOperationsTrait] = Some(ConnectionOperation(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   /** Gets the version returned by the designated contract.
@@ -61,9 +62,9 @@ trait ConnectionTrait extends AutoCloseable {
   /** Wrapper for a submission transaction
     * Translates the result byte-array to a string and throws an error if said string contains an error.
     *
-    * @param transient        boolean flag to determine transaction to be transient or not.
-    * @param transactionName  transaction to call
-    * @param params           parameters to feed into transaction
+    * @param transient       boolean flag to determine transaction to be transient or not.
+    * @param transactionName transaction to call
+    * @param params          parameters to feed into transaction
     * @return result as a string
     */
   @throws[TransactionExceptionTrait]
@@ -80,7 +81,7 @@ trait ConnectionTrait extends AutoCloseable {
     * Translates the result byte-array to a string and throws an error if said string contains an error.
     *
     * @param transactionName transaction to call
-    * @param params        parameters to feed into transaction
+    * @param params          parameters to feed into transaction
     * @return result as a string
     */
   @throws[TransactionExceptionTrait]
@@ -132,7 +133,7 @@ trait ConnectionTrait extends AutoCloseable {
   /** Submits a given approval transaction and it's corresponding "real" transaction
     *
     * @param transactionBytes approvalTransaction bytes submitted
-    * @param signature the signature authenticating the user
+    * @param signature        the signature authenticating the user
     * @return Tuple containing (approvalResult, realTransactionResult)
     */
   def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte]): (String, String) = {
@@ -193,8 +194,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException        => throw NetworkException(innerException = ex)
-      case ex: Exception               => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException => throw NetworkException(innerException = ex)
+      case ex: Exception => throw HyperledgerException(transactionName, ex)
     }
   }
 
@@ -206,8 +207,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException        => throw NetworkException(innerException = ex)
-      case ex: Exception               => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException => throw NetworkException(innerException = ex)
+      case ex: Exception => throw HyperledgerException(transactionName, ex)
     }
   }
 
