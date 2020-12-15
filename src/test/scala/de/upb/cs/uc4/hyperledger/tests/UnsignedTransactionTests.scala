@@ -250,7 +250,7 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-dropAdmission"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
-        admissionConnection.addAdmission(inputAdmissionJson)
+        // TODO: prepare for validity test: admissionConnection.addAdmission(inputAdmissionJson)
 
         // Log proposal
         val (approvalResult, proposalBytes) = admissionConnection.getProposalDropAdmission(certificate, organisationId, testUserId + ":C1")
@@ -266,7 +266,7 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-getAdmission"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
-        admissionConnection.addAdmission(inputAdmissionJson)
+        // TODO: prepare for validity test: admissionConnection.addAdmission(inputAdmissionJson)
 
         // Log proposal
         val (approvalResult, proposalBytes) = admissionConnection.getProposalGetAdmission(certificate, organisationId, testUserId, "C1", "MatriculationTestModule.1")
