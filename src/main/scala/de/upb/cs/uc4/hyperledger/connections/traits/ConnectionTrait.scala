@@ -100,7 +100,11 @@ trait ConnectionTrait extends AutoCloseable {
       this.wrapTransactionResult(transactionName, executionTest)
     }
     catch {
-      case e: TransactionExceptionTrait => if (!e.payload.contains("HLInsufficientApprovals")) throw e
+      case e: TransactionExceptionTrait =>{
+        if (!e.payload.contains("HLInsufficientApprovals")) {
+          throw Logger.err("Error during test Execution", e)
+        }
+      }
     }
 
     // approve transaction as ADMIN managing the current connection
