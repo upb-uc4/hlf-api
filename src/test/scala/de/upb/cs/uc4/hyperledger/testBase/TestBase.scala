@@ -43,7 +43,7 @@ class TestBase extends TestBaseTrait {
       EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
     }
     catch {
-      case _: Throwable =>
+      case e: Throwable => Logger.err(s"Register and Enroll test user '$enrollmentId' failed.", e)
     }
     val wallet: Wallet = WalletManager.getWallet(this.walletPath)
     wallet.get(enrollmentId).asInstanceOf[X509IdentityImpl]
@@ -65,7 +65,7 @@ class TestBase extends TestBaseTrait {
         EnrollmentManager.enroll(caURL, caCert, walletPath, enrollmentID, enrollmentSecret, organisationId, channel, chaincode, networkDescriptionPath)
       }
       catch {
-        case e: Exception => Logger.warn("Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage)
+        case e: Exception => Logger.warn("Admin Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage)
       }
     }
   }
