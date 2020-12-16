@@ -1,4 +1,4 @@
-# <a id="v0.14.3" />[v0.14.3 - WIP](https://github.com/upb-uc4/hyperledger_api/compare/v0.14.2...v0.14.3) (2020-12-09)
+# <a id="v0.14.5" />[v0.14.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.14.2...v0.14.5) (2020-12-16)
 
 ## Feature
 
