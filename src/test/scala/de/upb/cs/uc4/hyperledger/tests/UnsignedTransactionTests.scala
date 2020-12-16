@@ -51,9 +51,9 @@ class UnsignedTransactionTests extends TestBase {
   "The ConnectionCertificate" when {
     "querying for an unsigned proposal" should {
       "return an unsigned proposal" in {
-        val testUserId = "100"
+        val testUserId = "frontend-signing-tester-updateCertTest-success"
         val (privateKey, certificate) = prepareUser(testUserId)
-        val (approvalResult, proposalBytes) = certificateConnection.getProposalAddCertificate(certificate, organisationId, testUserId, certificate)
+        val (approvalResult, proposalBytes) = certificateConnection.getProposalUpdateCertificate(certificate, organisationId, testUserId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         val header = proposal.getHeader.toStringUtf8
 
@@ -63,7 +63,7 @@ class UnsignedTransactionTests extends TestBase {
         // payload contains Approval TransactionInfo
         TestHelper.testProposalPayloadBytesContainsInfo(proposalBytes, Seq(
           "UC4.Certificate",
-          "addCertificate",
+          "updateCertificate",
           testUserId,
           certificate
         ))
@@ -71,7 +71,7 @@ class UnsignedTransactionTests extends TestBase {
     }
     "passing a wrongly-signed transaction" should {
       "deny the transaction on the ledger" in {
-        val testUserId = "101"
+        val testUserId = "frontend-signing-tester-updateCertTest-denyCert"
         val (privateKey, certificate) = prepareUser(testUserId)
 
         val wrongCertificate =
@@ -90,7 +90,7 @@ class UnsignedTransactionTests extends TestBase {
     }
     "getting a proposal for a faulty transaction " should {
       "deny getting the proposal and throw a matching exception" in {
-        val enrollmentId = "102"
+        val enrollmentId = "frontend-signing-tester-updateCertTest-denyTransaction"
         val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
         val certificate = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
         val exception = intercept[TransactionExceptionTrait](certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate))
@@ -214,6 +214,7 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-updateMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
+        matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
         val (approvalResult, proposalBytes) = matriculationConnection.getProposalUpdateMatriculationData(certificate, organisationId, inputMatJSon)
@@ -229,6 +230,7 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-addEntriesToMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
+        matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
         val (approvalResult, proposalBytes) = matriculationConnection.getProposalAddEntriesToMatriculationData(certificate, organisationId, testUserId,
@@ -248,6 +250,8 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-addAdmission"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
+        val matriculationData = TestDataMatriculation.validMatriculationData4(testUserId)
+        matriculationConnection.addMatriculationData(matriculationData)
 
         // Log proposal
         val (approvalResult, proposalBytes) = admissionConnection.getProposalAddAdmission(certificate, organisationId, inputAdmissionJson)
@@ -278,8 +282,6 @@ class UnsignedTransactionTests extends TestBase {
       "print info for getAdmission" in {
         val testUserId = "frontend-signing-tester-info-getAdmission"
         val (privateKey, certificate) = prepareUser(testUserId)
-        val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
-        // TODO: prepare for validity test: admissionConnection.addAdmission(inputAdmissionJson)
 
         // Log proposal
         val (approvalResult, proposalBytes) = admissionConnection.getProposalGetAdmission(certificate, organisationId, testUserId, "C1", "MatriculationTestModule.1")

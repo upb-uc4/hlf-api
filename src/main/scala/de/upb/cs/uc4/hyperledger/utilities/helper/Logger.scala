@@ -7,13 +7,13 @@ protected[hyperledger] object Logger {
     *
     * @return A new Exception encapsulating the error.
     */
-  def err(message: String, e: Throwable = null): Exception = {
+  def err(message: String, exception: Throwable = null): Throwable = {
     val msg = s"""
               [MESSAGE] :: $message
-              [ERROR] :: ${getInfoFromException(e)}
+              [ERROR] :: ${getInfoFromThrowable(exception)}
               """
     println(msg)
-    new Exception(msg, e)
+    exception
   }
 
   /** Logger utility to encapsulate printing warning messages.
@@ -37,12 +37,12 @@ protected[hyperledger] object Logger {
     println(s"[INFO] :: $message")
   }
 
-  def getInfoFromException(exception: Throwable): String = {
+  def getInfoFromThrowable(exception: Throwable): String = {
     if (exception != null) {
       s"""
         Exception-Message :: ${exception.getMessage}
         Exception-StackTrace :: ${exception.getStackTrace.mkString("Array(", ", ", ")")}
-        Exception-Inner :: ${getInfoFromException(exception.getCause)}
+        Exception-Inner :: ${getInfoFromThrowable(exception.getCause)}
       """
     }
     else {
