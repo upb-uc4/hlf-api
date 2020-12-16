@@ -15,7 +15,7 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalAddAdmission(certificate: String, affiliation: String = AFFILITATION, admission: String): (String, Array[Byte])
+  def getProposalAddAdmission(certificate: String, affiliation: String = AFFILIATION, admission: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits the "dropAdmission" query as current user (admin).
@@ -27,7 +27,7 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalDropAdmission(certificate: String, affiliation: String = AFFILITATION, admissionId: String): (String, Array[Byte])
+  def getProposalDropAdmission(certificate: String, affiliation: String = AFFILIATION, admissionId: String): (String, Array[Byte])
 
   /** Retrieves a proposal for the designated query
     * Also submits the "getAdmissions" query as current user (admin).
@@ -41,7 +41,7 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetAdmission(certificate: String, affiliation: String = AFFILITATION, enrollmentId: String = "", courseId: String = "", moduleId: String = ""): (String, Array[Byte])
+  def getProposalGetAdmission(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String = "", courseId: String = "", moduleId: String = ""): (String, Array[Byte])
 
   /** Submits the "addAdmission" query.
     *
