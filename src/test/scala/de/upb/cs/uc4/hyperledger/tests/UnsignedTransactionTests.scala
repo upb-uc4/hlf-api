@@ -4,9 +4,7 @@ import java.nio.charset.StandardCharsets
 import java.security.PrivateKey
 import java.util.Base64
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionMatriculationTrait }
-import de.upb.cs.uc4.hyperledger.exceptions.traits.HyperledgerExceptionTrait
-import com.google.protobuf.ByteString
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
@@ -52,8 +50,8 @@ class UnsignedTransactionTests extends TestBase {
     "querying for an unsigned proposal" should {
       "return an unsigned proposal" in {
         val testUserId = "frontend-signing-tester-updateCertTest-success"
-        val (privateKey, certificate) = prepareUser(testUserId)
-        val (approvalResult, proposalBytes) = certificateConnection.getProposalUpdateCertificate(certificate, organisationId, testUserId, certificate)
+        val (_, certificate) = prepareUser(testUserId)
+        val (_, proposalBytes) = certificateConnection.getProposalUpdateCertificate(certificate, organisationId, testUserId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         val header = proposal.getHeader.toStringUtf8
 
@@ -72,16 +70,14 @@ class UnsignedTransactionTests extends TestBase {
     "passing a wrongly-signed transaction" should {
       "deny the transaction on the ledger" in {
         val testUserId = "frontend-signing-tester-updateCertTest-denyCert"
-        val (privateKey, certificate) = prepareUser(testUserId)
+        val (privateKey, _) = prepareUser(testUserId)
 
         val wrongCertificate =
           "-----BEGIN CERTIFICATE-----\nMIICxjCCAm2gAwIBAgIUGJFrzMxyOAdnJErfr+UfDrLDJb4wCgYIKoZIzj0EAwIw\nYDELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK\nEwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMREwDwYDVQQDEwhyY2Etb3Jn\nMTAeFw0yMDEwMjAxMDEzMDBaFw0yMTEwMjAxMDE4MDBaMDgxDjAMBgNVBAsTBWFk\nbWluMSYwJAYDVQQDEx1zY2FsYS1yZWdpc3RyYXRpb24tYWRtaW4tb3JnMTBZMBMG\nByqGSM49AgEGCCqGSM49AwEHA0IABLStxuihhyb2XU0wzMhV3Su2Dr7LUI4z/IeL\nzeUDzhcqnZxLDN5w43rV0FXu4yRq0krOaxRhpAY65dmQQ6PRrzujggErMIIBJzAO\nBgNVHQ8BAf8EBAMCA6gwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMAwG\nA1UdEwEB/wQCMAAwHQYDVR0OBBYEFLAa99vOXhJylch+MQGthFCG/v+RMB8GA1Ud\nIwQYMBaAFBJ7z3hS1NU4HpEaFgyWKir699s5MCgGA1UdEQQhMB+CHXNjYWxhLXJl\nZ2lzdHJhdGlvbi1hZG1pbi1vcmcxMH4GCCoDBAUGBwgBBHJ7ImF0dHJzIjp7ImFk\nbWluIjoidHJ1ZSIsImhmLkFmZmlsaWF0aW9uIjoiIiwiaGYuRW5yb2xsbWVudElE\nIjoic2NhbGEtcmVnaXN0cmF0aW9uLWFkbWluLW9yZzEiLCJoZi5UeXBlIjoiYWRt\naW4ifX0wCgYIKoZIzj0EAwIDRwAwRAIgEjWf7bQyGkHf2bj16MyQ874wCWOb8l2M\n60MlJ4eDgosCIEbD4+stNqZKKsJ+C48IerpOJD3jwkLG+8y7YuxTpx8Z\n-----END CERTIFICATE-----\n"
-        val (approvalResult, proposalBytes) = certificateConnection.getProposalUpdateCertificate(wrongCertificate, organisationId, testUserId, wrongCertificate)
-        val proposal: Proposal = Proposal.parseFrom(proposalBytes)
+        val (_, proposalBytes) = certificateConnection.getProposalUpdateCertificate(wrongCertificate, organisationId, testUserId, wrongCertificate)
 
-        // fake signature
-        val signature = crypto.sign(privateKey, proposalBytes)
-        // val signature = ByteString.copyFrom(Base64.getDecoder.decode("MEUCIQD92OsJsVVFqFfifMV14ROiL5Ni/RaOBkR0DqzetvPfkQIgcrgu9vxr5TuZY6lft5adCETaC3CSE8QA+bs9MheeLcI="))
+        // fake signature for given certificate
+        val signature: Array[Byte] = crypto.sign(privateKey, proposalBytes)
 
         // try use signature
         val result = intercept[HyperledgerExceptionTrait](certificateConnection.getUnsignedTransaction(proposalBytes, signature))
@@ -201,7 +197,7 @@ class UnsignedTransactionTests extends TestBase {
         val inputMatJSon = TestDataMatriculation.validMatriculationData3(testUserId)
 
         // Log proposal
-        val (approvalResult, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(certificate, organisationId, inputMatJSon)
+        val (_, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(certificate, organisationId, inputMatJSon)
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddMatriculationDataProposal:: $proposalInfo")
 
@@ -217,7 +213,7 @@ class UnsignedTransactionTests extends TestBase {
         matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
-        val (approvalResult, proposalBytes) = matriculationConnection.getProposalUpdateMatriculationData(certificate, organisationId, inputMatJSon)
+        val (_, proposalBytes) = matriculationConnection.getProposalUpdateMatriculationData(certificate, organisationId, inputMatJSon)
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"UpdateMatriculationDataProposal:: $proposalInfo")
 
@@ -233,7 +229,7 @@ class UnsignedTransactionTests extends TestBase {
         matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
-        val (approvalResult, proposalBytes) = matriculationConnection.getProposalAddEntriesToMatriculationData(certificate, organisationId, testUserId,
+        val (_, proposalBytes) = matriculationConnection.getProposalAddEntriesToMatriculationData(certificate, organisationId, testUserId,
           TestDataMatriculation.validMatriculationEntry)
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddEntriesToMatriculationDataProposal:: $proposalInfo")
@@ -254,7 +250,7 @@ class UnsignedTransactionTests extends TestBase {
         matriculationConnection.addMatriculationData(matriculationData)
 
         // Log proposal
-        val (approvalResult, proposalBytes) = admissionConnection.getProposalAddAdmission(certificate, organisationId, inputAdmissionJson)
+        val (_, proposalBytes) = admissionConnection.getProposalAddAdmission(certificate, organisationId, inputAdmissionJson)
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddAdmissionProposal:: $proposalInfo")
 
@@ -270,7 +266,7 @@ class UnsignedTransactionTests extends TestBase {
         admissionConnection.addAdmission(inputAdmissionJson)
 
         // Log proposal
-        val (approvalResult, proposalBytes) = admissionConnection.getProposalDropAdmission(certificate, organisationId, testUserId + ":C1")
+        val (_, proposalBytes) = admissionConnection.getProposalDropAdmission(certificate, organisationId, testUserId + ":C1")
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"DropAdmissionProposal:: $proposalInfo")
 
@@ -284,7 +280,7 @@ class UnsignedTransactionTests extends TestBase {
         val (privateKey, certificate) = prepareUser(testUserId)
 
         // Log proposal
-        val (approvalResult, proposalBytes) = admissionConnection.getProposalGetAdmission(certificate, organisationId, testUserId, "C1", "MatriculationTestModule.1")
+        val (_, proposalBytes) = admissionConnection.getProposalGetAdmission(certificate, organisationId, testUserId, "C1", "MatriculationTestModule.1")
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"GetAdmissionProposal:: $proposalInfo")
 

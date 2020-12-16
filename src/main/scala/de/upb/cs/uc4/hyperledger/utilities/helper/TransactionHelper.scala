@@ -183,8 +183,8 @@ protected[hyperledger] object TransactionHelper {
     try {
       val orderers = if (ReflectionHelper.getPrivateField(transactionOptions)("orderers") != null) ReflectionHelper.getPrivateField(transactionOptions)("orderers").asInstanceOf[util.List[Orderer]]
       else new util.ArrayList[Orderer](channel.getOrderers)
-      val shuffeledOrderers: util.ArrayList[Orderer] = new util.ArrayList[Orderer](orderers)
-      if (ReflectionHelper.getPrivateField(transactionOptions)("shuffleOrders").asInstanceOf[Boolean]) Collections.shuffle(shuffeledOrderers)
+      val shuffledOrderers: util.ArrayList[Orderer] = new util.ArrayList[Orderer](orderers)
+      if (ReflectionHelper.getPrivateField(transactionOptions)("shuffleOrders").asInstanceOf[Boolean]) Collections.shuffle(shuffledOrderers)
       val transactionEnvelope = setTransactionSignature(transactionPayload, signature)
       var nOfEvents = ReflectionHelper.getPrivateField(transactionOptions)("nOfEvents").asInstanceOf[NOfEvents]
       if (nOfEvents == null) {
@@ -210,9 +210,9 @@ protected[hyperledger] object TransactionHelper {
         val foundIssues = issues.toString
         if (!foundIssues.isEmpty) throw new InvalidArgumentException(foundIssues)
       }
-      val replyonly = (nOfEvents eq NOfEvents.nofNoEvents) || ReflectionHelper.safeCallPrivateMethod(channel)("getEventingPeers")().asInstanceOf[util.Collection[Peer]].isEmpty
+      val replyOnly = (nOfEvents eq NOfEvents.nofNoEvents) || ReflectionHelper.safeCallPrivateMethod(channel)("getEventingPeers")().asInstanceOf[util.Collection[Peer]].isEmpty
       var sret: CompletableFuture[BlockEvent#TransactionEvent] = null
-      if (replyonly) { //If there are no events to complete the future, complete it
+      if (replyOnly) { //If there are no events to complete the future, complete it
         // immediately but give no transaction event
         //logger.debug(format("Completing transaction id %s immediately no peer eventing services found in channel %s.", proposalTransactionID, name))
         sret = new CompletableFuture[BlockEvent#TransactionEvent]
@@ -223,7 +223,7 @@ protected[hyperledger] object TransactionHelper {
       var resp: BroadcastResponse = null
       var failed: Orderer = null
       breakable {
-        shuffeledOrderers.forEach((orderer: Orderer) => {
+        shuffledOrderers.forEach((orderer: Orderer) => {
           failed = orderer
           try {
             resp = ReflectionHelper.safeCallPrivateMethod(orderer)("sendTransaction")(transactionEnvelope).asInstanceOf[BroadcastResponse]
@@ -236,22 +236,22 @@ protected[hyperledger] object TransactionHelper {
           }
           catch {
             case e: Exception =>
-              var emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s)", channel.getName, orderer.getName, orderer.getUrl)
-              if (resp != null) emsg = format("Channel %s unsuccessful sendTransaction to orderer %s (%s).  %s", channel.getName, orderer.getName, orderer.getUrl, ReflectionHelper.safeCallPrivateMethod(channel)("getRespData")(resp).asInstanceOf[String])
-              lException = new Exception(emsg, e)
+              var exceptionMessage = format("Channel %s unsuccessful sendTransaction to orderer %s (%s)", channel.getName, orderer.getName, orderer.getUrl)
+              if (resp != null) exceptionMessage = format("Channel %s unsuccessful sendTransaction to orderer %s (%s).  %s", channel.getName, orderer.getName, orderer.getUrl, ReflectionHelper.safeCallPrivateMethod(channel)("getRespData")(resp).asInstanceOf[String])
+              lException = new Exception(exceptionMessage, e)
           }
         })
       }
       if (success) {
-        if (replyonly) sret.complete(null) // just say we're done.
+        if (replyOnly) sret.complete(null) // just say we're done.
         sret
       }
       else {
-        val emsg = format("Channel %s failed to place transaction %s on Orderer. Cause: UNSUCCESSFUL. %s", channel.getName, proposalTransactionID, ReflectionHelper.safeCallPrivateMethod(channel)("getRespData")(resp).asInstanceOf[String])
+        val exceptionMessage = format("Channel %s failed to place transaction %s on Orderer. Cause: UNSUCCESSFUL. %s", channel.getName, proposalTransactionID, ReflectionHelper.safeCallPrivateMethod(channel)("getRespData")(resp).asInstanceOf[String])
         ReflectionHelper.safeCallPrivateMethod(channel)("unregisterTxListener")(proposalTransactionID)
         val ret = new CompletableFuture[BlockEvent#TransactionEvent]
-        ret.completeExceptionally(if (lException != null) new Exception(emsg, lException)
-        else new Exception(emsg))
+        ret.completeExceptionally(if (lException != null) new Exception(exceptionMessage, lException)
+        else new Exception(exceptionMessage))
         ret
       }
     }

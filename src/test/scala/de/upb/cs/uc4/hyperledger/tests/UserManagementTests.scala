@@ -35,7 +35,7 @@ class UserManagementTests extends TestBase {
         // access chaincode as test user 301
         val matriculationConnectionUser = super.initializeMatriculation(enrollmentID)
         matriculationConnectionUser.addMatriculationData(TestDataMatriculation.validMatriculationData1(enrollmentID))
-        matriculationConnectionUser.close();
+        matriculationConnectionUser.close()
 
         // access chaincode as admin user
         // TODO: enable once dualSigning is supported

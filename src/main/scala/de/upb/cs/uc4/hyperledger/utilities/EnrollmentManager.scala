@@ -134,7 +134,7 @@ object EnrollmentManager extends EnrollmentManagerTrait {
     }
     catch {
       case _: Throwable => {
-        Logger.info(s"Certificate for user aleady exists: $enrollmentID")
+        Logger.info(s"Certificate for user already exists: $enrollmentID")
         Logger.info(s"Update Certificate")
         certificateConnection.updateCertificate(enrollmentID, enrollmentCertificate)
       }

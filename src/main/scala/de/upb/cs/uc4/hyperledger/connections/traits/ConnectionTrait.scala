@@ -177,7 +177,7 @@ trait ConnectionTrait extends AutoCloseable {
     val approvalResult = wrapTransactionResult(transactionName, response)
 
     // execute real Transaction
-    var realResult: String = internalSubmitRealTransactionFromApprovalProposal(approvalResult, params)
+    val realResult: String = internalSubmitRealTransactionFromApprovalProposal(approvalResult, params)
 
     // return both results
     (approvalResult, realResult)
@@ -198,12 +198,14 @@ trait ConnectionTrait extends AutoCloseable {
     try {
       val resultBytes = this.privateSubmitTransaction(realTransactionTransient, realTransactionName, realTransactionParams: _*)
       this.wrapTransactionResult(realTransactionName, resultBytes)
-    } catch {
+    }
+    catch {
       case e: TransactionExceptionTrait => {
         if (!e.payload.contains("HLInsufficientApprovals")) {
           val operationException: OperationExceptionTrait = OperationException(approvalResult, e)
           throw Logger.err("Error during test Execution", operationException)
-        } else {
+        }
+        else {
           e.payload
         }
       }
@@ -225,7 +227,7 @@ trait ConnectionTrait extends AutoCloseable {
           i = i + 1
         })
 
-        // TODO: once transient is reenabled, test this
+        // TODO: once transient is re-enabled, test this
         // var i = 0
         // val transMap2 = params.toList.map((entry: String) =>
         // ((i+=1).toString -> entry.toCharArray.map(_.toByte)))
@@ -238,8 +240,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException => throw NetworkException(innerException = ex)
-      case ex: Exception => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException        => throw NetworkException(innerException = ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 
@@ -253,8 +255,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException => throw NetworkException(innerException = ex)
-      case ex: Exception => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException        => throw NetworkException(innerException = ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 
