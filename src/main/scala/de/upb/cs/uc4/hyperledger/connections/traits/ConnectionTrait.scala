@@ -8,12 +8,12 @@ import java.util.concurrent.TimeoutException
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionApproval
-import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
-import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
+import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, NetworkExceptionTrait, OperationExceptionTrait, TransactionExceptionTrait }
+import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, OperationException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
-import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
+import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.protos.common.Common.Payload
 import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
 import org.hyperledger.fabric.sdk._
@@ -23,7 +23,7 @@ import scala.jdk.CollectionConverters
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
-  val AFFILITATION: String = "org1MSP"
+  val AFFILIATION: String = "org1MSP"
 
   // regular info used to set up any connection
   val username: String
@@ -37,6 +37,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   // setting up connections
   lazy val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, contractName, walletPath, networkDescriptionPath)
+
   def approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   /** Gets the version returned by the designated contract.
@@ -52,6 +53,7 @@ trait ConnectionTrait extends AutoCloseable {
     // submit my approval to approvalContract
     val approvalConnectionObject = approvalConnection
     if (approvalConnectionObject.isDefined) {
+      Logger.info("Approve transaction")
       approvalResult = approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
       approvalConnectionObject.get.close()
     }
@@ -61,9 +63,9 @@ trait ConnectionTrait extends AutoCloseable {
   /** Wrapper for a submission transaction
     * Translates the result byte-array to a string and throws an error if said string contains an error.
     *
-    * @param transient        boolean flag to determine transaction to be transient or not.
-    * @param transactionName  transaction to call
-    * @param params           parameters to feed into transaction
+    * @param transient       boolean flag to determine transaction to be transient or not.
+    * @param transactionName transaction to call
+    * @param params          parameters to feed into transaction
     * @return result as a string
     */
   @throws[TransactionExceptionTrait]
@@ -72,15 +74,15 @@ trait ConnectionTrait extends AutoCloseable {
     approveTransaction(transactionName, params: _*)
 
     // submit and evaluate response from my "regular" contract
-    val result = this.privateSubmitTransaction(transient, transactionName, params: _*)
-    this.wrapTransactionResult(transactionName, result)
+    val resultBytes = this.privateSubmitTransaction(transient, transactionName, params: _*)
+    this.wrapTransactionResult(transactionName, resultBytes)
   }
 
   /** Wrapper for an evaluation transaction
     * Translates the result byte-array to a string and throws an error if said string contains an error.
     *
     * @param transactionName transaction to call
-    * @param params        parameters to feed into transaction
+    * @param params          parameters to feed into transaction
     * @return result as a string
     */
   @throws[TransactionExceptionTrait]
@@ -92,8 +94,15 @@ trait ConnectionTrait extends AutoCloseable {
     this.wrapTransactionResult(transactionName, result)
   }
 
-  // TODO read affiliation from certificate
-  protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, transactionName: String, params: String*): (String, Array[Byte]) = {
+  /** Test Evaluation of a transaction, will only rethrow errors if the error is NOT the HLInsufficientApprovals - Error
+    *
+    * @param transactionName transaction to test
+    * @param params params to pass
+    */
+  @throws[HyperledgerExceptionTrait]
+  @throws[NetworkExceptionTrait]
+  @throws[TransactionExceptionTrait]
+  private final def testTransaction(transactionName: String, params: String*): Unit = {
     // throw if transaction is faulty / illegal
     Logger.info(s"Begin Test transaction")
     try {
@@ -108,10 +117,18 @@ trait ConnectionTrait extends AutoCloseable {
       }
       case e: Throwable => throw Logger.err("Internal Error during test Execution", e)
     }
+  }
 
-    Logger.info("Begin Approve transaction")
+  // TODO read affiliation from certificate
+  @throws[HyperledgerExceptionTrait]
+  @throws[NetworkExceptionTrait]
+  @throws[TransactionExceptionTrait]
+  protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, transactionName: String, params: String*): (String, Array[Byte]) = {
+    // test transaction as ADMIN managing the current connection
+    testTransaction(transactionName, params: _*)
+
     // approve transaction as ADMIN managing the current connection
-    val approvalResult: String = approveTransaction(transactionName, params: _*)
+    val adminApprovalResult: String = approveTransaction(transactionName, params: _*)
 
     // prepare the approvalTransaction for the user.
     val fcnName: String = "UC4.Approval:approveTransaction"
@@ -119,8 +136,8 @@ trait ConnectionTrait extends AutoCloseable {
     val proposal = TransactionHelper.getUnsignedProposalNew(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
     val proposalBytes = proposal.toByteArray
 
-    // return both (approvalResult and proposal)
-    (approvalResult, proposalBytes)
+    // return both (adminApprovalResult and proposal)
+    (adminApprovalResult, proposalBytes)
   }
 
   def getUnsignedTransaction(proposalBytes: Array[Byte], signatureBytes: Array[Byte]): Array[Byte] = {
@@ -148,7 +165,7 @@ trait ConnectionTrait extends AutoCloseable {
   /** Submits a given approval transaction and it's corresponding "real" transaction
     *
     * @param transactionBytes approvalTransaction bytes submitted
-    * @param signature the signature authenticating the user
+    * @param signature        the signature authenticating the user
     * @return Tuple containing (approvalResult, realTransactionResult)
     */
   def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte]): (String, String) = {
@@ -160,26 +177,40 @@ trait ConnectionTrait extends AutoCloseable {
     val approvalResult = wrapTransactionResult(transactionName, response)
 
     // execute real Transaction
-    val realResult = internalSubmitRealTransactionFromApprovalProposal(params)
+    val realResult: String = internalSubmitRealTransactionFromApprovalProposal(approvalResult, params)
 
     // return both results
     (approvalResult, realResult)
   }
 
-  private def internalSubmitRealTransactionFromApprovalProposal(params: Seq[String]): String = {
+  private def internalSubmitRealTransactionFromApprovalProposal(approvalResult: String, params: Seq[String]): String = {
     val realContractName: String = params.head
     val realTransactionName: String = params.tail.head
     val realTransactionParamsString: String = params.tail.tail.head
     val realTransactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(realTransactionParamsString, classOf[util.ArrayList[String]])
     val realTransactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(realTransactionParamsArrayList).asScala.toSeq
+    val realTransactionTransient = false // TODO: read transient bool from params
 
     // check contract match
     if (realContractName != this.contractName) throw TransactionException.CreateUnknownException("approveTransaction", s"Approval was sent to wrong connection:: $contractName != $realContractName")
 
     // submit and evaluate response from my "regular" contract
-    // TODO: pass transient bool
-    val result = this.privateSubmitTransaction(false, realTransactionName, realTransactionParams: _*)
-    this.wrapTransactionResult(realTransactionName, result)
+    try {
+      val resultBytes = this.privateSubmitTransaction(realTransactionTransient, realTransactionName, realTransactionParams: _*)
+      this.wrapTransactionResult(realTransactionName, resultBytes)
+    }
+    catch {
+      case e: TransactionExceptionTrait => {
+        if (!e.payload.contains("HLInsufficientApprovals")) {
+          val operationException: OperationExceptionTrait = OperationException(approvalResult, e)
+          throw Logger.err("Error during test Execution", operationException)
+        }
+        else {
+          e.payload
+        }
+      }
+      case e: Throwable => throw Logger.err("Internal Error during test Execution", e)
+    }
   }
 
   @throws[HyperledgerExceptionTrait]
@@ -196,7 +227,7 @@ trait ConnectionTrait extends AutoCloseable {
           i = i + 1
         })
 
-        // TODO: once transient is reenabled, test this
+        // TODO: once transient is re-enabled, test this
         // var i = 0
         // val transMap2 = params.toList.map((entry: String) =>
         // ((i+=1).toString -> entry.toCharArray.map(_.toByte)))
@@ -215,6 +246,7 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   @throws[HyperledgerExceptionTrait]
+  @throws[NetworkExceptionTrait]
   private def privateEvaluateTransaction(transactionName: String, params: String*): Array[Byte] = {
     Logger.info(s"Evaluate Transaction: '$transactionName' with parameters: $params")
     testAnyParamsNull(transactionName, params: _*)

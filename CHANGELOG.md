@@ -7,6 +7,7 @@
 ## Usability
 
 - Tests for frontend Signing
+- correct exceptionHandling (OperationExceptionTrait, TransactionException)
 
 # <a id="v0.14.2" />[v0.14.2](https://github.com/upb-uc4/hyperledger_api/compare/v014.1...v0.14.2) (2020-12-09)
 
