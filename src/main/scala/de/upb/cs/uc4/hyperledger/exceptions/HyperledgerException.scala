@@ -10,6 +10,6 @@ case class HyperledgerException(
   override def toString: String =
     s"""
         The provided action: '$actionName' failed with internal Hyperledger exception:
-        ${Logger.getInfoFromException(innerException)}
+        ${Logger.getInfoFromThrowable(innerException)}
     """
 }
