@@ -21,7 +21,7 @@ protected[hyperledger] case class NetworkException(
           identity :: $identity
           organisationId :: $organisationId
           organisationName :: $organisationName
-          ${Logger.getInfoFromException(innerException)}
+          ${Logger.getInfoFromThrowable(innerException)}
       """
   }
 }
