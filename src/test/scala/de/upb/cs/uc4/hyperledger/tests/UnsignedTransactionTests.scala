@@ -266,6 +266,8 @@ class UnsignedTransactionTests extends TestBase {
       "print info for dropAdmission" in {
         val testUserId = "frontend-signing-tester-info-admission"
         val (privateKey, certificate) = prepareUser(testUserId)
+        val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
+        admissionConnection.addAdmission(inputAdmissionJson)
 
         // Log proposal
         val (approvalResult, proposalBytes) = admissionConnection.getProposalDropAdmission(certificate, organisationId, testUserId + ":C1")

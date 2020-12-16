@@ -95,7 +95,7 @@ trait ConnectionTrait extends AutoCloseable {
   // TODO read affiliation from certificate
   protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, transactionName: String, params: String*): (String, Array[Byte]) = {
     // throw if transaction is faulty / illegal
-    Logger.info("Begin Test transaction")
+    Logger.info(s"Begin Test transaction")
     try {
       val executionTest = this.privateEvaluateTransaction(transactionName, params: _*)
       this.wrapTransactionResult(transactionName, executionTest)
@@ -216,6 +216,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   private def privateEvaluateTransaction(transactionName: String, params: String*): Array[Byte] = {
+    Logger.info(s"Evaluate Transaction: '$transactionName' with parameters: $params")
     testAnyParamsNull(transactionName, params: _*)
     try {
       contract.evaluateTransaction(transactionName, params: _*)
