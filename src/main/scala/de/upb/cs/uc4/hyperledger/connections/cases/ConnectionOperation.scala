@@ -11,7 +11,7 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
   override def operationsConnection: Option[ConnectionOperationsTrait] = None
 
   override def approveTransaction(contractName: String, transactionName: String, params: String*): String = {
-    val transactionValues = TransactionHelper.getApprovalTransactionFromParameters(contractName, transactionName, params.toArray)
+    val transactionValues = TransactionHelper.getApprovalParameterList(contractName, transactionName, params.toArray)
     wrapSubmitTransaction(false, "approveTransaction", transactionValues: _*)
   }
 

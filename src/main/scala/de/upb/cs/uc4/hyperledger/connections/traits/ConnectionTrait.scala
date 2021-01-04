@@ -7,15 +7,17 @@ import java.util.concurrent.TimeoutException
 
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
-import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionApproval
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, NetworkExceptionTrait, OperationExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, OperationException, TransactionException }
+
+import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionOperation
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
+import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, ReflectionHelper, TransactionHelper}
+
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.protos.common.Common.Payload
-import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
+import org.hyperledger.fabric.protos.peer.ProposalPackage.{Proposal, SignedProposal}
 import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
@@ -38,7 +40,8 @@ trait ConnectionTrait extends AutoCloseable {
   // setting up connections
   lazy val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, contractName, walletPath, networkDescriptionPath)
 
-  def approvalConnection: Option[ConnectionApprovalsTrait] = Some(ConnectionApproval(username, channel, chaincode, walletPath, networkDescriptionPath))
+
+  def operationsConnection: Option[ConnectionOperationsTrait] = Some(ConnectionOperation(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   /** Gets the version returned by the designated contract.
     * By default all contracts return the version of the chaincode.
@@ -50,12 +53,12 @@ trait ConnectionTrait extends AutoCloseable {
   private def approveTransaction(transactionName: String, params: String*): String = {
     var approvalResult: String = ""
     // setup approvalConnection and
-    // submit my approval to approvalContract
-    val approvalConnectionObject = approvalConnection
-    if (approvalConnectionObject.isDefined) {
+    // submit my approval to operationsContract
+    val operationsConnectionObject = operationsConnection
+    if (operationsConnectionObject.isDefined) {
       Logger.info("Approve transaction")
-      approvalResult = approvalConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
-      approvalConnectionObject.get.close()
+      approvalResult = operationsConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
+      operationsConnectionObject.get.close()
     }
     approvalResult
   }
@@ -145,7 +148,7 @@ trait ConnectionTrait extends AutoCloseable {
     val signature = ByteString.copyFrom(signatureBytes)
     val proposal = Proposal.parseFrom(proposalBytes)
     val (transaction: TransactionImpl, signedProposal: SignedProposal) =
-      TransactionHelper.createSignedProposal(approvalConnection.get, proposal, signature)
+      TransactionHelper.createSignedProposal(operationsConnection.get, proposal, signature)
 
     // submit approval proposal
     val channelObj: Channel = this.gateway.getNetwork(channel).getChannel
@@ -154,7 +157,7 @@ trait ConnectionTrait extends AutoCloseable {
     val transactionName = TransactionHelper.getTransactionNameFromProposal(transactionProposal)
     val transactionParams = TransactionHelper.getTransactionParamsFromProposal(transactionProposal)
     val transactionId = TransactionHelper.getTransactionIdFromProposal(transactionProposal)
-    val (_, ctx: TransactionContext, _) = TransactionHelper.createTransactionInfo(this.approvalConnection.get.contract, transactionName, transactionParams, Some(transactionId))
+    val (_, ctx: TransactionContext, _) = TransactionHelper.createTransactionInfo(this.operationsConnection.get.contract, transactionName, transactionParams, Some(transactionId))
     val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
 
     val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
@@ -172,7 +175,7 @@ trait ConnectionTrait extends AutoCloseable {
     val transactionPayload: Payload = Payload.parseFrom(transactionBytes)
     val transactionId: String = TransactionHelper.getTransactionIdFromHeader(transactionPayload.getHeader)
     val (transactionName, params) = TransactionHelper.getParametersFromTransactionPayload(transactionPayload)
-    val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.approvalConnection.get.contract, transactionName, params, Some(transactionId))
+    val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.operationsConnection.get.contract, transactionName, params, Some(transactionId))
     val response: Array[Byte] = TransactionHelper.sendTransaction(this, channel, ctx, this.gateway.getNetwork(channel).getChannel, ByteString.copyFrom(transactionBytes), signature, transactionId)
     val approvalResult = wrapTransactionResult(transactionName, response)
 
@@ -240,8 +243,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException        => throw NetworkException(innerException = ex)
-      case ex: Exception               => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException => throw NetworkException(innerException = ex)
+      case ex: Exception => throw HyperledgerException(transactionName, ex)
     }
   }
 
@@ -255,8 +258,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException        => throw NetworkException(innerException = ex)
-      case ex: Exception               => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException => throw NetworkException(innerException = ex)
+      case ex: Exception => throw HyperledgerException(transactionName, ex)
     }
   }
 
