@@ -18,7 +18,7 @@ protected[hyperledger] trait ConnectionOperationsTrait extends ConnectionTrait {
   @throws[TransactionExceptionTrait]
   def approveTransaction(contractName: String, transactionName: String, params: String*): String
 
-  /** Submits the "approveTransaction" query.
+  /** Submits the "rejectTransaction" query.
     *
     * @param operationId   Information about the operation.
     * @param rejectMessage Information about the reason to reject.
