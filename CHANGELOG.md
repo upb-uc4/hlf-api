@@ -1,20 +1,8 @@
 # <a id="v0.15.0" />[v0.15.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.14.5...v0.15.0) (2021-01-04)
 
-## Feature
-
-- 
-
 ## Usability
 
 - use new sbt 1.4.6
-
-## Bug Fixes
-
-- 
-
-## Refactor
-
-- 
 
 # <a id="v0.14.5" />[v0.14.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.14.2...v0.14.5) (2020-12-16)
 
