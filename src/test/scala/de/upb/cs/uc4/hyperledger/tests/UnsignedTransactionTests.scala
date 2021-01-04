@@ -135,7 +135,7 @@ class UnsignedTransactionTests extends TestBase {
         TestHelperStrings.compareJson(testMatData, transactionResult)
 
         // test approvals on ledger
-       // val getResult = initializeOperation(username).getOperationData(transactionApprovalResult)
+        // val getResult = initializeOperation(username).getOperationData(transactionApprovalResult)
         //getResult should include(testUserId)
         //getResult should include(username)
       }
@@ -178,7 +178,7 @@ class UnsignedTransactionTests extends TestBase {
         transactionApprovalResult should include(username)
 
         // test approvals on ledger
-       // val getResult = initializeOperation(username).getApprovals("UC4.MatriculationData", "addMatriculationData", testMatData)
+        // val getResult = initializeOperation(username).getApprovals("UC4.MatriculationData", "addMatriculationData", testMatData)
         //getResult should include(testUserId)
         //getResult should include(username)
 

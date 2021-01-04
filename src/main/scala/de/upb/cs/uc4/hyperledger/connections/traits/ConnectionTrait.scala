@@ -12,12 +12,12 @@ import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkExcep
 
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionOperation
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
-import de.upb.cs.uc4.hyperledger.utilities.helper.{Logger, ReflectionHelper, TransactionHelper}
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
 
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.protos.common.Common.Payload
-import org.hyperledger.fabric.protos.peer.ProposalPackage.{Proposal, SignedProposal}
+import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProposal }
 import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
@@ -39,7 +39,6 @@ trait ConnectionTrait extends AutoCloseable {
 
   // setting up connections
   lazy val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, contractName, walletPath, networkDescriptionPath)
-
 
   def operationsConnection: Option[ConnectionOperationsTrait] = Some(ConnectionOperation(username, channel, chaincode, walletPath, networkDescriptionPath))
 
@@ -243,8 +242,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException => throw NetworkException(innerException = ex)
-      case ex: Exception => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException        => throw NetworkException(innerException = ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 
@@ -258,8 +257,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException => throw NetworkException(innerException = ex)
-      case ex: Exception => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException        => throw NetworkException(innerException = ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 
