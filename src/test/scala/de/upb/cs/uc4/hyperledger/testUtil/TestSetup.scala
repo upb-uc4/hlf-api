@@ -1,6 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests.testUtil
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation.testModule
 
 object TestSetup {
@@ -32,6 +32,15 @@ object TestSetup {
     })
 
     matConnection.close()
+  }
+
+  def establishAdminGroup(connection: ConnectionGroupTrait, userName: String): Unit = {
+    // store on chain
+    TestHelper.trySetupConnections("establishAdminGroup", () => {
+      connection.addUserToGroup(userName, "admin")
+    })
+
+    connection.close()
   }
 
   def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, existingMatriculationId: String): Unit = {
