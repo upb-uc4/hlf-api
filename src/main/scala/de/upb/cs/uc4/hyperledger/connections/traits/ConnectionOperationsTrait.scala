@@ -7,6 +7,7 @@ protected[hyperledger] trait ConnectionOperationsTrait extends ConnectionTrait {
 
   /** Submits the "approveTransaction" query.
     *
+    * @param initiator    Information about the initiator.
     * @param contractName    Information about the transaction.
     * @param transactionName Information about the transaction.
     * @param params          Information about the transaction.
@@ -16,7 +17,7 @@ protected[hyperledger] trait ConnectionOperationsTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def approveTransaction(contractName: String, transactionName: String, params: String*): String
+  def approveTransaction(initiator: String, contractName: String, transactionName: String, params: String*): String
 
   /** Submits the "approveTransaction" query.
     *

@@ -22,19 +22,19 @@ class OperationTests extends TestBase {
   "The ScalaAPI for Operations" when {
     "invoked for existing contract-transactions " should {
       "allow for adding new AprovalData " in {
-        chaincodeConnection.approveTransaction("UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+        chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
       }
       "allow for adding existing new AprovalData a second time" in {
-        chaincodeConnection.approveTransaction("UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+        chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
       }
       "allow for adding new AprovalData with wrong number of parameters" in {
-        chaincodeConnection.approveTransaction("UC4.Certificate", "addCertificate", "000001", "totally valid cert", "weird third parameter")
+        chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert", "weird third parameter")
       }
     }
     "invoked for empty transaction " should {
       "prohibit manipulation" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
-          chaincodeConnection.approveTransaction("UC4.Certificate", "", "000001", "totally valid cert")
+          chaincodeConnection.approveTransaction(username, "UC4.Certificate", "", "000001", "totally valid cert")
         }
         exceptionResult.transactionName should be("approveTransaction")
         val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
@@ -44,7 +44,7 @@ class OperationTests extends TestBase {
     "invoked for empty Contract " should {
       "prohibit manipulation" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
-          val result = chaincodeConnection.approveTransaction("", "addCertificate", "000001", "totally valid cert")
+          val result = chaincodeConnection.approveTransaction(username, "", "addCertificate", "000001", "totally valid cert")
           Logger.debug("APPROVAL RESULT :: " + result)
         }
         exceptionResult.transactionName should be("approveTransaction")

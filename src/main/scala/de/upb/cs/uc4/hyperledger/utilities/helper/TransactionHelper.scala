@@ -59,9 +59,9 @@ protected[hyperledger] object TransactionHelper {
     ChaincodeActionPayload.parseFrom(transaction.getActions(0).getPayload)
   }
 
-  def getApprovalParameterList(contractName: String, transactionName: String, params: Array[String]): Seq[String] = {
+  def getApprovalParameterList(initiator: String, contractName: String, transactionName: String, params: Array[String]): Seq[String] = {
     val jsonParams = new Gson().toJson(params)
-    List[String](contractName, transactionName, jsonParams)
+    List[String](initiator, contractName, transactionName, jsonParams)
   }
 
   def createTransactionInfo(contract: ContractImpl, transactionName: String, params: Seq[String], transactionId: Option[String]): (TransactionImpl, TransactionContext, TransactionProposalRequest) = {
