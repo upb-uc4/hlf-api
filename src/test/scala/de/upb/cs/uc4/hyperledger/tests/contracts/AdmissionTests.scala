@@ -104,7 +104,7 @@ class AdmissionTests extends TestBase {
         chaincodeConnection.addAdmission(TestDataAdmission.admission1)
 
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission1))
-        result.transactionName should be("addAdmission")
+        result.transactionName should be("approveTransaction")
         // TODO compare errors
         // result.payload should be("")
       }
@@ -113,7 +113,7 @@ class AdmissionTests extends TestBase {
         chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId)
 
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId))
-        result.transactionName should be("addAdmission")
+        result.transactionName should be("approveTransaction")
         // TODO compare errors
         // result.payload should be("")
       }
@@ -135,7 +135,7 @@ class AdmissionTests extends TestBase {
 
         // test exception
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1"))
-        result.transactionName should be("dropAdmission")
+        result.transactionName should be("approveTransaction")
         // TODO compare errors
         // result.payload should be("")
 
