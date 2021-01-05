@@ -25,7 +25,7 @@ runs:
         echo "UC4_KIND_NODE_IP before script = $UC4_KIND_NODE_IP"
         if ${{ github.event.inputs.chaincode_branch != '' }}
         then
-            ./deploy.sh -b ${{ github.event.inputs.chaincode_branch }} -t
+            ./deploy.sh -b ${{ inputs.chaincode_branch }} -t
         else
             ./deploy.sh -t
         fi
