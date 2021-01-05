@@ -8,9 +8,10 @@ import java.security.PrivateKey
 import java.util
 import java.util.Collections
 import java.util.concurrent.{ CompletableFuture, TimeUnit, TimeoutException }
+
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionApprovalsTrait, ConnectionTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionOperationsTrait, ConnectionTrait }
 import org.hyperledger.fabric.gateway.{ ContractException, GatewayRuntimeException }
 import org.hyperledger.fabric.gateway.impl.identity.GatewayUser
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, TimePeriod, TransactionImpl }
@@ -112,7 +113,7 @@ protected[hyperledger] object TransactionHelper {
     args.map[String]((b: ByteString) => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
   }
 
-  def createSignedProposal(approvalConnection: ConnectionApprovalsTrait, proposal: ProposalPackage.Proposal, signature: ByteString): (TransactionImpl, SignedProposal) = {
+  def createSignedProposal(operationConnection: ConnectionOperationsTrait, proposal: ProposalPackage.Proposal, signature: ByteString): (TransactionImpl, SignedProposal) = {
     val transactionId: String = TransactionHelper.getTransactionIdFromProposal(proposal)
     val transactionName: String = TransactionHelper.getTransactionNameFromProposal(proposal)
     val params: Seq[String] = TransactionHelper.getTransactionParamsFromProposal(proposal)
@@ -122,7 +123,7 @@ protected[hyperledger] object TransactionHelper {
       .setSignature(signature)
     val signedProposal: SignedProposal = signedProposalBuilder.build
 
-    val (transaction, _, _) = TransactionHelper.createTransactionInfo(approvalConnection.contract, transactionName, params, Some(transactionId))
+    val (transaction, _, _) = TransactionHelper.createTransactionInfo(operationConnection.contract, transactionName, params, Some(transactionId))
 
     (transaction, signedProposal)
   }

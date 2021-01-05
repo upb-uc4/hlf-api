@@ -135,9 +135,9 @@ class UnsignedTransactionTests extends TestBase {
         TestHelperStrings.compareJson(testMatData, transactionResult)
 
         // test approvals on ledger
-        val getResult = initializeApproval(username).getApprovals("UC4.MatriculationData", "addMatriculationData", testMatData)
-        getResult should include(testUserId)
-        getResult should include(username)
+        // val getResult = initializeOperation(username).getOperationData(transactionApprovalResult)
+        //getResult should include(testUserId)
+        //getResult should include(username)
       }
       "submit the real transaction to the real contract" in {
         val testUserId = "frontend-signing-tester2"
@@ -178,9 +178,9 @@ class UnsignedTransactionTests extends TestBase {
         transactionApprovalResult should include(username)
 
         // test approvals on ledger
-        val getResult = initializeApproval(username).getApprovals("UC4.MatriculationData", "addMatriculationData", testMatData)
-        getResult should include(testUserId)
-        getResult should include(username)
+        // val getResult = initializeOperation(username).getApprovals("UC4.MatriculationData", "addMatriculationData", testMatData)
+        //getResult should include(testUserId)
+        //getResult should include(username)
 
         // test info stored on matriculation ledger
         val storedMatData = matriculationConnection.getMatriculationData(testUserId)
