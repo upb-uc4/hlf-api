@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataAdmission, TestHelper, TestHelperStrings, TestSetup }
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataAdmission, TestHelper, TestHelperStrings, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class AdmissionTests extends TestBase {
@@ -13,6 +13,7 @@ class AdmissionTests extends TestBase {
   override def beforeAll(): Unit = {
     super.beforeAll()
     // TODO: RESET LEDGER
+    TestSetup.establishAdminGroup(initializeGroup(), username);
     TestSetup.setupExaminationRegulations(initializeExaminationRegulation())
     TestSetup.setupMatriculations(initializeMatriculation())
   }

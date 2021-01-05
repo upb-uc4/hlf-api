@@ -1,12 +1,10 @@
-package de.upb.cs.uc4.hyperledger.tests.testUtil
+package de.upb.cs.uc4.hyperledger.testUtil
 
 import java.security.cert.X509Certificate
 import java.util.Base64
 
 import de.upb.cs.uc4.hyperledger.utilities.helper.ReflectionHelper
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
-import org.scalatest.Assertion
-import org.scalatest.matchers.should.Matchers._
 
 object TestHelperCrypto {
   def toPemString(certificate: X509Certificate): String = {
