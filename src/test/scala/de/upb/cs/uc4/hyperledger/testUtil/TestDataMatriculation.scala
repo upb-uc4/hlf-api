@@ -1,7 +1,4 @@
-package de.upb.cs.uc4.hyperledger.tests.testUtil
-
-import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionExaminationRegulationTrait
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+package de.upb.cs.uc4.hyperledger.testUtil
 
 object TestDataMatriculation {
   def validMatriculationData1(id: String): String = "{\n  \"enrollmentId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n      \"semesters\": [\n        \"SS2020\"\n      ]\n    }\n  ]\n}"

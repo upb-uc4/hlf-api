@@ -1,10 +1,9 @@
 package de.upb.cs.uc4.hyperledger.tests.general
 
-import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper, TestSetup }
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelper, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
+import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
 
 import scala.io.Source
@@ -13,7 +12,7 @@ class UserManagementTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    TestSetup.establishAdminGroup(initializeGroup(), username);
+    TestSetup.establishAdminGroup(initializeGroup(), username)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
   }
 

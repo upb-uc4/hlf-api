@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.tests.testUtil
+package de.upb.cs.uc4.hyperledger.testUtil
 
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
@@ -73,12 +73,14 @@ object TestHelper {
     result.transactionName should be(transactionName)
   }
 
-  def trySetupConnections(actionName: String, f: () => Any): Unit = {
-    try {
-      f.apply()
-    }
-    catch {
-      case e: Throwable => Logger.err(s"Error during $actionName: ", e)
-    }
+  def trySetupConnections(actionName: String, fs: (() => Any)*): Unit = {
+    fs.foreach(f => {
+      try {
+        f.apply()
+      }
+      catch {
+        case e: Throwable => Logger.err(s"Error during $actionName: ", e)
+      }
+    })
   }
 }
