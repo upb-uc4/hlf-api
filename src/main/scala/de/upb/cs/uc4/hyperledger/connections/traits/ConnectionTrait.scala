@@ -25,7 +25,6 @@ import scala.jdk.CollectionConverters
 import scala.jdk.CollectionConverters.MapHasAsJava
 
 trait ConnectionTrait extends AutoCloseable {
-  val AFFILIATION: String = "org1MSP"
 
   // regular info used to set up any connection
   val username: String
@@ -121,11 +120,10 @@ trait ConnectionTrait extends AutoCloseable {
     }
   }
 
-  // TODO read affiliation from certificate
   @throws[HyperledgerExceptionTrait]
   @throws[NetworkExceptionTrait]
   @throws[TransactionExceptionTrait]
-  protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, transactionName: String, params: String*): (String, Array[Byte]) = {
+  protected final def internalGetUnsignedProposal(certificate: String, transactionName: String, params: String*): (String, Array[Byte]) = {
     // test transaction as ADMIN managing the current connection
     testTransaction(transactionName, params: _*)
 
@@ -135,7 +133,7 @@ trait ConnectionTrait extends AutoCloseable {
     // prepare the approvalTransaction for the user.
     val fcnName: String = "UC4.Approval:approveTransaction"
     val args: Seq[String] = Seq(this.contractName).appended(transactionName).appended(new Gson().toJson(params.toArray))
-    val proposal = TransactionHelper.getUnsignedProposalNew(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
+    val proposal = TransactionHelper.getUnsignedProposalNew(certificate, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
     val proposalBytes = proposal.toByteArray
 
     // return both (adminApprovalResult and proposal)

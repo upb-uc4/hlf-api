@@ -9,7 +9,6 @@ protected[hyperledger] case class NetworkException(
     networkDescription: String = null,
     identity: String = null,
     organisationId: String = null,
-    organisationName: String = null,
     innerException: Exception = null
 ) extends NetworkExceptionTrait {
   override def toString: String = {
@@ -20,7 +19,6 @@ protected[hyperledger] case class NetworkException(
           networkDescription :: $networkDescription
           identity :: $identity
           organisationId :: $organisationId
-          organisationName :: $organisationName
           ${Logger.getInfoFromThrowable(innerException)}
       """
   }

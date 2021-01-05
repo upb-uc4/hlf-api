@@ -21,8 +21,7 @@ object PublicExceptionHelper {
       chaincode: String = null,
       networkDescription: String = null,
       identity: String = null,
-      organisationId: String = null,
-      organisationName: String = null
+      organisationId: String = null
   ): Type = {
     try {
       invocation.apply()
@@ -30,7 +29,7 @@ object PublicExceptionHelper {
     catch {
       case exception: Exception =>
         throw NetworkException(channel, chaincode, networkDescription,
-          identity, organisationId, organisationName, exception)
+          identity, organisationId, exception)
     }
   }
 }

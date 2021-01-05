@@ -7,34 +7,34 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionGroupTrait
 protected[hyperledger] case class ConnectionGroup(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionGroupTrait {
 
-  override def getProposalAddUserToGroup(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String, groupId: String): (String, Array[Byte]) = {
+  override def getProposalAddUserToGroup(certificate: String, enrollmentId: String, groupId: String): (String, Array[Byte]) = {
     // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "addUserToGroup", enrollmentId, groupId)
+    internalGetUnsignedProposal(certificate, "addUserToGroup", enrollmentId, groupId)
   }
 
-  override def getProposalRemoveUserFromGroup(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String, groupId: String): (String, Array[Byte]) = {
+  override def getProposalRemoveUserFromGroup(certificate: String, enrollmentId: String, groupId: String): (String, Array[Byte]) = {
     // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "removeUserFromGroup", enrollmentId, groupId)
+    internalGetUnsignedProposal(certificate, "removeUserFromGroup", enrollmentId, groupId)
   }
 
-  override def getProposalRemoveUserFromAllGroups(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String): (String, Array[Byte]) = {
+  override def getProposalRemoveUserFromAllGroups(certificate: String, enrollmentId: String): (String, Array[Byte]) = {
     // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "removeUserFromAllGroups", enrollmentId)
+    internalGetUnsignedProposal(certificate, "removeUserFromAllGroups", enrollmentId)
   }
 
-  override def getProposalGetAllGroups(certificate: String, affiliation: String = AFFILIATION): (String, Array[Byte]) = {
+  override def getProposalGetAllGroups(certificate: String): (String, Array[Byte]) = {
     // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "getAllGroups")
+    internalGetUnsignedProposal(certificate, "getAllGroups")
   }
 
-  override def getProposalGetUsersForGroup(certificate: String, affiliation: String = AFFILIATION, groupId: String): (String, Array[Byte]) = {
+  override def getProposalGetUsersForGroup(certificate: String, groupId: String): (String, Array[Byte]) = {
     // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "getUsersForGroup", groupId)
+    internalGetUnsignedProposal(certificate, "getUsersForGroup", groupId)
   }
 
-  override def getProposalGetGroupsForUser(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String): (String, Array[Byte]) = {
+  override def getProposalGetGroupsForUser(certificate: String, enrollmentId: String): (String, Array[Byte]) = {
     // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "getGroupsForUser", enrollmentId)
+    internalGetUnsignedProposal(certificate, "getGroupsForUser", enrollmentId)
   }
 
   override def addUserToGroup(enrollmentId: String, groupId: String): String =

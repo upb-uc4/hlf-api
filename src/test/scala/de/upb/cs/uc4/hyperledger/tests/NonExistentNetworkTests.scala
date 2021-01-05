@@ -22,8 +22,7 @@ class NonExistentNetworkTests extends TestBase {
       chaincode: String = null,
       networkDescription: String = null,
       identity: String = null,
-      organisationId: String = null,
-      organisationName: String = null
+      organisationId: String = null
   ) = {
     val result: NetworkExceptionTrait = intercept[NetworkExceptionTrait](f.apply())
 
@@ -33,7 +32,6 @@ class NonExistentNetworkTests extends TestBase {
     result.networkDescription should (be(networkDescription) or be(null))
     result.identity should (be(identity) or be(null))
     result.organisationId should (be(organisationId) or be(null))
-    result.organisationName should (be(organisationName) or be(null))
   }
 
   private def getCSR: String = {
@@ -74,12 +72,11 @@ class NonExistentNetworkTests extends TestBase {
       "throw NetworkErrors [RegistrationManager]" in {
         Logger.info("Register Tester102")
         val testUserName = "Tester102"
-        val affiliation = "org1"
 
         this.testNetworkException(() => {
-          RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, affiliation,
+          RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath,
             1, HFCAClient.HFCA_TYPE_CLIENT)
-        }, identity = username, organisationName = affiliation)
+        }, identity = username)
       }
       "throw NetworkErrors [WalletManager]" in {
         val newUserName = "NoNetwork002"

@@ -22,9 +22,6 @@ trait NetworkExceptionTrait extends UC4ExceptionTrait {
   /**  organisationId you used when you tried to access the network */
   val organisationId: String
 
-  /**  organisationName you used when you tried to access the network */
-  val organisationName: String
-
   /**  inner Exception */
   val innerException: Exception
 }

@@ -18,7 +18,6 @@ trait RegistrationManagerTrait {
     * @param userName Name of the new user.
     * @param adminName Name of the Admin User you want to access to perform the registration.
     * @param adminWalletPath Wallet containing the admin-certificate.
-    * @param affiliation Organisation name, the admin belongs to and the new user will belong to as well.
     * @param maxEnrollments Number of times the user can be enrolled/re-enrolled with the username-password combination.
     * @param newUserType Permission Level of the new User. Default :: Client.
     * @throws Exception if
@@ -34,7 +33,6 @@ trait RegistrationManagerTrait {
       userName: String,
       adminName: String,
       adminWalletPath: Path,
-      affiliation: String,
       maxEnrollments: Integer = 1,
       newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
   ): String

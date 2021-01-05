@@ -37,9 +37,9 @@ class TestBase extends TestBaseTrait {
   def initializeExaminationRegulation(userName: String = this.username): ConnectionExaminationRegulationTrait = ConnectionExaminationRegulation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeAdmission(userName: String = this.username): ConnectionAdmissionTrait = ConnectionAdmission(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
 
-  def tryRegisterAndEnrollTestUser(enrollmentId: String, affiliation: String): X509IdentityImpl = {
+  def tryRegisterAndEnrollTestUser(enrollmentId: String): X509IdentityImpl = {
     try {
-      val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentId, username, walletPath, affiliation)
+      val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentId, username, walletPath)
       EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
     }
     catch {

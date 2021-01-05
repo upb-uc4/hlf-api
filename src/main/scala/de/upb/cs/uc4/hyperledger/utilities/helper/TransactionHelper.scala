@@ -1,14 +1,13 @@
 package de.upb.cs.uc4.hyperledger.utilities.helper
 
-import java.io.File
+import java.io.{ ByteArrayInputStream, File }
 import java.lang.String.format
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import java.security.PrivateKey
 import java.util
-import java.util.Collections
+import java.util.{ Base64, Collections }
 import java.util.concurrent.{ CompletableFuture, TimeUnit, TimeoutException }
-
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionOperationsTrait, ConnectionTrait }
@@ -31,6 +30,7 @@ import org.hyperledger.fabric.sdk.identity.X509Enrollment
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionBuilder, TransactionContext }
 
+import java.security.cert.{ CertificateFactory, X509Certificate }
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks.{ break, breakable }
 
@@ -129,7 +129,6 @@ protected[hyperledger] object TransactionHelper {
   }
 
   /** @param certificate the certificate of the user to create the proposal for
-    * @param userAffiliation the affiliation of the user to create the proposal for
     * @param chaincodeName the chaincodeName to create a proposal for
     * @param channelName the channelName to create a proposal for
     * @param function the hyperledger fcnName (contractName:transactionName) describing the proposal to be created
@@ -139,7 +138,6 @@ protected[hyperledger] object TransactionHelper {
     */
   def getUnsignedProposalNew(
       certificate: String,
-      userAffiliation: String,
       chaincodeName: String,
       channelName: String,
       function: String,
@@ -151,7 +149,8 @@ protected[hyperledger] object TransactionHelper {
       override def getFormat: String = null
       override def getEncoded: Array[Byte] = null
     }, certificate)
-    val user: User = new GatewayUser("gateway", userAffiliation, enrollment)
+    val mspId = getMspIdFromCertificate(certificate)
+    val user: User = new GatewayUser("gateway", mspId, enrollment)
     val request = TransactionProposalRequest.newInstance(user)
     request.setChaincodeName(chaincodeName)
     request.setFcn(function)
@@ -168,6 +167,17 @@ protected[hyperledger] object TransactionHelper {
     val ctx: TransactionContext = new TransactionContext(channelObj, user, crypto)
     val chaincodeId: Chaincode.ChaincodeID = Chaincode.ChaincodeID.newBuilder().setName(chaincodeName).build()
     ProposalBuilder.newBuilder().context(ctx).request(request).chaincodeID(chaincodeId).build()
+  }
+
+  def getMspIdFromCertificate(certificate: String): String = {
+    val cf = CertificateFactory.getInstance("X.509")
+    cf.generateCertificate(
+      new ByteArrayInputStream(
+        Base64.getDecoder.decode(
+          certificate.stripPrefix("-----BEGIN CERTIFICATE-----").replaceAll("\n", "").stripSuffix("-----END CERTIFICATE-----")
+        )
+      )
+    ).asInstanceOf[X509Certificate].getSubjectDN.getName.split("OU=").last
   }
 
   def setTransactionSignature(transactionPayload: ByteString, signature: Array[Byte]): Envelope = {

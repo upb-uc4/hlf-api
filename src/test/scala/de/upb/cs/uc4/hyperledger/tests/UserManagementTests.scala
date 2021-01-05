@@ -28,7 +28,7 @@ class UserManagementTests extends TestBase {
         val enrollmentID = "301"
 
         // register test user 301
-        val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentID, username, walletPath, "org1")
+        val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentID, username, walletPath)
         // enroll test user 301
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentID, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
 
@@ -48,7 +48,7 @@ class UserManagementTests extends TestBase {
       "not directly allow for the new User to access the chain [testid]" in {
         Logger.info("Register TestUser")
         val testUserName = "testid"
-        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
+        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, 1, HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.debug("get csr_pem")
         val resource = getClass.getResource("/testid.csr")
@@ -80,7 +80,7 @@ class UserManagementTests extends TestBase {
 
         Logger.info("Register TestUser")
         val testUserName = s"Tester$enrollmentID"
-        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, "org1", 1, HFCAClient.HFCA_TYPE_CLIENT)
+        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, 1, HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.info("Enroll TestUser")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)

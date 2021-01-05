@@ -19,7 +19,6 @@ object RegistrationManager extends RegistrationManagerTrait {
       userName: String,
       adminName: String,
       adminWalletPath: Path,
-      affiliation: String,
       maxEnrollments: Integer = 1,
       newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
   ): String = {
@@ -27,8 +26,10 @@ object RegistrationManager extends RegistrationManagerTrait {
     PublicExceptionHelper.wrapInvocationWithNetworkException[String](
       () => {
         val adminIdentity: X509Identity = WalletManager.getX509Identity(adminWalletPath, adminName)
-        val admin: User = RegistrationManager.getUserFromX509Identity(adminIdentity, affiliation)
+        val admin: User = RegistrationManager.getUserFromX509Identity(adminIdentity)
         val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName, maxEnrollments, newUserType)
+
+        // get caClient
         val caClient: HFCAClient = CAClientManager.getCAClient(caURL, caCert)
 
         // registration process
@@ -43,12 +44,10 @@ object RegistrationManager extends RegistrationManagerTrait {
       chaincode = null,
       networkDescription = null,
       identity = adminName,
-      organisationId = null,
-      organisationName = affiliation
+      organisationId = null
     )
   }
 
-  // TODO set affiliation?
   private def prepareRegistrationRequest(userName: String, maxEnrollments: Integer = 1, newUserType: String = HFCAClient.HFCA_TYPE_CLIENT): RegistrationRequest = {
     val registrationRequest = new RegistrationRequest(userName)
     registrationRequest.setMaxEnrollments(maxEnrollments)
@@ -56,14 +55,13 @@ object RegistrationManager extends RegistrationManagerTrait {
     registrationRequest
   }
 
-  // TODO read affiliation from identity?
-  private def getUserFromX509Identity(identity: X509Identity, affiliationName: String): User = {
+  private def getUserFromX509Identity(identity: X509Identity): User = {
     val name = getNameFromIdentity(identity)
     new User() {
       override def getName: String = name
       override def getRoles: util.Set[String] = null
       override def getAccount = ""
-      override def getAffiliation: String = affiliationName
+      override def getAffiliation: String = ""
       override def getEnrollment: Enrollment = new Enrollment() {
         override def getKey: PrivateKey = identity.getPrivateKey
         override def getCert: String = Identities.toPemString(identity.getCertificate)
