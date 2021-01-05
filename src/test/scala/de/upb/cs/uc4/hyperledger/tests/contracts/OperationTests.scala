@@ -21,14 +21,14 @@ class OperationTests extends TestBase {
 
   "The ScalaAPI for Operations" when {
     "invoked for existing contract-transactions " should {
-      "allow for adding new Approvals" in {
-        chaincodeConnection.approveTransaction("UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+      "allow for adding new AprovalData " in {
+        chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
       }
-      "allow for adding existing Approvals a second time" in {
-        chaincodeConnection.approveTransaction("UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+      "allow for adding existing new AprovalData a second time" in {
+        chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
       }
-      "allow for adding new Approvals with wrong number of parameters" in {
-        chaincodeConnection.approveTransaction("UC4.Certificate", "addCertificate", "000001", "totally valid cert", "weird third parameter")
+      "allow for adding new AprovalData with wrong number of parameters" in {
+        chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert", "weird third parameter")
       }
     }
     "invoked for empty transaction " should {
