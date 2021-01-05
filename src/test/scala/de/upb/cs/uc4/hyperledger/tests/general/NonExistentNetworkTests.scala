@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.tests
+package de.upb.cs.uc4.hyperledger.tests.general
 
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionCertificate, ConnectionMatriculation }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.NetworkExceptionTrait
