@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.tests
+package de.upb.cs.uc4.hyperledger.tests.contracts
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionOperationsTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait

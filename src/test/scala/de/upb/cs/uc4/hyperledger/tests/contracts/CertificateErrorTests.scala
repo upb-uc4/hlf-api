@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.tests
+package de.upb.cs.uc4.hyperledger.tests.contracts
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase

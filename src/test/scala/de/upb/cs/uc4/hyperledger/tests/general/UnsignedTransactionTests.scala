@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.tests
+package de.upb.cs.uc4.hyperledger.tests.general
 
 import java.nio.charset.StandardCharsets
 import java.security.PrivateKey
