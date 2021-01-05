@@ -26,6 +26,7 @@ class UnsignedTransactionTests extends TestBase {
     certificateConnection = initializeCertificate()
     matriculationConnection = initializeMatriculation()
     admissionConnection = initializeAdmission()
+    TestSetup.establishAdminGroup(initializeGroup(), username);
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
     TestSetup.establishExistingMatriculation(initializeMatriculation(), "701")
   }
