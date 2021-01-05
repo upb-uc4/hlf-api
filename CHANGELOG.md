@@ -1,4 +1,25 @@
+# <a id="v0.15.3" />[v0.15.3 (WIP)](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.3...v0.15.3) (TBD)
+
+## Feature
+
+- Support chaincode v0.15.0 
+
+## Usability
+
+- Test GroupConnection
+- Test OperationConnection
+
+# <a id="v0.15.2" />[v0.15.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.0...v0.15.2) (2021-01-05)
+
+## Feature
+
+- Support OperationHandling
+
 # <a id="v0.15.0" />[v0.15.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.14.5...v0.15.0) (2021-01-04)
+
+## Feature
+
+- Support GroupHandling
 
 ## Usability
 
