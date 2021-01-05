@@ -39,7 +39,7 @@ class MatriculationErrorTests extends TestBase {
       for ((statement: String, data: String) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("getMatriculationData", () => chaincodeConnection.getMatriculationData(data))
+          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.getMatriculationData(data))
         }
       }
     }
@@ -60,7 +60,7 @@ class MatriculationErrorTests extends TestBase {
         s"$testDescription" in {
           Logger.info("Begin test: " + testDescription)
           TestHelper.testTransactionException(
-            "addMatriculationData",
+            "approveTransaction",
             () => chaincodeConnection.addMatriculationData(matriculationData)
           )
         }
@@ -82,7 +82,7 @@ class MatriculationErrorTests extends TestBase {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
           TestHelper.testTransactionException(
-            "addEntriesToMatriculationData",
+            "approveTransaction",
             () => chaincodeConnection.addEntriesToMatriculationData(
               id, TestDataMatriculation.getSubjectMatriculationList(fieldOfStudy, semester)
             )
@@ -92,7 +92,7 @@ class MatriculationErrorTests extends TestBase {
       "throw TransactionException for super empty matriculationList " in {
         val id = "001"
         TestHelper.testTransactionException(
-          "addEntriesToMatriculationData",
+          "approveTransaction",
           () => chaincodeConnection.addEntriesToMatriculationData(id, "[]")
         )
       }
