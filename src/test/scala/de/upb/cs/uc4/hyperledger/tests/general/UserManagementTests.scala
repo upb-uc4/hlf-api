@@ -1,5 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests.general
 
+import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataMatriculation, TestHelper, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
@@ -32,16 +33,17 @@ class UserManagementTests extends TestBase {
         // enroll test user 301
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentID, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
 
+        val testData: String = TestDataMatriculation.validMatriculationData1(enrollmentID)
+
+        // add approval as admin user
+        super.initializeOperation(username).approveTransaction("UC4.MatriculationData", "addMatriculationData", testData)
+
         // access chaincode as test user 301
         val matriculationConnectionUser = super.initializeMatriculation(enrollmentID)
-        matriculationConnectionUser.addMatriculationData(TestDataMatriculation.validMatriculationData1(enrollmentID))
+        matriculationConnectionUser.addMatriculationData(testData)
         matriculationConnectionUser.close()
 
-        // access chaincode as admin user
-        // TODO: enable once dualSigning is supported
-        // val matriculationConnectionAdmin = super.initializeMatriculation(username)
-        // matriculationConnectionAdmin.addMatriculationData(TestDataMatriculation.validMatriculationData1(enrollmentID))
-        // matriculationConnectionAdmin.close();
+
       }
     }
     "enrolling a User with csr" should {
