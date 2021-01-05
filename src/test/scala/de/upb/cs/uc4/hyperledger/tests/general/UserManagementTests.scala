@@ -43,7 +43,6 @@ class UserManagementTests extends TestBase {
         matriculationConnectionUser.addMatriculationData(testData)
         matriculationConnectionUser.close()
 
-
       }
     }
     "enrolling a User with csr" should {

@@ -26,9 +26,11 @@ object TestSetup {
     val mat2 = TestDataMatriculation.validMatriculationDataCustom("AdmissionStudent_2", "AdmissionER_Closed1")
 
     // store on chain
-    TestHelper.trySetupConnections("setupMatriculations",
+    TestHelper.trySetupConnections(
+      "setupMatriculations",
       () => { matConnection.addMatriculationData(mat1) },
-      () => { matConnection.addMatriculationData(mat2) })
+      () => { matConnection.addMatriculationData(mat2) }
+    )
 
     matConnection.close()
   }
