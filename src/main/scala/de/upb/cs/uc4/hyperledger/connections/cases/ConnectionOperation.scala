@@ -8,7 +8,7 @@ import de.upb.cs.uc4.hyperledger.utilities.helper.TransactionHelper
 protected[hyperledger] case class ConnectionOperation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionOperationsTrait {
 
-  override val operationsConnection: Option[ConnectionOperationsTrait] = None
+  override lazy val operationsConnection: Option[ConnectionOperationsTrait] = None
 
   override def approveTransaction(contractName: String, transactionName: String, params: String*): String = {
     val transactionValues = TransactionHelper.getApprovalParameterList(contractName, transactionName, params.toArray)
