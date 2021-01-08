@@ -91,7 +91,7 @@ class UnsignedTransactionTests extends TestBase {
         val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
         val certificate = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
         val exception = intercept[TransactionExceptionTrait](certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate))
-        exception.transactionName should be("addCertificate")
+        exception.transactionName should be("approveTransaction")
         exception.payload should include("HLConflict")
       }
     }
@@ -211,6 +211,7 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-updateMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
+        initializeOperation(testUserId).approveTransaction("UC4.MatriculationData", "addMatriculationData", inputMatJSon)
         matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
@@ -227,6 +228,7 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-addEntriesToMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
+        initializeOperation(testUserId).approveTransaction("UC4.MatriculationData", "addMatriculationData", inputMatJSon)
         matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
@@ -248,6 +250,7 @@ class UnsignedTransactionTests extends TestBase {
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
         val matriculationData = TestDataMatriculation.validMatriculationData4(testUserId)
+        initializeOperation(testUserId).approveTransaction("UC4.MatriculationData", "addMatriculationData", matriculationData)
         matriculationConnection.addMatriculationData(matriculationData)
 
         // Log proposal
