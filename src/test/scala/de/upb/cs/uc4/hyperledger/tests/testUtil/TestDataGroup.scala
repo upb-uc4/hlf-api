@@ -1,5 +1,7 @@
 package de.upb.cs.uc4.hyperledger.tests.testUtil
 
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelperStrings
+
 object TestDataGroup {
   val userList1: String = TestHelperStrings.getJsonList(Seq[String]("100", "101").map(s => { "\"" + s + "\"" }))
   val group1: String = TestDataGroup.validGroup("someGroup", userList1)
