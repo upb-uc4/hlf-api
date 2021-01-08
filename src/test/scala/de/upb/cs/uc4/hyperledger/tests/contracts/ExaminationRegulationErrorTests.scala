@@ -1,8 +1,8 @@
-package de.upb.cs.uc4.hyperledger.tests
+package de.upb.cs.uc4.hyperledger.tests.contracts
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionExaminationRegulationTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.{ TestDataExaminationRegulation, TestHelper, TestHelperStrings }
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataExaminationRegulation, TestHelper, TestHelperStrings }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class ExaminationRegulationErrorTests extends TestBase {
@@ -36,7 +36,7 @@ class ExaminationRegulationErrorTests extends TestBase {
           Logger.info("Begin test: " + testDescription)
           val examinationRegulation: String = TestDataExaminationRegulation.validExaminationRegulation(name.orNull, modules.orNull, open)
           TestHelper.testTransactionException(
-            "addExaminationRegulation",
+            "approveTransaction",
             () => chaincodeConnection.addExaminationRegulation(examinationRegulation)
           )
         }
@@ -63,7 +63,7 @@ class ExaminationRegulationErrorTests extends TestBase {
       for ((statement: String, namesString: String) <- testData) {
         s"$statement [$namesString]" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("getExaminationRegulations", () => chaincodeConnection.getExaminationRegulations(namesString))
+          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.getExaminationRegulations(namesString))
         }
       }
     }
@@ -76,7 +76,7 @@ class ExaminationRegulationErrorTests extends TestBase {
       for ((statement: String, name: String) <- testData) {
         s"$statement [$name]" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("closeExaminationRegulation", () => chaincodeConnection.closeExaminationRegulation(name))
+          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.closeExaminationRegulation(name))
         }
       }
     }

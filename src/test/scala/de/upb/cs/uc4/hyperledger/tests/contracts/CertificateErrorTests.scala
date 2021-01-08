@@ -1,8 +1,8 @@
-package de.upb.cs.uc4.hyperledger.tests
+package de.upb.cs.uc4.hyperledger.tests.contracts
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.tests.testUtil.TestHelper
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelper
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class CertificateErrorTests extends TestBase {
@@ -37,7 +37,7 @@ class CertificateErrorTests extends TestBase {
       for ((statement: String, data: String) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("getCertificate", () => chaincodeConnection.getCertificate(data))
+          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.getCertificate(data))
         }
       }
     }
@@ -55,7 +55,7 @@ class CertificateErrorTests extends TestBase {
       for ((statement: String, enrollmentId: String, certificate: String) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("addCertificate", () => chaincodeConnection.addCertificate(enrollmentId, certificate))
+          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.addCertificate(enrollmentId, certificate))
         }
       }
     }
@@ -73,7 +73,7 @@ class CertificateErrorTests extends TestBase {
       for ((statement: String, enrollmentId: String, certificate: String) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate(enrollmentId, certificate))
+          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.updateCertificate(enrollmentId, certificate))
         }
       }
     }

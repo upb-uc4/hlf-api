@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.tests.testUtil
+package de.upb.cs.uc4.hyperledger.testUtil
 
 object TestDataAdmission {
   val admission1: String = TestDataAdmission.validAdmission("AdmissionStudent_1", "C.1", "AdmissionModule_1", "2020-12-31T23:59:59")
