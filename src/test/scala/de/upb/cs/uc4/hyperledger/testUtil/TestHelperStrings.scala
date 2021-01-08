@@ -1,15 +1,7 @@
-package de.upb.cs.uc4.hyperledger.tests.testUtil
+package de.upb.cs.uc4.hyperledger.testUtil
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionTrait }
-import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper }
-import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers._
-
-import java.security.cert.X509Certificate
-import java.util.Base64
-import scala.util.matching.Regex
 
 object TestHelperStrings {
   // JSON

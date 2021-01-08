@@ -1,7 +1,11 @@
-package de.upb.cs.uc4.hyperledger.tests.testUtil
+package de.upb.cs.uc4.hyperledger.testUtil
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait }
-import de.upb.cs.uc4.hyperledger.tests.testUtil.TestDataMatriculation.testModule
+import java.security.PrivateKey
+
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation.testModule
+import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 
 object TestSetup {
   def setupExaminationRegulations(erConnection: ConnectionExaminationRegulationTrait): Unit = {
@@ -20,18 +24,13 @@ object TestSetup {
     erConnection.close()
   }
 
-  def setupMatriculations(matConnection: ConnectionMatriculationTrait): Unit = {
-    // prepare data
-    val mat1 = TestDataMatriculation.validMatriculationDataCustom("AdmissionStudent_1", "AdmissionER_Open1")
-    val mat2 = TestDataMatriculation.validMatriculationDataCustom("AdmissionStudent_2", "AdmissionER_Closed1")
-
+  def establishAdminGroup(connection: ConnectionGroupTrait, userName: String): Unit = {
     // store on chain
-    TestHelper.trySetupConnections("setupMatriculations", () => {
-      matConnection.addMatriculationData(mat1)
-      matConnection.addMatriculationData(mat2)
+    TestHelper.trySetupConnections("establishAdminGroup", () => {
+      connection.addUserToGroup(userName, "admin")
     })
 
-    matConnection.close()
+    connection.close()
   }
 
   def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, existingMatriculationId: String): Unit = {

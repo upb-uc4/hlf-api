@@ -1,10 +1,13 @@
 package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
-import de.upb.cs.uc4.hyperledger.connections.cases.{ConnectionAdmission, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation}
-import de.upb.cs.uc4.hyperledger.connections.traits.{ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationsTrait}
+import java.security.PrivateKey
+
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelperCrypto
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationsTrait }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import de.upb.cs.uc4.hyperledger.utilities.{EnrollmentManager, RegistrationManager, WalletManager}
+import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric.gateway.Wallet
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 
@@ -24,7 +27,8 @@ class TestBase extends TestBaseTrait {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    Logger.debug("Begin test with testBase Name = " + testBase.getClass.getName)
+    val debugMsg: String = "Begin test with testBase Name = " + testBase.getClass.getName + " test:: " + this.getClass.getName
+    Logger.debug(debugMsg)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
       tryAdminEnrollment(this.caURL, this.tlsCert, this.walletPath, this.username, this.password, this.organisationId, this.channel, this.chaincode, this.networkDescriptionPath)
     }
@@ -68,5 +72,15 @@ class TestBase extends TestBaseTrait {
         case e: Exception => Logger.warn("Admin Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage)
       }
     }
+  }
+
+  protected def prepareUser(userName: String): (PrivateKey, String) = {
+    Logger.info(s"prepare User:: $userName")
+    // get testUser certificate and private key
+    val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(userName, organisationId)
+    val privateKey: PrivateKey = testUserIdentity.getPrivateKey
+    val certificatePem: String = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
+
+    (privateKey, certificatePem)
   }
 }

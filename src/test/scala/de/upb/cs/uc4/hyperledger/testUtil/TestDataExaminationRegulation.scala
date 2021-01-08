@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.tests.testUtil
+package de.upb.cs.uc4.hyperledger.testUtil
 
 object TestDataExaminationRegulation {
   def validExaminationRegulation(name: String, modules: Seq[String], state: Boolean): String = {
