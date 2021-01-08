@@ -50,6 +50,8 @@ trait ConnectionTrait extends AutoCloseable {
     */
   def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
 
+  @throws[HyperledgerExceptionTrait]
+  @throws[TransactionExceptionTrait]
   private def approveTransaction(transactionName: String, params: String*): String = {
     var approvalResult: String = ""
     // submit my approval to operationsContract
@@ -94,40 +96,13 @@ trait ConnectionTrait extends AutoCloseable {
     this.wrapTransactionResult(transactionName, result)
   }
 
-  /** Test Evaluation of a transaction, will only rethrow errors if the error is NOT the HLInsufficientApprovals - Error
-    *
-    * @param transactionName transaction to test
-    * @param params params to pass
-    */
-  @throws[HyperledgerExceptionTrait]
-  @throws[NetworkExceptionTrait]
-  @throws[TransactionExceptionTrait]
-  private final def testTransaction(transactionName: String, params: String*): Unit = {
-    // throw if transaction is faulty / illegal
-    Logger.info(s"Begin Test transaction")
-    try {
-      val executionTest = this.privateEvaluateTransaction(transactionName, params: _*)
-      this.wrapTransactionResult(transactionName, executionTest)
-    }
-    catch {
-      case e: TransactionExceptionTrait => {
-        if (!e.payload.contains("HLInsufficientApprovals")) {
-          throw Logger.err("Error during test Execution", e)
-        }
-      }
-      case e: Throwable => throw Logger.err("Internal Error during test Execution", e)
-    }
-  }
-
   // TODO read affiliation from certificate
   @throws[HyperledgerExceptionTrait]
   @throws[NetworkExceptionTrait]
   @throws[TransactionExceptionTrait]
   protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, transactionName: String, params: String*): (String, Array[Byte]) = {
-    // test transaction as ADMIN managing the current connection
-    testTransaction(transactionName, params: _*)
-
     // approve transaction as ADMIN managing the current connection
+    // if the transaction is invalid, the "approveTransaction" method will throw an exception, which shall be forwarded to the user
     val adminApprovalResult: String = approveTransaction(transactionName, params: _*)
 
     // prepare the approvalTransaction for the user.
