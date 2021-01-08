@@ -24,25 +24,28 @@ class AdmissionTests extends TestBase {
   }
 
   def setupMatriculations(): Unit = {
-    Using(initializeMatriculation()){
-      matConnection: ConnectionMatriculationTrait => {
-        // prepare users
-        prepareUser(testUser1)
-        prepareUser(testUser2)
+    Using(initializeMatriculation()) {
+      matConnection: ConnectionMatriculationTrait =>
+        {
+          // prepare users
+          prepareUser(testUser1)
+          prepareUser(testUser2)
 
-        // prepare data
-        val mat1 = TestDataMatriculation.validMatriculationDataCustom(testUser1, "AdmissionER_Open1")
-        val mat2 = TestDataMatriculation.validMatriculationDataCustom(testUser2, "AdmissionER_Closed1")
+          // prepare data
+          val mat1 = TestDataMatriculation.validMatriculationDataCustom(testUser1, "AdmissionER_Open1")
+          val mat2 = TestDataMatriculation.validMatriculationDataCustom(testUser2, "AdmissionER_Closed1")
 
-        // approve as Users
-        initializeOperation(testUser1).approveTransaction("UC4.MatriculationData", "addMatriculationData", mat1)
-        initializeOperation(testUser2).approveTransaction("UC4.MatriculationData", "addMatriculationData", mat2)
+          // approve as Users
+          initializeOperation(testUser1).approveTransaction("UC4.MatriculationData", "addMatriculationData", mat1)
+          initializeOperation(testUser2).approveTransaction("UC4.MatriculationData", "addMatriculationData", mat2)
 
-        // store on chain
-        TestHelper.trySetupConnections("setupMatriculations",
-          () => { matConnection.addMatriculationData(mat1) },
-          () => { matConnection.addMatriculationData(mat2) })
-      }
+          // store on chain
+          TestHelper.trySetupConnections(
+            "setupMatriculations",
+            () => { matConnection.addMatriculationData(mat1) },
+            () => { matConnection.addMatriculationData(mat2) }
+          )
+        }
     }
   }
 
