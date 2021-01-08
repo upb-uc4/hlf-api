@@ -37,16 +37,6 @@ class UnsignedTransactionTests extends TestBase {
     super.afterAll()
   }
 
-  private def prepareUser(userName: String): (PrivateKey, String) = {
-    Logger.info(s"prepare User:: $userName")
-    // get testUser certificate and private key
-    val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(userName, organisationId)
-    val privateKey: PrivateKey = testUserIdentity.getPrivateKey
-    val certificatePem: String = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
-
-    (privateKey, certificatePem)
-  }
-
   "The ConnectionCertificate" when {
     "querying for an unsigned proposal" should {
       "return an unsigned proposal" in {

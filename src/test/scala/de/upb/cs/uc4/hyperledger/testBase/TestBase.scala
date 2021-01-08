@@ -1,9 +1,11 @@
 package de.upb.cs.uc4.hyperledger.testBase
 
 import java.nio.file.Path
+import java.security.PrivateKey
 
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationsTrait }
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelperCrypto
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric.gateway.Wallet
@@ -70,5 +72,15 @@ class TestBase extends TestBaseTrait {
         case e: Exception => Logger.warn("Admin Enrollment failed, maybe some other test already enrolled the admin: " + e.getMessage)
       }
     }
+  }
+
+  protected def prepareUser(userName: String): (PrivateKey, String) = {
+    Logger.info(s"prepare User:: $userName")
+    // get testUser certificate and private key
+    val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(userName, organisationId)
+    val privateKey: PrivateKey = testUserIdentity.getPrivateKey
+    val certificatePem: String = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
+
+    (privateKey, certificatePem)
   }
 }
