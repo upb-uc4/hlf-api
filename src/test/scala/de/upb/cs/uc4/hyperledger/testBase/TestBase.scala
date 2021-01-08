@@ -25,7 +25,8 @@ class TestBase extends TestBaseTrait {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    Logger.debug("Begin test with testBase Name = " + testBase.getClass.getName)
+    val debugMsg: String = "Begin test with testBase Name = " + testBase.getClass.getName + " test:: " + this.getClass.getName
+    Logger.debug(debugMsg)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
       tryAdminEnrollment(this.caURL, this.tlsCert, this.walletPath, this.username, this.password, this.organisationId, this.channel, this.chaincode, this.networkDescriptionPath)
     }
