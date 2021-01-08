@@ -75,7 +75,7 @@ class NonExistentNetworkTests extends TestBase {
 
         this.testNetworkException(() => {
           RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath,
-            1, HFCAClient.HFCA_TYPE_CLIENT)
+            maxEnrollments = 1, newUserType = HFCAClient.HFCA_TYPE_CLIENT)
         }, identity = username)
       }
       "throw NetworkErrors [WalletManager]" in {

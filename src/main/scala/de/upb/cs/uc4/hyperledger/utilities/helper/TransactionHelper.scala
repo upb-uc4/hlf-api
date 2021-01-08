@@ -149,7 +149,7 @@ protected[hyperledger] object TransactionHelper {
       override def getFormat: String = null
       override def getEncoded: Array[Byte] = null
     }, certificate)
-    val mspId = getMspIdFromCertificate(certificate)
+    val mspId = getMspIdFromCertificate(certificate) + "MSP" // this only works, if mspId = affiliation + "MSP"
     val user: User = new GatewayUser("gateway", mspId, enrollment)
     val request = TransactionProposalRequest.newInstance(user)
     request.setChaincodeName(chaincodeName)

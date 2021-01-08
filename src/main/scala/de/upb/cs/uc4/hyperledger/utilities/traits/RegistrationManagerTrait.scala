@@ -33,6 +33,7 @@ trait RegistrationManagerTrait {
       userName: String,
       adminName: String,
       adminWalletPath: Path,
+      affiliation: String = "org1",
       maxEnrollments: Integer = 1,
       newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
   ): String

@@ -19,6 +19,7 @@ object RegistrationManager extends RegistrationManagerTrait {
       userName: String,
       adminName: String,
       adminWalletPath: Path,
+      affiliation: String = "org1",
       maxEnrollments: Integer = 1,
       newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
   ): String = {
@@ -27,7 +28,7 @@ object RegistrationManager extends RegistrationManagerTrait {
       () => {
         val adminIdentity: X509Identity = WalletManager.getX509Identity(adminWalletPath, adminName)
         val admin: User = RegistrationManager.getUserFromX509Identity(adminIdentity)
-        val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName, maxEnrollments, newUserType)
+        val registrationRequest = RegistrationManager.prepareRegistrationRequest(userName, maxEnrollments, newUserType, affiliation)
 
         // get caClient
         val caClient: HFCAClient = CAClientManager.getCAClient(caURL, caCert)
@@ -48,10 +49,11 @@ object RegistrationManager extends RegistrationManagerTrait {
     )
   }
 
-  private def prepareRegistrationRequest(userName: String, maxEnrollments: Integer = 1, newUserType: String = HFCAClient.HFCA_TYPE_CLIENT): RegistrationRequest = {
+  private def prepareRegistrationRequest(userName: String, maxEnrollments: Integer = 1, newUserType: String = HFCAClient.HFCA_TYPE_CLIENT, affiliation: String = "org1"): RegistrationRequest = {
     val registrationRequest = new RegistrationRequest(userName)
     registrationRequest.setMaxEnrollments(maxEnrollments)
     registrationRequest.setType(newUserType)
+    registrationRequest.setAffiliation(affiliation)
     registrationRequest
   }
 

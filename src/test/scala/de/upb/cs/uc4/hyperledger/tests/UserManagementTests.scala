@@ -48,7 +48,7 @@ class UserManagementTests extends TestBase {
       "not directly allow for the new User to access the chain [testid]" in {
         Logger.info("Register TestUser")
         val testUserName = "testid"
-        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, 1, HFCAClient.HFCA_TYPE_CLIENT)
+        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, maxEnrollments = 1, newUserType = HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.debug("get csr_pem")
         val resource = getClass.getResource("/testid.csr")
@@ -80,7 +80,7 @@ class UserManagementTests extends TestBase {
 
         Logger.info("Register TestUser")
         val testUserName = s"Tester$enrollmentID"
-        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, 1, HFCAClient.HFCA_TYPE_CLIENT)
+        val testUserPw = RegistrationManager.register(caURL, tlsCert, testUserName, username, walletPath, maxEnrollments = 1, newUserType = HFCAClient.HFCA_TYPE_CLIENT)
 
         Logger.info("Enroll TestUser")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, testUserName, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)

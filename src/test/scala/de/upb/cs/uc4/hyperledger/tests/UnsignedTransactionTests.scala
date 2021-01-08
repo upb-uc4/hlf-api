@@ -99,7 +99,7 @@ class UnsignedTransactionTests extends TestBase {
   "The ConnectionMatriculation" when {
     "passing a signed transaction" should {
       "submit the approval transaction to the approval contract" in {
-        val testUserId = "frontend-signing-tester-4"
+        val testUserId = "frontend-signing-tester-7"
         val (privateKey, certificate) = prepareUser(testUserId)
 
         // prepare test data
