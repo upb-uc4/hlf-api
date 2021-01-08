@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 
 trait ConnectionGroupTrait extends ConnectionTrait {
-  final override val contractName: String = "UC4.Admission"
+  final override val contractName: String = "UC4.Group"
 
   /** Retrieves a proposal for the designated query
     * Also submits an approval for the transaction as the current user (admin).
