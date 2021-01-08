@@ -37,10 +37,11 @@ trait ConnectionTrait extends AutoCloseable {
   // contract info for specific connections
   val contractName: String
 
-  // setting up connections
+  // setting up connection
   lazy val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, contractName, walletPath, networkDescriptionPath)
 
-  def operationsConnection: Option[ConnectionOperationsTrait] = Some(ConnectionOperation(username, channel, chaincode, walletPath, networkDescriptionPath))
+  // setup approvalConnection
+  lazy val operationsConnection: Option[ConnectionOperationsTrait] = Some(ConnectionOperation(username, channel, chaincode, walletPath, networkDescriptionPath))
 
   /** Gets the version returned by the designated contract.
     * By default all contracts return the version of the chaincode.
@@ -51,13 +52,10 @@ trait ConnectionTrait extends AutoCloseable {
 
   private def approveTransaction(transactionName: String, params: String*): String = {
     var approvalResult: String = ""
-    // setup approvalConnection and
     // submit my approval to operationsContract
-    val operationsConnectionObject = operationsConnection
-    if (operationsConnectionObject.isDefined) {
+    if (operationsConnection.isDefined) {
       Logger.info("Approve transaction")
-      approvalResult = operationsConnectionObject.get.approveTransaction(contractName, transactionName, params: _*)
-      operationsConnectionObject.get.close()
+      approvalResult = operationsConnection.get.approveTransaction(contractName, transactionName, params: _*)
     }
     approvalResult
   }
