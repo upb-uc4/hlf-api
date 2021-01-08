@@ -1,21 +1,49 @@
 package de.upb.cs.uc4.hyperledger.tests.contracts
 
-import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataAdmission, TestHelper, TestHelperStrings, TestSetup }
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataAdmission, TestDataMatriculation, TestHelper, TestHelperStrings, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+
+import scala.util.Using
 
 class AdmissionTests extends TestBase {
 
   var chaincodeConnection: ConnectionAdmissionTrait = _
+
+  val testUser1 = "AdmissionStudent_1"
+  val testUser2 = "AdmissionStudent_2"
 
   override def beforeAll(): Unit = {
     super.beforeAll()
     // TODO: RESET LEDGER
     TestSetup.establishAdminGroup(initializeGroup(), username);
     TestSetup.setupExaminationRegulations(initializeExaminationRegulation())
-    TestSetup.setupMatriculations(initializeMatriculation())
+    setupMatriculations()
+  }
+
+  def setupMatriculations(): Unit = {
+    Using(initializeMatriculation()){
+      matConnection: ConnectionMatriculationTrait => {
+        // prepare users
+        prepareUser(testUser1)
+        prepareUser(testUser2)
+
+        // prepare data
+        val mat1 = TestDataMatriculation.validMatriculationDataCustom(testUser1, "AdmissionER_Open1")
+        val mat2 = TestDataMatriculation.validMatriculationDataCustom(testUser2, "AdmissionER_Closed1")
+
+        // approve as Users
+        initializeOperation(testUser1).approveTransaction("UC4.MatriculationData", "addMatriculationData", mat1)
+        initializeOperation(testUser2).approveTransaction("UC4.MatriculationData", "addMatriculationData", mat2)
+
+        // store on chain
+        TestHelper.trySetupConnections("setupMatriculations",
+          () => { matConnection.addMatriculationData(mat1) },
+          () => { matConnection.addMatriculationData(mat2) })
+      }
+    }
   }
 
   override def beforeEach(): Unit = {
