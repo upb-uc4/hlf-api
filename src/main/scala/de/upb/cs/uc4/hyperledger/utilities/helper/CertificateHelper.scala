@@ -9,7 +9,14 @@ object CertificateHelper {
   def getNameFromCertificate(certificate: String): String = {
     val name = getCertificateInfoFromFileContent(certificate).getSubjectDN.getName
     Logger.debug("NAME:: " + name)
-    name
+
+    val nameWOCN = name.substring(3)
+    var nameClean = nameWOCN
+    if(nameWOCN.contains(",")){
+      nameClean = nameWOCN.split(",").head
+    }
+    Logger.debug("NAMECLEAN:: " + nameClean)
+    nameClean
   }
 
   def getCertificateInfoFromFileContent(certificate: String): X509Certificate = {
