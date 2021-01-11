@@ -2,13 +2,13 @@
 
 ## Usability
 
-- Test GroupConnection
 - Test OperationConnection
 
-# <a id="v0.15.5" />[v0.15.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.3...v0.15.4) (2021-01-08)
+# <a id="v0.15.5" />[v0.15.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.4...v0.15.5) (2021-01-11)
 
 ## Usability
 
+- Test GroupConnection
 - Support chaincode v0.15.0 
 
 # <a id="v0.15.4" />[v0.15.4](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.3...v0.15.4) (2021-01-07)
