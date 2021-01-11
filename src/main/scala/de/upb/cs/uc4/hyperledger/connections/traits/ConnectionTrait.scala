@@ -9,11 +9,9 @@ import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, NetworkExceptionTrait, OperationExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, OperationException, TransactionException }
-
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionOperation
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
-
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ CertificateHelper, Logger, ReflectionHelper, TransactionHelper }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.protos.common.Common.Payload
@@ -104,7 +102,7 @@ trait ConnectionTrait extends AutoCloseable {
     // approve transaction as ADMIN managing the current connection
     // if the transaction is invalid, the "approveTransaction" method will throw an exception, which shall be forwarded to the user
     // TODO get initiator from certificate
-    val initiator = ""
+    val initiator = CertificateHelper.getNameFromCertificate(certificate)
     val adminApprovalResult: String = approveTransaction(initiator, transactionName, params: _*)
 
     // prepare the approvalTransaction for the user.
