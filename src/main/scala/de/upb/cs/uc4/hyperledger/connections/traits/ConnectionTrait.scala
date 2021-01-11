@@ -101,7 +101,6 @@ trait ConnectionTrait extends AutoCloseable {
   protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, transactionName: String, params: String*): (String, Array[Byte]) = {
     // approve transaction as ADMIN managing the current connection
     // if the transaction is invalid, the "approveTransaction" method will throw an exception, which shall be forwarded to the user
-    // TODO get initiator from certificate
     val initiator = CertificateHelper.getNameFromCertificate(certificate)
     val adminApprovalResult: String = approveTransaction(initiator, transactionName, params: _*)
 

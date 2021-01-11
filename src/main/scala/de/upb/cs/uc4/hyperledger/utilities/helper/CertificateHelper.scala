@@ -7,15 +7,11 @@ import java.util.Base64
 object CertificateHelper {
 
   def getNameFromCertificate(certificate: String): String = {
-    val name = getCertificateInfoFromFileContent(certificate).getSubjectDN.getName
-    Logger.debug("NAME:: " + name)
-
-    val nameWOCN = name.substring(3)
-    var nameClean = nameWOCN
-    if(nameWOCN.contains(",")){
-      nameClean = nameWOCN.split(",").head
+    val nameString = getCertificateInfoFromFileContent(certificate).getSubjectDN.getName.substring(3)
+    var nameClean = nameString
+    if(nameString.contains(",")){
+      nameClean = nameString.split(",").head
     }
-    Logger.debug("NAMECLEAN:: " + nameClean)
     nameClean
   }
 
