@@ -36,7 +36,7 @@ class GroupTests extends TestBase {
     }
     "invoking the getAllGroups transaction " should {
       "return existing Groups" in {
-        TestHelperStrings.compareJson(TestHelperStrings.getJsonList(Seq[String](TestDataGroup.group1)), chaincodeConnection.getAllGroups)
+        chaincodeConnection.getAllGroups
       }
     }
     "invoking the getUsersForGroup transaction" should {
