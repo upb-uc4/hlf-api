@@ -9,7 +9,7 @@ object CertificateHelper {
   def getNameFromCertificate(certificate: String): String = {
     val nameString = getCertificateInfoFromFileContent(certificate).getSubjectDN.getName.substring(3)
     var nameClean = nameString
-    if(nameString.contains(",")){
+    if (nameString.contains(",")) {
       nameClean = nameString.split(",").head
     }
     nameClean
