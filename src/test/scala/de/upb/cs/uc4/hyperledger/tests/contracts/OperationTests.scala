@@ -40,7 +40,7 @@ class OperationTests extends TestBase {
         val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
         exceptionResult.payload should be(expectedPayload)
       }
-      "deny adding new Approval with empty transactionId" in {
+      "deny adding new Approval with empty contractId" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
           val result = chaincodeConnection.approveTransaction(username, "", "addCertificate", "000001", "totally valid cert")
           Logger.debug("APPROVAL RESULT :: " + result)
