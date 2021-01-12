@@ -105,7 +105,7 @@ trait ConnectionTrait extends AutoCloseable {
     val adminApprovalResult: String = approveTransaction(initiator, transactionName, params: _*)
 
     // prepare the approvalTransaction for the user.
-    val fcnName: String = "UC4.Approval:approveTransaction"
+    val fcnName: String = "UC4.OperationData:approveTransaction"
     val args: Seq[String] = Seq(this.contractName).appended(transactionName).appended(new Gson().toJson(params.toArray))
     val proposal = TransactionHelper.getUnsignedProposalNew(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
     val proposalBytes = proposal.toByteArray
