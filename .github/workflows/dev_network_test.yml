@@ -48,7 +48,7 @@ jobs:
   DeployAndTestDevNetwork:
     env:
       TEST_SET: "*OperationTests"
-      CHAINCODE_TARGET: ""
+      CHAINCODE_TARGET: "v0.15.1"
 
     runs-on: ubuntu-latest
 
