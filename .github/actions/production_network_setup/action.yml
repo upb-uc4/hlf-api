@@ -23,11 +23,10 @@ runs:
         echo "#  start deploy script   #"
         echo "##########################"
         echo "ChaincodeBranch=${{ inputs.chaincode_branch }}"
-        if ${{ inputs.chaincode_branch }} != "" 
-        then
-            ./deploy.sh -b ${{ inputs.chaincode_branch }} -t
-        else
+        if [ ${{ inputs.chaincode_branch }} = "" ]; then
             ./deploy.sh -t
+        else
+            ./deploy.sh -b ${{ inputs.chaincode_branch }} -t
         fi
         export NODE_IP=$(source ./scripts/util.sh && get_worker_ip)
         
