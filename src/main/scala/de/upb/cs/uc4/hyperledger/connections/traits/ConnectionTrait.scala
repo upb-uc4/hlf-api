@@ -158,9 +158,9 @@ trait ConnectionTrait extends AutoCloseable {
   }
 
   private def internalSubmitRealTransactionFromApprovalProposal(approvalResult: String, params: Seq[String]): String = {
-    val realContractName: String = params.head
-    val realTransactionName: String = params.tail.head
-    val realTransactionParamsString: String = params.tail.tail.head
+    val realContractName: String = params.tail.head // second parameter is contract name
+    val realTransactionName: String = params.tail.tail.head // third parameter is transaction name
+    val realTransactionParamsString: String = params.tail.tail.tail.head // fourth parameter is params list
     val realTransactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(realTransactionParamsString, classOf[util.ArrayList[String]])
     val realTransactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(realTransactionParamsArrayList).asScala.toSeq
     val realTransactionTransient = false // TODO: read transient bool from params
