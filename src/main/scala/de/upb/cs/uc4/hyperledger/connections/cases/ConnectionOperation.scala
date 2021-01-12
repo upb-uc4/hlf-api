@@ -10,8 +10,8 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
 
   override lazy val operationsConnection: Option[ConnectionOperationsTrait] = None
 
-  override def approveTransaction(contractName: String, transactionName: String, params: String*): String = {
-    val transactionValues = TransactionHelper.getApprovalParameterList(contractName, transactionName, params.toArray)
+  override def approveTransaction(initiator: String, contractName: String, transactionName: String, params: String*): String = {
+    val transactionValues = TransactionHelper.getApprovalParameterList(initiator, contractName, transactionName, params.toArray)
     wrapSubmitTransaction(false, "approveTransaction", transactionValues: _*)
   }
 
@@ -19,8 +19,8 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
     wrapSubmitTransaction(false, "rejectTransaction", operationId, rejectMessage)
   }
 
-  override def getOperations(enrollmentId: String, state: String): String = {
-    wrapSubmitTransaction(false, "getOperations", enrollmentId)
+  override def getOperations(existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, state: String): String = {
+    wrapSubmitTransaction(false, "getOperations", existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, state: String)
   }
 
   override def getOperationData(operationId: String): String = {

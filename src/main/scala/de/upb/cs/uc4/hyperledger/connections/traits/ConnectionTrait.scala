@@ -9,11 +9,9 @@ import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, NetworkExceptionTrait, OperationExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, OperationException, TransactionException }
-
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionOperation
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, ReflectionHelper, TransactionHelper }
-
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ CertificateHelper, Logger, ReflectionHelper, TransactionHelper }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.protos.common.Common.Payload
@@ -52,12 +50,12 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  private def approveTransaction(transactionName: String, params: String*): String = {
+  private def approveTransaction(initiator: String, transactionName: String, params: String*): String = {
     var approvalResult: String = ""
     // submit my approval to operationsContract
     if (operationsConnection.isDefined) {
       Logger.info("Approve transaction")
-      approvalResult = operationsConnection.get.approveTransaction(contractName, transactionName, params: _*)
+      approvalResult = operationsConnection.get.approveTransaction(initiator, contractName, transactionName, params: _*)
     }
     approvalResult
   }
@@ -73,7 +71,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
-    approveTransaction(transactionName, params: _*)
+    approveTransaction("", transactionName, params: _*)
 
     // submit and evaluate response from my "regular" contract
     val resultBytes = this.privateSubmitTransaction(transient, transactionName, params: _*)
@@ -90,7 +88,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapEvaluateTransaction(transactionName: String, params: String*): String = {
-    approveTransaction(transactionName, params: _*)
+    approveTransaction("", transactionName, params: _*)
 
     val result = this.privateEvaluateTransaction(transactionName, params: _*)
     this.wrapTransactionResult(transactionName, result)
@@ -103,7 +101,8 @@ trait ConnectionTrait extends AutoCloseable {
   protected final def internalGetUnsignedProposal(certificate: String, affiliation: String, transactionName: String, params: String*): (String, Array[Byte]) = {
     // approve transaction as ADMIN managing the current connection
     // if the transaction is invalid, the "approveTransaction" method will throw an exception, which shall be forwarded to the user
-    val adminApprovalResult: String = approveTransaction(transactionName, params: _*)
+    val initiator = CertificateHelper.getNameFromCertificate(certificate)
+    val adminApprovalResult: String = approveTransaction(initiator, transactionName, params: _*)
 
     // prepare the approvalTransaction for the user.
     val fcnName: String = "UC4.Approval:approveTransaction"

@@ -3,10 +3,11 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 
 trait ConnectionOperationsTrait extends ConnectionTrait {
-  final override val contractName: String = "UC4.Approval"
+  final override val contractName: String = "UC4.OperationData"
 
   /** Submits the "approveTransaction" query.
     *
+    * @param initiator    Information about the initiator.
     * @param contractName    Information about the transaction.
     * @param transactionName Information about the transaction.
     * @param params          Information about the transaction.
@@ -16,7 +17,7 @@ trait ConnectionOperationsTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def approveTransaction(contractName: String, transactionName: String, params: String*): String
+  def approveTransaction(initiator: String, contractName: String, transactionName: String, params: String*): String
 
   /** Submits the "rejectTransaction" query.
     *
@@ -32,15 +33,17 @@ trait ConnectionOperationsTrait extends ConnectionTrait {
 
   /** Submits the "getOperations" query.
     *
-    * @param enrollmentId Information about the enrollmentId.
-    * @param state        Information about the state of the operation.
+    * @param existingEnrollmentId Filter for the existingApprovals List - leave empty to ignore filter
+    * @param missingEnrollmentId Filter for the missingApprovals List - leave empty to ignore filter
+    * @param initiatorEnrollmentId Filter for the initiator - leave empty to ignore filter
+    * @param state Filter for the operation state - leave empty to ignore filter
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Success_state
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getOperations(enrollmentId: String, state: String): String
+  def getOperations(existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, state: String): String
 
   /** Submits the "getOperation" query.
     *
