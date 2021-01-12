@@ -80,7 +80,8 @@ class UnsignedTransactionTests extends TestBase {
         val enrollmentId = "frontend-signing-tester-updateCertTest-denyTransaction"
         val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
         val certificate = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
-        val exception = intercept[TransactionExceptionTrait](certificateConnection.getProposalAddCertificate(certificate, organisationId, enrollmentId, certificate))
+        val exception = intercept[TransactionExceptionTrait](certificateConnection.getProposalAddCertificate(certificate,
+          organisationId, enrollmentId, certificate))
         exception.transactionName should be("approveTransaction")
         exception.payload should include("HLConflict")
       }
@@ -99,6 +100,7 @@ class UnsignedTransactionTests extends TestBase {
         // get proposal
         val (proposalApprovalResult, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(
           certificate,
+          organisationId,
           jSonMatriculationData = testMatData
         )
         TestHelper.testProposalPayloadBytesContainsInfo(
@@ -140,6 +142,7 @@ class UnsignedTransactionTests extends TestBase {
         // get proposal
         val (_, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(
           certificate,
+          organisationId,
           jSonMatriculationData = testMatData
         )
         TestHelper.testProposalPayloadBytesContainsInfo(
