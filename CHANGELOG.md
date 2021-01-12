@@ -1,4 +1,4 @@
-# <a id="v0.15.6" />[v0.15.6](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.5...v0.15.6) (2021-01-12)
+# <a id="v0.15.7" />[v0.15.7](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.5...v0.15.7) (2021-01-12)
 
 ## Feature
 
@@ -10,6 +10,9 @@
 ## Usability
 
 - Test OperationConnection (basic "approveTransaction"-test)
+
+# <a id="v0.15.6" />[v0.15.6](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.5...v0.15.6) (2021-01-12)
+test release
 
 # <a id="v0.15.5" />[v0.15.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.4...v0.15.5) (2021-01-11)
 
