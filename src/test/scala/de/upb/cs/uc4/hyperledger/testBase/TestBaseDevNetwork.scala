@@ -14,5 +14,5 @@ protected class TestBaseDevNetwork extends TestBaseTrait {
   val caURL: String = null
   val tlsCert: Path = null
   val password: String = null
-  val organisationId: String = null
+  val organisationId: String = "SampleOrgMSP"
 }
