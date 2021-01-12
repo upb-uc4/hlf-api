@@ -1,8 +1,15 @@
-# <a id="v0.15.6" />[v0.15.6 (WIP)](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.5...develop) (TBD)
+# <a id="v0.15.6" />[v0.15.6](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.5...develop) (2021-01-12)
 
+## Feature
+
+- support new OperationAPI (chaincode v0.15.1)
+	- new filters in "getOperations" (initiator, existingApprovals, missingApprovals)
+	- new information in ApproveTransaction (initiator)
+	- added "rejectTransaction" call
+	
 ## Usability
 
-- Test OperationConnection
+- Test OperationConnection (basic "approveTransaction"-test)
 
 # <a id="v0.15.5" />[v0.15.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.4...v0.15.5) (2021-01-11)
 
