@@ -51,7 +51,7 @@ class OperationTests extends TestBase {
       }
       "deny adding new Approval with wrong number of parameters" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
-          chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert", "weird third parameter"))
+          chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert", "weird third parameter")
         }
 
         Logger.debug(exceptionResult.toString)
