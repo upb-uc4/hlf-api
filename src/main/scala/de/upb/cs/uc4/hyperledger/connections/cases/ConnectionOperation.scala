@@ -19,8 +19,8 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
     wrapSubmitTransaction(false, "rejectTransaction", operationId, rejectMessage)
   }
 
-  override def getOperations(enrollmentId: String, state: String): String = {
-    wrapSubmitTransaction(false, "getOperations", enrollmentId)
+  override def getOperations(existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, state: String): String = {
+    wrapSubmitTransaction(false, "getOperations", existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, state: String)
   }
 
   override def getOperationData(operationId: String): String = {
