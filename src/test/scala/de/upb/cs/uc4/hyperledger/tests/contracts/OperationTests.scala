@@ -28,6 +28,26 @@ class OperationTests extends TestBase {
         chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
       }
     }
+    "invoked with rejectTransaction" should {
+      "allow for rejecting an Operation " in {
+        chaincodeConnection.rejectTransaction("operation1", "do not agree")
+      }
+    }
+    "invoked with getOperationData" should {
+      "allow for querying an Operation " in {
+        chaincodeConnection.getOperationData("operation1")
+      }
+    }
+    "invoked with getOperations" should {
+      "allow for querying Operations with filter existingEnrollmentId" in {
+        //TODO
+        chaincodeConnection.getOperations("", "", "000001", "")
+      }
+      "allow for querying Operations with filter missingEnrollmentId" in {
+        //TODO
+        chaincodeConnection.getOperations("", "000001", "000001", "")
+      }
+    }
   }
 
   "The ScalaAPI for Operations used incorrectly " when {
@@ -64,6 +84,69 @@ class OperationTests extends TestBase {
 
         Logger.debug(exceptionResult.toString)
         // TODO: check payload
+      }
+    }
+    "invoked with rejectTransaction" should {
+      "deny rejecting an Operation with empty operationId" in {
+        val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
+          chaincodeConnection.rejectTransaction("", "do not agree")
+        }
+        exceptionResult.transactionName should be("rejectTransaction")
+        // TODO
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
+        exceptionResult.payload should be(expectedPayload)
+      }
+      "deny rejecting an Operation with empty rejectMessage" in {
+        val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
+          chaincodeConnection.rejectTransaction("operation1", "")
+        }
+        exceptionResult.transactionName should be("rejectTransaction")
+        // TODO
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
+        exceptionResult.payload should be(expectedPayload)
+      }
+    }
+    "invoked with getOperationData" should {
+      "deny querying an Operation with empty operationId" in {
+        val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
+          chaincodeConnection.getOperationData("")
+        }
+        exceptionResult.transactionName should be("getOperationData")
+        // TODO
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
+        exceptionResult.payload should be(expectedPayload)
+      }
+    }
+    "invoked with getOperations" should {
+      "deny querying an Operation with an invalid filter existingEnrollmentId" in {
+        val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
+          //TODO
+          chaincodeConnection.getOperations("a", "", "", "")
+        }
+        exceptionResult.transactionName should be("getOperations")
+        // TODO
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
+        exceptionResult.payload should be(expectedPayload)
+      }
+      "deny querying an Operation with an invalid filter missingEnrollmentId" in {
+        val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
+          //TODO
+          chaincodeConnection.getOperations("", "a", "", "")
+        }
+        exceptionResult.transactionName should be("getOperations")
+        // TODO
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
+        exceptionResult.payload should be(expectedPayload)
+      }
+      "deny querying an Operation with an invalid filter initiatorEnrollmentId" in {
+        val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
+          //TODO
+          chaincodeConnection.getOperations("", "", "a", "")
+        }
+        exceptionResult.transactionName should be("getOperations")
+        // TODO
+        val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
+        exceptionResult.payload should be(expectedPayload)
       }
     }
   }
