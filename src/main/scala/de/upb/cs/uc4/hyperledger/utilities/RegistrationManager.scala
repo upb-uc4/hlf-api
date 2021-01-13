@@ -14,15 +14,15 @@ object RegistrationManager extends RegistrationManagerTrait {
 
   @throws[Exception]
   override def register(
-      caURL: String,
-      caCert: Path,
-      userName: String,
-      adminName: String,
-      adminWalletPath: Path,
-      affiliation: String,
-      maxEnrollments: Integer = 1,
-      newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
-  ): String = {
+                         caURL: String,
+                         caCert: Path,
+                         userName: String,
+                         adminName: String,
+                         adminWalletPath: Path,
+                         affiliation: String,
+                         maxEnrollments: Integer = 1,
+                         newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
+                       ): String = {
     Logger.debug(s"Begin Registration process. Adding User '$userName' as Admin '$adminName'")
     PublicExceptionHelper.wrapInvocationWithNetworkException[String](
       () => {
@@ -61,13 +61,19 @@ object RegistrationManager extends RegistrationManagerTrait {
     val name = getNameFromIdentity(identity)
     new User() {
       override def getName: String = name
+
       override def getRoles: util.Set[String] = null
+
       override def getAccount = ""
+
       override def getAffiliation: String = affiliationName
+
       override def getEnrollment: Enrollment = new Enrollment() {
         override def getKey: PrivateKey = identity.getPrivateKey
+
         override def getCert: String = Identities.toPemString(identity.getCertificate)
       }
+
       override def getMspId: String = identity.getMspId
     }
   }

@@ -7,9 +7,9 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.internal.UC4ExceptionTrait
   */
 trait OperationExceptionTrait extends UC4ExceptionTrait {
 
-  /**  whatever was returned from the approval-transaction. */
+  /** whatever was returned from the approval-transaction. */
   val approvalResult: String
 
-  /**  The Exception that would have been thrown if the transaction would have been invoked regularly */
+  /** The Exception that would have been thrown if the transaction would have been invoked regularly */
   val chainError: TransactionExceptionTrait
 }

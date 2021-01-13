@@ -6,24 +6,24 @@ object PublicExceptionHelper {
 
   /** Wraps everything and throws a dedicated NetworkException.
     *
-    * @param invocation the method/function/action to be executed
-    * @param channel information about the network, provide if possible
-    * @param chaincode information about the network, provide if possible
+    * @param invocation         the method/function/action to be executed
+    * @param channel            information about the network, provide if possible
+    * @param chaincode          information about the network, provide if possible
     * @param networkDescription information about the network, provide if possible
-    * @param identity information about the network, provide if possible
-    * @param organisationId information about the network, provide if possible
-    * @param organisationName information about the network, provide if possible
+    * @param identity           information about the network, provide if possible
+    * @param organisationId     information about the network, provide if possible
+    * @param organisationName   information about the network, provide if possible
     * @return If successful, this will return whatever was returned by the method/function/action
     */
   def wrapInvocationWithNetworkException[Type](
-      invocation: () => Type,
-      channel: String = null,
-      chaincode: String = null,
-      networkDescription: String = null,
-      identity: String = null,
-      organisationId: String = null,
-      organisationName: String = null
-  ): Type = {
+                                                invocation: () => Type,
+                                                channel: String = null,
+                                                chaincode: String = null,
+                                                networkDescription: String = null,
+                                                identity: String = null,
+                                                organisationId: String = null,
+                                                organisationName: String = null
+                                              ): Type = {
     try {
       invocation.apply()
     }

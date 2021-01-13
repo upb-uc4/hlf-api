@@ -9,6 +9,7 @@ protected[hyperledger] object GatewayManager {
 
   def createGateway(walletPath: Path, networkDescriptionPath: Path, username: String): GatewayImpl =
     this.createGateway(WalletManager.getIdentity(walletPath, username), networkDescriptionPath)
+
   def createGateway(identity: Identity, networkDescriptionPath: Path): GatewayImpl = {
     Gateway.createBuilder()
       .identity(identity)

@@ -8,7 +8,8 @@ protected[hyperledger] object Logger {
     * @return A new Exception encapsulating the error.
     */
   def err(message: String, exception: Throwable = null): Throwable = {
-    val msg = s"""
+    val msg =
+      s"""
               [MESSAGE] :: $message
               [ERROR] :: ${getInfoFromThrowable(exception)}
               """

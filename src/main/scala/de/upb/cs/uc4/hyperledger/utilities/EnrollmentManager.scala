@@ -12,17 +12,17 @@ import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
 object EnrollmentManager extends EnrollmentManagerTrait {
 
   override def enrollSecure(
-      caURL: String,
-      caCert: Path,
-      enrollmentID: String,
-      enrollmentSecret: String,
-      csr_pem: String = null,
-      adminName: String,
-      adminWalletPath: Path,
-      channel: String,
-      chaincode: String,
-      networkDescriptionPath: Path
-  ): String = {
+                             caURL: String,
+                             caCert: Path,
+                             enrollmentID: String,
+                             enrollmentSecret: String,
+                             csr_pem: String = null,
+                             adminName: String,
+                             adminWalletPath: Path,
+                             channel: String,
+                             chaincode: String,
+                             networkDescriptionPath: Path
+                           ): String = {
     Logger.debug(s"Begin Secure Enrollment process (CSR). Enrolling User '$enrollmentID' as Admin '$adminName'")
 
     var certificate: String = ""
@@ -46,17 +46,57 @@ object EnrollmentManager extends EnrollmentManagerTrait {
     certificate
   }
 
+  private def putNewCertificateOnChain(connectionName: String, channel: String, chaincode: String, connectionWalletPath: Path, networkDescriptionPath: Path,
+                                       newEnrollmentID: String, newCertificate: String): Unit = {
+    // store certificate on chaincode
+    val certificateConnection = ConnectionCertificate(connectionName, channel, chaincode, connectionWalletPath, networkDescriptionPath)
+    addOrUpdateCertificate(certificateConnection, newEnrollmentID, newCertificate)
+  }
+
+  private def addOrUpdateCertificate(certificateConnection: ConnectionCertificate, enrollmentID: String, enrollmentCertificate: String): String = {
+    try {
+      Logger.info(s"Try add new certificate for enrollmentID: $enrollmentID")
+      certificateConnection.addCertificate(enrollmentID, enrollmentCertificate)
+    }
+    catch {
+      case _: Throwable => {
+        Logger.info(s"Certificate for user already exists: $enrollmentID")
+        Logger.info(s"Update Certificate")
+        certificateConnection.updateCertificate(enrollmentID, enrollmentCertificate)
+      }
+    }
+  }
+
+  private def prepareEnrollmentRequest(
+                                        hostName: String,
+                                        profile: String,
+                                        csr_pem: String = null
+                                      ): EnrollmentRequest = {
+    val enrollmentRequestTLS = new EnrollmentRequest
+    enrollmentRequestTLS.addHost(hostName)
+    enrollmentRequestTLS.setProfile(profile)
+    if (csr_pem != null) {
+      enrollmentRequestTLS.setCsr(csr_pem)
+      enrollmentRequestTLS.setKeyPair(generateGarbageKeyPair())
+    }
+    enrollmentRequestTLS
+  }
+
+  private def generateGarbageKeyPair(): KeyPair = {
+    KeyPairGenerator.getInstance("RSA").generateKeyPair()
+  }
+
   override def enroll(
-      caURL: String,
-      caCert: Path,
-      walletPath: Path,
-      enrollmentID: String,
-      enrollmentSecret: String,
-      organisationId: String,
-      channel: String,
-      chaincode: String,
-      networkDescriptionPath: Path
-  ): String = {
+                       caURL: String,
+                       caCert: Path,
+                       walletPath: Path,
+                       enrollmentID: String,
+                       enrollmentSecret: String,
+                       organisationId: String,
+                       channel: String,
+                       chaincode: String,
+                       networkDescriptionPath: Path
+                     ): String = {
     Logger.debug(s"Begin regular Enrollment process (no CSR). Enrolling User '$enrollmentID'")
     // return certificate
     var certificate: String = ""
@@ -99,45 +139,5 @@ object EnrollmentManager extends EnrollmentManagerTrait {
 
     Logger.debug(s"Finished Enrollment process (no CSR).")
     certificate
-  }
-
-  private def putNewCertificateOnChain(connectionName: String, channel: String, chaincode: String, connectionWalletPath: Path, networkDescriptionPath: Path,
-      newEnrollmentID: String, newCertificate: String): Unit = {
-    // store certificate on chaincode
-    val certificateConnection = ConnectionCertificate(connectionName, channel, chaincode, connectionWalletPath, networkDescriptionPath)
-    addOrUpdateCertificate(certificateConnection, newEnrollmentID, newCertificate)
-  }
-
-  private def prepareEnrollmentRequest(
-      hostName: String,
-      profile: String,
-      csr_pem: String = null
-  ): EnrollmentRequest = {
-    val enrollmentRequestTLS = new EnrollmentRequest
-    enrollmentRequestTLS.addHost(hostName)
-    enrollmentRequestTLS.setProfile(profile)
-    if (csr_pem != null) {
-      enrollmentRequestTLS.setCsr(csr_pem)
-      enrollmentRequestTLS.setKeyPair(generateGarbageKeyPair())
-    }
-    enrollmentRequestTLS
-  }
-
-  private def generateGarbageKeyPair(): KeyPair = {
-    KeyPairGenerator.getInstance("RSA").generateKeyPair()
-  }
-
-  private def addOrUpdateCertificate(certificateConnection: ConnectionCertificate, enrollmentID: String, enrollmentCertificate: String): String = {
-    try {
-      Logger.info(s"Try add new certificate for enrollmentID: $enrollmentID")
-      certificateConnection.addCertificate(enrollmentID, enrollmentCertificate)
-    }
-    catch {
-      case _: Throwable => {
-        Logger.info(s"Certificate for user already exists: $enrollmentID")
-        Logger.info(s"Update Certificate")
-        certificateConnection.updateCertificate(enrollmentID, enrollmentCertificate)
-      }
-    }
   }
 }

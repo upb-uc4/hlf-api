@@ -9,23 +9,19 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
   final override val contractName: String = "UC4.MatriculationData"
 
   def getProposalAddMatriculationData(certificate: String, affiliation: String = AFFILIATION, jSonMatriculationData: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "addMatriculationData", jSonMatriculationData)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "addMatriculationData", jSonMatriculationData)
   }
 
   def getProposalAddEntriesToMatriculationData(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String, subjectMatriculationList: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "addEntriesToMatriculationData", enrollmentId: String, subjectMatriculationList: String)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "addEntriesToMatriculationData", enrollmentId: String, subjectMatriculationList: String)
   }
 
   def getProposalUpdateMatriculationData(certificate: String, affiliation: String = AFFILIATION, jSonMatriculationData: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "updateMatriculationData", jSonMatriculationData)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "updateMatriculationData", jSonMatriculationData)
   }
 
   def getProposalGetMatriculationData(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "getMatriculationData", enrollmentId)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getMatriculationData", enrollmentId)
   }
 
   override def addMatriculationData(jSonMatriculationData: String): String =

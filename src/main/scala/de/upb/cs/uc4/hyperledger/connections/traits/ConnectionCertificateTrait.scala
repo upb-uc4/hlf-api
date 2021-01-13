@@ -9,7 +9,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     * Also submits the "addCertificate" query as current user (admin).
     *
     * @param enrollmentID Information about the enrollmentID to add.
-    * @param certificate Information about the certificate to add.
+    * @param certificate  Information about the certificate to add.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Proposal and transactionId
@@ -22,7 +22,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
     * Also submits the "updateCertificate" query as current user (admin).
     *
     * @param enrollmentID enrollmentID to update
-    * @param certificate certificate to update
+    * @param certificate  certificate to update
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Proposal and transactionId
@@ -46,7 +46,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
   /** Submits the "addCertificate" query.
     *
     * @param enrollmentID Information about the enrollmentID to add.
-    * @param certificate Information about the certificate to add.
+    * @param certificate  Information about the certificate to add.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Success_state
@@ -58,7 +58,7 @@ trait ConnectionCertificateTrait extends ConnectionTrait {
   /** Submits the "updateCertificate" query.
     *
     * @param enrollmentID enrollmentID to update
-    * @param certificate certificate to update
+    * @param certificate  certificate to update
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return success_state

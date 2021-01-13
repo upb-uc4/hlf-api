@@ -12,24 +12,24 @@ import java.util.concurrent.{ CompletableFuture, TimeUnit, TimeoutException }
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionOperationsTrait, ConnectionTrait }
-import org.hyperledger.fabric.gateway.{ ContractException, GatewayRuntimeException }
 import org.hyperledger.fabric.gateway.impl.identity.GatewayUser
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, TimePeriod, TransactionImpl }
 import org.hyperledger.fabric.gateway.spi.CommitHandler
+import org.hyperledger.fabric.gateway.{ ContractException, GatewayRuntimeException }
 import org.hyperledger.fabric.protos.common.Common
 import org.hyperledger.fabric.protos.common.Common.{ Envelope, Payload, Status }
 import org.hyperledger.fabric.protos.orderer.Ab.BroadcastResponse
-import org.hyperledger.fabric.protos.peer.{ Chaincode, ProposalPackage, ProposalResponsePackage }
 import org.hyperledger.fabric.protos.peer.ProposalPackage.{ ChaincodeAction, ChaincodeProposalPayload, Proposal, SignedProposal }
 import org.hyperledger.fabric.protos.peer.ProposalResponsePackage.ProposalResponsePayload
 import org.hyperledger.fabric.protos.peer.TransactionPackage.{ ChaincodeActionPayload, Transaction }
+import org.hyperledger.fabric.protos.peer.{ Chaincode, ProposalPackage, ProposalResponsePackage }
 import org.hyperledger.fabric.sdk.Channel.NOfEvents
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException
 import org.hyperledger.fabric.sdk.helper.Config
-import org.hyperledger.fabric.sdk.{ BlockEvent, Channel, HFClient, NetworkConfig, Orderer, Peer, ProposalResponse, SDKUtils, TransactionProposalRequest, User }
 import org.hyperledger.fabric.sdk.identity.X509Enrollment
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionBuilder, TransactionContext }
+import org.hyperledger.fabric.sdk._
 
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks.{ break, breakable }
@@ -46,6 +46,13 @@ protected[hyperledger] object TransactionHelper {
   def getChaincodeActionPayloadFromTransactionPayload(payload: Payload): ChaincodeActionPayload = {
     val transaction = Transaction.parseFrom(payload.getData)
     ChaincodeActionPayload.parseFrom(transaction.getActions(0).getPayload)
+  }
+
+  private def getArgsFromChaincodeProposalPayload(payload: ChaincodeProposalPayload): Seq[String] = {
+    val invocationSpec: Chaincode.ChaincodeInvocationSpec = Chaincode.ChaincodeInvocationSpec.parseFrom(payload.getInput)
+    val chaincodeInput = invocationSpec.getChaincodeSpec.getInput
+    val args: Array[ByteString] = chaincodeInput.getArgsList.asScala.toArray
+    args.map[String]((b: ByteString) => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
   }
 
   def getApprovalParameterList(initiator: String, contractName: String, transactionName: String, params: Array[String]): Seq[String] = {
@@ -89,19 +96,6 @@ protected[hyperledger] object TransactionHelper {
 
   def getTransactionNameFromFcn(fcn: String): String = fcn.substring(fcn.indexOf(":") + 1)
 
-  private def getArgsFromProposal(proposal: Proposal): Seq[String] = {
-    val payloadBytes: ByteString = proposal.getPayload
-    val payload: ChaincodeProposalPayload = ProposalPackage.ChaincodeProposalPayload.parseFrom(payloadBytes)
-    getArgsFromChaincodeProposalPayload(payload)
-  }
-
-  private def getArgsFromChaincodeProposalPayload(payload: ChaincodeProposalPayload): Seq[String] = {
-    val invocationSpec: Chaincode.ChaincodeInvocationSpec = Chaincode.ChaincodeInvocationSpec.parseFrom(payload.getInput)
-    val chaincodeInput = invocationSpec.getChaincodeSpec.getInput
-    val args: Array[ByteString] = chaincodeInput.getArgsList.asScala.toArray
-    args.map[String]((b: ByteString) => new String(b.toByteArray, StandardCharsets.UTF_8)).toList
-  }
-
   def createSignedProposal(operationConnection: ConnectionOperationsTrait, proposal: ProposalPackage.Proposal, signature: ByteString): (TransactionImpl, SignedProposal) = {
     val transactionId: String = TransactionHelper.getTransactionIdFromProposal(proposal)
     val transactionName: String = TransactionHelper.getTransactionNameFromProposal(proposal)
@@ -117,27 +111,29 @@ protected[hyperledger] object TransactionHelper {
     (transaction, signedProposal)
   }
 
-  /** @param certificate the certificate of the user to create the proposal for
-    * @param userAffiliation the affiliation of the user to create the proposal for
-    * @param chaincodeName the chaincodeName to create a proposal for
-    * @param channelName the channelName to create a proposal for
-    * @param function the hyperledger fcnName (contractName:transactionName) describing the proposal to be created
+  /** @param certificate            the certificate of the user to create the proposal for
+    * @param userAffiliation        the affiliation of the user to create the proposal for
+    * @param chaincodeName          the chaincodeName to create a proposal for
+    * @param channelName            the channelName to create a proposal for
+    * @param function               the hyperledger fcnName (contractName:transactionName) describing the proposal to be created
     * @param networkDescriptionPath path to the network description file containing information about peers and orderers
-    * @param args parameters given to the fcn for invocation in the proposal
+    * @param args                   parameters given to the fcn for invocation in the proposal
     * @return The proposalObject created
     */
-  def getUnsignedProposalNew(
-      certificate: String,
-      userAffiliation: String,
-      chaincodeName: String,
-      channelName: String,
-      function: String,
-      networkDescriptionPath: Path,
-      args: String*
-  ): Proposal = {
+  def createProposal(
+                      certificate: String,
+                      userAffiliation: String,
+                      chaincodeName: String,
+                      channelName: String,
+                      function: String,
+                      networkDescriptionPath: Path,
+                      args: String*
+                    ): Array[Byte] = {
     val enrollment: X509Enrollment = new X509Enrollment(new PrivateKey {
       override def getAlgorithm: String = null
+
       override def getFormat: String = null
+
       override def getEncoded: Array[Byte] = null
     }, certificate)
     val user: User = new GatewayUser("gateway", userAffiliation, enrollment)
@@ -156,20 +152,111 @@ protected[hyperledger] object TransactionHelper {
     val channelObj: Channel = hfClient.loadChannelFromConfig(channelName, networkConfig)
     val ctx: TransactionContext = new TransactionContext(channelObj, user, crypto)
     val chaincodeId: Chaincode.ChaincodeID = Chaincode.ChaincodeID.newBuilder().setName(chaincodeName).build()
-    ProposalBuilder.newBuilder().context(ctx).request(request).chaincodeID(chaincodeId).build()
+    val proposal: Proposal = ProposalBuilder.newBuilder().context(ctx).request(request).chaincodeID(chaincodeId).build()
+    proposal.toByteArray
   }
 
-  def setTransactionSignature(transactionPayload: ByteString, signature: Array[Byte]): Envelope = {
-    Envelope.newBuilder.setPayload(transactionPayload).setSignature(ByteString.copyFrom(signature)).build
+  def getTransaction(
+                      validResponses: util.Collection[ProposalResponse],
+                      channelObj: Channel
+                    ): Payload = {
+    // Disable default commit wait behaviour
+    val transactionOptions: Channel.TransactionOptions =
+      Channel.TransactionOptions.createTransactionOptions().nOfEvents(Channel.NOfEvents.createNoEvents())
+    if (null == transactionOptions) throw new InvalidArgumentException("Parameter transactionOptions can't be null")
+
+    ReflectionHelper.safeCallPrivateMethod(channelObj)("checkChannelState")()
+    if (null == validResponses) throw new InvalidArgumentException("sendTransaction proposalResponses was null")
+
+    // make certain we have our own copy
+    if (ReflectionHelper.getPrivateField(channelObj)("config").asInstanceOf[Config].getProposalConsistencyValidation) {
+      val invalid = new util.HashSet[ProposalResponse]
+      val consistencyGroups = SDKUtils.getProposalConsistencySets(validResponses, invalid).size
+      if (consistencyGroups != 1 || !invalid.isEmpty) throw new IllegalArgumentException(format("The proposal responses have %d inconsistent groups with %d that are invalid." + " Expected all to be consistent and none to be invalid.", consistencyGroups, invalid.size))
+    }
+
+    // gather information
+    val ed = new util.LinkedList[ProposalResponsePackage.Endorsement]
+    var proposal: Proposal = null
+    var proposalResponsePayload: ByteString = null
+    var proposalTransactionID: String = null
+    var transactionContext: TransactionContext = null
+    validResponses.forEach(
+      (sdkProposalResponse: ProposalResponse) => {
+        ed.add(sdkProposalResponse.getProposalResponse.getEndorsement)
+        if (proposal == null) {
+          proposal = sdkProposalResponse.getProposal
+          proposalTransactionID = sdkProposalResponse.getTransactionID
+          if (proposalTransactionID == null) throw new InvalidArgumentException("Proposals with missing transaction ID")
+          proposalResponsePayload = sdkProposalResponse.getProposalResponse.getPayload
+          if (proposalResponsePayload == null) throw new InvalidArgumentException("Proposals with missing payload.")
+          transactionContext = ReflectionHelper.safeCallPrivateMethod(sdkProposalResponse)("getTransactionContext")().asInstanceOf[TransactionContext]
+          if (transactionContext == null) throw new InvalidArgumentException("Proposals with missing transaction context.")
+        }
+        else {
+          val transactionID = sdkProposalResponse.getTransactionID
+          if (transactionID == null) throw new InvalidArgumentException("Proposals with missing transaction id.")
+          if (!(proposalTransactionID == transactionID)) throw new InvalidArgumentException(format("Proposals with different transaction IDs %s,  and %s", proposalTransactionID, transactionID))
+        }
+      }
+    )
+
+    // build transaction
+    TransactionBuilder.newBuilder
+      .chaincodeProposal(proposal)
+      .endorsements(ed)
+      .proposalResponsePayload(proposalResponsePayload)
+      .build
+  }
+
+  def sendTransaction(
+                       connection: ConnectionTrait,
+                       channel: String,
+                       ctx: TransactionContext,
+                       channelObj: Channel,
+                       transactionPayloadBytes: ByteString,
+                       signature: Array[Byte],
+                       proposalTransactionID: String
+                     ): Array[Byte] = {
+    val commitHandler: CommitHandler = connection.gateway.getCommitHandlerFactory.create(ctx.getTxID, connection.gateway.getNetwork(channel))
+    commitHandler.startListening()
+    try {
+      val transactionOptions: Channel.TransactionOptions = Channel.TransactionOptions.createTransactionOptions()
+        .nOfEvents(Channel.NOfEvents.createNoEvents())
+
+      internalSendTransaction(channelObj, signature, transactionOptions, proposalTransactionID, transactionPayloadBytes)
+        .get(60, TimeUnit.SECONDS)
+    }
+    catch {
+      case e: TimeoutException =>
+        commitHandler.cancelListening()
+        throw e
+      case e: Exception =>
+        commitHandler.cancelListening()
+        throw new ContractException("Failed to send transaction to the orderer", e)
+    }
+    val commitTimeout: TimePeriod = new TimePeriod(5, TimeUnit.MINUTES)
+    commitHandler.waitForEvents(commitTimeout.getTime, commitTimeout.getTimeUnit)
+
+    try {
+      val transactionPayload: Payload = Payload.parseFrom(transactionPayloadBytes)
+      val chaincodeActionPayload = getChaincodeActionPayloadFromTransactionPayload(transactionPayload)
+      val proposalResponsePayload = ProposalResponsePayload.parseFrom(chaincodeActionPayload.getAction.getProposalResponsePayload)
+      val chaincodeAction = ChaincodeAction.parseFrom(proposalResponsePayload.getExtension)
+      chaincodeAction.getResponse.getPayload.toByteArray
+    }
+    catch {
+      case e: InvalidArgumentException => throw new GatewayRuntimeException(e)
+    }
   }
 
   def internalSendTransaction(
-      channel: Channel,
-      signature: Array[Byte],
-      transactionOptions: Channel.TransactionOptions,
-      proposalTransactionID: String,
-      transactionPayload: ByteString
-  ): CompletableFuture[BlockEvent#TransactionEvent] = {
+                               channel: Channel,
+                               signature: Array[Byte],
+                               transactionOptions: Channel.TransactionOptions,
+                               proposalTransactionID: String,
+                               transactionPayload: ByteString
+                             ): CompletableFuture[BlockEvent#TransactionEvent] = {
     try {
       val orderers = if (ReflectionHelper.getPrivateField(transactionOptions)("orderers") != null) ReflectionHelper.getPrivateField(transactionOptions)("orderers").asInstanceOf[util.List[Orderer]]
       else new util.ArrayList[Orderer](channel.getOrderers)
@@ -253,97 +340,13 @@ protected[hyperledger] object TransactionHelper {
     }
   }
 
-  def getTransaction(
-      validResponses: util.Collection[ProposalResponse],
-      channelObj: Channel
-  ): Payload = {
-    // Disable default commit wait behaviour
-    val transactionOptions: Channel.TransactionOptions =
-      Channel.TransactionOptions.createTransactionOptions().nOfEvents(Channel.NOfEvents.createNoEvents())
-    if (null == transactionOptions) throw new InvalidArgumentException("Parameter transactionOptions can't be null")
-
-    ReflectionHelper.safeCallPrivateMethod(channelObj)("checkChannelState")()
-    if (null == validResponses) throw new InvalidArgumentException("sendTransaction proposalResponses was null")
-
-    // make certain we have our own copy
-    if (ReflectionHelper.getPrivateField(channelObj)("config").asInstanceOf[Config].getProposalConsistencyValidation) {
-      val invalid = new util.HashSet[ProposalResponse]
-      val consistencyGroups = SDKUtils.getProposalConsistencySets(validResponses, invalid).size
-      if (consistencyGroups != 1 || !invalid.isEmpty) throw new IllegalArgumentException(format("The proposal responses have %d inconsistent groups with %d that are invalid." + " Expected all to be consistent and none to be invalid.", consistencyGroups, invalid.size))
-    }
-
-    // gather information
-    val ed = new util.LinkedList[ProposalResponsePackage.Endorsement]
-    var proposal: Proposal = null
-    var proposalResponsePayload: ByteString = null
-    var proposalTransactionID: String = null
-    var transactionContext: TransactionContext = null
-    validResponses.forEach(
-      (sdkProposalResponse: ProposalResponse) => {
-        ed.add(sdkProposalResponse.getProposalResponse.getEndorsement)
-        if (proposal == null) {
-          proposal = sdkProposalResponse.getProposal
-          proposalTransactionID = sdkProposalResponse.getTransactionID
-          if (proposalTransactionID == null) throw new InvalidArgumentException("Proposals with missing transaction ID")
-          proposalResponsePayload = sdkProposalResponse.getProposalResponse.getPayload
-          if (proposalResponsePayload == null) throw new InvalidArgumentException("Proposals with missing payload.")
-          transactionContext = ReflectionHelper.safeCallPrivateMethod(sdkProposalResponse)("getTransactionContext")().asInstanceOf[TransactionContext]
-          if (transactionContext == null) throw new InvalidArgumentException("Proposals with missing transaction context.")
-        }
-        else {
-          val transactionID = sdkProposalResponse.getTransactionID
-          if (transactionID == null) throw new InvalidArgumentException("Proposals with missing transaction id.")
-          if (!(proposalTransactionID == transactionID)) throw new InvalidArgumentException(format("Proposals with different transaction IDs %s,  and %s", proposalTransactionID, transactionID))
-        }
-      }
-    )
-
-    // build transaction
-    TransactionBuilder.newBuilder
-      .chaincodeProposal(proposal)
-      .endorsements(ed)
-      .proposalResponsePayload(proposalResponsePayload)
-      .build
+  def setTransactionSignature(transactionPayload: ByteString, signature: Array[Byte]): Envelope = {
+    Envelope.newBuilder.setPayload(transactionPayload).setSignature(ByteString.copyFrom(signature)).build
   }
 
-  def sendTransaction(
-      connection: ConnectionTrait,
-      channel: String,
-      ctx: TransactionContext,
-      channelObj: Channel,
-      transactionPayloadBytes: ByteString,
-      signature: Array[Byte],
-      proposalTransactionID: String
-  ): Array[Byte] = {
-    val commitHandler: CommitHandler = connection.gateway.getCommitHandlerFactory.create(ctx.getTxID, connection.gateway.getNetwork(channel))
-    commitHandler.startListening()
-    try {
-      val transactionOptions: Channel.TransactionOptions = Channel.TransactionOptions.createTransactionOptions()
-        .nOfEvents(Channel.NOfEvents.createNoEvents())
-
-      internalSendTransaction(channelObj, signature, transactionOptions, proposalTransactionID, transactionPayloadBytes)
-        .get(60, TimeUnit.SECONDS)
-    }
-    catch {
-      case e: TimeoutException =>
-        commitHandler.cancelListening()
-        throw e
-      case e: Exception =>
-        commitHandler.cancelListening()
-        throw new ContractException("Failed to send transaction to the orderer", e)
-    }
-    val commitTimeout: TimePeriod = new TimePeriod(5, TimeUnit.MINUTES)
-    commitHandler.waitForEvents(commitTimeout.getTime, commitTimeout.getTimeUnit)
-
-    try {
-      val transactionPayload: Payload = Payload.parseFrom(transactionPayloadBytes)
-      val chaincodeActionPayload = getChaincodeActionPayloadFromTransactionPayload(transactionPayload)
-      val proposalResponsePayload = ProposalResponsePayload.parseFrom(chaincodeActionPayload.getAction.getProposalResponsePayload)
-      val chaincodeAction = ChaincodeAction.parseFrom(proposalResponsePayload.getExtension)
-      chaincodeAction.getResponse.getPayload.toByteArray
-    }
-    catch {
-      case e: InvalidArgumentException => throw new GatewayRuntimeException(e)
-    }
+  private def getArgsFromProposal(proposal: Proposal): Seq[String] = {
+    val payloadBytes: ByteString = proposal.getPayload
+    val payload: ChaincodeProposalPayload = ProposalPackage.ChaincodeProposalPayload.parseFrom(payloadBytes)
+    getArgsFromChaincodeProposalPayload(payload)
   }
 }

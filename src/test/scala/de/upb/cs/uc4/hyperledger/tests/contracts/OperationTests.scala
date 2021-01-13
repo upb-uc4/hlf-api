@@ -22,10 +22,10 @@ class OperationTests extends TestBase {
   "The ScalaAPI for Operations used correctly " when {
     "invoked with approveTransaction" should {
       "allow for adding new Approval " in {
-        chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+        chaincodeConnection.proposeTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
       }
       "allow for adding existing Approval a second time" in {
-        chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+        chaincodeConnection.proposeTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
       }
     }
   }
@@ -34,7 +34,7 @@ class OperationTests extends TestBase {
     "invoked with approveTransaction" should {
       "deny adding new Approval with empty transactionId" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
-          chaincodeConnection.approveTransaction(username, "UC4.Certificate", "", "000001", "totally valid cert")
+          chaincodeConnection.proposeTransaction(username, "UC4.Certificate", "", "000001", "totally valid cert")
         }
         exceptionResult.transactionName should be("approveTransaction")
         val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
@@ -42,7 +42,7 @@ class OperationTests extends TestBase {
       }
       "deny adding new Approval with empty contractId" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
-          val result = chaincodeConnection.approveTransaction(username, "", "addCertificate", "000001", "totally valid cert")
+          val result = chaincodeConnection.proposeTransaction(username, "", "addCertificate", "000001", "totally valid cert")
           Logger.debug("APPROVAL RESULT :: " + result)
         }
         exceptionResult.transactionName should be("approveTransaction")
@@ -51,7 +51,7 @@ class OperationTests extends TestBase {
       }
       "deny adding new Approval with too few parameters" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
-          chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001")
+          chaincodeConnection.proposeTransaction(username, "UC4.Certificate", "addCertificate", "000001")
         }
 
         Logger.debug(exceptionResult.toString)
@@ -59,7 +59,7 @@ class OperationTests extends TestBase {
       }
       "deny adding new Approval with too many parameters" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
-          chaincodeConnection.approveTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert", "weird third parameter")
+          chaincodeConnection.proposeTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert", "weird third parameter")
         }
 
         Logger.debug(exceptionResult.toString)
