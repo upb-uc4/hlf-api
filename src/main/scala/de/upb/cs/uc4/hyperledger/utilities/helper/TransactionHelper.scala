@@ -36,17 +36,6 @@ import scala.util.control.Breaks.{ break, breakable }
 
 protected[hyperledger] object TransactionHelper {
 
-  def getParametersFromApprovalProposal(proposal: Proposal): (String, String, Array[String]) = {
-    // read transaction info
-    val proposalParameters = TransactionHelper.getTransactionParamsFromProposal(proposal)
-    val proposalContractName = proposalParameters.head
-    val transactionName = proposalParameters.tail.head
-    val paramsGson = proposalParameters.tail.tail.head
-    println("GSON:::: " + paramsGson)
-    val params = new Gson().fromJson[Array[String]](paramsGson, classOf[Array[String]])
-    (proposalContractName, transactionName, params)
-  }
-
   def getParametersFromTransactionPayload(payload: Payload): (String, Seq[String]) = {
     val chaincodeTransactionPayload: ChaincodeActionPayload = getChaincodeActionPayloadFromTransactionPayload(payload)
     val chaincodeProposalPayload: ChaincodeProposalPayload = ChaincodeProposalPayload.parseFrom(chaincodeTransactionPayload.getChaincodeProposalPayload)
