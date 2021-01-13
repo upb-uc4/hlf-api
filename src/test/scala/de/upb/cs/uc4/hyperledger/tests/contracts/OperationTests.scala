@@ -20,7 +20,7 @@ class OperationTests extends TestBase {
   }
 
   "The ScalaAPI for Operations used correctly " when {
-    "invoked with approveTransaction" should {
+    "invoked with proposeTransaction" should {
       "allow for adding new Approval " in {
         chaincodeConnection.proposeTransaction(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
       }
@@ -31,12 +31,12 @@ class OperationTests extends TestBase {
   }
 
   "The ScalaAPI for Operations used incorrectly " when {
-    "invoked with approveTransaction" should {
+    "invoked with proposeTransaction" should {
       "deny adding new Approval with empty transactionId" in {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
           chaincodeConnection.proposeTransaction(username, "UC4.Certificate", "", "000001", "totally valid cert")
         }
-        exceptionResult.transactionName should be("approveTransaction")
+        exceptionResult.transactionName should be("proposeTransaction")
         val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
         exceptionResult.payload should be(expectedPayload)
       }
@@ -45,7 +45,7 @@ class OperationTests extends TestBase {
           val result = chaincodeConnection.proposeTransaction(username, "", "addCertificate", "000001", "totally valid cert")
           Logger.debug("APPROVAL RESULT :: " + result)
         }
-        exceptionResult.transactionName should be("approveTransaction")
+        exceptionResult.transactionName should be("proposeTransaction")
         val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"contractName\",\"reason\":\"The given parameter must not be empty\"}]}"
         exceptionResult.payload should be(expectedPayload)
       }

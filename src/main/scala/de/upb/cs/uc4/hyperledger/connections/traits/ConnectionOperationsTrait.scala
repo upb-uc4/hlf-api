@@ -5,7 +5,7 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, 
 trait ConnectionOperationsTrait extends ConnectionTrait {
   final override val contractName: String = "UC4.OperationData"
 
-  /** Submits the "approveTransaction" query.
+  /** Submits the "proposeTransaction" query.
     *
     * @param initiator       Information about the initiator.
     * @param contractName    Information about the transaction.

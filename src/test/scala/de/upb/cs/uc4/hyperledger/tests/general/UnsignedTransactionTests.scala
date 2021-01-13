@@ -84,7 +84,7 @@ class UnsignedTransactionTests extends TestBase {
           certificate,
           organisationId, enrollmentId, certificate
         ))
-        exception.transactionName should be("approveTransaction")
+        exception.transactionName should be("proposeTransaction")
         exception.payload should include("HLConflict")
       }
     }

@@ -36,7 +36,7 @@ class ExaminationRegulationErrorTests extends TestBase {
           Logger.info("Begin test: " + testDescription)
           val examinationRegulation: String = TestDataExaminationRegulation.validExaminationRegulation(name.orNull, modules.orNull, open)
           TestHelper.testTransactionException(
-            "approveTransaction",
+            "proposeTransaction",
             () => chaincodeConnection.addExaminationRegulation(examinationRegulation)
           )
         }
@@ -63,7 +63,7 @@ class ExaminationRegulationErrorTests extends TestBase {
       for ((statement: String, namesString: String) <- testData) {
         s"$statement [$namesString]" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.getExaminationRegulations(namesString))
+          TestHelper.testTransactionException("proposeTransaction", () => chaincodeConnection.getExaminationRegulations(namesString))
         }
       }
     }
@@ -76,7 +76,7 @@ class ExaminationRegulationErrorTests extends TestBase {
       for ((statement: String, name: String) <- testData) {
         s"$statement [$name]" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.closeExaminationRegulation(name))
+          TestHelper.testTransactionException("proposeTransaction", () => chaincodeConnection.closeExaminationRegulation(name))
         }
       }
     }
