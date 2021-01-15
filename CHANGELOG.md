@@ -1,3 +1,9 @@
+# <a id="v0.15.8" />[v0.15.8](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.7...v0.15.8) (2021-01-15)
+	
+## Usability
+
+- adjust tests to match new chaincode
+
 # <a id="v0.15.7" />[v0.15.7](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.5...v0.15.7) (2021-01-12)
 
 ## Feature
