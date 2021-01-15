@@ -37,7 +37,7 @@ class CertificateErrorTests extends TestBase {
       for ((statement: String, data: String) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.getCertificate(data))
+          TestHelper.testTransactionException("getCertificate", () => chaincodeConnection.getCertificate(data))
         }
       }
     }
@@ -55,7 +55,7 @@ class CertificateErrorTests extends TestBase {
       for ((statement: String, enrollmentId: String, certificate: String) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.addCertificate(enrollmentId, certificate))
+          TestHelper.testTransactionException("addCertificate", () => chaincodeConnection.addCertificate(enrollmentId, certificate))
         }
       }
     }
@@ -73,7 +73,7 @@ class CertificateErrorTests extends TestBase {
       for ((statement: String, enrollmentId: String, certificate: String) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          TestHelper.testTransactionException("approveTransaction", () => chaincodeConnection.updateCertificate(enrollmentId, certificate))
+          TestHelper.testTransactionException("updateCertificate", () => chaincodeConnection.updateCertificate(enrollmentId, certificate))
         }
       }
     }

@@ -1,9 +1,7 @@
 package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
-
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 case class ConnectionCertificate(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionCertificateTrait {
