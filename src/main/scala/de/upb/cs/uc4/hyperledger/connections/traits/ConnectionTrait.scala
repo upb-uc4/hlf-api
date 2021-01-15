@@ -189,7 +189,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   private def privateSubmitTransaction(transient: Boolean, transactionName: String, params: String*): Array[Byte] = {
-    Logger.info(s"Submit Transaction: '$transactionName' with parameters: $params")
+    Logger.info(s"Submitting Contract: '$contractName' Transaction: '$transactionName' with parameters: $params")
 
     testAnyParamsNull(transactionName, params: _*)
     try {
@@ -222,7 +222,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[HyperledgerExceptionTrait]
   @throws[NetworkExceptionTrait]
   private def privateEvaluateTransaction(transactionName: String, params: String*): Array[Byte] = {
-    Logger.info(s"Evaluate Transaction: '$transactionName' with parameters: $params")
+    Logger.info(s"Evaluating Contract: '$contractName' Transaction: '$transactionName' with parameters: $params")
     testAnyParamsNull(transactionName, params: _*)
     try {
       contract.evaluateTransaction(transactionName, params: _*)
