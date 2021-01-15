@@ -133,7 +133,8 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       certificateConnection.addCertificate(enrollmentID, enrollmentCertificate)
     }
     catch {
-      case _: Throwable => {
+      case e: Throwable => {
+        Logger.err("Exception during 'addOrUpdateCertificate': ", e)
         Logger.info(s"Certificate for user already exists: $enrollmentID")
         Logger.info(s"Update Certificate")
         certificateConnection.updateCertificate(enrollmentID, enrollmentCertificate)
