@@ -38,6 +38,7 @@ class MatriculationAccessTests extends TestBase {
         val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentID, username, walletPath, "org1")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentID, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
         initializeOperation(enrollmentID).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", newData)
+        initializeOperation(username).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", newData)
 
         // add matriculation as admin
         TestHelperStrings.compareJson(newData, chaincodeConnection.addMatriculationData(newData))

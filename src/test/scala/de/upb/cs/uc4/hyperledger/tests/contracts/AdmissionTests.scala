@@ -38,6 +38,8 @@ class AdmissionTests extends TestBase {
           // approve as Users
           initializeOperation(testUser1).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat1)
           initializeOperation(testUser2).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat2)
+          initializeOperation(username).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat1)
+          initializeOperation(username).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat2)
 
           // store on chain
           TestHelper.trySetupConnections(

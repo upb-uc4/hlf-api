@@ -1,11 +1,7 @@
 package de.upb.cs.uc4.hyperledger.testUtil
 
-import java.security.PrivateKey
-
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation.testModule
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 
 object TestSetup {
   def setupExaminationRegulations(erConnection: ConnectionExaminationRegulationTrait): Unit = {

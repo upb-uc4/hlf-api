@@ -59,6 +59,8 @@ class MatriculationErrorTests extends TestBase {
       for ((testDescription: String, matriculationData: String) <- testData) {
         s"$testDescription" in {
           Logger.info("Begin test: " + testDescription)
+          // TODO add approvals for all
+          // TODO check error message
           TestHelper.testTransactionException(
             "addMatriculationData",
             () => chaincodeConnection.addMatriculationData(matriculationData)
