@@ -27,7 +27,7 @@ object TestSetup {
   def establishAdminGroup(connection: ConnectionGroupTrait, userName: String): Unit = {
     // store on chain
     TestHelper.trySetupConnections("establishAdminGroup", () => {
-      connection.addUserToGroup(userName, "admin")
+      connection.addUserToGroup(userName, TestDataGroup.adminGroupName)
     })
 
     connection.close()
