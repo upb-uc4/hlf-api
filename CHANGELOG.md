@@ -1,3 +1,17 @@
+# <a id="v0.16.1" />[v0.16.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.0...v0.16.1) (TBD)
+
+## Feature
+
+- rework approval/rejection process (provice proposals for approveOperation/rejectOperation
+- accept all approvals via OperationConnection
+
+# <a id="v0.16.0" />[v0.16.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.0...v0.16.0) (2021-01-18)
+
+##sprint release
+
+- OperationConnection
+- Performance Improvement
+
 # <a id="v0.15.8" />[v0.15.8](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.7...v0.15.8) (2021-01-15)
 	
 ## Feature
