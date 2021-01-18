@@ -1,4 +1,4 @@
-# <a id="v0.16.1" />[v0.16.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.0...v0.16.1) (TBD)
+# <a id="v0.16.1" />[v0.16.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.0...v0.16.1) (TBD)
 
 ## Feature
 
