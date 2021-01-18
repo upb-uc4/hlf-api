@@ -1,9 +1,15 @@
-# <a id="v0.16.1" />[v0.16.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.0...v0.16.1) (TBD)
+# <a id="v0.16.2" />[v0.16.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.1...v0.16.2) (TBD)
 
 ## Feature
 
 - rework approval/rejection process (provice proposals for approveOperation/rejectOperation
 - accept all approvals via OperationConnection
+
+# <a id="v0.16.1" />[v0.16.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.0...v0.16.1) (2021-01-18)
+
+## Usability
+
+- null-check on connectio.close() (for mock)
 
 # <a id="v0.16.0" />[v0.16.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.0...v0.16.0) (2021-01-18)
 
