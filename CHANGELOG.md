@@ -7,7 +7,7 @@
 
 # <a id="v0.16.0" />[v0.16.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.0...v0.16.0) (2021-01-18)
 
-##sprint release
+## sprint release
 
 - OperationConnection
 - Performance Improvement
