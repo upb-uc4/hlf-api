@@ -255,7 +255,11 @@ trait ConnectionTrait extends AutoCloseable {
     */
   private def containsError(result: String): Boolean = result.contains("{\"type\":") && result.contains("\"title\":")
 
-  final override def close(): Unit = this.gateway.close()
+  final override def close(): Unit = {
+    if(this.gateway != null){
+      this.gateway.close()
+    }
+  }
 
   /** Checks if the transaction params are null.
     *
