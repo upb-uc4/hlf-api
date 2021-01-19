@@ -37,7 +37,11 @@ trait ConnectionTrait extends AutoCloseable {
   // contract info for specific connections
   val contractName: String
 
-  final override def close(): Unit = this.gateway.close()
+  final override def close(): Unit = {
+    if (this.gateway != null) {
+      this.gateway.close()
+    }
+  }
 
   /** Gets the version returned by the designated contract.
     * By default all contracts return the version of the chaincode.
@@ -45,37 +49,6 @@ trait ConnectionTrait extends AutoCloseable {
     * @return String containing versionInfo
     */
   def getChaincodeVersion: String = wrapEvaluateTransaction("getVersion")
-
-  /** Wrapper for an evaluation transaction
-    * Translates the result byte-array to a string and throws an error if said string contains an error.
-    *
-    * @param transactionName transaction to call
-    * @param params          parameters to feed into transaction
-    * @return result as a string
-    */
-  @throws[TransactionExceptionTrait]
-  @throws[HyperledgerExceptionTrait]
-  protected final def wrapEvaluateTransaction(transactionName: String, params: String*): String = {
-    approveAsCurrent("", transactionName, params)
-
-    val result = this.privateEvaluateTransaction(transactionName, params: _*)
-    this.wrapTransactionResult(transactionName, result)
-  }
-
-  @throws[HyperledgerExceptionTrait]
-  @throws[NetworkExceptionTrait]
-  private def privateEvaluateTransaction(transactionName: String, params: String*): Array[Byte] = {
-    Logger.info(s"Evaluate Transaction: '$transactionName' with parameters: $params")
-    testAnyParamsNull(transactionName, params: _*)
-    try {
-      contract.evaluateTransaction(transactionName, params: _*)
-    }
-    catch {
-      case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException => throw NetworkException(innerException = ex)
-      case ex: Exception => throw HyperledgerException(transactionName, ex)
-    }
-  }
 
   /** Trades a proposal plus signature for a new transaction that can be signed.
     *
@@ -149,8 +122,6 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
   protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
-    approveAsCurrent("", transactionName, params)
-
     // submit and evaluate response from my "regular" contract
     val resultBytes = this.privateSubmitTransaction(transient, transactionName, params: _*)
     this.wrapTransactionResult(transactionName, resultBytes)
@@ -180,6 +151,35 @@ trait ConnectionTrait extends AutoCloseable {
       else {
         contract.submitTransaction(transactionName, params: _*)
       }
+    }
+    catch {
+      case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
+      case ex: TimeoutException => throw NetworkException(innerException = ex)
+      case ex: Exception => throw HyperledgerException(transactionName, ex)
+    }
+  }
+
+  /** Wrapper for an evaluation transaction
+    * Translates the result byte-array to a string and throws an error if said string contains an error.
+    *
+    * @param transactionName transaction to call
+    * @param params          parameters to feed into transaction
+    * @return result as a string
+    */
+  @throws[TransactionExceptionTrait]
+  @throws[HyperledgerExceptionTrait]
+  protected final def wrapEvaluateTransaction(transactionName: String, params: String*): String = {
+    val result = this.privateEvaluateTransaction(transactionName, params: _*)
+    this.wrapTransactionResult(transactionName, result)
+  }
+
+  @throws[HyperledgerExceptionTrait]
+  @throws[NetworkExceptionTrait]
+  private def privateEvaluateTransaction(transactionName: String, params: String*): Array[Byte] = {
+    Logger.info(s"Evaluate Transaction: '$transactionName' with parameters: $params")
+    testAnyParamsNull(transactionName, params: _*)
+    try {
+      contract.evaluateTransaction(transactionName, params: _*)
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)

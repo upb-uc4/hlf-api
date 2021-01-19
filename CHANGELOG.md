@@ -1,3 +1,33 @@
+# <a id="v0.16.2" />[v0.16.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.1...v0.16.2) (TBD)
+
+## Feature
+
+- rework approval/rejection process (provice proposals for approveOperation/rejectOperation
+- accept all approvals via OperationConnection
+
+# <a id="v0.16.1" />[v0.16.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.0...v0.16.1) (2021-01-18)
+
+## Usability
+
+- null-check on connectio.close() (for mock)
+
+# <a id="v0.16.0" />[v0.16.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.0...v0.16.0) (2021-01-18)
+
+## sprint release
+
+- OperationConnection
+- Performance Improvement
+
+# <a id="v0.15.8" />[v0.15.8](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.7...v0.15.8) (2021-01-15)
+	
+## Feature
+
+- no longer automatically begin operation process (approve transactions) when invoking transactions directly
+	
+## Usability
+
+- adjust tests to match new chaincode
+
 # <a id="v0.15.7" />[v0.15.7](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.5...v0.15.7) (2021-01-12)
 
 ## Feature
@@ -27,7 +57,7 @@ test release
 
 - SpeedUp (remove opening/closing connections)
 
-# <a id="v0.15.3" />[v0.15.3 (WIP)](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.3...v0.15.3) (2021-01-05)
+# <a id="v0.15.3" />[v0.15.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.15.3...v0.15.3) (2021-01-05)
 
 ## Feature
 

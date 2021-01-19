@@ -211,6 +211,7 @@ class UnsignedTransactionTests extends TestBase {
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
         initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
+        initializeOperation(username).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
         matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
@@ -228,6 +229,7 @@ class UnsignedTransactionTests extends TestBase {
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
         initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
+        initializeOperation(username).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
         matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
@@ -250,6 +252,7 @@ class UnsignedTransactionTests extends TestBase {
         val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
         val matriculationData = TestDataMatriculation.validMatriculationData4(testUserId)
         initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", matriculationData)
+        initializeOperation(username).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", matriculationData)
         matriculationConnection.addMatriculationData(matriculationData)
 
         // Log proposal

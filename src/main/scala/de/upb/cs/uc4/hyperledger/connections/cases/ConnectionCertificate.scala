@@ -1,7 +1,6 @@
 package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
-
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionCertificateTrait
 
 case class ConnectionCertificate(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)

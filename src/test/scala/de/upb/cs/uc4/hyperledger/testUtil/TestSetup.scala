@@ -1,11 +1,7 @@
 package de.upb.cs.uc4.hyperledger.testUtil
 
-import java.security.PrivateKey
-
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation.testModule
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 
 object TestSetup {
   def setupExaminationRegulations(erConnection: ConnectionExaminationRegulationTrait): Unit = {
@@ -27,7 +23,7 @@ object TestSetup {
   def establishAdminGroup(connection: ConnectionGroupTrait, userName: String): Unit = {
     // store on chain
     TestHelper.trySetupConnections("establishAdminGroup", () => {
-      connection.addUserToGroup(userName, "admin")
+      connection.addUserToGroup(userName, TestDataGroup.adminGroupName)
     })
 
     connection.close()

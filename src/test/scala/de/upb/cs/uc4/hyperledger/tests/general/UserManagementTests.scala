@@ -36,7 +36,8 @@ class UserManagementTests extends TestBase {
         val testData: String = TestDataMatriculation.validMatriculationData1(enrollmentID)
 
         // add approval as admin user
-        super.initializeOperation(username).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", testData)
+        initializeOperation(username).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", testData)
+        initializeOperation(enrollmentID).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", testData)
 
         // access chaincode as test user 301
         val matriculationConnectionUser = super.initializeMatriculation(enrollmentID)

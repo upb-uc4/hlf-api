@@ -36,8 +36,10 @@ class AdmissionTests extends TestBase {
           val mat2 = TestDataMatriculation.validMatriculationDataCustom(testUser2, "AdmissionER_Closed1")
 
           // approve as Users
-          initializeOperation(testUser1).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat1)
-          initializeOperation(testUser2).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat2)
+          initializeOperation(testUser1).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat1)
+          initializeOperation(testUser2).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat2)
+          initializeOperation(username).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat1)
+          initializeOperation(username).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat2)
 
           // store on chain
           TestHelper.trySetupConnections(
@@ -136,7 +138,7 @@ class AdmissionTests extends TestBase {
         chaincodeConnection.addAdmission(TestDataAdmission.admission1)
 
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission1))
-        result.transactionName should be("proposeTransaction")
+        result.transactionName should be("addAdmission")
         // TODO compare errors
         // result.payload should be("")
       }
@@ -145,7 +147,7 @@ class AdmissionTests extends TestBase {
         chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId)
 
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId))
-        result.transactionName should be("proposeTransaction")
+        result.transactionName should be("addAdmission")
         // TODO compare errors
         // result.payload should be("")
       }
@@ -167,7 +169,7 @@ class AdmissionTests extends TestBase {
 
         // test exception
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1"))
-        result.transactionName should be("proposeTransaction")
+        result.transactionName should be("dropAdmission")
         // TODO compare errors
         // result.payload should be("")
 
