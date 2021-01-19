@@ -13,19 +13,19 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
 
   override def getProposalInitiateOperation(certificate: String, affiliation: String = AFFILIATION, initiator: String, contractName: String, transactionName: String, params: Array[String]): Array[Byte] = {
     // TODO: approveTransaction ==> initiateOperation
-    val fcnName: String = contractName + ":" + "approveTransaction"
-    val args: Seq[String] = TransactionHelper.getApprovalParameterList(initiator, this.contractName, transactionName, params)
+    val fcnName: String = this.contractName + ":" + "approveTransaction"
+    val args: Seq[String] = TransactionHelper.getApprovalParameterList(initiator, contractName, transactionName, params)
     TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, this.networkDescriptionPath, args: _*)
   }
 
   override def getProposalApproveOperation(certificate: String, affiliation: String = AFFILIATION, operationId: String): Array[Byte] = {
-    val fcnName: String = contractName + ":" + "approveOperation"
+    val fcnName: String = this.contractName + ":" + "approveOperation"
     val args: Seq[String] = Seq(operationId)
     TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
   }
 
   override def getProposalRejectOperation(certificate: String, affiliation: String = AFFILIATION, operationId: String, rejectMessage: String): Array[Byte] = {
-    val fcnName = contractName + ":" + "rejectOperation"
+    val fcnName = this.contractName + ":" + "rejectOperation"
     val args: Seq[String] = Seq(operationId, rejectMessage)
     TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
   }
