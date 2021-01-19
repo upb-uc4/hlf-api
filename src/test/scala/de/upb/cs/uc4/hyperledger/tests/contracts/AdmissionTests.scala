@@ -36,10 +36,10 @@ class AdmissionTests extends TestBase {
           val mat2 = TestDataMatriculation.validMatriculationDataCustom(testUser2, "AdmissionER_Closed1")
 
           // approve as Users
-          initializeOperation(testUser1).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat1)
-          initializeOperation(testUser2).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat2)
-          initializeOperation(username).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat1)
-          initializeOperation(username).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", mat2)
+          initializeOperation(testUser1).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat1)
+          initializeOperation(testUser2).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat2)
+          initializeOperation(username).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat1)
+          initializeOperation(username).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat2)
 
           // store on chain
           TestHelper.trySetupConnections(
