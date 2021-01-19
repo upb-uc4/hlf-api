@@ -10,7 +10,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: "*NonExistentNetworkTests"
+        default: "*HelperTests *NonExistentNetworkTests"
   # on push event
   push:
     # except for these files
@@ -43,7 +43,7 @@ jobs:
 
   DeployAndTestNoNetwork:
     env:
-      TEST_SET: "*NonExistentNetworkTests"
+      TEST_SET: "*HelperTests *NonExistentNetworkTests"
 
     runs-on: ubuntu-latest
 
