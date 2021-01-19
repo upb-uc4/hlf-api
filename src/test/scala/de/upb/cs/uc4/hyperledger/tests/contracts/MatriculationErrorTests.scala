@@ -12,6 +12,7 @@ class MatriculationErrorTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
+    tryRegisterAndEnrollTestUser(existingMatriculationId, organisationId)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
     TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation, Seq(username, existingMatriculationId), existingMatriculationId)
   }
