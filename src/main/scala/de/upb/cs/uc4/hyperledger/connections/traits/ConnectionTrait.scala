@@ -207,7 +207,7 @@ trait ConnectionTrait extends AutoCloseable {
     val signature = ByteString.copyFrom(signatureBytes)
     val proposal = Proposal.parseFrom(proposalBytes)
     val (transaction: TransactionImpl, signedProposal: SignedProposal) =
-      TransactionHelper.createSignedProposal(operationsConnection.get, proposal, signature)
+      TransactionHelper.createSignedProposal(this.asInstanceOf[ConnectionOperationTrait], proposal, signature)
 
     // submit approval proposal
     val channelObj: Channel = this.gateway.getNetwork(channel).getChannel
@@ -216,7 +216,7 @@ trait ConnectionTrait extends AutoCloseable {
     val transactionName = TransactionHelper.getTransactionNameFromProposal(transactionProposal)
     val transactionParams = TransactionHelper.getTransactionParamsFromProposal(transactionProposal)
     val transactionId = TransactionHelper.getTransactionIdFromProposal(transactionProposal)
-    val (_, ctx: TransactionContext, _) = TransactionHelper.createTransactionInfo(this.operationsConnection.get.contract, transactionName, transactionParams, Some(transactionId))
+    val (_, ctx: TransactionContext, _) = TransactionHelper.createTransactionInfo(this.contract, transactionName, transactionParams, Some(transactionId))
     val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
 
     val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
@@ -236,7 +236,7 @@ trait ConnectionTrait extends AutoCloseable {
     val transactionPayload: Payload = Payload.parseFrom(transactionBytes)
     val transactionId: String = TransactionHelper.getTransactionIdFromHeader(transactionPayload.getHeader)
     val (transactionName, params) = TransactionHelper.getParametersFromTransactionPayload(transactionPayload)
-    val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.operationsConnection.get.contract, transactionName, params, Some(transactionId))
+    val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.contract, transactionName, params, Some(transactionId))
     val response: Array[Byte] = TransactionHelper.sendTransaction(this, channel, ctx, this.gateway.getNetwork(channel).getChannel, ByteString.copyFrom(transactionBytes), signature, transactionId)
     wrapTransactionResult(transactionName, response)
   }
