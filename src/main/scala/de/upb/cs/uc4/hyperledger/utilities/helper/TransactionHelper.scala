@@ -352,18 +352,16 @@ protected[hyperledger] object TransactionHelper {
   }
 
   def getTransactionInfoFromOperation(operationInfo: String): String = {
-    Logger.debug("OPERATIONINFO " + operationInfo)
-    val transactionInfo = operationInfo
+    operationInfo
       .replace(" ", "")
+      .replace("\\\"", "\"")
+      .replace("\\\\", "\\")
       .replace("\n", "")
       .split(""""transactionInfo":\{""").tail.head // index 1
       .split("""},"initiator""").head
-    Logger.debug("TRANSACTIONINFO 1 " + transactionInfo)
-    transactionInfo
   }
 
   def getInfoFromTransactionInfo(transactionInfo: String): (String, String, Seq[String]) = {
-    Logger.debug("TRANSACTIONINFO 2 " + transactionInfo)
     val contractName: String = transactionInfo
       .split("contractName\":\"").tail.head
       .split("\"").head
@@ -374,11 +372,7 @@ protected[hyperledger] object TransactionHelper {
       .split("parameters\":\"").tail.head
     val transactionParamsString = transactionParamsStringPlus1.substring(0, transactionParamsStringPlus1.lastIndexOf("\""))
 
-    Logger.debug("TRANSACTIONPARAMS STRING " + transactionParamsString)
-    val transactionPString: String = "[\"EnrollmentID_001\",\"legit_certificate\"]"
-
-    val transactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(transactionParamsString, classOf[util.ArrayList[String]])
-    val transactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(transactionParamsArrayList).asScala.toSeq
-    (contractName, transactionName, transactionParams)
+    val transactionParamsArray: Array[String] = new Gson().fromJson(transactionParamsString, classOf[Array[String]])
+    (contractName, transactionName, transactionParamsArray.toSeq)
   }
 }
