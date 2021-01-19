@@ -154,8 +154,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException => throw NetworkException(innerException = ex)
-      case ex: Exception => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException        => throw NetworkException(innerException = ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 
@@ -183,8 +183,8 @@ trait ConnectionTrait extends AutoCloseable {
     }
     catch {
       case ex: GatewayRuntimeException => throw NetworkException(innerException = ex)
-      case ex: TimeoutException => throw NetworkException(innerException = ex)
-      case ex: Exception => throw HyperledgerException(transactionName, ex)
+      case ex: TimeoutException        => throw NetworkException(innerException = ex)
+      case ex: Exception               => throw HyperledgerException(transactionName, ex)
     }
   }
 
@@ -261,7 +261,7 @@ trait ConnectionTrait extends AutoCloseable {
 
   private def internalSubmitRealTransactionForOperation(operationInfo: String): String = {
     // TODO: gather info
-    var tInfo: String= operationInfo
+    var tInfo: String = operationInfo
       .replace(" ", "")
       .replace("\n", "")
       .split(""""transactionInfo":\{""").tail.head // index 1
@@ -290,13 +290,13 @@ trait ConnectionTrait extends AutoCloseable {
 
   private def getConnectionForContract(contractName: String): ConnectionTrait = {
     contractName match {
-      case "UC4.Admission"  => ConnectionAdmission(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-      case "UC4.Certificate"  => ConnectionCertificate(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-      case "UC4.ExaminationRegulation"  => ConnectionExaminationRegulation(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-      case "UC4.Group"  => ConnectionGroup(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-      case "UC4.MatriculationData"  => ConnectionMatriculation(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.Admission" => ConnectionAdmission(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.Certificate" => ConnectionCertificate(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.ExaminationRegulation" => ConnectionExaminationRegulation(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.Group" => ConnectionGroup(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.MatriculationData" => ConnectionMatriculation(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
       // catch the default with a variable so you can print it
-      case _  => throw new Exception(s"Cannot find suitable connection for contract: $contractName")
+      case _ => throw new Exception(s"Cannot find suitable connection for contract: $contractName")
     }
   }
 }

@@ -16,14 +16,14 @@ object PublicExceptionHelper {
     * @return If successful, this will return whatever was returned by the method/function/action
     */
   def wrapInvocationWithNetworkException[Type](
-                                                invocation: () => Type,
-                                                channel: String = null,
-                                                chaincode: String = null,
-                                                networkDescription: String = null,
-                                                identity: String = null,
-                                                organisationId: String = null,
-                                                organisationName: String = null
-                                              ): Type = {
+      invocation: () => Type,
+      channel: String = null,
+      chaincode: String = null,
+      networkDescription: String = null,
+      identity: String = null,
+      organisationId: String = null,
+      organisationName: String = null
+  ): Type = {
     try {
       invocation.apply()
     }

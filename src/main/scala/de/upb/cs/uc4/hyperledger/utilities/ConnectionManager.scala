@@ -25,13 +25,13 @@ protected[hyperledger] object ConnectionManager {
     */
   @throws[GatewayRuntimeException]
   def initializeConnection(
-                            username: String,
-                            channel: String = "myc",
-                            chaincode: String = "mycc",
-                            contractName: String,
-                            walletPath: Path,
-                            networkDescriptionPath: Path
-                          ): (ContractImpl, GatewayImpl) = {
+      username: String,
+      channel: String = "myc",
+      chaincode: String = "mycc",
+      contractName: String,
+      walletPath: Path,
+      networkDescriptionPath: Path
+  ): (ContractImpl, GatewayImpl) = {
     PublicExceptionHelper.wrapInvocationWithNetworkException[(ContractImpl, GatewayImpl)](
       () => {
         // get gateway
@@ -66,11 +66,11 @@ protected[hyperledger] object ConnectionManager {
     */
   @throws[GatewayRuntimeException]
   private def retrieveContract(
-                                gateway: GatewayImpl,
-                                channelName: String,
-                                chaincodeName: String,
-                                contractName: String
-                              ): ContractImpl = {
+      gateway: GatewayImpl,
+      channelName: String,
+      chaincodeName: String,
+      contractName: String
+  ): ContractImpl = {
     // get network (channel)
     val network: NetworkImpl = gateway.getNetwork(channelName).asInstanceOf[NetworkImpl]
     checkConnectionInitialized(network)

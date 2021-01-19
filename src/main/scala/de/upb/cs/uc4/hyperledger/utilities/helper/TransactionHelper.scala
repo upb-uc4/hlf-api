@@ -121,14 +121,14 @@ protected[hyperledger] object TransactionHelper {
     * @return The proposalObject created
     */
   def createProposal(
-                      certificate: String,
-                      userAffiliation: String,
-                      chaincodeName: String,
-                      channelName: String,
-                      function: String,
-                      networkDescriptionPath: Path,
-                      args: String*
-                    ): Array[Byte] = {
+      certificate: String,
+      userAffiliation: String,
+      chaincodeName: String,
+      channelName: String,
+      function: String,
+      networkDescriptionPath: Path,
+      args: String*
+  ): Array[Byte] = {
     val enrollment: X509Enrollment = new X509Enrollment(new PrivateKey {
       override def getAlgorithm: String = null
 
@@ -157,9 +157,9 @@ protected[hyperledger] object TransactionHelper {
   }
 
   def getTransaction(
-                      validResponses: util.Collection[ProposalResponse],
-                      channelObj: Channel
-                    ): Payload = {
+      validResponses: util.Collection[ProposalResponse],
+      channelObj: Channel
+  ): Payload = {
     // Disable default commit wait behaviour
     val transactionOptions: Channel.TransactionOptions =
       Channel.TransactionOptions.createTransactionOptions().nOfEvents(Channel.NOfEvents.createNoEvents())
@@ -210,14 +210,14 @@ protected[hyperledger] object TransactionHelper {
   }
 
   def sendTransaction(
-                       connection: ConnectionTrait,
-                       channel: String,
-                       ctx: TransactionContext,
-                       channelObj: Channel,
-                       transactionPayloadBytes: ByteString,
-                       signature: Array[Byte],
-                       proposalTransactionID: String
-                     ): Array[Byte] = {
+      connection: ConnectionTrait,
+      channel: String,
+      ctx: TransactionContext,
+      channelObj: Channel,
+      transactionPayloadBytes: ByteString,
+      signature: Array[Byte],
+      proposalTransactionID: String
+  ): Array[Byte] = {
     val commitHandler: CommitHandler = connection.gateway.getCommitHandlerFactory.create(ctx.getTxID, connection.gateway.getNetwork(channel))
     commitHandler.startListening()
     try {
@@ -251,12 +251,12 @@ protected[hyperledger] object TransactionHelper {
   }
 
   def internalSendTransaction(
-                               channel: Channel,
-                               signature: Array[Byte],
-                               transactionOptions: Channel.TransactionOptions,
-                               proposalTransactionID: String,
-                               transactionPayload: ByteString
-                             ): CompletableFuture[BlockEvent#TransactionEvent] = {
+      channel: Channel,
+      signature: Array[Byte],
+      transactionOptions: Channel.TransactionOptions,
+      proposalTransactionID: String,
+      transactionPayload: ByteString
+  ): CompletableFuture[BlockEvent#TransactionEvent] = {
     try {
       val orderers = if (ReflectionHelper.getPrivateField(transactionOptions)("orderers") != null) ReflectionHelper.getPrivateField(transactionOptions)("orderers").asInstanceOf[util.List[Orderer]]
       else new util.ArrayList[Orderer](channel.getOrderers)

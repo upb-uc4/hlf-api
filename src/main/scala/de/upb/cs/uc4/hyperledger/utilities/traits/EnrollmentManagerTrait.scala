@@ -16,17 +16,17 @@ trait EnrollmentManagerTrait {
     * @return the Signed Certificate for the CSR.
     */
   def enrollSecure(
-                    caURL: String,
-                    caCert: Path,
-                    enrollmentID: String,
-                    enrollmentSecret: String,
-                    csr_pem: String = null,
-                    adminName: String,
-                    adminWalletPath: Path,
-                    channel: String,
-                    chaincode: String,
-                    networkDescriptionPath: Path
-                  ): String
+      caURL: String,
+      caCert: Path,
+      enrollmentID: String,
+      enrollmentSecret: String,
+      csr_pem: String = null,
+      adminName: String,
+      adminWalletPath: Path,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
+  ): String
 
   /** Enrolls a new User and stores the X509Identity (KeyPair, SignedCert, MetaData) in the Wallet.
     *
@@ -42,14 +42,14 @@ trait EnrollmentManagerTrait {
     * @return the Signed Certificate created.
     */
   def enroll(
-              caURL: String,
-              caCert: Path,
-              walletPath: Path,
-              enrollmentID: String,
-              enrollmentSecret: String,
-              organisationId: String,
-              channel: String,
-              chaincode: String,
-              networkDescriptionPath: Path
-            ): String
+      caURL: String,
+      caCert: Path,
+      walletPath: Path,
+      enrollmentID: String,
+      enrollmentSecret: String,
+      organisationId: String,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
+  ): String
 }

@@ -12,17 +12,17 @@ import org.hyperledger.fabric_ca.sdk.EnrollmentRequest
 object EnrollmentManager extends EnrollmentManagerTrait {
 
   override def enrollSecure(
-                             caURL: String,
-                             caCert: Path,
-                             enrollmentID: String,
-                             enrollmentSecret: String,
-                             csr_pem: String = null,
-                             adminName: String,
-                             adminWalletPath: Path,
-                             channel: String,
-                             chaincode: String,
-                             networkDescriptionPath: Path
-                           ): String = {
+      caURL: String,
+      caCert: Path,
+      enrollmentID: String,
+      enrollmentSecret: String,
+      csr_pem: String = null,
+      adminName: String,
+      adminWalletPath: Path,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
+  ): String = {
     Logger.debug(s"Begin Secure Enrollment process (CSR). Enrolling User '$enrollmentID' as Admin '$adminName'")
 
     var certificate: String = ""
@@ -47,7 +47,7 @@ object EnrollmentManager extends EnrollmentManagerTrait {
   }
 
   private def putNewCertificateOnChain(connectionName: String, channel: String, chaincode: String, connectionWalletPath: Path, networkDescriptionPath: Path,
-                                       newEnrollmentID: String, newCertificate: String): Unit = {
+      newEnrollmentID: String, newCertificate: String): Unit = {
     // store certificate on chaincode
     val certificateConnection = ConnectionCertificate(connectionName, channel, chaincode, connectionWalletPath, networkDescriptionPath)
     addOrUpdateCertificate(certificateConnection, newEnrollmentID, newCertificate)
@@ -68,10 +68,10 @@ object EnrollmentManager extends EnrollmentManagerTrait {
   }
 
   private def prepareEnrollmentRequest(
-                                        hostName: String,
-                                        profile: String,
-                                        csr_pem: String = null
-                                      ): EnrollmentRequest = {
+      hostName: String,
+      profile: String,
+      csr_pem: String = null
+  ): EnrollmentRequest = {
     val enrollmentRequestTLS = new EnrollmentRequest
     enrollmentRequestTLS.addHost(hostName)
     enrollmentRequestTLS.setProfile(profile)
@@ -87,16 +87,16 @@ object EnrollmentManager extends EnrollmentManagerTrait {
   }
 
   override def enroll(
-                       caURL: String,
-                       caCert: Path,
-                       walletPath: Path,
-                       enrollmentID: String,
-                       enrollmentSecret: String,
-                       organisationId: String,
-                       channel: String,
-                       chaincode: String,
-                       networkDescriptionPath: Path
-                     ): String = {
+      caURL: String,
+      caCert: Path,
+      walletPath: Path,
+      enrollmentID: String,
+      enrollmentSecret: String,
+      organisationId: String,
+      channel: String,
+      chaincode: String,
+      networkDescriptionPath: Path
+  ): String = {
     Logger.debug(s"Begin regular Enrollment process (no CSR). Enrolling User '$enrollmentID'")
     // return certificate
     var certificate: String = ""

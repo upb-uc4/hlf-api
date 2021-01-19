@@ -24,13 +24,13 @@ trait RegistrationManagerTrait {
     */
   @throws[Exception]
   def register(
-                caURL: String,
-                caCert: Path,
-                userName: String,
-                adminName: String,
-                adminWalletPath: Path,
-                affiliation: String,
-                maxEnrollments: Integer = 1,
-                newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
-              ): String
+      caURL: String,
+      caCert: Path,
+      userName: String,
+      adminName: String,
+      adminWalletPath: Path,
+      affiliation: String,
+      maxEnrollments: Integer = 1,
+      newUserType: String = HFCAClient.HFCA_TYPE_CLIENT
+  ): String
 }
