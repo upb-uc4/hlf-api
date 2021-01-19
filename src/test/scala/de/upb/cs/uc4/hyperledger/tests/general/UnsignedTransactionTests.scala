@@ -1,7 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests.general
 
 import java.nio.charset.StandardCharsets
-import java.security.PrivateKey
 import java.util.Base64
 
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
@@ -27,7 +26,7 @@ class UnsignedTransactionTests extends TestBase {
     matriculationConnection = initializeMatriculation()
     admissionConnection = initializeAdmission()
     operationConnection = initializeOperation()
-    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username);
+    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
     tryRegisterAndEnrollTestUser("701", organisationId)
     TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation, Seq(username, "701"), "701")

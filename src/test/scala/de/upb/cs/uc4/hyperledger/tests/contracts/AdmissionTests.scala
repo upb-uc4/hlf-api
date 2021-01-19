@@ -18,7 +18,7 @@ class AdmissionTests extends TestBase {
   override def beforeAll(): Unit = {
     super.beforeAll()
     // TODO: RESET LEDGER
-    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username);
+    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     TestSetup.setupExaminationRegulations(initializeExaminationRegulation())
     setupMatriculations()
   }

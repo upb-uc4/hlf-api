@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelper, TestHelperStrings, TestSetup }
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelperStrings, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager }
 
 class MatriculationAccessTests extends TestBase {
@@ -11,7 +11,7 @@ class MatriculationAccessTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username);
+    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
   }
 
