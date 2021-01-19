@@ -3,16 +3,17 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 import java.nio.file.Path
 
 import com.google.gson.Gson
-import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionOperationsTrait
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionOperationTrait
 import de.upb.cs.uc4.hyperledger.utilities.helper.TransactionHelper
 
 protected[hyperledger] case class ConnectionOperation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
-  extends ConnectionOperationsTrait {
+  extends ConnectionOperationTrait {
 
-  override lazy val operationsConnection: Option[ConnectionOperationsTrait] = None
+  override lazy val operationsConnection: Option[ConnectionOperationTrait] = None
 
-  override def getProposalProposeTransaction(certificate: String, affiliation: String = AFFILIATION, initiator: String, contractName: String, transactionName: String, params: Array[String]): Array[Byte] = {
-    val fcnName: String = contractName + ":" + "proposeTransaction"
+  override def getProposalInitiateOperation(certificate: String, affiliation: String = AFFILIATION, initiator: String, contractName: String, transactionName: String, params: Array[String]): Array[Byte] = {
+    // TODO: approveTransaction ==> initiateOperation
+    val fcnName: String = contractName + ":" + "approveTransaction"
     val args: Seq[String] = TransactionHelper.getApprovalParameterList(initiator, this.contractName, transactionName, params)
     TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, this.networkDescriptionPath, args: _*)
   }
@@ -29,9 +30,10 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
     TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
   }
 
-  override def proposeTransaction(initiator: String, contractName: String, transactionName: String, params: String*): String = {
+  override def initiateOperation(initiator: String, contractName: String, transactionName: String, params: String*): String = {
     val transactionValues = TransactionHelper.getApprovalParameterList(initiator, contractName, transactionName, params.toArray)
-    wrapSubmitTransaction(false, "proposeTransaction", transactionValues: _*)
+    // TODO: approveTransaction ==> initiateOperation
+    wrapSubmitTransaction(false, "approveTransaction", transactionValues: _*)
   }
 
   override def approveOperation(operationId: String): String = {

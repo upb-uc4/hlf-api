@@ -7,7 +7,7 @@ import java.util.concurrent.TimeoutException
 
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
-import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionOperation
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, NetworkExceptionTrait, OperationExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, OperationException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
@@ -26,7 +26,7 @@ trait ConnectionTrait extends AutoCloseable {
   // setting up connection
   lazy val (contract: ContractImpl, gateway: GatewayImpl) = ConnectionManager.initializeConnection(username, channel, chaincode, contractName, walletPath, networkDescriptionPath)
   // setup approvalConnection
-  lazy val operationsConnection: Option[ConnectionOperationsTrait] = Some(ConnectionOperation(username, channel, chaincode, walletPath, networkDescriptionPath))
+  lazy val operationsConnection: Option[ConnectionOperationTrait] = Some(ConnectionOperation(username, channel, chaincode, walletPath, networkDescriptionPath))
   val AFFILIATION: String = "org1MSP"
   // regular info used to set up any connection
   val username: String
@@ -111,19 +111,31 @@ trait ConnectionTrait extends AutoCloseable {
     * @param signature        the signature authenticating the user
     * @return Tuple containing (approvalResult, realTransactionResult)
     */
-  def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte]): (String, String) = {
+  def submitSignedTransaction(transactionBytes: Array[Byte], signature: Array[Byte]): String = {
     val transactionPayload: Payload = Payload.parseFrom(transactionBytes)
     val transactionId: String = TransactionHelper.getTransactionIdFromHeader(transactionPayload.getHeader)
     val (transactionName, params) = TransactionHelper.getParametersFromTransactionPayload(transactionPayload)
     val (_, ctx, _) = TransactionHelper.createTransactionInfo(this.operationsConnection.get.contract, transactionName, params, Some(transactionId))
     val response: Array[Byte] = TransactionHelper.sendTransaction(this, channel, ctx, this.gateway.getNetwork(channel).getChannel, ByteString.copyFrom(transactionBytes), signature, transactionId)
     val approvalResult = wrapTransactionResult(transactionName, response)
+    approvalResult
+
+    // TODO: do we need to do both?
+    // realResult = executeTransactionFromOperationTransaction(approvalResult)
+    // (approvalResult, realResult)
+  }
+
+  /** Submits a given approval transaction and it's corresponding "real" transaction
+    *
+    * @param operationData operationData json containing transactionInfo
+    * @return Tuple containing (approvalResult, realTransactionResult)
+    */
+  def executeTransactionFromOperationTransaction(operationData: String): String = {
+    //TODO: rework to gather transactionInfo from jsonString
 
     // execute real Transaction
-    val realResult: String = internalSubmitRealTransactionFromApprovalProposal(approvalResult, params)
-
-    // return both results
-    (approvalResult, realResult)
+    val realResult: String = internalSubmitRealTransactionForOperation(operationData)
+    realResult
   }
 
   /** Wrapper for a submission transaction
@@ -231,7 +243,7 @@ trait ConnectionTrait extends AutoCloseable {
     var approvalResult: String = ""
     // submit my approval to operationsContract
     if (operationsConnection.isDefined) {
-      approvalResult = operationsConnection.get.proposeTransaction(initiator, contractName, transactionName, params: _*)
+      approvalResult = operationsConnection.get.initiateOperation(initiator, contractName, transactionName, params: _*)
     }
     approvalResult
   }
@@ -242,40 +254,49 @@ trait ConnectionTrait extends AutoCloseable {
     var approvalResult: Array[Byte] = null
     // submit my approval to operationsContract
     if (operationsConnection.isDefined) {
-      approvalResult = operationsConnection.get.getProposalProposeTransaction(certificate, affiliation, initiator, this.contractName, transactionName, params.toArray)
+      approvalResult = operationsConnection.get.getProposalInitiateOperation(certificate, affiliation, initiator, this.contractName, transactionName, params.toArray)
     }
     approvalResult
   }
 
-  private def internalSubmitRealTransactionFromApprovalProposal(approvalResult: String, params: Seq[String]): String = {
-    val initiator: String = params.head // first parameter is initiator
-    val realContractName: String = params.tail.head // second parameter is contract name
-    val realTransactionName: String = params.tail.tail.head // third parameter is transaction name
-    val realTransactionParamsString: String = params.tail.tail.tail.head // fourth parameter is params list
-    val realTransactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(realTransactionParamsString, classOf[util.ArrayList[String]])
-    val realTransactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(realTransactionParamsArrayList).asScala.toSeq
-    val realTransactionTransient = false // TODO: read transient bool from params
+  private def internalSubmitRealTransactionForOperation(operationInfo: String): String = {
+    // TODO: gather info
+    var tInfo: String= operationInfo
+      .replace(" ", "")
+      .replace("\n", "")
+      .split(""""transactionInfo":\{""").tail.head // index 1
+      .split("""},"initiator"""").head
 
-    // check contract match
-    // TODO: if LAGOM uses the operationConnection for this, we need to create a new connection to the desired contract --> map to new connection
-    if (realContractName != this.contractName) throw TransactionException.CreateUnknownException("proposeTransaction", s"Proposal was sent to wrong connection:: $contractName != $realContractName")
+    val transactionInfo = "\"contractName\":\"UC4.Certificate\",\"transactionName\":\"addCertificate\",\"parameters\":\"[\\\"EnrollmentID_001\\\",\\\"legit_certificate\\\"]\""
+    val contractName: String = transactionInfo
+      .split("contractName\":\"").tail.head
+      .split("\"").head
+    val transactionName: String = transactionInfo
+      .split("transactionName\":\"").tail.head
+      .split("\"").head
+    val transactionParamsString: String = transactionInfo
+      .split("parameters\":\"").tail.head
+      .split("\"").head
 
-    // submit and evaluate response from my "regular" contract
-    try {
-      val resultBytes = this.privateSubmitTransaction(realTransactionTransient, realTransactionName, realTransactionParams: _*)
-      this.wrapTransactionResult(realTransactionName, resultBytes)
-    }
-    catch {
-      case e: TransactionExceptionTrait => {
-        if (!e.payload.contains("HLInsufficientApprovals")) {
-          val operationException: OperationExceptionTrait = OperationException(approvalResult, e)
-          throw Logger.err("Error during test Execution", operationException)
-        }
-        else {
-          e.payload
-        }
-      }
-      case e: Throwable => throw Logger.err("Internal Error during test Execution", e)
+    val transactionPString: String = "[\\\"EnrollmentID_001\\\",\\\"legit_certificate\\\"]"
+
+    val transactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(transactionParamsString, classOf[util.ArrayList[String]])
+    val transactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(transactionParamsArrayList).asScala.toSeq
+    val transactionTransient = false // TODO: read transient bool from params
+
+    val connection: ConnectionTrait = getConnectionForContract(contractName)
+    connection.wrapSubmitTransaction(transactionTransient, transactionName, transactionParams: _*)
+  }
+
+  private def getConnectionForContract(contractName: String): ConnectionTrait = {
+    contractName match {
+      case "UC4.Admission"  => ConnectionAdmission(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.Certificate"  => ConnectionCertificate(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.ExaminationRegulation"  => ConnectionExaminationRegulation(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.Group"  => ConnectionGroup(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.MatriculationData"  => ConnectionMatriculation(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      // catch the default with a variable so you can print it
+      case _  => throw new Exception(s"Cannot find suitable connection for contract: $contractName")
     }
   }
 }

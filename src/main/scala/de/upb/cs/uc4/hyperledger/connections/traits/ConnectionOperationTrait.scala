@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 
-trait ConnectionOperationsTrait extends ConnectionTrait {
+trait ConnectionOperationTrait extends ConnectionTrait {
   final override val contractName: String = "UC4.OperationData"
 
   /** Submits the "proposeTransaction" query.
@@ -17,7 +17,7 @@ trait ConnectionOperationsTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def proposeTransaction(initiator: String, contractName: String, transactionName: String, params: String*): String
+  def initiateOperation(initiator: String, contractName: String, transactionName: String, params: String*): String
 
   /** Retrieves a proposal for the designated query
     *
@@ -31,7 +31,7 @@ trait ConnectionOperationsTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalProposeTransaction(certificate: String, affiliation: String = AFFILIATION, initiator: String, contractName: String, transactionName: String, params: Array[String]): Array[Byte]
+  def getProposalInitiateOperation(certificate: String, affiliation: String = AFFILIATION, initiator: String, contractName: String, transactionName: String, params: Array[String]): Array[Byte]
 
   /** Retrieves a proposal for the designated query
     *

@@ -11,7 +11,7 @@ import java.util.concurrent.{ CompletableFuture, TimeUnit, TimeoutException }
 
 import com.google.gson.Gson
 import com.google.protobuf.ByteString
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionOperationsTrait, ConnectionTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionOperationTrait, ConnectionTrait }
 import org.hyperledger.fabric.gateway.impl.identity.GatewayUser
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, TimePeriod, TransactionImpl }
 import org.hyperledger.fabric.gateway.spi.CommitHandler
@@ -96,7 +96,7 @@ protected[hyperledger] object TransactionHelper {
 
   def getTransactionNameFromFcn(fcn: String): String = fcn.substring(fcn.indexOf(":") + 1)
 
-  def createSignedProposal(operationConnection: ConnectionOperationsTrait, proposal: ProposalPackage.Proposal, signature: ByteString): (TransactionImpl, SignedProposal) = {
+  def createSignedProposal(operationConnection: ConnectionOperationTrait, proposal: ProposalPackage.Proposal, signature: ByteString): (TransactionImpl, SignedProposal) = {
     val transactionId: String = TransactionHelper.getTransactionIdFromProposal(proposal)
     val transactionName: String = TransactionHelper.getTransactionNameFromProposal(proposal)
     val params: Seq[String] = TransactionHelper.getTransactionParamsFromProposal(proposal)
