@@ -352,14 +352,18 @@ protected[hyperledger] object TransactionHelper {
   }
 
   def getTransactionInfoFromOperation(operationInfo: String): String = {
-    operationInfo
+    Logger.debug("OPERATIONINFO " + operationInfo)
+    val transactionInfo = operationInfo
       .replace(" ", "")
       .replace("\n", "")
       .split(""""transactionInfo":\{""").tail.head // index 1
       .split("""},"initiator"""").head
+    Logger.debug("TRANSACTIONINFO 1 " + transactionInfo)
+    transactionInfo
   }
 
   def getInfoFromTransactionInfo(transactionInfo: String): (String, String, Seq[String]) = {
+    Logger.debug("TRANSACTIONINFO 2 " + transactionInfo)
     val contractName: String = transactionInfo
       .split("contractName\":\"").tail.head
       .split("\"").head
