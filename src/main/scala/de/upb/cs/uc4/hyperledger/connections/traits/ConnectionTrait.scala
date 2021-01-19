@@ -100,14 +100,13 @@ trait ConnectionTrait extends AutoCloseable {
 
   /** Submits a given approval transaction and it's corresponding "real" transaction
     *
-    * @param operationData operationData json containing transactionInfo
+    * @param jsonOperationData operationData json containing transactionInfo
     * @return Tuple containing (approvalResult, realTransactionResult)
     */
-  def executeTransactionFromOperationTransaction(operationData: String): String = {
-    //TODO: rework to gather transactionInfo from jsonString
+  def executeTransaction(jsonOperationData: String): String = {
 
     // execute real Transaction
-    val realResult: String = internalSubmitRealTransactionForOperation(operationData)
+    val realResult: String = internalSubmitRealTransactionForOperation(jsonOperationData)
     realResult
   }
 

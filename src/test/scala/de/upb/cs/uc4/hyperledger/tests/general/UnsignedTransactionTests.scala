@@ -26,6 +26,7 @@ class UnsignedTransactionTests extends TestBase {
     certificateConnection = initializeCertificate()
     matriculationConnection = initializeMatriculation()
     admissionConnection = initializeAdmission()
+    operationConnection = initializeOperation()
     TestSetup.establishAdminGroup(initializeGroup(), username);
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
     TestSetup.establishExistingMatriculation(initializeMatriculation(), "701")
@@ -84,7 +85,7 @@ class UnsignedTransactionTests extends TestBase {
           certificate,
           organisationId, enrollmentId, certificate
         ))
-        exception.transactionName should be("proposeTransaction")
+        exception.transactionName should be("approveTransaction")
         exception.payload should include("HLConflict")
       }
     }
@@ -125,7 +126,7 @@ class UnsignedTransactionTests extends TestBase {
         val transactionApprovalResult = operationConnection.submitSignedTransaction(
           transactionBytes, crypto.sign(privateKey, transactionBytes)
         )
-        val transactionResult = operationConnection.executeTransactionFromOperationTransaction(transactionApprovalResult)
+        val transactionResult = operationConnection.executeTransaction(transactionApprovalResult)
 
         transactionApprovalResult should include(testUserId)
         transactionApprovalResult should include(username)
@@ -169,7 +170,7 @@ class UnsignedTransactionTests extends TestBase {
           transactionBytes,
           crypto.sign(privateKey, transactionBytes)
         )
-        val realTransactionResult = operationConnection.executeTransactionFromOperationTransaction(transactionApprovalResult)
+        val realTransactionResult = operationConnection.executeTransaction(transactionApprovalResult)
 
         // check real result
         TestHelperStrings.compareJson(testMatData, realTransactionResult)
