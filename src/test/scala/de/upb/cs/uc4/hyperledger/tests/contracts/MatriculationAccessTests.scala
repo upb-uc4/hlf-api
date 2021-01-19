@@ -11,7 +11,7 @@ class MatriculationAccessTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    TestSetup.establishAdminGroup(initializeGroup(), username);
+    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username);
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
   }
 

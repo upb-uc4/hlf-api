@@ -1,6 +1,6 @@
 package de.upb.cs.uc4.hyperledger.testUtil
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
 import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation.testModule
 
 object TestSetup {
@@ -20,19 +20,22 @@ object TestSetup {
     erConnection.close()
   }
 
-  def establishAdminGroup(connection: ConnectionGroupTrait, userName: String): Unit = {
+  def establishAdminAndSystemGroup(connection: ConnectionGroupTrait, userName: String): Unit = {
     // store on chain
     TestHelper.trySetupConnections("establishAdminGroup", () => {
       connection.addUserToGroup(userName, TestDataGroup.adminGroupName)
+      connection.addUserToGroup(userName, TestDataGroup.systemGroupName)
     })
 
     connection.close()
   }
 
-  def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, existingMatriculationId: String): Unit = {
+  def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, f: (String) => ConnectionOperationTrait, approveNames: Seq[String], existingMatriculationId: String): Unit = {
     // prepare data
     val mat1 = TestDataMatriculation.validMatriculationData1(existingMatriculationId)
 
+    // approvals
+    approveNames.foreach(name => f(name).initiateOperation(existingMatriculationId, "UC4.MatriculationData", "addMatriculationData", mat1))
     // store on chain
     TestHelper.trySetupConnections("establishExistingMatriculation", () => {
       matConnection.addMatriculationData(mat1)

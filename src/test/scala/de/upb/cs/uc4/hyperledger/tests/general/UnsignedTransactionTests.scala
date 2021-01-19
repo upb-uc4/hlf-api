@@ -27,9 +27,9 @@ class UnsignedTransactionTests extends TestBase {
     matriculationConnection = initializeMatriculation()
     admissionConnection = initializeAdmission()
     operationConnection = initializeOperation()
-    TestSetup.establishAdminGroup(initializeGroup(), username);
+    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username);
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
-    TestSetup.establishExistingMatriculation(initializeMatriculation(), "701")
+    TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation, Seq(username, "701"), "701")
   }
 
   override def afterAll(): Unit = {
