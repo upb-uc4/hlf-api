@@ -31,6 +31,7 @@ import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionBuilder, TransactionContext }
 import org.hyperledger.fabric.sdk._
 
+import scala.jdk.CollectionConverters
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks.{ break, breakable }
 
@@ -348,5 +349,32 @@ protected[hyperledger] object TransactionHelper {
     val payloadBytes: ByteString = proposal.getPayload
     val payload: ChaincodeProposalPayload = ProposalPackage.ChaincodeProposalPayload.parseFrom(payloadBytes)
     getArgsFromChaincodeProposalPayload(payload)
+  }
+
+  def getTransactionInfoFromOperation(operationInfo: String): String = {
+    operationInfo
+      .replace(" ", "")
+      .replace("\n", "")
+      .split(""""transactionInfo":\{""").tail.head // index 1
+      .split("""},"initiator"""").head
+  }
+
+  def getInfoFromTransactionInfo(transactionInfo: String): (String, String, Seq[String]) = {
+    val contractName: String = transactionInfo
+      .split("contractName\":\"").tail.head
+      .split("\"").head
+    val transactionName: String = transactionInfo
+      .split("transactionName\":\"").tail.head
+      .split("\"").head
+    val transactionParamsString: String = transactionInfo
+      .split("parameters\":\"").tail.head
+      .split("\"").head
+
+    Logger.debug("TRANSACTIONPARAMS STRING " + transactionParamsString)
+    val transactionPString: String = "[\\\"EnrollmentID_001\\\",\\\"legit_certificate\\\"]"
+
+    val transactionParamsArrayList: util.ArrayList[String] = new Gson().fromJson(transactionParamsString, classOf[util.ArrayList[String]])
+    val transactionParams: Seq[String] = CollectionConverters.IterableHasAsScala(transactionParamsArrayList).asScala.toSeq
+    (contractName, transactionName, transactionParams)
   }
 }
