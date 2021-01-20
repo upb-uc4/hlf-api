@@ -1,9 +1,16 @@
-# <a id="v0.16.2" />[v0.16.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.1...v0.16.2) (TBD)
+# <a id="v0.16.3" />[v0.16.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.2...v0.16.3) (TBD)
 
 ## Feature
 
-- rework approval/rejection process (provice proposals for approveOperation/rejectOperation
+- rework approval/rejection process (provice proposals for approveOperation/rejectOperation)
 - accept all approvals via OperationConnection
+
+# <a id="v0.16.2" />[v0.16.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.1...v0.16.2) (2021-01-19)
+
+## PRE RELEASE
+
+- this is a pre release to provide necessary API points
+- !CAREFUL this release is not compatible with ANY CHAINCODE
 
 # <a id="v0.16.1" />[v0.16.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.0...v0.16.1) (2021-01-18)
 
