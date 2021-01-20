@@ -25,7 +25,7 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
   }
 
   override def getProposalRejectOperation(certificate: String, affiliation: String = AFFILIATION, operationId: String, rejectMessage: String): Array[Byte] = {
-    val fcnName = this.contractName + ":" + "rejectOperation"
+    val fcnName = this.contractName + ":" + "rejectTransaction"
     val args: Seq[String] = Seq(operationId, rejectMessage)
     TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
   }
