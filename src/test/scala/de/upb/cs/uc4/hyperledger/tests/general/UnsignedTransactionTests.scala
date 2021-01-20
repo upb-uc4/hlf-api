@@ -254,10 +254,8 @@ class UnsignedTransactionTests extends TestBase {
 
         // initial approve
         val operationData = operationConnection.initiateOperation(
-          testUserId
-          ,"UC4.MatriculationData"
-          ,"addMatriculationData"
-          ,inputMatJSon)
+          testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon
+        )
         val id = TestHelperStrings.getOperationIdFromOperationData(operationData)
 
         // Log proposal
@@ -277,10 +275,8 @@ class UnsignedTransactionTests extends TestBase {
 
         // initial approve
         val operationData = operationConnection.initiateOperation(
-          testUserId
-          ,"UC4.MatriculationData"
-          ,"updateMatriculationData"
-          ,inputMatJSon)
+          testUserId, "UC4.MatriculationData", "updateMatriculationData", inputMatJSon
+        )
         val id = TestHelperStrings.getOperationIdFromOperationData(operationData)
 
         // Log proposal

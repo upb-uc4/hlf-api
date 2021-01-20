@@ -41,7 +41,7 @@ object TestHelperStrings {
       .replace("\n", "")
   }
 
-  def getOperationIdFromOperationData(operationData: String): String={
+  def getOperationIdFromOperationData(operationData: String): String = {
     operationData.split("\"operationId\":\"").tail.head.split("\"").head
   }
 }
