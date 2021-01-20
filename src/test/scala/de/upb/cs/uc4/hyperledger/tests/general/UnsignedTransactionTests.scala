@@ -274,9 +274,6 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-updateMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
-        initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
-        initializeOperation(username).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
-        matriculationConnection.addMatriculationData(inputMatJSon)
 
         // initial approve
         val operationData = operationConnection.initiateOperation(
@@ -299,11 +296,6 @@ class UnsignedTransactionTests extends TestBase {
       "print info for addEntriesToMatriculationData" in {
         val testUserId = "frontend-signing-tester-info-addEntriesToMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
-        val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
-        initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
-        initializeOperation(username).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
-        matriculationConnection.addMatriculationData(inputMatJSon)
-
 
         // initial approve
         val operationData = operationConnection.initiateOperation(
