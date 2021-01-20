@@ -19,7 +19,7 @@ class HelperTests extends TestBase {
         transactionName should be("addMatriculationData")
         params.length should be(1)
         val retrievedParam = params.head
-        retrievedParam should equal(compareMat)
+        retrievedParam.replace(" ", "") should equal(compareMat.replace(" ", ""))
       }
     }
     "json parsing arrays" should {
