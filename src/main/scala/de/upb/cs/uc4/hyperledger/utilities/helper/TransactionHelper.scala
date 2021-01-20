@@ -31,7 +31,6 @@ import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionBuilder, TransactionContext }
 import org.hyperledger.fabric.sdk._
 
-import scala.jdk.CollectionConverters
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks.{ break, breakable }
 
@@ -57,7 +56,7 @@ protected[hyperledger] object TransactionHelper {
   }
 
   def getApprovalParameterList(initiator: String, contractName: String, transactionName: String, params: Array[String]): Seq[String] = {
-    val jsonParams = new Gson().toJson(params)
+    val jsonParams = StringHelper.parameterArrayToJson(params)
     List[String](initiator, contractName, transactionName, jsonParams)
   }
 
@@ -349,28 +348,5 @@ protected[hyperledger] object TransactionHelper {
     val payloadBytes: ByteString = proposal.getPayload
     val payload: ChaincodeProposalPayload = ProposalPackage.ChaincodeProposalPayload.parseFrom(payloadBytes)
     getArgsFromChaincodeProposalPayload(payload)
-  }
-
-  def getTransactionInfoFromOperation(operationInfo: String): String = {
-    operationInfo
-      .replace("\\\"", "\"")
-      .replace("\\\\", "\\")
-      .split(""""transactionInfo":\{""").tail.head // index 1
-      .split("""},"initiator""").head
-  }
-
-  def getInfoFromTransactionInfo(transactionInfo: String): (String, String, Seq[String]) = {
-    val contractName: String = transactionInfo
-      .split("contractName\":\"").tail.head
-      .split("\"").head
-    val transactionName: String = transactionInfo
-      .split("transactionName\":\"").tail.head
-      .split("\"").head
-    val transactionParamsStringPlus1: String = transactionInfo
-      .split("parameters\":\"").tail.head
-    val transactionParamsString = transactionParamsStringPlus1.substring(0, transactionParamsStringPlus1.lastIndexOf("\""))
-
-    val transactionParamsArray: Array[String] = new Gson().fromJson(transactionParamsString, classOf[Array[String]])
-    (contractName, transactionName, transactionParamsArray.toSeq)
   }
 }

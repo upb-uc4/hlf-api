@@ -10,7 +10,7 @@ import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, Connec
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, NetworkExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
-import de.upb.cs.uc4.hyperledger.utilities.helper.{ CertificateHelper, Logger, ReflectionHelper, TransactionHelper }
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ CertificateHelper, Logger, ReflectionHelper, StringHelper, TransactionHelper }
 import org.hyperledger.fabric.gateway.GatewayRuntimeException
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, TransactionImpl }
 import org.hyperledger.fabric.protos.common.Common.Payload
@@ -249,8 +249,8 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def executeTransaction(jsonOperationData: String): String = {
-    val transactionInfo = TransactionHelper.getTransactionInfoFromOperation(jsonOperationData)
-    val (contractName, transactionName, transactionParams) = TransactionHelper.getInfoFromTransactionInfo(transactionInfo)
+    val transactionInfo = StringHelper.getTransactionInfoFromOperation(jsonOperationData)
+    val (contractName, transactionName, transactionParams) = StringHelper.getInfoFromTransactionInfo(transactionInfo)
     val transactionTransient = false // TODO: read transient bool from params
 
     val connection: ConnectionTrait = buildConnectionForContract(contractName)
