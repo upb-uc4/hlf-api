@@ -14,7 +14,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: "*CertificateAccessTests *CertificateErrorTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *InternalManagerTests *MatriculationErrorTests *OperationTests *VersionAccessTests"
+        default: "*CertificateAccessTests *CertificateErrorTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *HelperTests *InternalManagerTests *OperationTests *VersionAccessTests"
   # on push event
   push:
     # except for these files
@@ -47,7 +47,7 @@ jobs:
 
   DeployAndTestDevNetwork:
     env:
-      TEST_SET: "*CertificateAccessTests *CertificateErrorTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *InternalManagerTests *MatriculationErrorTests *OperationTests *VersionAccessTests"
+      TEST_SET: "*CertificateAccessTests *CertificateErrorTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *HelperTests *InternalManagerTests *OperationTests *VersionAccessTests"
       CHAINCODE_TARGET: "v0.16.5"
 
     runs-on: ubuntu-latest

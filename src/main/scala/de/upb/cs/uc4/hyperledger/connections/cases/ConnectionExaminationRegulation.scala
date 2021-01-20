@@ -8,18 +8,15 @@ case class ConnectionExaminationRegulation(username: String, channel: String, ch
   extends ConnectionExaminationRegulationTrait {
 
   def getProposalAddExaminationRegulation(certificate: String, affiliation: String = AFFILIATION, examinationRegulation: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "addExaminationRegulation", examinationRegulation)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "addExaminationRegulation", examinationRegulation)
   }
 
   def getProposalGetExaminationRegulations(certificate: String, affiliation: String = AFFILIATION, namesList: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "getExaminationRegulations", namesList)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getExaminationRegulations", namesList)
   }
 
   def getProposalCloseExaminationRegulation(certificate: String, affiliation: String = AFFILIATION, name: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "closeExaminationRegulation", name)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "closeExaminationRegulation", name)
   }
 
   def addExaminationRegulation(examinationRegulation: String): String =

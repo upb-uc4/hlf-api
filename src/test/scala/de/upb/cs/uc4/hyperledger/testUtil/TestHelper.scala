@@ -21,6 +21,7 @@ object TestHelper {
   private def testProtobufContainsInfo(payload: String, contents: Seq[String]): Unit = {
     // payload contains Approval TransactionInfo
     payload should include("UC4.OperationData")
+    // TODO: change to initiateOperation
     payload should include("approveTransaction")
     // payload contains approval parameters (target TransactionInfo)
     contents.foreach(item => clearProtobufInfo(payload) should include(clearProtobufInfo(item)))

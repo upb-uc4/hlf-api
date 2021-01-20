@@ -1,13 +1,13 @@
 package de.upb.cs.uc4.hyperledger.tests.contracts
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait, ConnectionOperationsTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 
 class VersionAccessTests extends TestBase {
 
   var certificateConnection: ConnectionCertificateTrait = _
   var matriculationConnection: ConnectionMatriculationTrait = _
-  var approvalConnection: ConnectionOperationsTrait = _
+  var approvalConnection: ConnectionOperationTrait = _
   var ERConnection: ConnectionExaminationRegulationTrait = _
 
   override def afterAll(): Unit = {

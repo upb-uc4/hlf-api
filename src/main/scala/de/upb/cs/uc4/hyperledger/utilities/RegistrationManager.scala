@@ -61,13 +61,19 @@ object RegistrationManager extends RegistrationManagerTrait {
     val name = getNameFromIdentity(identity)
     new User() {
       override def getName: String = name
+
       override def getRoles: util.Set[String] = null
+
       override def getAccount = ""
+
       override def getAffiliation: String = affiliationName
+
       override def getEnrollment: Enrollment = new Enrollment() {
         override def getKey: PrivateKey = identity.getPrivateKey
+
         override def getCert: String = Identities.toPemString(identity.getCertificate)
       }
+
       override def getMspId: String = identity.getMspId
     }
   }

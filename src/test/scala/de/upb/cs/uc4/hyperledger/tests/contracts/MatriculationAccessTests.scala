@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelper, TestHelperStrings, TestSetup }
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelperStrings, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager }
 
 class MatriculationAccessTests extends TestBase {
@@ -11,7 +11,7 @@ class MatriculationAccessTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    TestSetup.establishAdminGroup(initializeGroup(), username);
+    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
   }
 
@@ -37,8 +37,8 @@ class MatriculationAccessTests extends TestBase {
         val enrollmentID = "200"
         val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentID, username, walletPath, "org1")
         EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentID, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
-        initializeOperation(enrollmentID).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", newData)
-        initializeOperation(username).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", newData)
+        initializeOperation(enrollmentID).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", newData)
+        initializeOperation(username).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", newData)
 
         // add matriculation as admin
         TestHelperStrings.compareJson(newData, chaincodeConnection.addMatriculationData(newData))

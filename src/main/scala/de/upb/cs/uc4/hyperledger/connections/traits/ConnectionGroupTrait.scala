@@ -9,7 +9,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
     * Also submits an approval for the transaction as the current user (admin).
     *
     * @param enrollmentId Information about the enrollmentId.
-    * @param groupId Information about the groupId.
+    * @param groupId      Information about the groupId.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Proposal and transactionId
@@ -22,7 +22,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
     * Also submits an approval for the transaction as the current user (admin).
     *
     * @param enrollmentId enrollmentId to remove.
-    * @param groupId groupId from which user is removed.
+    * @param groupId      groupId from which user is removed.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Proposal and transactionId
@@ -81,7 +81,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
   /** Submits the "addUserToGroup" query.
     *
     * @param enrollmentId Information about the enrollmentId.
-    * @param groupId Information about the groupId.
+    * @param groupId      Information about the groupId.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return ledger state
@@ -93,7 +93,7 @@ trait ConnectionGroupTrait extends ConnectionTrait {
   /** Submits the "removeUserFromGroup" query.
     *
     * @param enrollmentId enrollmentId to remove.
-    * @param groupId groupId from which user is removed.
+    * @param groupId      groupId from which user is removed.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Success_state

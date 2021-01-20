@@ -33,8 +33,8 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
     * Also submits the "getAdmissions" query as current user (admin).
     *
     * @param enrollmentId enrollmentId to filter for.
-    * @param courseId courseId to filter for.
-    * @param moduleId moduleId to filter for.
+    * @param courseId     courseId to filter for.
+    * @param moduleId     moduleId to filter for.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Proposal and transactionId
@@ -68,8 +68,8 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
   /** Submits the "getAdmissions" query.
     *
     * @param enrollmentId enrollmentId to filter for.
-    * @param courseId courseId to filter for.
-    * @param moduleId moduleId to filter for.
+    * @param courseId     courseId to filter for.
+    * @param moduleId     moduleId to filter for.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return list of admissions matching the filters.
