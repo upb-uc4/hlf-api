@@ -1,9 +1,18 @@
-# <a id="v0.16.3" />[v0.16.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.2...v0.16.3) (TBD)
+# <a id="v0.16.4" />[v0.16.4](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.3...v0.16.4) (TBD)
+
+- support the new chaincode (API-OPERATION 1.1, CHAINCODE-OPERATION 1.1)
+
+## Feature
+
+- accept all approvals ONLY via OperationConnection
+
+# <a id="v0.16.3" />[v0.16.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.2...v0.16.3) (2021-01-20)
+
+- provide new new API working for the old chaincode specification (API-OPERATION 1.1, CHAINCODE-OPERATION 1.0)
 
 ## Feature
 
 - rework approval/rejection process (provice proposals for approveOperation/rejectOperation)
-- accept all approvals via OperationConnection
 
 # <a id="v0.16.2" />[v0.16.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.1...v0.16.2) (2021-01-19)
 
