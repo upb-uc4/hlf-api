@@ -353,10 +353,8 @@ protected[hyperledger] object TransactionHelper {
 
   def getTransactionInfoFromOperation(operationInfo: String): String = {
     operationInfo
-      .replace(" ", "")
       .replace("\\\"", "\"")
       .replace("\\\\", "\\")
-      .replace("\n", "")
       .split(""""transactionInfo":\{""").tail.head // index 1
       .split("""},"initiator""").head
   }
