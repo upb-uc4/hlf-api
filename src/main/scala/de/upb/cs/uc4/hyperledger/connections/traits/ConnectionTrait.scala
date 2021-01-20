@@ -218,7 +218,7 @@ trait ConnectionTrait extends AutoCloseable {
     val transactionId = TransactionHelper.getTransactionIdFromProposal(transactionProposal)
     val (_, ctx: TransactionContext, _) = TransactionHelper.createTransactionInfo(this.contract, transactionName, transactionParams, Some(transactionId))
 
-    // TODO: retry if 
+    // TODO: retry if
     //  The proposal responses have 2 inconsistent groups with 0 that are invalid. Expected all to be consistent and none to be invalid.
     //  Exception:	java.lang.IllegalArgumentException
     val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
