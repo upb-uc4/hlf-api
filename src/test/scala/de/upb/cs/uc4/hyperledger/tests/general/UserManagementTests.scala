@@ -12,7 +12,7 @@ class UserManagementTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    TestSetup.establishAdminGroup(initializeGroup(), username)
+    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
   }
 
@@ -36,8 +36,8 @@ class UserManagementTests extends TestBase {
         val testData: String = TestDataMatriculation.validMatriculationData1(enrollmentID)
 
         // add approval as admin user
-        initializeOperation(username).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", testData)
-        initializeOperation(enrollmentID).approveTransaction(username, "UC4.MatriculationData", "addMatriculationData", testData)
+        initializeOperation(username).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", testData)
+        initializeOperation(enrollmentID).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", testData)
 
         // access chaincode as test user 301
         val matriculationConnectionUser = super.initializeMatriculation(enrollmentID)

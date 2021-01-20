@@ -7,17 +7,18 @@ import org.hyperledger.fabric.gateway._
 import org.hyperledger.fabric.gateway.impl.{ ContractImpl, GatewayImpl, NetworkImpl }
 
 /** Manager for all things ConnectionRelated.
-  *  Can be used to retrieve contract and gateway from
+  * Can be used to retrieve contract and gateway from
   */
 protected[hyperledger] object ConnectionManager {
 
   /** Retrieves a gateway to communicate with the hyperledger network
     * Retrieves a Contract to invoke transactions on.
-    * @param username name of the certificate to use when communicating
-    * @param channel name of the channel / network
-    * @param chaincode name of the chaincode to access
-    * @param contractName name of the contract / domain of the contract
-    * @param walletPath path to the certificate wallet
+    *
+    * @param username               name of the certificate to use when communicating
+    * @param channel                name of the channel / network
+    * @param chaincode              name of the chaincode to access
+    * @param contractName           name of the contract / domain of the contract
+    * @param walletPath             path to the certificate wallet
     * @param networkDescriptionPath path to a configuration-file describing the network (IP addresses of peers)
     * @throws GatewayRuntimeException when gateway cannot find channel / network
     * @return contract and gateway objects
@@ -54,14 +55,12 @@ protected[hyperledger] object ConnectionManager {
     )
   }
 
-  private def checkConnectionInitialized(network: Network): Unit =
-    if (!network.getChannel.isInitialized) throw new Exception("Network could not be initialized.")
-
   /** Creates a Contract to invoke transactions on.
-    * @param gateway Gateway to the network to connect with
-    * @param channelName name of the channel / network
+    *
+    * @param gateway       Gateway to the network to connect with
+    * @param channelName   name of the channel / network
     * @param chaincodeName name of the chaincode to access
-    * @param contractName name of the contract / domain of the contract
+    * @param contractName  name of the contract / domain of the contract
     * @throws GatewayRuntimeException when gateway cannot find channel / network
     * @return contract object to invoke transactions on
     */
@@ -79,4 +78,7 @@ protected[hyperledger] object ConnectionManager {
     // get contract (chaincode, contract)
     network.getContract(chaincodeName, contractName).asInstanceOf[ContractImpl]
   }
+
+  private def checkConnectionInitialized(network: Network): Unit =
+    if (!network.getChannel.isInitialized) throw new Exception("Network could not be initialized.")
 }

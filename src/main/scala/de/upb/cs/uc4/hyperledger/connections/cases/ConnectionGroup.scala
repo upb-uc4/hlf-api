@@ -8,33 +8,27 @@ protected[hyperledger] case class ConnectionGroup(username: String, channel: Str
   extends ConnectionGroupTrait {
 
   override def getProposalAddUserToGroup(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String, groupId: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "addUserToGroup", enrollmentId, groupId)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "addUserToGroup", enrollmentId, groupId)
   }
 
   override def getProposalRemoveUserFromGroup(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String, groupId: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "removeUserFromGroup", enrollmentId, groupId)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "removeUserFromGroup", enrollmentId, groupId)
   }
 
   override def getProposalRemoveUserFromAllGroups(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "removeUserFromAllGroups", enrollmentId)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "removeUserFromAllGroups", enrollmentId)
   }
 
   override def getProposalGetAllGroups(certificate: String, affiliation: String = AFFILIATION): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "getAllGroups")
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getAllGroups")
   }
 
   override def getProposalGetUsersForGroup(certificate: String, affiliation: String = AFFILIATION, groupId: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "getUsersForGroup", groupId)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getUsersForGroup", groupId)
   }
 
   override def getProposalGetGroupsForUser(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "getGroupsForUser", enrollmentId)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getGroupsForUser", enrollmentId)
   }
 
   override def addUserToGroup(enrollmentId: String, groupId: String): String =

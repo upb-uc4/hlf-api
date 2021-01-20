@@ -8,18 +8,15 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
   extends ConnectionAdmissionTrait {
 
   override def getProposalAddAdmission(certificate: String, affiliation: String = AFFILIATION, admission: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "addAdmission", admission)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "addAdmission", admission)
   }
 
   override def getProposalDropAdmission(certificate: String, affiliation: String = AFFILIATION, admissionId: String): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "dropAdmission", admissionId)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "dropAdmission", admissionId)
   }
 
   override def getProposalGetAdmission(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String = "", courseId: String = "", moduleId: String = ""): (String, Array[Byte]) = {
-    // TODO: add error handling
-    internalGetUnsignedProposal(certificate, affiliation, "getAdmissions", enrollmentId, courseId, moduleId)
+    internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getAdmissions", enrollmentId, courseId, moduleId)
   }
 
   override def addAdmission(admission: String): String =

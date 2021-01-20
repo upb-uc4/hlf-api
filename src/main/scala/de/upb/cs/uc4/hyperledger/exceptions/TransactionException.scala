@@ -12,13 +12,13 @@ protected case class TransactionException(transactionName: String, payload: Stri
 /** Used to create TransactionExceptions from malformed errors. */
 protected[hyperledger] object TransactionException {
 
+  def CreateUnknownException(id: String, detail: String): TransactionException =
+    new TransactionException(id, TransactionException.jSonUnknown(id, detail))
+
   final private def jSonUnknown(id: String, detail: String): String = "{\n" +
     "  \"type\": \"" + id + "\",\n" +
     "  \"title\": \"" + detail + "\"\n" +
     "}"
-
-  def CreateUnknownException(id: String, detail: String): TransactionException =
-    new TransactionException(id, TransactionException.jSonUnknown(id, detail))
 
   def Create(id: String, payload: String): TransactionException =
     new TransactionException(id, payload)

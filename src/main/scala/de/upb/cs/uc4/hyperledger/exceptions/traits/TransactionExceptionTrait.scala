@@ -7,9 +7,9 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.internal.UC4ExceptionTrait
   */
 trait TransactionExceptionTrait extends UC4ExceptionTrait {
 
-  /**  transaction Name provoking the exception. */
+  /** transaction Name provoking the exception. */
   val transactionName: String
 
-  /**  Json-String containing the error-information defined in the API at https://github.com/upb-uc4/api */
+  /** Json-String containing the error-information defined in the API at https://github.com/upb-uc4/api */
   val payload: String
 }

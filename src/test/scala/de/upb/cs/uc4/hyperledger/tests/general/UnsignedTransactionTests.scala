@@ -1,11 +1,9 @@
 package de.upb.cs.uc4.hyperledger.tests.general
 
 import java.nio.charset.StandardCharsets
-import java.security.PrivateKey
 import java.util.Base64
 
-import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataAdmission, TestDataMatriculation, TestHelper, TestHelperCrypto, TestHelperStrings, TestSetup }
@@ -18,6 +16,7 @@ class UnsignedTransactionTests extends TestBase {
 
   val crypto: CryptoPrimitives = TestHelperCrypto.getCryptoPrimitives
   var certificateConnection: ConnectionCertificateTrait = _
+  var operationConnection: ConnectionOperationTrait = _
   var matriculationConnection: ConnectionMatriculationTrait = _
   var admissionConnection: ConnectionAdmissionTrait = _
 
@@ -26,9 +25,11 @@ class UnsignedTransactionTests extends TestBase {
     certificateConnection = initializeCertificate()
     matriculationConnection = initializeMatriculation()
     admissionConnection = initializeAdmission()
-    TestSetup.establishAdminGroup(initializeGroup(), username);
+    operationConnection = initializeOperation()
+    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
-    TestSetup.establishExistingMatriculation(initializeMatriculation(), "701")
+    tryRegisterAndEnrollTestUser("701", organisationId)
+    TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation, Seq(username, "701"), "701")
   }
 
   override def afterAll(): Unit = {
@@ -71,7 +72,7 @@ class UnsignedTransactionTests extends TestBase {
         val signature: Array[Byte] = crypto.sign(privateKey, proposalBytes)
 
         // try use signature
-        val result = intercept[HyperledgerExceptionTrait](certificateConnection.getUnsignedTransaction(proposalBytes, signature))
+        val result = intercept[HyperledgerExceptionTrait](operationConnection.getUnsignedTransaction(proposalBytes, signature))
         result.actionName should be("validatePeerResponses")
       }
     }
@@ -112,7 +113,7 @@ class UnsignedTransactionTests extends TestBase {
         proposalApprovalResult should include(username)
 
         // get transaction for signature
-        val transactionBytes: Array[Byte] = matriculationConnection.getUnsignedTransaction(
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(
           proposalBytes,
           crypto.sign(privateKey, proposalBytes)
         )
@@ -122,9 +123,11 @@ class UnsignedTransactionTests extends TestBase {
         )
 
         // sign transaction and submit transaction
-        val (transactionApprovalResult, transactionResult) = matriculationConnection.submitSignedTransaction(
+        val transactionApprovalResult = operationConnection.submitSignedTransaction(
           transactionBytes, crypto.sign(privateKey, transactionBytes)
         )
+        val transactionResult = operationConnection.executeTransaction(transactionApprovalResult)
+
         transactionApprovalResult should include(testUserId)
         transactionApprovalResult should include(username)
         TestHelperStrings.compareJson(testMatData, transactionResult)
@@ -153,7 +156,7 @@ class UnsignedTransactionTests extends TestBase {
         )
 
         // get transaction for signature
-        val transactionBytes: Array[Byte] = matriculationConnection.getUnsignedTransaction(
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(
           proposalBytes,
           crypto.sign(privateKey, proposalBytes)
         )
@@ -163,10 +166,12 @@ class UnsignedTransactionTests extends TestBase {
         )
 
         // sign transaction and submit transaction
-        val (transactionApprovalResult, realTransactionResult) = matriculationConnection.submitSignedTransaction(
+        val transactionApprovalResult = operationConnection.submitSignedTransaction(
           transactionBytes,
           crypto.sign(privateKey, transactionBytes)
         )
+        val realTransactionResult = operationConnection.executeTransaction(transactionApprovalResult)
+
         // check real result
         TestHelperStrings.compareJson(testMatData, realTransactionResult)
         // check approvalResult
@@ -198,7 +203,7 @@ class UnsignedTransactionTests extends TestBase {
         Logger.debug(s"AddMatriculationDataProposal:: $proposalInfo")
 
         // Log transaction
-        val transactionBytes: Array[Byte] = matriculationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddMatriculationDataTransaction:: $transactionInfo")
       }
@@ -206,8 +211,8 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-updateMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
-        initializeOperation(testUserId).approveTransaction(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
-        initializeOperation(username).approveTransaction(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
+        initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
+        initializeOperation(username).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
         matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
@@ -216,7 +221,7 @@ class UnsignedTransactionTests extends TestBase {
         Logger.debug(s"UpdateMatriculationDataProposal:: $proposalInfo")
 
         // Log transaction
-        val transactionBytes: Array[Byte] = matriculationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
         Logger.debug(s"UpdateMatriculationDataTransaction:: $transactionInfo")
       }
@@ -224,8 +229,8 @@ class UnsignedTransactionTests extends TestBase {
         val testUserId = "frontend-signing-tester-info-addEntriesToMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
-        initializeOperation(testUserId).approveTransaction(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
-        initializeOperation(username).approveTransaction(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
+        initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
+        initializeOperation(username).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon)
         matriculationConnection.addMatriculationData(inputMatJSon)
 
         // Log proposal
@@ -235,7 +240,7 @@ class UnsignedTransactionTests extends TestBase {
         Logger.debug(s"AddEntriesToMatriculationDataProposal:: $proposalInfo")
 
         // Log transaction
-        val transactionBytes: Array[Byte] = matriculationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddEntriesToMatriculationDataTransaction:: $transactionInfo")
       }
@@ -247,8 +252,8 @@ class UnsignedTransactionTests extends TestBase {
         val (privateKey, certificate) = prepareUser(testUserId)
         val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
         val matriculationData = TestDataMatriculation.validMatriculationData4(testUserId)
-        initializeOperation(testUserId).approveTransaction(testUserId, "UC4.MatriculationData", "addMatriculationData", matriculationData)
-        initializeOperation(username).approveTransaction(testUserId, "UC4.MatriculationData", "addMatriculationData", matriculationData)
+        initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", matriculationData)
+        initializeOperation(username).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", matriculationData)
         matriculationConnection.addMatriculationData(matriculationData)
 
         // Log proposal
@@ -257,7 +262,7 @@ class UnsignedTransactionTests extends TestBase {
         Logger.debug(s"AddAdmissionProposal:: $proposalInfo")
 
         // Log transaction
-        val transactionBytes: Array[Byte] = admissionConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddAdmissionTransaction:: $transactionInfo")
       }
@@ -273,7 +278,7 @@ class UnsignedTransactionTests extends TestBase {
         Logger.debug(s"DropAdmissionProposal:: $proposalInfo")
 
         // Log transaction
-        val transactionBytes: Array[Byte] = admissionConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
         Logger.debug(s"DropAdmissionTransaction:: $transactionInfo")
       }
@@ -287,7 +292,7 @@ class UnsignedTransactionTests extends TestBase {
         Logger.debug(s"GetAdmissionProposal:: $proposalInfo")
 
         // Log transaction
-        val transactionBytes: Array[Byte] = admissionConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
         Logger.debug(s"GetAdmissionTransaction:: $transactionInfo")
       }

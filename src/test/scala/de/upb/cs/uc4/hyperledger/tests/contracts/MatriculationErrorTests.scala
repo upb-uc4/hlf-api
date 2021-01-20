@@ -12,8 +12,9 @@ class MatriculationErrorTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
+    tryRegisterAndEnrollTestUser(existingMatriculationId, organisationId)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
-    TestSetup.establishExistingMatriculation(initializeMatriculation(), existingMatriculationId)
+    TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation, Seq(username, existingMatriculationId), existingMatriculationId)
   }
 
   override def beforeEach(): Unit = {
@@ -59,8 +60,6 @@ class MatriculationErrorTests extends TestBase {
       for ((testDescription: String, matriculationData: String) <- testData) {
         s"$testDescription" in {
           Logger.info("Begin test: " + testDescription)
-          // TODO add approvals for all
-          // TODO check error message
           TestHelper.testTransactionException(
             "addMatriculationData",
             () => chaincodeConnection.addMatriculationData(matriculationData)

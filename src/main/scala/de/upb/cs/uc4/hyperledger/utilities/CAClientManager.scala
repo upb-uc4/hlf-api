@@ -3,7 +3,6 @@ package de.upb.cs.uc4.hyperledger.utilities
 import java.nio.file.Path
 import java.util.Properties
 
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.sdk.security.{ CryptoSuite, CryptoSuiteFactory }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
 
@@ -12,7 +11,8 @@ protected[utilities] object CAClientManager {
   val cryptoSuite: CryptoSuite = CryptoSuiteFactory.getDefault.getCryptoSuite
 
   /** Retrieves a clientObject for a CA spec.
-    * @param caURL Address to find the CA.
+    *
+    * @param caURL   Address to find the CA.
     * @param tlsCert Certificate to check the validity of the CA.
     * @return The HFCAClient object to perform registration/enrollment on.
     */

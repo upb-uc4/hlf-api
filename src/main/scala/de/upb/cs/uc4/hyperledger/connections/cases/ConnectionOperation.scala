@@ -2,28 +2,55 @@ package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
 
-import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionOperationsTrait
+import com.google.gson.Gson
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionOperationTrait
 import de.upb.cs.uc4.hyperledger.utilities.helper.TransactionHelper
 
 protected[hyperledger] case class ConnectionOperation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
-  extends ConnectionOperationsTrait {
+  extends ConnectionOperationTrait {
 
-  override lazy val operationsConnection: Option[ConnectionOperationsTrait] = None
+  override lazy val operationsConnection: Option[ConnectionOperationTrait] = None
 
-  override def approveTransaction(initiator: String, contractName: String, transactionName: String, params: String*): String = {
+  override def getProposalInitiateOperation(certificate: String, affiliation: String = AFFILIATION, initiator: String, contractName: String, transactionName: String, params: Array[String]): Array[Byte] = {
+    // TODO: approveTransaction ==> initiateOperation
+    val fcnName: String = this.contractName + ":" + "approveTransaction"
+    val args: Seq[String] = TransactionHelper.getApprovalParameterList(initiator, contractName, transactionName, params)
+    TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, this.networkDescriptionPath, args: _*)
+  }
+
+  override def getProposalApproveOperation(certificate: String, affiliation: String = AFFILIATION, operationId: String): Array[Byte] = {
+    val fcnName: String = this.contractName + ":" + "approveOperation"
+    val args: Seq[String] = Seq(operationId)
+    TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
+  }
+
+  override def getProposalRejectOperation(certificate: String, affiliation: String = AFFILIATION, operationId: String, rejectMessage: String): Array[Byte] = {
+    val fcnName = this.contractName + ":" + "rejectTransaction"
+    val args: Seq[String] = Seq(operationId, rejectMessage)
+    TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
+  }
+
+  override def initiateOperation(initiator: String, contractName: String, transactionName: String, params: String*): String = {
     val transactionValues = TransactionHelper.getApprovalParameterList(initiator, contractName, transactionName, params.toArray)
+    // TODO: approveTransaction ==> initiateOperation
     wrapSubmitTransaction(false, "approveTransaction", transactionValues: _*)
   }
 
-  override def rejectTransaction(operationId: String, rejectMessage: String): String = {
+  override def approveOperation(operationId: String): String = {
+    wrapSubmitTransaction(false, "approveOperation", operationId)
+  }
+
+  override def rejectOperation(operationId: String, rejectMessage: String): String = {
     wrapSubmitTransaction(false, "rejectTransaction", operationId, rejectMessage)
   }
 
-  override def getOperations(existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, state: String): String = {
-    wrapSubmitTransaction(false, "getOperations", existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, state: String)
-  }
-
-  override def getOperationData(operationId: String): String = {
-    wrapSubmitTransaction(false, "getOperationData", operationId)
+  override def getOperations(operationIds: List[String], existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, involvedEnrollmentId: String, states: List[String]): String = {
+    wrapSubmitTransaction(false, "getOperations",
+      new Gson().toJson(operationIds),
+      existingEnrollmentId,
+      missingEnrollmentId,
+      initiatorEnrollmentId,
+      involvedEnrollmentId,
+      new Gson().toJson(states))
   }
 }

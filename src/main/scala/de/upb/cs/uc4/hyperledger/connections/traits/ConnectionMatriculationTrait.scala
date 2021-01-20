@@ -19,7 +19,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
   /** Retrieves a proposal for the designated query
     * Also submits the "addEntriesToMatriculationData" query as current user (admin).
     *
-    * @param enrollmentId enrollment.id to add entry to
+    * @param enrollmentId             enrollment.id to add entry to
     * @param subjectMatriculationList a Json object containing the List of subjectMatriculationInfo - objects
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
@@ -66,7 +66,7 @@ trait ConnectionMatriculationTrait extends ConnectionTrait {
 
   /** Submits the "addEntryToMatriculationData" query.
     *
-    * @param enrollmentId enrollment.id to add entry to
+    * @param enrollmentId             enrollment.id to add entry to
     * @param subjectMatriculationList a Json object containing the List of subjectMatriculationInfo - objects
     * @throws TransactionExceptionTrait if chaincode throws an exception.
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
