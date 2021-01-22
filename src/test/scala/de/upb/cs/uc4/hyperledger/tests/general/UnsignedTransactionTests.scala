@@ -191,7 +191,7 @@ class UnsignedTransactionTests extends TestBase {
   }
 
   "PrintTest info " when {
-    "preparing data for matriculation " should {
+    "preparing data for matriculation approve " should {
       "print info for addMatriculationData" in {
         val testUserId = "frontend-signing-tester-info-addMatriculationData"
         val (privateKey, certificate) = prepareUser(testUserId)
@@ -200,12 +200,12 @@ class UnsignedTransactionTests extends TestBase {
         // Log proposal
         val (_, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(certificate, organisationId, inputMatJSon)
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
-        Logger.debug(s"AddMatriculationDataProposal:: $proposalInfo")
+        Logger.debug(s"AddMatriculationDataApprovalProposal:: $proposalInfo")
 
         // Log transaction
         val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
-        Logger.debug(s"AddMatriculationDataTransaction:: $transactionInfo")
+        Logger.debug(s"AddMatriculationDataApprovalTransaction:: $transactionInfo")
       }
       "print info for updateMatriculationData" in {
         val testUserId = "frontend-signing-tester-info-updateMatriculationData"
@@ -218,12 +218,12 @@ class UnsignedTransactionTests extends TestBase {
         // Log proposal
         val (_, proposalBytes) = matriculationConnection.getProposalUpdateMatriculationData(certificate, organisationId, inputMatJSon)
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
-        Logger.debug(s"UpdateMatriculationDataProposal:: $proposalInfo")
+        Logger.debug(s"UpdateMatriculationDataApprovalProposal:: $proposalInfo")
 
         // Log transaction
         val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
-        Logger.debug(s"UpdateMatriculationDataTransaction:: $transactionInfo")
+        Logger.debug(s"UpdateMatriculationDataApprovalTransaction:: $transactionInfo")
       }
       "print info for addEntriesToMatriculationData" in {
         val testUserId = "frontend-signing-tester-info-addEntriesToMatriculationData"
@@ -237,12 +237,81 @@ class UnsignedTransactionTests extends TestBase {
         val (_, proposalBytes) = matriculationConnection.getProposalAddEntriesToMatriculationData(certificate, organisationId, testUserId,
           TestDataMatriculation.validMatriculationEntry)
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
-        Logger.debug(s"AddEntriesToMatriculationDataProposal:: $proposalInfo")
+        Logger.debug(s"AddEntriesToMatriculationDataApprovalProposal:: $proposalInfo")
 
         // Log transaction
         val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
         val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
-        Logger.debug(s"AddEntriesToMatriculationDataTransaction:: $transactionInfo")
+        Logger.debug(s"AddEntriesToMatriculationDataApprovalTransaction:: $transactionInfo")
+      }
+    }
+
+    "preparing data for matriculation reject " should {
+      "print info for addMatriculationData" in {
+        val testUserId = "frontend-signing-tester-info-addMatriculationData"
+        val (privateKey, certificate) = prepareUser(testUserId)
+        val inputMatJSon = TestDataMatriculation.validMatriculationData3(testUserId)
+
+        // initial approve
+        val operationData = operationConnection.initiateOperation(
+          testUserId, "UC4.MatriculationData", "addMatriculationData", inputMatJSon
+        )
+        val id = TestHelperStrings.getOperationIdFromOperationData(operationData)
+
+        // Log proposal
+        val proposalBytes = operationConnection.getProposalRejectOperation(certificate, organisationId, id, "ExampleRejectMessage")
+        val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
+        Logger.debug(s"AddMatriculationDataRejectionProposal:: $proposalInfo")
+
+        // Log transaction
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
+        val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
+        Logger.debug(s"AddMatriculationDataRejectionTransaction:: $transactionInfo")
+      }
+      "print info for updateMatriculationData" in {
+        val testUserId = "frontend-signing-tester-info-updateMatriculationData"
+        val (privateKey, certificate) = prepareUser(testUserId)
+        val inputMatJSon = TestDataMatriculation.validMatriculationData4(testUserId)
+
+        // initial approve
+        val operationData = operationConnection.initiateOperation(
+          testUserId, "UC4.MatriculationData", "updateMatriculationData", inputMatJSon
+        )
+        val id = TestHelperStrings.getOperationIdFromOperationData(operationData)
+
+        // Log proposal
+        val proposalBytes = operationConnection.getProposalRejectOperation(certificate, organisationId, id, "ExampleRejectMessage")
+        val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
+        Logger.debug(s"UpdateMatriculationDataRejectionProposal:: $proposalInfo")
+
+        // Log transaction
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
+        val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
+        Logger.debug(s"UpdateMatriculationDataRejectionTransaction:: $transactionInfo")
+      }
+      "print info for addEntriesToMatriculationData" in {
+        val testUserId = "frontend-signing-tester-info-addEntriesToMatriculationData"
+        val (privateKey, certificate) = prepareUser(testUserId)
+
+        // initial approve
+        val operationData = operationConnection.initiateOperation(
+          testUserId,
+          "UC4.MatriculationData",
+          "addEntriesToMatriculationData",
+          testUserId,
+          TestDataMatriculation.validMatriculationEntry
+        )
+        val id = TestHelperStrings.getOperationIdFromOperationData(operationData)
+
+        // Log proposal
+        val proposalBytes = operationConnection.getProposalRejectOperation(certificate, organisationId, id, "ExampleRejectMessage")
+        val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
+        Logger.debug(s"AddEntriesToMatriculationDataRejectionProposal:: $proposalInfo")
+
+        // Log transaction
+        val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(proposalBytes, crypto.sign(privateKey, proposalBytes))
+        val transactionInfo = new String(Base64.getEncoder.encode(transactionBytes), StandardCharsets.UTF_8)
+        Logger.debug(s"AddEntriesToMatriculationDataRejectionTransaction:: $transactionInfo")
       }
     }
 

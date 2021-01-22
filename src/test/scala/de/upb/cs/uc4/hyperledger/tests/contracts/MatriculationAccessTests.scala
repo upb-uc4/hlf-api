@@ -51,10 +51,15 @@ class MatriculationAccessTests extends TestBase {
         TestHelperStrings.compareJson(newData, chaincodeConnection.getMatriculationData("200"))
       }
       "allow for adding new Entries to existing data " in {
-        val result = chaincodeConnection.addEntriesToMatriculationData(
-          "200",
-          TestDataMatriculation.getSubjectMatriculationList("Computer Science", "SS2021")
-        )
+        val enrollmentId = "200"
+        val newEntry = TestDataMatriculation.getSubjectMatriculationList("Computer Science", "SS2021")
+
+        // approvals
+        initializeOperation("200").initiateOperation(username, "UC4.MatriculationData", "addEntriesToMatriculationData", enrollmentId, newEntry)
+        initializeOperation(username).initiateOperation(username, "UC4.MatriculationData", "addEntriesToMatriculationData", enrollmentId, newEntry)
+
+        // actual operation
+        val result = chaincodeConnection.addEntriesToMatriculationData(enrollmentId, newEntry)
         val expectedResult = chaincodeConnection.getMatriculationData("200")
         TestHelperStrings.compareJson(expectedResult, result)
       }
