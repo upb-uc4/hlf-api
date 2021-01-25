@@ -167,8 +167,9 @@ trait ConnectionTrait extends AutoCloseable {
     val initiator = CertificateHelper.getNameFromCertificate(certificate)
     val adminApprovalResult: String = approveAsCurrent(initiator, transactionName, params)
 
-    // prepare the approvalTransaction for the user.
-    val proposalBytes: Array[Byte] = getProposalForInitiation(certificate, affiliation, initiator, transactionName, params)
+    // prepare the approveOperationProposal for the user.
+    val operationId = StringHelper.getOperationIdFromOperation(adminApprovalResult)
+    val proposalBytes: Array[Byte] = getProposalForApprove(certificate, affiliation, operationId)
 
     // return both (adminApprovalResult and proposal)
     (adminApprovalResult, proposalBytes)
@@ -187,13 +188,14 @@ trait ConnectionTrait extends AutoCloseable {
 
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  private def getProposalForInitiation(certificate: String, affiliation: String, initiator: String, transactionName: String, params: Seq[String]): Array[Byte] = {
-    var approvalResult: Array[Byte] = null
+  private def getProposalForApprove(certificate: String, affiliation: String, operationId: String): Array[Byte] = {
+    var proposal: Array[Byte] = null
+
     // submit my approval to operationsContract
     if (operationsConnection.isDefined) {
-      approvalResult = operationsConnection.get.getProposalInitiateOperation(certificate, affiliation, initiator, this.contractName, transactionName, params.toArray)
+      proposal = operationsConnection.get.getProposalApproveOperation(certificate, affiliation, operationId)
     }
-    approvalResult
+    proposal
   }
 
   /** Trades a proposal plus signature for a new transaction that can be signed.
