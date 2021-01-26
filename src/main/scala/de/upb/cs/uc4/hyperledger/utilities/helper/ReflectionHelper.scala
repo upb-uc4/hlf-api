@@ -1,10 +1,12 @@
 package de.upb.cs.uc4.hyperledger.utilities.helper
 
 import java.lang.reflect.{ Field, Method }
+import java.util.Calendar
 
 import de.upb.cs.uc4.hyperledger.exceptions.HyperledgerException
 
 import scala.language.existentials
+import scala.util.control.Breaks.break
 
 protected[hyperledger] object ReflectionHelper {
 
@@ -52,5 +54,31 @@ protected[hyperledger] object ReflectionHelper {
       .getOrElse(throw new IllegalArgumentException("Method " + methodName + " not found"))
     method.setAccessible(true)
     method.invoke(instance, args: _*)
+  }
+
+  def retryAction[T >: Null](f: ()=>T, actionName: String, timeoutMilliseconds: Int, timeoutAttempts: Int ): T = {
+    // attempt transmission
+    var attempt = 0
+    val startTime = Calendar.getInstance().getTime.toInstant.toEpochMilli
+    var result: T = null
+    var error: Throwable = null
+    while (timeoutAttempts > attempt
+      && timeoutMilliseconds > Calendar.getInstance().getTime.toInstant.toEpochMilli - startTime){
+      try {
+        result = f()
+        break
+      } catch {
+        case t: Throwable => {
+          Logger.err(s"Error during $actionName", t)
+          error = t
+        }
+      }
+
+      attempt = attempt+1
+    }
+
+    // return result
+    if(null == result) throw error
+    result
   }
 }

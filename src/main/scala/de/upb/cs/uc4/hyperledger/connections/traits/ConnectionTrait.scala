@@ -3,7 +3,6 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import java.util
-import java.util.Calendar
 import java.util.concurrent.TimeoutException
 
 import com.google.protobuf.ByteString
@@ -20,7 +19,6 @@ import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
 import scala.jdk.CollectionConverters.MapHasAsJava
-import scala.util.control.Breaks.break
 
 trait ConnectionTrait extends AutoCloseable {
   // setting up connection
@@ -37,6 +35,16 @@ trait ConnectionTrait extends AutoCloseable {
   // contract info for specific connections
   val contractName: String
 
+  var timeoutMilliseconds: Int = 6000
+  var timeoutAttempts: Int = 10
+  final def timeoutMilliseconds(newVal: Int): ConnectionTrait = {
+    this.timeoutMilliseconds = newVal
+    this
+  }
+  final def timeoutAttempts(newVal: Int): ConnectionTrait = {
+    this.timeoutAttempts = newVal
+    this
+  }
   final override def close(): Unit = {
     if (this.gateway != null) {
       this.gateway.close()
@@ -62,7 +70,7 @@ trait ConnectionTrait extends AutoCloseable {
   @throws[HyperledgerExceptionTrait]
   protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
     // submit and evaluate response from my "regular" contract
-    val resultBytes = this.privateSubmitTransaction(transient, transactionName, params: _*)
+    val resultBytes = ReflectionHelper.retryAction(() => this.privateSubmitTransaction(transient, transactionName, params: _*), transactionName, timeoutMilliseconds, timeoutAttempts)
     this.wrapTransactionResult(transactionName, resultBytes)
   }
 
@@ -221,13 +229,12 @@ trait ConnectionTrait extends AutoCloseable {
     val transactionParams = TransactionHelper.getTransactionParamsFromProposal(transactionProposal)
     val transactionId = TransactionHelper.getTransactionIdFromProposal(transactionProposal)
     val (_, ctx: TransactionContext, _) = TransactionHelper.createTransactionInfo(this.contract, transactionName, transactionParams, Some(transactionId))
-
-    // TODO: retry if
-    //  The proposal responses have 2 inconsistent groups with 0 that are invalid. Expected all to be consistent and none to be invalid.
-    //  Exception:	java.lang.IllegalArgumentException
+    // send to peers
     val proposalResponses = ReflectionHelper.safeCallPrivateMethod(channelObj)("sendProposalToPeers")(peers, signedProposal, ctx).asInstanceOf[util.Collection[ProposalResponse]]
     val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
-    val transactionPayload = TransactionHelper.getTransaction(validResponses, channelObj)
+
+    // create final transaction to submit
+    val transactionPayload = ReflectionHelper.retryAction(() => TransactionHelper.getTransaction(validResponses, channelObj), "getUnsignedTransaction", timeoutMilliseconds, timeoutAttempts);
 
     transactionPayload.toByteArray
   }
@@ -266,28 +273,7 @@ trait ConnectionTrait extends AutoCloseable {
     val connection: ConnectionTrait = buildConnectionForContract(contractName)
 
     // attempt transmission
-    var attempt = 0
-    val startTime = Calendar.getInstance().getTime.toInstant.toEpochMilli
-    var result = ""
-    var error: Throwable = null
-    while (timeoutAttempts > attempt
-      && timeoutMilliseconds > Calendar.getInstance().getTime.toInstant.toEpochMilli - startTime){
-      try {
-        result = connection.wrapSubmitTransaction(transactionTransient, transactionName, transactionParams: _*)
-        break
-      } catch {
-        case t: Throwable => {
-          Logger.err("Error during EXECUTE TRANSACTION", t)
-          error = t
-        }
-      }
-
-      attempt = attempt+1
-    }
-
-    // return result
-    if(result.eq("")) throw error
-    result
+    connection.wrapSubmitTransaction(transactionTransient, transactionName, transactionParams: _*)
   }
 
   private def buildConnectionForContract(contractName: String): ConnectionTrait = {
