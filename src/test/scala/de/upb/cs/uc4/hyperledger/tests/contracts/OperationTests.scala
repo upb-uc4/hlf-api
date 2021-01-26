@@ -13,7 +13,6 @@ class OperationTests extends TestBase {
   override def beforeAll(): Unit = {
     super.beforeAll()
     chaincodeConnection = initializeOperation()
-    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
   }
 
   override def afterAll(): Unit = {

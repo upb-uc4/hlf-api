@@ -26,7 +26,6 @@ class UnsignedTransactionTests extends TestBase {
     matriculationConnection = initializeMatriculation()
     admissionConnection = initializeAdmission()
     operationConnection = initializeOperation()
-    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
     tryRegisterAndEnrollTestUser("701", organisationId)
     TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation, Seq(username, "701"), "701")

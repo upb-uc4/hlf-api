@@ -12,7 +12,6 @@ class UserManagementTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
   }
 
