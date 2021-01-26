@@ -34,6 +34,61 @@ object StringHelper {
     (contractName, transactionName, transactionParamsArray.toSeq)
   }
 
+  def getInitiatorEnrollmentIdFromOperation(operationInfo: String): String = {
+    operationInfo
+      .replace("\\\"", "\"")
+      .replace("\\\\", "\\")
+      .split(""""initiator":"""").tail.head // index 1
+      .split("""","initiatedTimestamp""").head
+  }
+
+  def getStateFromOperation(operationInfo: String): String = {
+    operationInfo
+      .replace("\\\"", "\"")
+      .replace("\\\\", "\\")
+      .split(""""state":"""").tail.head // index 1
+      .split("""","reason""").head
+  }
+
+  def getRejectionMessageFromOperation(operationInfo: String): String = {
+    operationInfo
+      .replace("\\\"", "\"")
+      .replace("\\\\", "\\")
+      .split(""""reason":"""").tail.head // index 1
+      .split("""","existingApprovals""").head
+  }
+
+  def getExistingApprovalsFromOperation(operationInfo: String): String = {
+    operationInfo
+      .replace("\\\"", "\"")
+      .replace("\\\\", "\\")
+      .split(""""existingApprovals":\{""").tail.head // index 1
+      .split("""},"missingApprovals""").head
+  }
+
+  def getUsersAndGroupsFromApprovalList(approvalList: String): (Seq[String], Seq[String]) = {
+    val usersString: String = approvalList
+      .split("users\":").tail.head
+      .split(""",\"groups""").head
+    val usersArray: Array[String] = parameterArrayFromJson(usersString)
+
+    val groupsString: String = approvalList
+      .split("groups\":").tail.head
+      .split("""}""").head
+    Logger.debug(groupsString)
+    val groupsArray: Array[String] = parameterArrayFromJson(groupsString)
+
+    (usersArray.toSeq, groupsArray.toSeq)
+  }
+
+  def getMissingApprovalsFromOperation(operationInfo: String): String = {
+    operationInfo
+      .replace("\\\"", "\"")
+      .replace("\\\\", "\\")
+      .split(""""missingApprovals":\{""").tail.head // index 1
+      .split("""}""").head
+  }
+
   def parameterArrayToJson(params: Array[String]): String = {
     new Gson().toJson(params)
   }
