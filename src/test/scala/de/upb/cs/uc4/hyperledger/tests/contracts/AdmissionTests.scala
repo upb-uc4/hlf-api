@@ -69,31 +69,39 @@ class AdmissionTests extends TestBase {
   "The ScalaAPI for Admissions" when {
     "invoked with addAdmission correctly " should {
       "allow for adding new Admission with admissionId" in {
-        TestHelper.testAddAdmissionAccess(chaincodeConnection, TestDataAdmission.admission1)
+        val testData = TestDataAdmission.admission1(testUser1)
+        initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "addAdmission", testData)
+        TestHelper.testAddAdmissionAccess(chaincodeConnection, testData)
       }
       "allow for adding new Admission without admissionId" in {
-        val testResult = chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId)
-        TestHelper.compareAdmissions(TestDataAdmission.admission_noAdmissionId_WithId, testResult)
+        val testData = TestDataAdmission.admission_noAdmissionId(testUser1)
+        initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "addAdmission", testData)
+
+        val testResult = chaincodeConnection.addAdmission(testData)
+        TestHelper.compareAdmissions(TestDataAdmission.admission_noAdmissionId_WithId(testUser1), testResult)
       }
       "allow for adding new Admission for closed ER" in {
-        TestHelper.testAddAdmissionAccess(chaincodeConnection, TestDataAdmission.admission2)
+        val testData = TestDataAdmission.admission2(testUser2)
+        initializeOperation(testUser2).initiateOperation(testUser2, chaincodeConnection.contractName, "addAdmission", testData)
+
+        TestHelper.testAddAdmissionAccess(chaincodeConnection, testData)
       }
     }
 
     "invoked with getAdmissions correctly " should {
       val testData: Seq[(String, String, String, String, Seq[String])] = Seq(
-        ("allow for getting all admissions []", "", "", "", Seq(TestDataAdmission.admission1, TestDataAdmission.admission_noAdmissionId_WithId, TestDataAdmission.admission2)),
-        ("allow for getting all admissions for user [AdmissionStudent_1]", "AdmissionStudent_1", "", "", Seq(TestDataAdmission.admission1, TestDataAdmission.admission_noAdmissionId_WithId)),
-        ("allow for getting all admissions for user [AdmissionStudent_2]", "AdmissionStudent_2", "", "", Seq(TestDataAdmission.admission2)),
-        ("allow for getting all admissions for course [C.1]", "", "C.1", "", Seq(TestDataAdmission.admission1)),
-        ("allow for getting all admissions for course [C.2]", "", "C.2", "", Seq(TestDataAdmission.admission_noAdmissionId_WithId, TestDataAdmission.admission2)),
-        ("allow for getting all admissions for module [AdmissionModule_1]", "", "", "AdmissionModule_1", Seq(TestDataAdmission.admission1, TestDataAdmission.admission_noAdmissionId_WithId)),
+        ("allow for getting all admissions []", "", "", "", Seq(TestDataAdmission.admission1(testUser1), TestDataAdmission.admission_noAdmissionId_WithId(testUser1), TestDataAdmission.admission2(testUser2))),
+        ("allow for getting all admissions for user [AdmissionStudent_1]", "AdmissionStudent_1", "", "", Seq(TestDataAdmission.admission1(testUser1), TestDataAdmission.admission_noAdmissionId_WithId(testUser1))),
+        ("allow for getting all admissions for user [AdmissionStudent_2]", "AdmissionStudent_2", "", "", Seq(TestDataAdmission.admission2(testUser2))),
+        ("allow for getting all admissions for course [C.1]", "", "C.1", "", Seq(TestDataAdmission.admission1(testUser1))),
+        ("allow for getting all admissions for course [C.2]", "", "C.2", "", Seq(TestDataAdmission.admission_noAdmissionId_WithId(testUser1), TestDataAdmission.admission2(testUser2))),
+        ("allow for getting all admissions for module [AdmissionModule_1]", "", "", "AdmissionModule_1", Seq(TestDataAdmission.admission1(testUser1), TestDataAdmission.admission_noAdmissionId_WithId(testUser1))),
         ("allow for getting all admissions for module [AdmissionModule_2]", "", "", "AdmissionModule_2", Seq()),
-        ("allow for getting all admissions for module [AdmissionModule_3]", "", "", "AdmissionModule_3", Seq(TestDataAdmission.admission2)),
-        ("allow for getting all admissions for user [AdmissionStudent_1] and course [C.1]", "AdmissionStudent_1", "C.1", "", Seq(TestDataAdmission.admission1)),
-        ("allow for getting all admissions for user [AdmissionStudent_1] and course [C.2]", "AdmissionStudent_1", "C.2", "", Seq(TestDataAdmission.admission_noAdmissionId_WithId)),
+        ("allow for getting all admissions for module [AdmissionModule_3]", "", "", "AdmissionModule_3", Seq(TestDataAdmission.admission2(testUser2))),
+        ("allow for getting all admissions for user [AdmissionStudent_1] and course [C.1]", "AdmissionStudent_1", "C.1", "", Seq(TestDataAdmission.admission1(testUser1))),
+        ("allow for getting all admissions for user [AdmissionStudent_1] and course [C.2]", "AdmissionStudent_1", "C.2", "", Seq(TestDataAdmission.admission_noAdmissionId_WithId(testUser1))),
         ("allow for getting all admissions for user [AdmissionStudent_1] and course [C.3]", "AdmissionStudent_1", "C.3", "", Seq()),
-        ("allow for getting all admissions for user [AdmissionStudent_1] and module [AdmissionModule_1]", "AdmissionStudent_1", "", "AdmissionModule_1", Seq(TestDataAdmission.admission1, TestDataAdmission.admission_noAdmissionId_WithId)),
+        ("allow for getting all admissions for user [AdmissionStudent_1] and module [AdmissionModule_1]", "AdmissionStudent_1", "", "AdmissionModule_1", Seq(TestDataAdmission.admission1(testUser1), TestDataAdmission.admission_noAdmissionId_WithId(testUser1))),
         ("allow for getting all admissions for user [AdmissionStudent_1] and module [AdmissionModule_2]", "AdmissionStudent_1", "", "AdmissionModule_2", Seq()),
       )
       for ((statement: String, enrollmentId: String, courseId: String, moduleId: String, admissions: Seq[String]) <- testData) {
@@ -110,15 +118,16 @@ class AdmissionTests extends TestBase {
     // IMPORTANT: THESE TESTS HAVE TO BE EXECUTED AFTER THE addAdmission-TESTS.
     // IMPORTANT: THESE TESTS HAVE TO BE EXECUTED SEQUENTIALLY IN THIS EXACT ORDER.
     "invoked with dropAdmission correctly " should {
-      val testData: Seq[(String, String, Seq[String])] = Seq(
-        ("allow for dropping existing Admission 1", "AdmissionStudent_1:C.1", Seq(TestDataAdmission.admission_noAdmissionId_WithId, TestDataAdmission.admission2)),
-        ("allow for dropping existing Admission 2", "AdmissionStudent_2:C.2", Seq(TestDataAdmission.admission_noAdmissionId_WithId)),
-        ("allow for dropping existing Admission 3", "AdmissionStudent_1:C.2", Seq())
+      val testData: Seq[(String, String, String, Seq[String])] = Seq(
+        ("allow for dropping existing Admission 1", "AdmissionStudent_1", "C.1", Seq(TestDataAdmission.admission_noAdmissionId_WithId(testUser1), TestDataAdmission.admission2(testUser2))),
+        ("allow for dropping existing Admission 2", "AdmissionStudent_2", "C.2", Seq(TestDataAdmission.admission_noAdmissionId_WithId(testUser1))),
+        ("allow for dropping existing Admission 3", "AdmissionStudent_1", "C.2", Seq())
       )
-      for ((statement: String, admissionId: String, remainingAdmissions: Seq[String]) <- testData) {
+      for ((statement: String, userId: String, courseId: String, remainingAdmissions: Seq[String]) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          val testResult = chaincodeConnection.dropAdmission(admissionId)
+          initializeOperation(userId).initiateOperation(userId, chaincodeConnection.contractName, "dropAdmission", userId+":"+courseId)
+          val testResult = chaincodeConnection.dropAdmission(userId+":"+courseId)
           testResult should be("")
 
           // check ledger state
@@ -134,18 +143,22 @@ class AdmissionTests extends TestBase {
     "invoked with addAdmission incorrectly " should {
       "not allow for adding duplicate Admission with admissionId" in {
         // initial Add
-        chaincodeConnection.addAdmission(TestDataAdmission.admission1)
+        val testData = TestDataAdmission.admission1(testUser1)
+        initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "addAdmission", testData)
+        chaincodeConnection.addAdmission(testData)
 
-        val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission1))
+        val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(testData))
         result.transactionName should be("addAdmission")
         // TODO compare errors
         // result.payload should be("")
       }
       "not allow for adding duplicate Admission without admissionId" in {
         // initial Add
-        chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId)
+        val testData = TestDataAdmission.admission_noAdmissionId(testUser1)
+        initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "addAdmission", testData)
+        chaincodeConnection.addAdmission(testData)
 
-        val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(TestDataAdmission.admission_noAdmissionId))
+        val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(testData))
         result.transactionName should be("addAdmission")
         // TODO compare errors
         // result.payload should be("")
@@ -164,6 +177,7 @@ class AdmissionTests extends TestBase {
     "invoked with dropAdmission incorrectly " should {
       "not allow for dropping existing Admission a second time " in {
         // prepare empty ledger
+        initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "dropAdmission", "AdmissionStudent_1:C.1")
         chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1")
 
         // test exception
@@ -174,7 +188,7 @@ class AdmissionTests extends TestBase {
 
         // check ledger state
         val ledgerAdmissions = chaincodeConnection.getAdmissions()
-        val expectedResult = TestHelperStrings.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId))
+        val expectedResult = TestHelperStrings.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId(testUser1)))
         TestHelperStrings.compareJson(expectedResult, ledgerAdmissions)
       }
     }
