@@ -17,6 +17,7 @@ class AdmissionTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
+    chaincodeConnection = initializeAdmission()
     // TODO: RESET LEDGER
     TestSetup.setupExaminationRegulations(initializeExaminationRegulation())
     setupMatriculations()
@@ -46,16 +47,6 @@ class AdmissionTests extends TestBase {
           )
         }
     }
-  }
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    chaincodeConnection = initializeAdmission()
-  }
-
-  override def afterEach(): Unit = {
-    chaincodeConnection.close()
-    super.afterEach()
   }
 
   override def afterAll(): Unit = {
