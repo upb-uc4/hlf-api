@@ -22,10 +22,11 @@ class OperationTests extends TestBase {
   "The ScalaAPI for Operations used correctly " when {
     "invoked with proposeTransaction" should {
       "allow for adding new Approval " in {
-        chaincodeConnection.initiateOperation(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+        initializeCertificate().addCertificate("000001", "totally valid cert1")
+        chaincodeConnection.initiateOperation(username, "UC4.Certificate", "updateCertificate", "000001", "totally valid cert2")
       }
       "allow for adding existing Approval a second time" in {
-        chaincodeConnection.initiateOperation(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+        chaincodeConnection.initiateOperation(username, "UC4.Certificate", "updateCertificate", "000001", "totally valid cert2")
       }
     }
   }
