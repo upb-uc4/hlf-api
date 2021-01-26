@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionOperationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class OperationTests extends TestBase {
@@ -12,6 +13,7 @@ class OperationTests extends TestBase {
   override def beforeAll(): Unit = {
     super.beforeAll()
     chaincodeConnection = initializeOperation()
+    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
   }
 
   override def afterAll(): Unit = {
@@ -22,10 +24,12 @@ class OperationTests extends TestBase {
   "The ScalaAPI for Operations used correctly " when {
     "invoked with proposeTransaction" should {
       "allow for adding new Approval " in {
-        chaincodeConnection.initiateOperation(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+        val matData = TestDataMatriculation.validMatriculationData1("OperationTests1")
+        chaincodeConnection.initiateOperation(username, "UC4.MatriculationData", "addMatriculation", matData)
       }
       "allow for adding existing Approval a second time" in {
-        chaincodeConnection.initiateOperation(username, "UC4.Certificate", "addCertificate", "000001", "totally valid cert")
+        val matData = TestDataMatriculation.validMatriculationData1("OperationTests1")
+        chaincodeConnection.initiateOperation(username, "UC4.MatriculationData", "addMatriculation", matData)
       }
     }
   }
