@@ -115,8 +115,8 @@ class AdmissionTests extends TestBase {
       for ((statement: String, userId: String, courseId: String, remainingAdmissions: Seq[String]) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          initializeOperation(userId).initiateOperation(userId, chaincodeConnection.contractName, "dropAdmission", userId+":"+courseId)
-          val testResult = chaincodeConnection.dropAdmission(userId+":"+courseId)
+          initializeOperation(userId).initiateOperation(userId, chaincodeConnection.contractName, "dropAdmission", userId + ":" + courseId)
+          val testResult = chaincodeConnection.dropAdmission(userId + ":" + courseId)
           testResult should be("")
 
           // check ledger state
