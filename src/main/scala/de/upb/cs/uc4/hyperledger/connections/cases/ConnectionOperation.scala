@@ -12,8 +12,7 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
   override lazy val operationsConnection: Option[ConnectionOperationTrait] = None
 
   override def getProposalInitiateOperation(certificate: String, affiliation: String = AFFILIATION, initiator: String, contractName: String, transactionName: String, params: Array[String]): Array[Byte] = {
-    // TODO: approveTransaction ==> initiateOperation
-    val fcnName: String = this.contractName + ":" + "approveTransaction"
+    val fcnName: String = this.contractName + ":" + "initiateOperation"
     val args: Seq[String] = TransactionHelper.getApprovalParameterList(initiator, contractName, transactionName, params)
     TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, this.networkDescriptionPath, args: _*)
   }
@@ -25,15 +24,14 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
   }
 
   override def getProposalRejectOperation(certificate: String, affiliation: String = AFFILIATION, operationId: String, rejectMessage: String): Array[Byte] = {
-    val fcnName = this.contractName + ":" + "rejectTransaction"
+    val fcnName = this.contractName + ":" + "rejectOperation"
     val args: Seq[String] = Seq(operationId, rejectMessage)
     TransactionHelper.createProposal(certificate, affiliation, chaincode, channel, fcnName, networkDescriptionPath, args: _*)
   }
 
   override def initiateOperation(initiator: String, contractName: String, transactionName: String, params: String*): String = {
     val transactionValues = TransactionHelper.getApprovalParameterList(initiator, contractName, transactionName, params.toArray)
-    // TODO: approveTransaction ==> initiateOperation
-    wrapSubmitTransaction(false, "approveTransaction", transactionValues: _*)
+    wrapSubmitTransaction(false, "initiateOperation", transactionValues: _*)
   }
 
   override def approveOperation(operationId: String): String = {
@@ -41,7 +39,7 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
   }
 
   override def rejectOperation(operationId: String, rejectMessage: String): String = {
-    wrapSubmitTransaction(false, "rejectTransaction", operationId, rejectMessage)
+    wrapSubmitTransaction(false, "rejectOperation", operationId, rejectMessage)
   }
 
   override def getOperations(operationIds: List[String], existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, involvedEnrollmentId: String, states: List[String]): String = {

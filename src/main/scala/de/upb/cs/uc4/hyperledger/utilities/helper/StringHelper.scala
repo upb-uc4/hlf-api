@@ -3,6 +3,14 @@ package de.upb.cs.uc4.hyperledger.utilities.helper
 import com.google.gson.Gson
 
 object StringHelper {
+  def getOperationIdFromOperation(operationInfo: String): String = {
+    operationInfo
+      .replace("\\\"", "\"")
+      .replace("\\\\", "\\")
+      .split(""""operationId":"""").tail.head // index 1
+      .split("""","transactionInfo""").head
+  }
+
   def getTransactionInfoFromOperation(operationInfo: String): String = {
     operationInfo
       .replace("\\\"", "\"")
@@ -29,6 +37,7 @@ object StringHelper {
   def parameterArrayToJson(params: Array[String]): String = {
     new Gson().toJson(params)
   }
+
   def parameterArrayFromJson(json: String): Array[String] = {
     new Gson().fromJson(json, classOf[Array[String]])
   }

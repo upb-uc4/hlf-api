@@ -6,8 +6,8 @@ import java.util.Base64
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataAdmission, TestDataMatriculation, TestHelper, TestHelperCrypto, TestHelperStrings, TestSetup }
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import de.upb.cs.uc4.hyperledger.testUtil._
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper }
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
@@ -43,20 +43,16 @@ class UnsignedTransactionTests extends TestBase {
       "return an unsigned proposal" in {
         val testUserId = "frontend-signing-tester-updateCertTest-success"
         val (_, certificate) = prepareUser(testUserId)
-        val (_, proposalBytes) = certificateConnection.getProposalUpdateCertificate(certificate, organisationId, testUserId, certificate)
+        val (adminApproval, proposalBytes) = certificateConnection.getProposalUpdateCertificate(certificate, organisationId, testUserId, certificate)
         val proposal: Proposal = Proposal.parseFrom(proposalBytes)
         val header = proposal.getHeader.toStringUtf8
 
         // header contains signing user certificate
         header should include(certificate)
 
+        val operationId = StringHelper.getOperationIdFromOperation(adminApproval)
         // payload contains Approval TransactionInfo
-        TestHelper.testProposalPayloadBytesContainsInfo(proposalBytes, Seq(
-          "UC4.Certificate",
-          "updateCertificate",
-          testUserId,
-          certificate
-        ))
+        TestHelper.testProposalPayloadBytesContainsInfo(proposalBytes, Seq(operationId))
       }
     }
     "passing a wrongly-signed transaction" should {
@@ -85,7 +81,7 @@ class UnsignedTransactionTests extends TestBase {
           certificate,
           organisationId, enrollmentId, certificate
         ))
-        exception.transactionName should be("approveTransaction")
+        exception.transactionName should be("initiateOperation")
         exception.payload should include("HLConflict")
       }
     }
@@ -106,10 +102,9 @@ class UnsignedTransactionTests extends TestBase {
           organisationId,
           jSonMatriculationData = testMatData
         )
-        TestHelper.testProposalPayloadBytesContainsInfo(
-          proposalBytes,
-          Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
-        )
+
+        val operationId = StringHelper.getOperationIdFromOperation(proposalApprovalResult)
+        TestHelper.testProposalPayloadBytesContainsInfo(proposalBytes, Seq(operationId))
         proposalApprovalResult should include(username)
 
         // get transaction for signature
@@ -117,10 +112,7 @@ class UnsignedTransactionTests extends TestBase {
           proposalBytes,
           crypto.sign(privateKey, proposalBytes)
         )
-        TestHelper.testTransactionBytesContainsInfo(
-          transactionBytes,
-          Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
-        )
+        TestHelper.testTransactionBytesContainsInfo(transactionBytes, Seq(operationId))
 
         // sign transaction and submit transaction
         val transactionApprovalResult = operationConnection.submitSignedTransaction(
@@ -145,25 +137,20 @@ class UnsignedTransactionTests extends TestBase {
         val testMatData = TestDataMatriculation.validMatriculationData1(testUserId)
 
         // get proposal
-        val (_, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(
+        val (proposalApprovalResult, proposalBytes) = matriculationConnection.getProposalAddMatriculationData(
           certificate,
           organisationId,
           jSonMatriculationData = testMatData
         )
-        TestHelper.testProposalPayloadBytesContainsInfo(
-          proposalBytes,
-          Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
-        )
+        val operationId = StringHelper.getOperationIdFromOperation(proposalApprovalResult)
+        TestHelper.testProposalPayloadBytesContainsInfo(proposalBytes, Seq(operationId))
 
         // get transaction for signature
         val transactionBytes: Array[Byte] = operationConnection.getUnsignedTransaction(
           proposalBytes,
           crypto.sign(privateKey, proposalBytes)
         )
-        TestHelper.testTransactionBytesContainsInfo(
-          transactionBytes,
-          Seq("UC4.MatriculationData", "addMatriculationData", testMatData)
-        )
+        TestHelper.testTransactionBytesContainsInfo(transactionBytes, Seq(operationId))
 
         // sign transaction and submit transaction
         val transactionApprovalResult = operationConnection.submitSignedTransaction(

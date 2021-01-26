@@ -36,7 +36,7 @@ class OperationTests extends TestBase {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
           chaincodeConnection.initiateOperation(username, "UC4.Certificate", "", "000001", "totally valid cert")
         }
-        exceptionResult.transactionName should be("approveTransaction")
+        exceptionResult.transactionName should be("initiateOperation")
         val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"transactionName\",\"reason\":\"The given parameter must not be empty\"}]}"
         exceptionResult.payload should be(expectedPayload)
       }
@@ -45,7 +45,7 @@ class OperationTests extends TestBase {
           val result = chaincodeConnection.initiateOperation(username, "", "addCertificate", "000001", "totally valid cert")
           Logger.debug("APPROVAL RESULT :: " + result)
         }
-        exceptionResult.transactionName should be("approveTransaction")
+        exceptionResult.transactionName should be("initiateOperation")
         val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"contractName\",\"reason\":\"The given parameter must not be empty\"}]}"
         exceptionResult.payload should be(expectedPayload)
       }
