@@ -31,8 +31,8 @@ class TestBase extends TestBaseTrait {
     Logger.debug(debugMsg)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
       tryAdminEnrollment(this.caURL, this.tlsCert, this.walletPath, this.username, this.password, this.organisationId, this.channel, this.chaincode, this.networkDescriptionPath)
+      TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     }
-    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
   }
 
   def initializeMatriculation(userName: String = this.username): ConnectionMatriculationTrait = ConnectionMatriculation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
