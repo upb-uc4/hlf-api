@@ -3,8 +3,10 @@ package de.upb.cs.uc4.hyperledger.connections.traits
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import java.util
+import java.util.Calendar
 import java.util.concurrent.TimeoutException
 
+import com.google.`type`.DateTime
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, NetworkExceptionTrait, TransactionExceptionTrait }
@@ -18,7 +20,12 @@ import org.hyperledger.fabric.protos.peer.ProposalPackage.{ Proposal, SignedProp
 import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.transaction.TransactionContext
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ Await, Future }
+import scala.concurrent.duration._
 import scala.jdk.CollectionConverters.MapHasAsJava
+import scala.util.{ Failure, Success, Try }
+import scala.util.control.Breaks.break
 
 trait ConnectionTrait extends AutoCloseable {
   // setting up connection
@@ -254,13 +261,38 @@ trait ConnectionTrait extends AutoCloseable {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def executeTransaction(jsonOperationData: String): String = {
+  def executeTransaction(jsonOperationData: String, timeoutMilliseconds: Int, timeoutAttempts: Int): String = {
+    // prepare info
     val transactionInfo = StringHelper.getTransactionInfoFromOperation(jsonOperationData)
     val (contractName, transactionName, transactionParams) = StringHelper.getInfoFromTransactionInfo(transactionInfo)
     val transactionTransient = false // TODO: read transient bool from params
 
+    // build connection
     val connection: ConnectionTrait = buildConnectionForContract(contractName)
-    connection.wrapSubmitTransaction(transactionTransient, transactionName, transactionParams: _*)
+
+    // attempt transmission
+    var attempt = 0
+    val startTime = Calendar.getInstance().getTime.toInstant.toEpochMilli
+    var result = ""
+    var error: Throwable = null
+    while (timeoutAttempts > attempt
+      && timeoutMilliseconds > Calendar.getInstance().getTime.toInstant.toEpochMilli - startTime){
+      try {
+        result = connection.wrapSubmitTransaction(transactionTransient, transactionName, transactionParams: _*)
+        break
+      } catch {
+        case t: Throwable => {
+          Logger.err("Error during EXECUTE TRANSACTION", t)
+          error = t
+        }
+      }
+
+      attempt = attempt+1
+    }
+
+    // return result
+    if(result.eq("")) throw error
+    result
   }
 
   private def buildConnectionForContract(contractName: String): ConnectionTrait = {
