@@ -13,7 +13,6 @@ class VersionAccessTests extends TestBase {
     connection.close()
   }
 
-
   "The ScalaAPI for Connections" when {
     "asked for chaincode version " should {
       "provide a valid endpoint [Admission] " in {
