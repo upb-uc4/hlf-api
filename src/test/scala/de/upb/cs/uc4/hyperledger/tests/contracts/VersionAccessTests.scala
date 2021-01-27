@@ -1,6 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests.contracts
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait, ConnectionOperationTrait, ConnectionTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 
 class VersionAccessTests extends TestBase {

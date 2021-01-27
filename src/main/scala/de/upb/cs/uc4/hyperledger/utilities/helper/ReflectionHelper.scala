@@ -6,7 +6,6 @@ import java.util.Calendar
 import de.upb.cs.uc4.hyperledger.exceptions.HyperledgerException
 
 import scala.language.existentials
-import scala.util.control.Breaks.break
 
 protected[hyperledger] object ReflectionHelper {
 

@@ -9,7 +9,6 @@ import java.util
 import java.util.Collections
 import java.util.concurrent.{ CompletableFuture, TimeUnit, TimeoutException }
 
-import com.google.gson.Gson
 import com.google.protobuf.ByteString
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionOperationTrait, ConnectionTrait }
 import org.hyperledger.fabric.gateway.impl.identity.GatewayUser
@@ -24,12 +23,12 @@ import org.hyperledger.fabric.protos.peer.ProposalResponsePackage.ProposalRespon
 import org.hyperledger.fabric.protos.peer.TransactionPackage.{ ChaincodeActionPayload, Transaction }
 import org.hyperledger.fabric.protos.peer.{ Chaincode, ProposalPackage, ProposalResponsePackage }
 import org.hyperledger.fabric.sdk.Channel.NOfEvents
+import org.hyperledger.fabric.sdk._
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException
 import org.hyperledger.fabric.sdk.helper.Config
 import org.hyperledger.fabric.sdk.identity.X509Enrollment
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 import org.hyperledger.fabric.sdk.transaction.{ ProposalBuilder, TransactionBuilder, TransactionContext }
-import org.hyperledger.fabric.sdk._
 
 import scala.jdk.CollectionConverters._
 import scala.util.control.Breaks.{ break, breakable }
