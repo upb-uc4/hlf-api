@@ -56,22 +56,24 @@ protected[hyperledger] object ReflectionHelper {
     method.invoke(instance, args: _*)
   }
 
-  def retryAction[T >: Null](f: () => T, actionName: String, timeoutMilliseconds: Int, timeoutAttempts: Int): T = {
+  def retryAction[T >: Null](action: () => T, actionName: String, timeoutMilliseconds: Int, timeoutAttempts: Int): T = {
     // attempt transmission
     var attempt = 0
     val startTime = Calendar.getInstance().getTime.toInstant.toEpochMilli
     var result: T = null
     var error: Throwable = null
+    var successFlag = false
     while (timeoutAttempts > attempt
-      && timeoutMilliseconds > Calendar.getInstance().getTime.toInstant.toEpochMilli - startTime) {
+      && timeoutMilliseconds > Calendar.getInstance().getTime.toInstant.toEpochMilli - startTime
+      && !successFlag) {
       try {
-        result = f()
-        break
+        result = action()
+        successFlag = true
       }
       catch {
-        case t: Throwable => {
-          Logger.err(s"Error during $actionName", t)
-          error = t
+        case throwable: Throwable => {
+          Logger.err(s"Error during $actionName", throwable)
+          error = throwable
         }
       }
 
