@@ -81,7 +81,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'upb-uc4/hlf-network'
-        ref: 'develop'
+        ref: 'feature/registrar_attributes'
         path: 'hlf-network'
         
     # Prepare mounts
