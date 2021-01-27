@@ -9,6 +9,7 @@ import de.upb.cs.uc4.hyperledger.utilities.traits.RegistrationManagerTrait
 import org.hyperledger.fabric.gateway.{ Identities, X509Identity }
 import org.hyperledger.fabric.sdk.{ Enrollment, User }
 import org.hyperledger.fabric_ca.sdk.{ HFCAClient, RegistrationRequest }
+import org.hyperledger.fabric_ca.sdk.Attribute
 
 object RegistrationManager extends RegistrationManagerTrait {
 
@@ -53,6 +54,7 @@ object RegistrationManager extends RegistrationManagerTrait {
     val registrationRequest = new RegistrationRequest(userName)
     registrationRequest.setMaxEnrollments(maxEnrollments)
     registrationRequest.setType(newUserType)
+    registrationRequest.addAttribute(new Attribute("sysAdmin", "true", true)) // TODO: test
     registrationRequest
   }
 
