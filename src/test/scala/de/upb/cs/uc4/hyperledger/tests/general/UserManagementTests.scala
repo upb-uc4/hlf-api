@@ -1,5 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests.general
 
+import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCertificate
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelper, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
@@ -87,6 +88,7 @@ class UserManagementTests extends TestBase {
         Logger.info("Access Chain as TestUser")
         val testCert = "whatever"
         val connection = super.initializeCertificate(testUserName)
+        initializeOperation().initiateOperation(testUserName, connection.contractName, "updateCertificate", testUserName, testCert)
         connection.updateCertificate(testUserName, testCert)
         val result: String = connection.getCertificate(testUserName)
         result should be(testCert)
