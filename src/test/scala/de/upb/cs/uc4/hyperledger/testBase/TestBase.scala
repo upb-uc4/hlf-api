@@ -31,6 +31,7 @@ class TestBase extends TestBaseTrait {
     Logger.debug(debugMsg)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
       tryAdminEnrollment(this.caURL, this.tlsCert, this.walletPath, this.username, this.password, this.organisationId, this.channel, this.chaincode, this.networkDescriptionPath)
+      Thread.sleep(5000) // wait for enrollment to finish
       TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     }
   }
