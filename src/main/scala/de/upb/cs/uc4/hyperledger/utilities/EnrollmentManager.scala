@@ -79,7 +79,8 @@ object EnrollmentManager extends EnrollmentManagerTrait {
       enrollmentRequestTLS.setCsr(csr_pem)
       enrollmentRequestTLS.setKeyPair(generateGarbageKeyPair())
     }
-    enrollmentRequestTLS.addAttrReq("sysAdmin") // TODO: test
+    enrollmentRequestTLS.addAttrReq("sysAdmin:opt") // TODO: test
+    enrollmentRequestTLS.addAttrReq("hf.Registrar.Attributes:opt") // TODO: test
     enrollmentRequestTLS
   }
 
