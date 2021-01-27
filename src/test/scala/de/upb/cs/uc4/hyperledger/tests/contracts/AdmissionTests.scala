@@ -14,6 +14,7 @@ class AdmissionTests extends TestBase {
 
   val testUser1 = "AdmissionStudent_1"
   val testUser2 = "AdmissionStudent_2"
+  val testUser3 = "AdmissionStudent_3"
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -30,20 +31,24 @@ class AdmissionTests extends TestBase {
           // prepare users
           prepareUser(testUser1)
           prepareUser(testUser2)
+          prepareUser(testUser3)
 
           // prepare data
           val mat1 = TestDataMatriculation.validMatriculationDataCustom(testUser1, "AdmissionER_Open1")
           val mat2 = TestDataMatriculation.validMatriculationDataCustom(testUser2, "AdmissionER_Closed1")
+          val mat3 = TestDataMatriculation.validMatriculationDataCustom(testUser3, "AdmissionER_Open1")
 
           // approve as Users
           initializeOperation(testUser1).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat1)
           initializeOperation(testUser2).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat2)
+          initializeOperation(testUser3).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat3)
 
           // store on chain
           TestHelper.trySetupConnections(
             "setupMatriculations",
             () => { matConnection.addMatriculationData(mat1) },
-            () => { matConnection.addMatriculationData(mat2) }
+            () => { matConnection.addMatriculationData(mat2) },
+            () => { matConnection.addMatriculationData(mat3) }
           )
         }
     }
@@ -132,8 +137,8 @@ class AdmissionTests extends TestBase {
     "invoked with addAdmission incorrectly " should {
       "not allow for adding duplicate Admission with admissionId" in {
         // initial Add
-        val testData = TestDataAdmission.admission1(testUser1)
-        initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "addAdmission", testData)
+        val testData = TestDataAdmission.admission1(testUser3)
+        initializeOperation(testUser3).initiateOperation(testUser3, chaincodeConnection.contractName, "addAdmission", testData)
         chaincodeConnection.addAdmission(testData)
 
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(testData))
@@ -143,8 +148,8 @@ class AdmissionTests extends TestBase {
       }
       "not allow for adding duplicate Admission without admissionId" in {
         // initial Add
-        val testData = TestDataAdmission.admission_noAdmissionId(testUser1)
-        initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "addAdmission", testData)
+        val testData = TestDataAdmission.admission_noAdmissionId(testUser3)
+        initializeOperation(testUser3).initiateOperation(testUser3, chaincodeConnection.contractName, "addAdmission", testData)
         chaincodeConnection.addAdmission(testData)
 
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.addAdmission(testData))
@@ -166,7 +171,7 @@ class AdmissionTests extends TestBase {
     "invoked with dropAdmission incorrectly " should {
       "not allow for dropping existing Admission a second time " in {
         // prepare empty ledger
-        initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "dropAdmission", "AdmissionStudent_1:C.1")
+        initializeOperation(testUser3).initiateOperation(testUser3, chaincodeConnection.contractName, "dropAdmission", "AdmissionStudent_1:C.1")
         chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1")
 
         // test exception
@@ -177,7 +182,7 @@ class AdmissionTests extends TestBase {
 
         // check ledger state
         val ledgerAdmissions = chaincodeConnection.getAdmissions()
-        val expectedResult = TestHelperStrings.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId(testUser1)))
+        val expectedResult = TestHelperStrings.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId(testUser3)))
         TestHelperStrings.compareJson(expectedResult, ledgerAdmissions)
       }
     }
