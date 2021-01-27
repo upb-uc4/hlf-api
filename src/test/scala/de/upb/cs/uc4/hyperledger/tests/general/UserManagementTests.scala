@@ -90,6 +90,7 @@ class UserManagementTests extends TestBase {
         val connection = super.initializeCertificate(testUserName)
         initializeOperation().initiateOperation(testUserName, connection.contractName, "updateCertificate", testUserName, testCert)
         connection.updateCertificate(testUserName, testCert)
+        initializeOperation().initiateOperation(testUserName, connection.contractName, "getCertificate", testUserName)
         val result: String = connection.getCertificate(testUserName)
         result should be(testCert)
       }
