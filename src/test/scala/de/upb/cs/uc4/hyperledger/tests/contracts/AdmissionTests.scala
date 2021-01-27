@@ -171,11 +171,11 @@ class AdmissionTests extends TestBase {
     "invoked with dropAdmission incorrectly " should {
       "not allow for dropping existing Admission a second time " in {
         // prepare empty ledger
-        initializeOperation(testUser3).initiateOperation(testUser3, chaincodeConnection.contractName, "dropAdmission", "AdmissionStudent_1:C.1")
-        chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1")
+        initializeOperation(testUser3).initiateOperation(testUser3, chaincodeConnection.contractName, "dropAdmission", "AdmissionStudent_3:C.1")
+        chaincodeConnection.dropAdmission("AdmissionStudent_3:C.1")
 
         // test exception
-        val result = intercept[TransactionExceptionTrait](chaincodeConnection.dropAdmission("AdmissionStudent_1:C.1"))
+        val result = intercept[TransactionExceptionTrait](chaincodeConnection.dropAdmission("AdmissionStudent_3:C.1"))
         result.transactionName should be("dropAdmission")
         // TODO compare errors
         // result.payload should be("")
