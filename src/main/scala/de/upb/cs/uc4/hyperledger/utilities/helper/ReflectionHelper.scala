@@ -71,7 +71,8 @@ protected[hyperledger] object ReflectionHelper {
       }
       catch {
         case throwable: Throwable => {
-          Logger.err(s"Error during $actionName", throwable)
+          Logger.err(s"Error during ${actionName}, at attempt no $attempt", throwable)
+
           error = throwable
         }
       }
