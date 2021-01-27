@@ -1,12 +1,10 @@
 package de.upb.cs.uc4.hyperledger.tests.general
 
-import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionCertificate
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelper, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager }
 import org.hyperledger.fabric_ca.sdk.HFCAClient
-import org.scalatest.matchers.should.Matchers.be
 
 import scala.io.Source
 
