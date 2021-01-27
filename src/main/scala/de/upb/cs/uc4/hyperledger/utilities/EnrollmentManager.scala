@@ -46,23 +46,23 @@ object EnrollmentManager extends EnrollmentManagerTrait {
     certificate
   }
 
-  private def putNewCertificateOnChain(connectionName: String, channel: String, chaincode: String, connectionWalletPath: Path, networkDescriptionPath: Path,
+  private def putNewCertificateOnChain(userName: String, channel: String, chaincode: String, connectionWalletPath: Path, networkDescriptionPath: Path,
       newEnrollmentID: String, newCertificate: String): Unit = {
     // store certificate on chaincode
-    val certificateConnection = ConnectionCertificate(connectionName, channel, chaincode, connectionWalletPath, networkDescriptionPath)
+    val certificateConnection = ConnectionCertificate(userName, channel, chaincode, connectionWalletPath, networkDescriptionPath)
     addOrUpdateCertificate(certificateConnection, newEnrollmentID, newCertificate)
   }
 
-  private def addOrUpdateCertificate(certificateConnection: ConnectionCertificate, enrollmentID: String, enrollmentCertificate: String): String = {
+  private def addOrUpdateCertificate(certificateConnection: ConnectionCertificate, enrollmentId: String, enrollmentCertificate: String): String = {
     try {
-      Logger.info(s"Try add new certificate for enrollmentID: $enrollmentID")
-      certificateConnection.addCertificate(enrollmentID, enrollmentCertificate)
+      Logger.info(s"Try add new certificate for enrollmentID: $enrollmentId")
+      certificateConnection.addCertificate(enrollmentId, enrollmentCertificate)
     }
     catch {
       case _: Throwable => {
-        Logger.info(s"Certificate for user already exists: $enrollmentID")
+        Logger.info(s"Certificate for user already exists: $enrollmentId")
         Logger.info(s"Update Certificate")
-        certificateConnection.updateCertificate(enrollmentID, enrollmentCertificate)
+        certificateConnection.updateCertificate(enrollmentId, enrollmentCertificate)
       }
     }
   }

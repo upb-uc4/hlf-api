@@ -3,16 +3,19 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionMatriculationTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelperStrings, TestSetup }
-import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager }
 
 class MatriculationAccessTests extends TestBase {
 
   var chaincodeConnection: ConnectionMatriculationTrait = _
 
+  val testUserId: String = "200"
+
   override def beforeAll(): Unit = {
     super.beforeAll()
-    TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
+
+    // prepare testUser
+    tryRegisterAndEnrollTestUser(testUserId, organisationId)
   }
 
   override def beforeEach(): Unit = {
@@ -31,14 +34,10 @@ class MatriculationAccessTests extends TestBase {
   "The ScalaAPI for Matriculation" when {
     "invoked with correct transactions " should {
       "allow for adding new MatriculationData / Students " in {
-        val newData = TestDataMatriculation.validMatriculationData1("200")
+        val newData = TestDataMatriculation.validMatriculationData1(testUserId)
 
         // approve as new user
-        val enrollmentID = "200"
-        val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentID, username, walletPath, "org1")
-        EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentID, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
-        initializeOperation(enrollmentID).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", newData)
-        initializeOperation(username).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", newData)
+        initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", newData)
 
         // add matriculation as admin
         TestHelperStrings.compareJson(newData, chaincodeConnection.addMatriculationData(newData))
@@ -55,8 +54,7 @@ class MatriculationAccessTests extends TestBase {
         val newEntry = TestDataMatriculation.getSubjectMatriculationList("Computer Science", "SS2021")
 
         // approvals
-        initializeOperation("200").initiateOperation(username, "UC4.MatriculationData", "addEntriesToMatriculationData", enrollmentId, newEntry)
-        initializeOperation(username).initiateOperation(username, "UC4.MatriculationData", "addEntriesToMatriculationData", enrollmentId, newEntry)
+        initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addEntriesToMatriculationData", enrollmentId, newEntry)
 
         // actual operation
         val result = chaincodeConnection.addEntriesToMatriculationData(enrollmentId, newEntry)
