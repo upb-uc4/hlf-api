@@ -1,50 +1,38 @@
 package de.upb.cs.uc4.hyperledger.tests.contracts
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionMatriculationTrait, ConnectionOperationTrait, ConnectionTrait }
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 
 class VersionAccessTests extends TestBase {
 
-  var certificateConnection: ConnectionCertificateTrait = _
-  var matriculationConnection: ConnectionMatriculationTrait = _
-  var approvalConnection: ConnectionOperationTrait = _
-  var ERConnection: ConnectionExaminationRegulationTrait = _
+  val regexVersionString: String = """((\d)+\.){2}(\d)+"""
 
-  override def afterAll(): Unit = {
-    certificateConnection.close()
-    matriculationConnection.close()
-    approvalConnection.close()
-    ERConnection.close()
-    super.afterAll()
+  def testVersion(connection: ConnectionTrait): Unit = {
+    val version: String = connection.getChaincodeVersion
+    version should fullyMatch regex regexVersionString
+    connection.close()
   }
 
-  val regexVersionString: String = """((\d)+\.){2}(\d)+"""
 
   "The ScalaAPI for Connections" when {
     "asked for chaincode version " should {
+      "provide a valid endpoint [Admission] " in {
+        testVersion(initializeAdmission())
+      }
       "provide a valid endpoint [Certificate] " in {
-        certificateConnection = initializeCertificate()
-        val version: String = certificateConnection.getChaincodeVersion
-        version should fullyMatch regex regexVersionString
-        certificateConnection.close()
-      }
-      "provide a valid endpoint [Matriculation] " in {
-        matriculationConnection = initializeMatriculation()
-        val version: String = matriculationConnection.getChaincodeVersion
-        version should fullyMatch regex regexVersionString
-        matriculationConnection.close()
-      }
-      "provide a valid endpoint [Approval] " in {
-        approvalConnection = initializeOperation()
-        val version: String = approvalConnection.getChaincodeVersion
-        version should fullyMatch regex regexVersionString
-        approvalConnection.close()
+        testVersion(initializeCertificate())
       }
       "provide a valid endpoint [ExaminationRegulation] " in {
-        ERConnection = initializeExaminationRegulation()
-        val version: String = ERConnection.getChaincodeVersion
-        version should fullyMatch regex regexVersionString
-        ERConnection.close()
+        testVersion(initializeExaminationRegulation())
+      }
+      "provide a valid endpoint [Group] " in {
+        testVersion(initializeGroup())
+      }
+      "provide a valid endpoint [Matriculation] " in {
+        testVersion(initializeMatriculation())
+      }
+      "provide a valid endpoint [Operation] " in {
+        testVersion(initializeOperation())
       }
     }
   }
