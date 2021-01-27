@@ -3,7 +3,7 @@ package de.upb.cs.uc4.hyperledger.testBase
 import java.nio.file.Path
 import java.security.PrivateKey
 
-import de.upb.cs.uc4.hyperledger.testUtil.TestHelperCrypto
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestHelperCrypto, TestSetup }
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
@@ -31,6 +31,8 @@ class TestBase extends TestBaseTrait {
     Logger.debug(debugMsg)
     if (testBase.isInstanceOf[TestBaseProductionNetwork]) {
       tryAdminEnrollment(this.caURL, this.tlsCert, this.walletPath, this.username, this.password, this.organisationId, this.channel, this.chaincode, this.networkDescriptionPath)
+      Thread.sleep(5000) // wait for enrollment to finish
+      TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     }
   }
 

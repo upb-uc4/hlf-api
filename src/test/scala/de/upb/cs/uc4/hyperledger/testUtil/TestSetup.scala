@@ -30,12 +30,13 @@ object TestSetup {
     connection.close()
   }
 
-  def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, f: (String) => ConnectionOperationTrait, approveNames: Seq[String], existingMatriculationId: String): Unit = {
+  def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, operationConnection: ConnectionOperationTrait, existingMatriculationId: String): Unit = {
     // prepare data
     val mat1 = TestDataMatriculation.validMatriculationData1(existingMatriculationId)
 
     // approvals
-    approveNames.foreach(name => f(name).initiateOperation(existingMatriculationId, "UC4.MatriculationData", "addMatriculationData", mat1))
+    operationConnection.initiateOperation(existingMatriculationId, "UC4.MatriculationData", "addMatriculationData", mat1)
+
     // store on chain
     TestHelper.trySetupConnections("establishExistingMatriculation", () => {
       matConnection.addMatriculationData(mat1)
