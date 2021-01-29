@@ -1,8 +1,10 @@
-# <a id="v0.16.6" />[v0.16.6](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.5...v0.16.6) (TBD)
+# <a id="v0.17.1" />[v0.17.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.17.0...v0.17.1) (TBD)
 
 ## Feature
 
 - accept all approvals ONLY via OperationConnection
+
+# <a id="v0.17.0" />[v0.17.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.5...v0.17.0) (2021-01-29)
 
 ## Bug Fixes
 
