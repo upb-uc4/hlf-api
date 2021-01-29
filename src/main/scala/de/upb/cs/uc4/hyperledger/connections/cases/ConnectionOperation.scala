@@ -1,10 +1,11 @@
 package de.upb.cs.uc4.hyperledger.connections.cases
 
 import java.nio.file.Path
-
 import com.google.gson.Gson
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionOperationTrait
 import de.upb.cs.uc4.hyperledger.utilities.helper.TransactionHelper
+
+import scala.jdk.CollectionConverters.SeqHasAsJava
 
 protected[hyperledger] case class ConnectionOperation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionOperationTrait {
@@ -44,11 +45,11 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
 
   override def getOperations(operationIds: List[String], existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, involvedEnrollmentId: String, states: List[String]): String = {
     wrapSubmitTransaction(false, "getOperations",
-      new Gson().toJson(operationIds),
+      new Gson().toJson(operationIds.asJava),
       existingEnrollmentId,
       missingEnrollmentId,
       initiatorEnrollmentId,
       involvedEnrollmentId,
-      new Gson().toJson(states))
+      new Gson().toJson(states.asJava))
   }
 }
