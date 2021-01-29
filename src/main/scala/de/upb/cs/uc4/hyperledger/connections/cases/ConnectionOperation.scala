@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionOperationTrait
 import de.upb.cs.uc4.hyperledger.utilities.helper.TransactionHelper
 
-import scala.collection.JavaConverters.seqAsJavaListConverter
+import scala.jdk.CollectionConverters.SeqHasAsJava
 
 protected[hyperledger] case class ConnectionOperation(username: String, channel: String, chaincode: String, walletPath: Path, networkDescriptionPath: Path)
   extends ConnectionOperationTrait {
