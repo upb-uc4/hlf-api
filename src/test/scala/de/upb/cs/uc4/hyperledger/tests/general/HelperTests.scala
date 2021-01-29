@@ -62,15 +62,15 @@ class HelperTests extends TestBase {
     "creating a parameter list" should {
       "create a valid json List null" in {
         val result = TestHelperStrings.getJsonList(null)
-        result should be ("[]")
+        result should be("[]")
       }
       "create a valid json List single" in {
         val result = TestHelperStrings.getJsonList(Seq("M1"))
-        result should be ("[M1]")
+        result should be("[M1]")
       }
       "create a valid json List two" in {
         val result = TestHelperStrings.getJsonList(Seq("M1", "M2"))
-        result should be ("[M1, M2]")
+        result should be("[M1, M2]")
       }
     }
   }
