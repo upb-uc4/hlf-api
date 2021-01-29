@@ -23,10 +23,10 @@ class OperationTests extends TestBase {
   "The ScalaAPI for Operations used correctly " when {
     "invoked with proposeTransaction" should {
       "allow for adding new Approval " in {
-        chaincodeConnection.initiateOperation(username, "UC4.ExaminationRegulation", "addExaminationRegulation", TestDataExaminationRegulation.validExaminationRegulation("OperationTest_ComputerScience", Seq("M1"), true))
+        chaincodeConnection.initiateOperation(username, "UC4.ExaminationRegulation", "addExaminationRegulation", TestDataExaminationRegulation.validExaminationRegulation("OperationTest_ComputerScience", Seq(TestDataExaminationRegulation.getModule("M1")), true))
       }
       "allow for adding existing Approval a second time" in {
-        chaincodeConnection.initiateOperation(username, "UC4.ExaminationRegulation", "addExaminationRegulation", TestDataExaminationRegulation.validExaminationRegulation("OperationTest_ComputerScience", Seq("M1"), true))
+        chaincodeConnection.initiateOperation(username, "UC4.ExaminationRegulation", "addExaminationRegulation", TestDataExaminationRegulation.validExaminationRegulation("OperationTest_ComputerScience", Seq(TestDataExaminationRegulation.getModule("M1")), true))
       }
     }
   }

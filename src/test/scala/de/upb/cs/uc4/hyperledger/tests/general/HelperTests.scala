@@ -2,7 +2,7 @@ package de.upb.cs.uc4.hyperledger.tests.general
 
 import com.google.gson.Gson
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelperStrings }
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper, TransactionHelper }
 
 class HelperTests extends TestBase {
@@ -54,6 +54,23 @@ class HelperTests extends TestBase {
         val paramsArray = new Gson().fromJson(jSonParams, classOf[Array[String]])
         paramsArray.foreach(item => Logger.debug(item))
         mat should equal(paramsArray.head)
+      }
+    }
+  }
+
+  "The TestHelperStrings " when {
+    "creating a parameter list" should {
+      "create a valid json List null" in {
+        val result = TestHelperStrings.getJsonList(null)
+        result should be ("[]")
+      }
+      "create a valid json List single" in {
+        val result = TestHelperStrings.getJsonList(Seq("M1"))
+        result should be ("[M1]")
+      }
+      "create a valid json List two" in {
+        val result = TestHelperStrings.getJsonList(Seq("M1", "M2"))
+        result should be ("[M1, M2]")
       }
     }
   }
