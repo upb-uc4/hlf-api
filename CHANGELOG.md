@@ -4,6 +4,10 @@
 
 - accept all approvals ONLY via OperationConnection
 
+## Bug Fixes
+
+- convert lists so gson serialization yields proper json arrays
+
 # <a id="v0.16.5" />[v0.16.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.4...v0.16.5) (2021-01-27)
 
 ## Feature
