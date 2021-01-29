@@ -1,8 +1,18 @@
-# <a id="v0.16.5" />[v0.16.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.4...v0.16.5) (TBD)
+# <a id="v0.16.6" />[v0.16.6](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.5...v0.16.6) (TBD)
 
 ## Feature
 
 - accept all approvals ONLY via OperationConnection
+
+# <a id="v0.16.5" />[v0.16.5](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.4...v0.16.5) (2021-01-27)
+
+## Feature
+
+- automatically retry ExecuteTransaction when encountering some hyperledger framework error
+
+## Usability
+
+- fix tests after new required approvals on chaincode
 
 # <a id="v0.16.4" />[v0.16.4](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.3...v0.16.4) (2021-01-26)
 
