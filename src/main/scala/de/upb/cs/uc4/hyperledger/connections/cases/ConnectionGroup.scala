@@ -32,20 +32,20 @@ protected[hyperledger] case class ConnectionGroup(username: String, channel: Str
   }
 
   override def addUserToGroup(enrollmentId: String, groupId: String): String =
-    wrapSubmitTransaction(false, "addUserToGroup", enrollmentId, groupId)
+    wrapSubmitTransaction(false, "addUserToGroup", enrollmentId, groupId)()
 
   override def removeUserFromGroup(enrollmentId: String, groupId: String): String =
-    wrapSubmitTransaction(false, "removeUserFromGroup", enrollmentId, groupId)
+    wrapSubmitTransaction(false, "removeUserFromGroup", enrollmentId, groupId)()
 
   override def removeUserFromAllGroups(enrollmentId: String): String =
-    wrapSubmitTransaction(false, "removeUserFromAllGroups", enrollmentId)
+    wrapSubmitTransaction(false, "removeUserFromAllGroups", enrollmentId)()
 
   override def getAllGroups: String =
-    wrapEvaluateTransaction("getAllGroups")
+    wrapEvaluateTransaction("getAllGroups")()
 
   override def getUsersForGroup(groupId: String): String =
-    wrapEvaluateTransaction("getUsersForGroup", groupId)
+    wrapEvaluateTransaction("getUsersForGroup", groupId)()
 
   override def getGroupsForUser(enrollmentId: String): String =
-    wrapEvaluateTransaction("getGroupsForUser", enrollmentId)
+    wrapEvaluateTransaction("getGroupsForUser", enrollmentId)()
 }

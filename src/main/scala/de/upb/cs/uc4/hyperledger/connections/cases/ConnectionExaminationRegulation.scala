@@ -20,11 +20,11 @@ case class ConnectionExaminationRegulation(username: String, channel: String, ch
   }
 
   def addExaminationRegulation(examinationRegulation: String): String =
-    wrapSubmitTransaction(false, "addExaminationRegulation", examinationRegulation)
+    wrapSubmitTransaction(false, "addExaminationRegulation", examinationRegulation)()
 
   def getExaminationRegulations(namesList: String): String =
-    wrapEvaluateTransaction("getExaminationRegulations", namesList)
+    wrapEvaluateTransaction("getExaminationRegulations", namesList)()
 
   def closeExaminationRegulation(name: String): String =
-    wrapSubmitTransaction(false, "closeExaminationRegulation", name)
+    wrapSubmitTransaction(false, "closeExaminationRegulation", name)()
 }

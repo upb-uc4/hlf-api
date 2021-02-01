@@ -34,20 +34,20 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
   }
 
   override def addAdmission(admission: String): String =
-    wrapSubmitTransaction(false, "addAdmission", admission)
+    wrapSubmitTransaction(false, "addAdmission", admission)()
 
   override def dropAdmission(admissionId: String): String =
-    wrapSubmitTransaction(false, "dropAdmission", admissionId)
+    wrapSubmitTransaction(false, "dropAdmission", admissionId)()
 
   override def getAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String =
-    wrapSubmitTransaction(false, "getAdmissions", enrollmentId, courseId, moduleId)
+    wrapSubmitTransaction(false, "getAdmissions", enrollmentId, courseId, moduleId)()
 
   override def getCourseAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String =
-    wrapSubmitTransaction(false, "getCourseAdmissions", enrollmentId, courseId, moduleId)
+    wrapSubmitTransaction(false, "getCourseAdmissions", enrollmentId, courseId, moduleId)()
 
   override def getExamAdmissions(admissionIds: List[String], enrollmentId: String, examIds: List[String]): String =
     wrapSubmitTransaction(false, "getExamAdmissions",
       new Gson().toJson(admissionIds.asJava),
       enrollmentId,
-      new Gson().toJson(examIds.asJava))
+      new Gson().toJson(examIds.asJava))()
 }
