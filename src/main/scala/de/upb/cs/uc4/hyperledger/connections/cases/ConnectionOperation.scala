@@ -31,15 +31,15 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
 
   override def initiateOperation(initiator: String, contractName: String, transactionName: String, params: String*): String = {
     val transactionValues = TransactionHelper.getApprovalParameterList(initiator, contractName, transactionName, params.toArray)
-    wrapSubmitTransaction(false, "initiateOperation", transactionValues: _*)
+    wrapSubmitTransaction(false, "initiateOperation", transactionValues: _*)()
   }
 
   override def approveOperation(operationId: String): String = {
-    wrapSubmitTransaction(false, "approveOperation", operationId)
+    wrapSubmitTransaction(false, "approveOperation", operationId)()
   }
 
   override def rejectOperation(operationId: String, rejectMessage: String): String = {
-    wrapSubmitTransaction(false, "rejectOperation", operationId, rejectMessage)
+    wrapSubmitTransaction(false, "rejectOperation", operationId, rejectMessage)()
   }
 
   override def getOperations(operationIds: List[String], existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, involvedEnrollmentId: String, states: List[String]): String = {
@@ -49,6 +49,6 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
       missingEnrollmentId,
       initiatorEnrollmentId,
       involvedEnrollmentId,
-      new Gson().toJson(states))
+      new Gson().toJson(states))()
   }
 }

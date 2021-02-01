@@ -20,11 +20,11 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
   }
 
   override def addAdmission(admission: String): String =
-    wrapSubmitTransaction(false, "addAdmission", admission)
+    wrapSubmitTransaction(false, "addAdmission", admission)()
 
   override def dropAdmission(admissionId: String): String =
-    wrapSubmitTransaction(false, "dropAdmission", admissionId)
+    wrapSubmitTransaction(false, "dropAdmission", admissionId)()
 
   override def getAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String =
-    wrapSubmitTransaction(false, "getAdmissions", enrollmentId, courseId, moduleId)
+    wrapSubmitTransaction(false, "getAdmissions", enrollmentId, courseId, moduleId)()
 }
