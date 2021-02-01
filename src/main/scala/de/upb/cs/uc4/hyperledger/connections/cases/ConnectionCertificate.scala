@@ -25,5 +25,5 @@ case class ConnectionCertificate(username: String, channel: String, chaincode: S
     wrapSubmitTransaction(false, "updateCertificate", enrollmentID, certificate)()
 
   override def getCertificate(enrollmentId: String): String =
-    wrapEvaluateTransaction("getCertificate", enrollmentId)()
+    wrapEvaluateTransaction("getCertificate", enrollmentId)
 }
