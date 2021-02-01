@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionOperationTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
+import de.upb.cs.uc4.hyperledger.testUtil.TestDataExaminationRegulation
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class OperationTests extends TestBase {
@@ -22,11 +23,10 @@ class OperationTests extends TestBase {
   "The ScalaAPI for Operations used correctly " when {
     "invoked with proposeTransaction" should {
       "allow for adding new Approval " in {
-        initializeCertificate().addCertificate("000001", "totally valid cert1")
-        chaincodeConnection.initiateOperation(username, "UC4.Certificate", "updateCertificate", "000001", "totally valid cert2")
+        chaincodeConnection.initiateOperation(username, "UC4.ExaminationRegulation", "addExaminationRegulation", TestDataExaminationRegulation.validExaminationRegulation("OperationTest_ComputerScience", Seq(TestDataExaminationRegulation.getModule("M1")), true))
       }
       "allow for adding existing Approval a second time" in {
-        chaincodeConnection.initiateOperation(username, "UC4.Certificate", "updateCertificate", "000001", "totally valid cert2")
+        chaincodeConnection.initiateOperation(username, "UC4.ExaminationRegulation", "addExaminationRegulation", TestDataExaminationRegulation.validExaminationRegulation("OperationTest_ComputerScience", Seq(TestDataExaminationRegulation.getModule("M1")), true))
       }
     }
   }
