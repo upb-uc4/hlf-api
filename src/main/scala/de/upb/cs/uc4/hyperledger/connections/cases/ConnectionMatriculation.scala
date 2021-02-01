@@ -34,5 +34,5 @@ case class ConnectionMatriculation(username: String, channel: String, chaincode:
     wrapSubmitTransaction(false, "updateMatriculationData", jSonMatriculationData)()
 
   override def getMatriculationData(enrollmentId: String): String =
-    wrapEvaluateTransaction("getMatriculationData", enrollmentId)()
+    wrapEvaluateTransaction("getMatriculationData", enrollmentId)
 }
