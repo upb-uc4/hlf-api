@@ -68,9 +68,9 @@ trait ConnectionTrait extends AutoCloseable {
     */
   @throws[TransactionExceptionTrait]
   @throws[HyperledgerExceptionTrait]
-  protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*): String = {
+  protected final def wrapSubmitTransaction(transient: Boolean, transactionName: String, params: String*)(pTimeoutMilliseconds: Int = timeoutMilliseconds, pTimeoutAttempts: Int = timeoutAttempts): String = {
     // submit and evaluate response from my "regular" contract
-    val resultBytes = ReflectionHelper.retryAction(() => this.privateSubmitTransaction(transient, transactionName, params: _*), transactionName, timeoutMilliseconds, timeoutAttempts)
+    val resultBytes = ReflectionHelper.retryAction(() => this.privateSubmitTransaction(transient, transactionName, params: _*), transactionName, pTimeoutMilliseconds, pTimeoutAttempts)
     this.wrapTransactionResult(transactionName, resultBytes)
   }
 
@@ -234,7 +234,7 @@ trait ConnectionTrait extends AutoCloseable {
     val validResponses = ReflectionHelper.safeCallPrivateMethod(transaction)("validatePeerResponses")(proposalResponses).asInstanceOf[util.Collection[ProposalResponse]]
 
     // create final transaction to submit
-    val transactionPayload = ReflectionHelper.retryAction(() => TransactionHelper.getTransaction(validResponses, channelObj), "getUnsignedTransaction", timeoutMilliseconds, timeoutAttempts);
+    val transactionPayload = ReflectionHelper.retryAction(() => TransactionHelper.getTransaction(validResponses, channelObj), "getUnsignedTransaction", timeoutMilliseconds, 1)
 
     transactionPayload.toByteArray
   }
@@ -263,7 +263,7 @@ trait ConnectionTrait extends AutoCloseable {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def executeTransaction(jsonOperationData: String, timeoutMilliseconds: Int = 30000, timeoutAttempts: Int = Int.MaxValue): String = {
+  def executeTransaction(jsonOperationData: String, pTimeoutMilliseconds: Int = timeoutMilliseconds, pTimeoutAttempts: Int = timeoutAttempts): String = {
     // prepare info
     val transactionInfo = StringHelper.getTransactionInfoFromOperation(jsonOperationData)
     val (contractName, transactionName, transactionParams) = StringHelper.getInfoFromTransactionInfo(transactionInfo)
@@ -273,7 +273,7 @@ trait ConnectionTrait extends AutoCloseable {
     val connection: ConnectionTrait = buildConnectionForContract(contractName)
 
     // attempt transmission
-    connection.wrapSubmitTransaction(transactionTransient, transactionName, transactionParams: _*)
+    connection.wrapSubmitTransaction(transactionTransient, transactionName, transactionParams: _*)(pTimeoutMilliseconds, pTimeoutAttempts)
   }
 
   private def buildConnectionForContract(contractName: String): ConnectionTrait = {
