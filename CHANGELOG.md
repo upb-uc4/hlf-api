@@ -1,4 +1,12 @@
-# <a id="v0.17.1" />[v0.17.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.17.0...v0.17.1) (TBD)
+# <a id="v0.17.2" />[v0.17.2](https://github.com/upb-uc4/hyperledger_api/compare/v0.17.1...v0.17.2) (2021-02-02)
+
+## Feature
+
+- add ExamConnection
+- add ExamResultConnection
+- adjust admissionConnection to provide new get-calls whilst supporting old ones as well
+
+# <a id="v0.17.1" />[v0.17.1](https://github.com/upb-uc4/hyperledger_api/compare/v0.17.0...v0.17.1) (2021-02-02)
 
 ## Feature
 
