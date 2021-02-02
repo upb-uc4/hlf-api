@@ -44,12 +44,14 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
   }
 
   override def getOperations(operationIds: List[String], existingEnrollmentId: String, missingEnrollmentId: String, initiatorEnrollmentId: String, involvedEnrollmentId: String, states: List[String]): String = {
-    wrapEvaluateTransaction("getOperations",
+    wrapEvaluateTransaction(
+      "getOperations",
       new Gson().toJson(operationIds.asJava),
       existingEnrollmentId,
       missingEnrollmentId,
       initiatorEnrollmentId,
       involvedEnrollmentId,
-      new Gson().toJson(states.asJava))
+      new Gson().toJson(states.asJava)
+    )
   }
 }
