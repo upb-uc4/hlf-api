@@ -2,7 +2,11 @@
 
 ## Feature
 
-- accept all approvals ONLY via OperationConnection
+- bugfix timeout Handling
+
+# Usability
+
+- remove retry for getUnsignedTransaction() (as it does not help here, since the proposal is already set)
 
 # <a id="v0.17.0" />[v0.17.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.16.5...v0.17.0) (2021-01-29)
 
