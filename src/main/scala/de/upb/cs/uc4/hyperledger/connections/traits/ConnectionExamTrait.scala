@@ -37,7 +37,7 @@ trait ConnectionExamTrait extends ConnectionTrait {
                           courseIds: List[String], lecturerIds: List[String], moduleIds: List[String],
                           types: List[String], admittableAt: String, droppableAt: String): (String, Array[Byte])
 
-  /** Submits the "addExaminationRegulation" query.
+  /** Submits the "addExam" query.
     *
     * @param examJson Information about the exam to add.
     * @throws TransactionExceptionTrait if chaincode throws an exception.
@@ -48,7 +48,7 @@ trait ConnectionExamTrait extends ConnectionTrait {
   @throws[TransactionExceptionTrait]
   def addExam(examJson: String): String
 
-  /** Submits the "getExaminationRegulations" query.
+  /** Submits the "getExams" query.
     *
     * @param examIds        Filter for the examIds - leave empty to ignore filter
     * @param courseIds      Filter for the courseIds - leave empty to ignore filter
