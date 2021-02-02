@@ -50,6 +50,6 @@ protected[hyperledger] case class ConnectionOperation(username: String, channel:
       missingEnrollmentId,
       initiatorEnrollmentId,
       involvedEnrollmentId,
-      new Gson().toJson(states.asJava))()
+      new Gson().toJson(states.asJava))
   }
 }
