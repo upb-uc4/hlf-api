@@ -27,7 +27,7 @@ case class ConnectionExam(username: String, channel: String, chaincode: String, 
   }
 
   def addExam(examJson: String): String =
-    wrapSubmitTransaction(false, "addExam", examJson)
+    wrapSubmitTransaction(false, "addExam", examJson)()
 
   def getExams(examIds: List[String], courseIds: List[String], lecturerIds: List[String], moduleIds: List[String],
       types: List[String], admittableAt: String, droppableAt: String): String =
@@ -38,6 +38,5 @@ case class ConnectionExam(username: String, channel: String, chaincode: String, 
       new Gson().toJson(lecturerIds.asJava),
       new Gson().toJson(moduleIds.asJava),
       new Gson().toJson(types.asJava),
-      admittableAt, droppableAt
-    )
+      admittableAt, droppableAt)
 }
