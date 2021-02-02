@@ -29,7 +29,7 @@ trait ConnectionExamResultTrait extends ConnectionTrait {
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getProposalGetExamResultEntries(certificate: String, affiliation: String = AFFILIATION,
-                                      enrollmentId: String, examIds:List[String]): (String, Array[Byte])
+      enrollmentId: String, examIds: List[String]): (String, Array[Byte])
 
   /** Submits the "addExamResult" query.
     *
@@ -52,5 +52,5 @@ trait ConnectionExamResultTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getExamResultEntries(enrollmentId: String, examIds:List[String]): String
+  def getExamResultEntries(enrollmentId: String, examIds: List[String]): String
 }

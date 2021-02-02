@@ -33,9 +33,9 @@ trait ConnectionExamTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetExams(certificate: String, affiliation: String = AFFILIATION, examIds:List[String],
-                          courseIds: List[String], lecturerIds: List[String], moduleIds: List[String],
-                          types: List[String], admittableAt: String, droppableAt: String): (String, Array[Byte])
+  def getProposalGetExams(certificate: String, affiliation: String = AFFILIATION, examIds: List[String],
+      courseIds: List[String], lecturerIds: List[String], moduleIds: List[String],
+      types: List[String], admittableAt: String, droppableAt: String): (String, Array[Byte])
 
   /** Submits the "addExam" query.
     *
@@ -63,6 +63,6 @@ trait ConnectionExamTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getExams(examIds:List[String], courseIds: List[String], lecturerIds: List[String], moduleIds: List[String],
-               types: List[String], admittableAt: String, droppableAt: String): String
+  def getExams(examIds: List[String], courseIds: List[String], lecturerIds: List[String], moduleIds: List[String],
+      types: List[String], admittableAt: String, droppableAt: String): String
 }

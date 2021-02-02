@@ -106,7 +106,6 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
   @throws[TransactionExceptionTrait]
   def getAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String
 
-
   /** Submits the "getCourseAdmissions" query.
     *
     * @param enrollmentId enrollmentId to filter for.
@@ -119,7 +118,6 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getCourseAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String
-
 
   /** Submits the "getExamAdmissions" query.
     *

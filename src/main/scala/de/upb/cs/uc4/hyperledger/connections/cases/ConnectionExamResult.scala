@@ -15,7 +15,7 @@ case class ConnectionExamResult(username: String, channel: String, chaincode: St
   }
 
   def getProposalGetExamResultEntries(certificate: String, affiliation: String = AFFILIATION,
-                                      enrollmentId: String, examIds: List[String]): (String, Array[Byte]) = {
+      enrollmentId: String, examIds: List[String]): (String, Array[Byte]) = {
     internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getExamResultEntries",
       enrollmentId,
       new Gson().toJson(examIds.asJava))
