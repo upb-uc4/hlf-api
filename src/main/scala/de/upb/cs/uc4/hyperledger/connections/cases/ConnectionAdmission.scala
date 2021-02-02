@@ -43,11 +43,13 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
     wrapEvaluateTransaction("getAdmissions", enrollmentId, courseId, moduleId)
 
   override def getCourseAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String =
-    wrapEvaluateTransaction("getCourseAdmissions", enrollmentId, courseId, moduleId)(
+    wrapEvaluateTransaction("getCourseAdmissions", enrollmentId, courseId, moduleId)
 
   override def getExamAdmissions(admissionIds: List[String], enrollmentId: String, examIds: List[String]): String =
-    wrapEvaluateTransaction("getExamAdmissions",
+    wrapEvaluateTransaction(
+      "getExamAdmissions",
       new Gson().toJson(admissionIds.asJava),
       enrollmentId,
-      new Gson().toJson(examIds.asJava))
+      new Gson().toJson(examIds.asJava)
+    )
 }
