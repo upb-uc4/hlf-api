@@ -38,5 +38,6 @@ case class ConnectionExam(username: String, channel: String, chaincode: String, 
       new Gson().toJson(lecturerIds.asJava),
       new Gson().toJson(moduleIds.asJava),
       new Gson().toJson(types.asJava),
-      admittableAt, droppableAt)
+      admittableAt, droppableAt
+    )
 }
