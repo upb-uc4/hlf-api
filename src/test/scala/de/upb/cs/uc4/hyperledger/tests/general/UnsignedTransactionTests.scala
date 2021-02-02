@@ -342,7 +342,7 @@ class UnsignedTransactionTests extends TestBase {
         val (privateKey, certificate) = prepareUser(testUserId)
 
         // Log proposal
-        val (_, proposalBytes) = admissionConnection.getProposalGetAdmission(certificate, organisationId, testUserId, "C1", "MatriculationTestModule.1")
+        val (_, proposalBytes) = admissionConnection.getProposalGetAdmissions(certificate, organisationId, testUserId, "C1", "MatriculationTestModule.1")
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"GetAdmissionProposal:: $proposalInfo")
 
