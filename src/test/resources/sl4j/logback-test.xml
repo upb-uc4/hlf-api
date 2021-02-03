@@ -1,0 +1,21 @@
+<configuration>
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>[%-5level] %d{HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Set logging for the HyperledgerLogger to INFO -->
+    <logger name="HyperledgerLogger" level="TRACE" />
+
+    <!-- http://logback.qos.ch/manual/configuration.html for more infos -->
+    <!-- LogLevel TRACE, DEBUG, INFO, WARN, ERROR, ALL or OFF-->
+    <root level="OFF">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>

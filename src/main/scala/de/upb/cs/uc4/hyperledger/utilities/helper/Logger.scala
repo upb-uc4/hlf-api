@@ -20,7 +20,6 @@ protected[hyperledger] object Logger {
               [MESSAGE] :: $message
               [ERROR] :: ${getInfoFromThrowable(exception)}
               """
-    //println(msg)
     log.error(msg)
     exception
 
@@ -30,24 +29,21 @@ protected[hyperledger] object Logger {
     * Maybe we can have some flag set to enable/disable in the future.
     */
   def warn(message: String): Unit = {
-    //println(s"[WARNING] :: $message")
-    log.warn(s"[WARNING] :: $message")
+    log.warn(message)
   }
 
   /** Logger utility to encapsulate printing debug messages.
     * Maybe we can have some flag set to enable/disable in the future.
     */
   def debug(message: String): Unit = {
-    //println(s"[DEBUG] :: $message")
-    log.debug(s"[DEBUG] :: $message")
+    log.debug(message)
   }
 
   /** Logger utility to encapsulate printing info messages.
     * Maybe we can have some flag set to enable/disable in the future.
     */
   def info(message: String): Unit = {
-    //println(s"[INFO] :: $message")
-    log.info(s"[INFO] :: $message")
+    log.info(message)
   }
 
   def getInfoFromThrowable(exception: Throwable): String = {
