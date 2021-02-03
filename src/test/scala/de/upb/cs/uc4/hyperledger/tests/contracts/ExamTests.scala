@@ -125,7 +125,7 @@ class ExamTests extends TestBase {
           val testExam = TestDataExam.customizableExam(examId, courseId, lecturerId, moduleId, examType, date, ects, admitUntil, dropUntil)
 
           // forge approval (lecturer)
-          val result = intercept[TransactionExceptionTrait](initializeOperation(lecturerId).initiateOperation(lecturerId, "UC4.Exam", "addExam", testExam))
+          val result = intercept[TransactionExceptionTrait](Logger.debug("initOpResultTest: " + initializeOperation(lecturerId).initiateOperation(lecturerId, "UC4.Exam", "addExam", testExam)))
           Logger.debug(s"AddInvalidExamTest: $result")
 
           // test
