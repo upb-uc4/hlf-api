@@ -76,8 +76,8 @@ class ExamTests extends TestBase {
     "invoked with getExams correctly " should {
       val testData: Seq[(String, Seq[String], Seq[String], Seq[String], Seq[String], Seq[String], String, String)] = Seq(
         ("allow for getting Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
-        ("allow for getting Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
-        ("allow for getting Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", "")
+        ("allow for getting Exams2", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
+        ("allow for getting Exams3", Seq(), Seq(), Seq(), Seq(), Seq(), "", "")
       )
       for (
         (statement: String, examIds: Seq[String], courseIds: Seq[String], lecturerIds: Seq[String], moduleIds: Seq[String],
