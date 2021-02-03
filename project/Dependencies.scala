@@ -14,6 +14,6 @@ object Dependencies {
   // dependency groups
   val hyperledgerDependencies = Seq(hyperledgerSDK, hyperledgerGateway)
   val scalaTestDependencies = Seq(scalaTest, flexmark)
-  val slf4j= Seq(slf4jApi, slf4jLog, slf4jClassic)
+  val slf4j = Seq(slf4jApi, slf4jLog, slf4jClassic)
 
 }

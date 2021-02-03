@@ -3,11 +3,9 @@ package de.upb.cs.uc4.hyperledger.utilities.helper
 import org.slf4j.LoggerFactory
 import org.slf4j.{ Logger => Slf4jLogger }
 
-
 protected[hyperledger] object Logger {
 
   private final val log: Slf4jLogger = LoggerFactory.getLogger("HyperledgerLogger")
-
 
   /** Logger utility to encapsulate printing error messages.
     * Maybe we can have some flag set to enable/disable in the future.
