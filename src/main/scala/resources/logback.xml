@@ -19,7 +19,7 @@
 
     <!-- http://logback.qos.ch/manual/configuration.html for more infos -->
     <!-- LogLevel TRACE, DEBUG, INFO, WARN, ERROR, ALL or OFF-->
-    <root level="ERROR">
+    <root level="OFF">
         <appender-ref ref="STDOUT" />
     </root>
 
