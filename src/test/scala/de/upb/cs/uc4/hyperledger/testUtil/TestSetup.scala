@@ -4,12 +4,12 @@ import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegul
 import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation.testModule
 
 object TestSetup {
-  def setupExaminationRegulations(erConnection: ConnectionExaminationRegulationTrait): Unit = {
+  def setupExaminationRegulations(erConnection: ConnectionExaminationRegulationTrait, testNamePrefix: String): Unit = {
     // prepare data
-    val modules1 = Seq(TestDataExaminationRegulation.getModule("AdmissionModule_1"), TestDataExaminationRegulation.getModule("AdmissionModule_2"))
-    val modules2 = Seq(TestDataExaminationRegulation.getModule("AdmissionModule_3"), TestDataExaminationRegulation.getModule("AdmissionModule_4"))
-    val openER = TestDataExaminationRegulation.validExaminationRegulation("AdmissionER_Open1", modules1, state = true)
-    val closedER = TestDataExaminationRegulation.validExaminationRegulation("AdmissionER_Closed1", modules2, state = false)
+    val modules1 = Seq(TestDataExaminationRegulation.getModule(testNamePrefix+"_Module_1"), TestDataExaminationRegulation.getModule(testNamePrefix+"_Module_2"))
+    val modules2 = Seq(TestDataExaminationRegulation.getModule(testNamePrefix+"_Module_3"), TestDataExaminationRegulation.getModule(testNamePrefix+"_Module_4"))
+    val openER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix+"_ER_Open1", modules1, state = true)
+    val closedER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix+"_ER_Closed1", modules2, state = false)
 
     // store on chain
     TestHelper.trySetupConnections("setupExaminationRegulations", () => {
@@ -20,13 +20,15 @@ object TestSetup {
     erConnection.close()
   }
 
-  def establishAdminAndSystemGroup(connection: ConnectionGroupTrait, userName: String): Unit = {
+  def establishAdminAndSystemGroup(connection: ConnectionGroupTrait, userName: String): Unit =
+    establishGroups(connection, userName, TestDataGroup.adminGroupName, TestDataGroup.systemGroupName)
+  def establishGroups(connection: ConnectionGroupTrait, userName: String, groups: String*): Unit = {
     // store on chain
-    TestHelper.trySetupConnections("establishAdminGroup", () => {
-      connection.addUserToGroup(userName, TestDataGroup.adminGroupName)
-      connection.addUserToGroup(userName, TestDataGroup.systemGroupName)
+    TestHelper.trySetupConnections("establishGroups", () => {
+      groups.foreach(group => connection.addUserToGroup(userName, group))
     })
 
+    // close
     connection.close()
   }
 
