@@ -45,6 +45,7 @@ class OperationTests extends TestBase {
         val exceptionResult: TransactionExceptionTrait = intercept[TransactionExceptionTrait] {
           val result = chaincodeConnection.initiateOperation(username, "", "addCertificate", "000001", "totally valid cert")
           Logger.debug("APPROVAL RESULT :: " + result)
+          // TODO: check payload
         }
         exceptionResult.transactionName should be("initiateOperation")
         val expectedPayload = "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"contractName\",\"reason\":\"The given parameter must not be empty\"}]}"
