@@ -177,7 +177,7 @@ class AdmissionTests extends TestBase {
       "not allow for dropping existing Admission a second time " in {
         // prepare empty ledger
         initializeOperation(testUser3).initiateOperation(testUser3, chaincodeConnection.contractName, "dropAdmission", s"$testUser3:C.1")
-        chaincodeConnection.dropAdmission(s"$testUser2:C.1")
+        chaincodeConnection.dropAdmission(s"$testUser3:C.1")
 
         // test exception
         val result = intercept[TransactionExceptionTrait](chaincodeConnection.dropAdmission(s"$testUser3:C.1"))
