@@ -6,10 +6,10 @@ import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation.testModule
 object TestSetup {
   def setupExaminationRegulations(erConnection: ConnectionExaminationRegulationTrait, testNamePrefix: String): Unit = {
     // prepare data
-    val modules1 = Seq(TestDataExaminationRegulation.getModule(testNamePrefix+"_Module_1"), TestDataExaminationRegulation.getModule(testNamePrefix+"_Module_2"))
-    val modules2 = Seq(TestDataExaminationRegulation.getModule(testNamePrefix+"_Module_3"), TestDataExaminationRegulation.getModule(testNamePrefix+"_Module_4"))
-    val openER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix+"_ER_Open1", modules1, state = true)
-    val closedER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix+"_ER_Closed1", modules2, state = false)
+    val modules1 = Seq(TestDataExaminationRegulation.getModule(testNamePrefix + "_Module_1"), TestDataExaminationRegulation.getModule(testNamePrefix + "_Module_2"))
+    val modules2 = Seq(TestDataExaminationRegulation.getModule(testNamePrefix + "_Module_3"), TestDataExaminationRegulation.getModule(testNamePrefix + "_Module_4"))
+    val openER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix + "_ER_Open1", modules1, state = true)
+    val closedER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix + "_ER_Closed1", modules2, state = false)
 
     // store on chain
     TestHelper.trySetupConnections("setupExaminationRegulations", () => {

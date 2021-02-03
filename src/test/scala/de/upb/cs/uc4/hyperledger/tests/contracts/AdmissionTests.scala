@@ -14,8 +14,8 @@ class AdmissionTests extends TestBase {
 
   val testNamePrefix = "Admission"
 
-  val examReg1: String = testNamePrefix+"_ER_Open1"
-  val examReg2: String = testNamePrefix+"_ER_Closed1"
+  val examReg1: String = testNamePrefix + "_ER_Open1"
+  val examReg2: String = testNamePrefix + "_ER_Closed1"
 
   val testUser1 = "AdmissionStudent_1"
   val testUser2 = "AdmissionStudent_2"

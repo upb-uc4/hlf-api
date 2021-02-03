@@ -12,10 +12,10 @@ class ExamTests extends TestBase {
 
   val testNamePrefix = "ExamTest"
 
-  val testModule1 = testNamePrefix+"_Module_1"
-  val testModule2 = testNamePrefix+"_Module_2"
-  val testModule3 = testNamePrefix+"_Module_3"
-  val testModule4 = testNamePrefix+"_Module_4"
+  val testModule1 = testNamePrefix + "_Module_1"
+  val testModule2 = testNamePrefix + "_Module_2"
+  val testModule3 = testNamePrefix + "_Module_3"
+  val testModule4 = testNamePrefix + "_Module_4"
   val testUser1 = "lecturer_1"
   val testUser2 = "lecturer_2"
   val testUser3 = "admin_1"
