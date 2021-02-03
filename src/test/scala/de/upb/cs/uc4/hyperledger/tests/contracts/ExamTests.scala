@@ -45,24 +45,53 @@ class ExamTests extends TestBase {
 
   "The ScalaAPI for Exams" when {
     "invoked with addExam correctly " should {
-      val testData: Seq[(String, String, String, String, String, Int, String, String, String)] = Seq(
-        ("allow for adding new Exam", "C.1", testUser1, testModule1, "Written Exam", 6, "2021-03-12T12:00:00", "2021-03-12T12:00:00", "2021-03-12T12:00:00"),
-        ("allow for adding new Exam", "C.1", testUser1, testModule1, "Written Exam", 2, "2021-03-12T12:00:00", "2021-03-12T12:00:00", "2021-03-12T12:00:00"),
-        ("allow for adding new Exam", "C.1", testUser1, testModule1, "Written Exam", 0, "2021-03-12T12:00:00", "2021-03-12T12:00:00", "2021-03-12T12:00:00"),
-        ("allow for adding new Exam", "C.1", testUser1, testModule1, "Written Exam", 99, "2021-03-12T12:00:00", "2021-03-12T12:00:00", "2021-03-12T12:00:00"),
-        ("allow for adding new Exam", "C.1", testUser1, testModule1, "Written Exam", 6, "2021-03-11T12:00:00", "2021-03-12T12:00:00", "2021-03-12T12:00:00"),
-        ("allow for adding new Exam", "C.1", testUser1, testModule2, "Written Exam", 6, "2021-03-10T12:00:00", "2021-02-12T12:00:00", "2021-03-12T12:00:00"),
-        ("allow for adding new Exam", "C.1", testUser1, testModule3, "Written Exam", 6, "2021-03-09T12:00:00", "2021-01-12T12:00:00", "2021-03-12T12:00:00"),
-        ("allow for adding new Exam", "C.1", testUser1, testModule4, "Written Exam", 6, "2021-03-08T12:00:00", "2021-00-12T12:00:00", "2021-04-12T12:00:00")
+      val testData: Seq[(String, String, String, String, String, Int)] = Seq(
+        ("allow for adding new Exam (Approvals forged)", "C.1", testUser1, testModule1, "Written Exam", 6),
+        ("allow for adding new Exam (Approvals forged)", "C.1", testUser1, testModule1, "Written Exam", 2),
+        ("allow for adding new Exam (Approvals forged)", "C.1", testUser1, testModule1, "Written Exam", 0),
+        ("allow for adding new Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 99),
+        ("allow for adding new Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 0),
+        ("allow for adding new Exam (Approvals forged)", "C.1", testUser1, testModule1, "Garbage", 0)
       )
-      for ((statement: String, courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int, date: String, admitUntil: String, dropUntil: String) <- testData) {
+      for ((statement: String, courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int) <- testData) {
         s"$statement" in {
           Logger.info(s"Begin test: $statement with [$courseId, $lecturerId, $moduleId, $examType, $ects]")
-          val testExam = TestDataExam.validExam(courseId, lecturerId, moduleId, examType, date, ects, admitUntil, dropUntil)
-          val testResult = chaincodeConnection.addExam(testExam)
-          val expectedResult = testExam
 
+          // prepare data
+          val testExam = TestDataExam.validFutureExam(courseId, lecturerId, moduleId, examType, ects)
+
+          // forge approval (lecturer)
+          initializeOperation(lecturerId).initiateOperation(lecturerId, "UC4.Exam", "addExam", testExam)
+
+          // implicit approval (system, admin)
+          val testResult = chaincodeConnection.addExam(testExam)
+
+          // test
+          val expectedResult = testExam
           TestHelperStrings.compareJson(expectedResult, testResult)
+        }
+      }
+    }
+
+    "invoked with getExams correctly " should {
+      val testData: Seq[(String, Seq[String], Seq[String], Seq[String], Seq[String], Seq[String], String, String)] = Seq(
+        ("allow for getting Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
+        ("allow for getting Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
+        ("allow for getting Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", "")
+      )
+      for (
+        (statement: String, examIds: Seq[String], courseIds: Seq[String], lecturerIds: Seq[String], moduleIds: Seq[String],
+          types: Seq[String], admittableAt: String, droppableAt: String) <- testData
+      ) {
+        s"$statement" in {
+          Logger.info(s"Begin test: $statement with [$examIds, $courseIds, $lecturerIds, $moduleIds, $types, $admittableAt, $droppableAt]")
+
+          // should not throw exception
+          val testResult = chaincodeConnection.getExams(examIds.toList, courseIds.toList, lecturerIds.toList, moduleIds.toList,
+            types.toList, admittableAt, droppableAt)
+
+          val expectedResult = ""
+          // TestHelperStrings.compareJson(expectedResult, testResult)
         }
       }
     }

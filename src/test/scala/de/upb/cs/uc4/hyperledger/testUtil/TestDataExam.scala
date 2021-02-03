@@ -7,9 +7,11 @@ object TestDataExam {
   def validFutureExam(courseId: String, lecturerId: String, moduleId: String, examType: String = "Written Exam", ects: Int = 6): String = {
     val current = Calendar.getInstance()
     current.add(Calendar.MONTH, 1)
+    val validAdmittableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(current.getTime)
+    current.add(Calendar.DAY_OF_MONTH, 2)
+    val validDroppableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(current.getTime)
+    current.add(Calendar.DAY_OF_MONTH, 2)
     val validDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(current.getTime)
-    val validAdmittableUntil = validDate
-    val validDroppableUntil = validDate
     validExam(courseId, lecturerId, moduleId, examType, validDate, ects, validAdmittableUntil, validDroppableUntil)
   }
 
