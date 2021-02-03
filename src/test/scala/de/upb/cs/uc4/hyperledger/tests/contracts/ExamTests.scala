@@ -5,18 +5,17 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil._
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-import org.scalatest.matchers.should.Matchers.intercept
 
 class ExamTests extends TestBase {
 
-  var chaincodeConnection: ConnectionExamTrait = _
+  val chaincodeConnection: ConnectionExamTrait = initializeExam()
 
   val testNamePrefix = "ExamTest"
 
-  val testModule1 = testNamePrefix + "_Module_1"
-  val testModule2 = testNamePrefix + "_Module_2"
-  val testModule3 = testNamePrefix + "_Module_3"
-  val testModule4 = testNamePrefix + "_Module_4"
+  val testModule1: String = testNamePrefix + "_Module_1"
+  val testModule2: String = testNamePrefix + "_Module_2"
+  val testModule3: String = testNamePrefix + "_Module_3"
+  val testModule4: String = testNamePrefix + "_Module_4"
   val testUser1 = "lecturer_1"
   val testUser2 = "lecturer_2"
   val testUser3 = "admin_1"
@@ -25,7 +24,6 @@ class ExamTests extends TestBase {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    chaincodeConnection = initializeExam()
     // TODO: RESET LEDGER
     TestSetup.setupExaminationRegulations(initializeExaminationRegulation(), testNamePrefix)
     prepareUser(testUser1)
