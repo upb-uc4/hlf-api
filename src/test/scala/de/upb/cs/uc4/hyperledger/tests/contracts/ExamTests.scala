@@ -54,7 +54,7 @@ class ExamTests extends TestBase {
         ("allow for adding new Exam (Approvals forged)", "C.1", testUser1, testModule1, "Garbage", 0)
       )
       for ((statement: String, courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int) <- testData) {
-        s"$statement" in {
+        s"$statement [$courseId, $lecturerId, $moduleId, $examType, $ects]" in {
           Logger.info(s"Begin test: $statement with [$courseId, $lecturerId, $moduleId, $examType, $ects]")
 
           // prepare data
@@ -83,7 +83,7 @@ class ExamTests extends TestBase {
         (statement: String, examIds: Seq[String], courseIds: Seq[String], lecturerIds: Seq[String], moduleIds: Seq[String],
           types: Seq[String], admittableAt: String, droppableAt: String) <- testData
       ) {
-        s"$statement" in {
+        s"$statement [$examIds, $courseIds, $lecturerIds, $moduleIds, $types, $admittableAt, $droppableAt]" in {
           Logger.info(s"Begin test: $statement with [$examIds, $courseIds, $lecturerIds, $moduleIds, $types, $admittableAt, $droppableAt]")
 
           // should not throw exception
