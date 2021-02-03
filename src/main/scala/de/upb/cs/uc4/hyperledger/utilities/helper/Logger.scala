@@ -1,11 +1,9 @@
 package de.upb.cs.uc4.hyperledger.utilities.helper
 
 import org.slf4j.LoggerFactory
-import org.slf4j.{Logger => Sl4jLogger}
-
+import org.slf4j.{ Logger => Sl4jLogger }
 
 protected[hyperledger] object Logger {
-
 
   private final val log: Sl4jLogger = LoggerFactory.getLogger("HyperledgerLogger")
 
