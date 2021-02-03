@@ -5,7 +5,8 @@ import org.slf4j.{ Logger => Sl4jLogger }
 
 protected[hyperledger] object Logger {
 
-  private final val log: Sl4jLogger = LoggerFactory.getLogger("HyperledgerLogger")
+  private final val log: Slf4jLogger = LoggerFactory.getLogger("HyperledgerLogger")
+
 
   /** Logger utility to encapsulate printing error messages.
     * Maybe we can have some flag set to enable/disable in the future.
