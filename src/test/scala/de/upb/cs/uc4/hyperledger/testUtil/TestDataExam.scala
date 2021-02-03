@@ -16,7 +16,7 @@ object TestDataExam {
   }
 
   def validExam(courseId: String, lecturerId: String, moduleId: String, examType: String,
-      date:String, ects: Int, admittableUntil: String, droppableUntil: String): String = {
+      date: String, ects: Int, admittableUntil: String, droppableUntil: String): String = {
     customizableExam(s"$courseId:$moduleId:$examType:$date", courseId, lecturerId, moduleId, examType, date, ects, admittableUntil, droppableUntil)
   }
 
