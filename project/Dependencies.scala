@@ -10,10 +10,8 @@ object Dependencies {
   private val slf4jLog = "ch.qos.logback" % "logback-core" % "1.2.3"
   private val slf4jClassic = "ch.qos.logback" % "logback-classic" % "1.2.3"
 
-
   // dependency groups
   val hyperledgerDependencies = Seq(hyperledgerSDK, hyperledgerGateway)
   val scalaTestDependencies = Seq(scalaTest, flexmark)
   val slf4j = Seq(slf4jApi, slf4jLog, slf4jClassic)
-
 }
