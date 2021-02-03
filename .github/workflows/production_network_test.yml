@@ -14,7 +14,7 @@ on:
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: '*AdmissionTests *CertificateAccessTests *CertificateErrorTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *GroupTests *HelperTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *OperationTests *VersionAccessTests *UserManagementTests *UnsignedTransactionTests'
+        default: '*AdmissionTests *CertificateAccessTests *CertificateErrorTests *ExamTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *GroupTests *HelperTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *OperationTests *VersionAccessTests *UserManagementTests *UnsignedTransactionTests'
   # on push event
   push:
     # except for these files
@@ -47,7 +47,7 @@ jobs:
 
   DeployAndTestProductionNetwork:
     env:
-      TEST_SET: '*AdmissionTests *CertificateAccessTests *CertificateErrorTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *GroupTests *HelperTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *OperationTests *VersionAccessTests *UserManagementTests *UnsignedTransactionTests'
+      TEST_SET: '*AdmissionTests *CertificateAccessTests *CertificateErrorTests *ExamTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *GroupTests *HelperTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *OperationTests *VersionAccessTests *UserManagementTests *UnsignedTransactionTests'
       CHAINCODE_TARGET: "v0.17.101"
 
     runs-on: ubuntu-latest
