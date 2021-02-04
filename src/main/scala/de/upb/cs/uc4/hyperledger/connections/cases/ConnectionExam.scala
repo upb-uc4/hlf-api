@@ -14,9 +14,9 @@ case class ConnectionExam(username: String, channel: String, chaincode: String, 
     internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "addExam", examJson)
   }
 
-  def getProposalGetExams(certificate: String, affiliation: String = AFFILIATION, examIds: List[String],
-      courseIds: List[String], lecturerIds: List[String], moduleIds: List[String],
-      types: List[String], admittableAt: String, droppableAt: String): (String, Array[Byte]) = {
+  def getProposalGetExams(certificate: String, affiliation: String = AFFILIATION, examIds: Seq[String],
+      courseIds: Seq[String], lecturerIds: Seq[String], moduleIds: Seq[String],
+      types: Seq[String], admittableAt: String, droppableAt: String): (String, Array[Byte]) = {
     internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getExams",
       new Gson().toJson(examIds.asJava),
       new Gson().toJson(courseIds.asJava),
@@ -29,8 +29,8 @@ case class ConnectionExam(username: String, channel: String, chaincode: String, 
   def addExam(examJson: String): String =
     wrapSubmitTransaction(false, "addExam", examJson)()
 
-  def getExams(examIds: List[String], courseIds: List[String], lecturerIds: List[String], moduleIds: List[String],
-      types: List[String], admittableAt: String, droppableAt: String): String =
+  def getExams(examIds: Seq[String], courseIds: Seq[String], lecturerIds: Seq[String], moduleIds: Seq[String],
+      types: Seq[String], admittableAt: String, droppableAt: String): String =
     wrapEvaluateTransaction(
       "getExams",
       new Gson().toJson(examIds.asJava),
