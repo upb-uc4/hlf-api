@@ -74,7 +74,7 @@ object TestHelper {
   }
   def testTransactionResult(result: TransactionExceptionTrait, expectedTransactionName: String, expectedError: String): Assertion = {
     result.transactionName should be(expectedTransactionName)
-    result.payload should be(expectedError)
+    TestHelperStrings.compareJson(expectedError, result.payload)
   }
 
   def trySetupConnections(actionName: String, fs: (() => Any)*): Unit = {
