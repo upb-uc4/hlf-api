@@ -15,7 +15,7 @@ case class ConnectionExamResult(username: String, channel: String, chaincode: St
   }
 
   def getProposalGetExamResultEntries(certificate: String, affiliation: String = AFFILIATION,
-      enrollmentId: String, examIds: List[String]): (String, Array[Byte]) = {
+      enrollmentId: String, examIds: Seq[String]): (String, Array[Byte]) = {
     internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getExamResultEntries",
       enrollmentId,
       new Gson().toJson(examIds.asJava))
@@ -24,6 +24,6 @@ case class ConnectionExamResult(username: String, channel: String, chaincode: St
   def addExamResult(examResultJson: String): String =
     wrapSubmitTransaction(false, "addExamResult", examResultJson)()
 
-  def getExamResultEntries(enrollmentId: String, examIds: List[String]): String =
+  def getExamResultEntries(enrollmentId: String, examIds: Seq[String]): String =
     wrapEvaluateTransaction("getExamResultEntries", enrollmentId, new Gson().toJson(examIds.asJava))
 }

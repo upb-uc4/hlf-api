@@ -26,7 +26,7 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
     internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getCourseAdmissions", enrollmentId, courseId, moduleId)
   }
 
-  override def getProposalGetExamAdmissions(certificate: String, affiliation: String = AFFILIATION, admissionIds: List[String], enrollmentId: String, examIds: List[String]): (String, Array[Byte]) = {
+  override def getProposalGetExamAdmissions(certificate: String, affiliation: String = AFFILIATION, admissionIds: Seq[String], enrollmentId: String, examIds: Seq[String]): (String, Array[Byte]) = {
     internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getExamAdmissions",
       new Gson().toJson(admissionIds.asJava),
       enrollmentId,
@@ -45,7 +45,7 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
   override def getCourseAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String =
     wrapEvaluateTransaction("getCourseAdmissions", enrollmentId, courseId, moduleId)
 
-  override def getExamAdmissions(admissionIds: List[String], enrollmentId: String, examIds: List[String]): String =
+  override def getExamAdmissions(admissionIds: Seq[String], enrollmentId: String, examIds: Seq[String]): String =
     wrapEvaluateTransaction(
       "getExamAdmissions",
       new Gson().toJson(admissionIds.asJava),

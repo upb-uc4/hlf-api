@@ -9,6 +9,8 @@ Commons.projectSettings("hlf-api")
 // dependencies
 libraryDependencies ++= Dependencies.scalaTestDependencies
 libraryDependencies ++= Dependencies.hyperledgerDependencies
+libraryDependencies ++= Dependencies.slf4j
+
 
 // plugins
 enablePlugins(GitVersioning, BuildInfoPlugin)
