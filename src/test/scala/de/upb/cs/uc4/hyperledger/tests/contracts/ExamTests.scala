@@ -137,9 +137,14 @@ class ExamTests extends TestBase {
 
     "invoked with getExams correctly " should {
       val testData: Seq[(String, Seq[String], Seq[String], Seq[String], Seq[String], Seq[String], String, String)] = Seq(
-        ("allow for getting Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
-        ("allow for getting Exams2", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
-        ("allow for getting Exams3", Seq(), Seq(), Seq(), Seq(), Seq(), "", "")
+        ("allow for getting all Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
+        ("allow for getting all Exams via courseId", Seq(), Seq("C.1"), Seq(), Seq(), Seq(), "", ""),
+        ("allow for getting all Exams via lecturerId", Seq(), Seq(), Seq(testUser1), Seq(), Seq(), "", ""),
+        ("allow for getting all Exams via moduleId", Seq(), Seq(), Seq(), Seq(testModule1), Seq(), "", ""),
+        ("allow for getting all Exams via admittableAt", Seq(), Seq(), Seq(), Seq(testModule1), Seq(), TestHelperStrings.getCurrentDate, ""),
+        ("allow for getting all Exams via droppableAt", Seq(), Seq(), Seq(), Seq(testModule1), Seq(), "", TestHelperStrings.getCurrentDate),
+        ("allow for getting all Written Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Written Exam"), "", ""),
+        // TODO: enable once Oral Exams are supported ("allow for getting all Oral Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Oral Exam"), "", "")
       )
       for (
         (statement: String, examIds: Seq[String], courseIds: Seq[String], lecturerIds: Seq[String], moduleIds: Seq[String],
@@ -149,11 +154,11 @@ class ExamTests extends TestBase {
           Logger.info(s"Begin test: $statement with [$examIds, $courseIds, $lecturerIds, $moduleIds, $types, $admittableAt, $droppableAt]")
 
           // should not throw exception
-          val testResult = chaincodeConnection.getExams(examIds.toList, courseIds.toList, lecturerIds.toList, moduleIds.toList,
+          val testResult: String = chaincodeConnection.getExams(examIds.toList, courseIds.toList, lecturerIds.toList, moduleIds.toList,
             types.toList, admittableAt, droppableAt)
+          val allExams: String = chaincodeConnection.getExams(Seq(), Seq(), Seq(), Seq(), Seq(), "", "")
 
-          val expectedResult = ""
-          // TestHelperStrings.compareJson(expectedResult, testResult)
+          TestHelperStrings.compareJson(allExams, testResult)
         }
       }
     }
