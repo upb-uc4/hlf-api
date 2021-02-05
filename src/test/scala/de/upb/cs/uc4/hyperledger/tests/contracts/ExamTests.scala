@@ -70,74 +70,72 @@ class ExamTests extends TestBase {
           TestHelperStrings.compareJson(expectedResult, testResult)
         }
       }
-
+    }
+    "invoked with addExam incorrectly " should {
       val testDataDeny: Seq[(String, String, String, String, String, String, Int, String, String, String)] = Seq(
-        ("deny adding invalid Exam", s"Garbage", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1+1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2+1:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1+1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam+1:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:01", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1+1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser1, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1 + 1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam+1", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6 + 1, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:01", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", "", testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, "", "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        // ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", null, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"), null case not possible
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", ""),
-        ("deny adding invalid Exam", s"C.1:Garbage:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", "Garbage", testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:Garbage:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, "Garbage", "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Garbage:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Garbage", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:0:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 0, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2020-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2020-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2020-03-10T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2020-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-15T12:00:00", "2021-03-12T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-15T12:00:00"),
-        ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-08T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"Garbage", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1+1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2+1:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2:$testModule1+1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2:$testModule1:Written Exam+1:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:01", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1+1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser1, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1 + 1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam+1", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6 + 1, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:01", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // examId is just reset ("deny adding invalid Exam [ExamId]", s"", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [empty CourseId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [empty UserId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", "", testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [empty ModuleId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, "", "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [empty ExamType]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        // null case not possible ("deny adding invalid Exam", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", null, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [empty date]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [empty admittableDate]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [empty droppableDate]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", ""),
+        ("deny adding invalid Exam [garbage UserId]", s"C.1:Garbage:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", "Garbage", testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [garbage ModuleId]", s"C.1:$testUser2:Garbage:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, "Garbage", "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [garbage ExamType]", s"C.1:$testUser2:$testModule1:Garbage:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Garbage", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [0 ects]", s"C.1:$testUser2:$testModule1:Written Exam:0:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 0, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [date lastYear]", s"C.1:$testUser2:$testModule1:Written Exam:6:2020-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2020-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [admittableDate lastYear]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2020-03-10T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [droppableDate lastYear]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2020-03-12T12:00:00"),
+        ("deny adding invalid Exam [admit > date > drop]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-15T12:00:00", "2021-03-12T12:00:00"),
+        ("deny adding invalid Exam [admit > drop > date]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-16T12:00:00", "2021-03-15T12:00:00"),
+        ("deny adding invalid Exam [drop > date > admit]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-15T12:00:00"),
+        ("deny adding invalid Exam [drop > admit > date]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-15T12:00:00", "2021-03-16T12:00:00"),
+        ("deny adding invalid Exam [date > admit > drop]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-08T12:00:00"),
       )
       for ((statement: String, examId: String, courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int, date: String, admitUntil: String, dropUntil: String) <- testDataDeny) {
-        s"directly $statement [$examId, $courseId, $lecturerId, $moduleId, $examType, $ects, $date, $admitUntil, $dropUntil]" in {
-          Logger.info(s"Begin test: $statement with [$examId, $courseId, $lecturerId, $moduleId, $examType, $ects, $date, $admitUntil, $dropUntil]")
-
-          // prepare data
-          val testExam = TestDataExam.customizableExam(examId, courseId, lecturerId, moduleId, examType, date, ects, admitUntil, dropUntil)
-
-          // implicit approval
-          val result = intercept[TransactionExceptionTrait](chaincodeConnection.addExam(testExam))
-          Logger.debug(s"AddInvalidExamTest: $result")
-
-          // test
-          // TODO: check specific error
-        }
-        s"indirectly $statement [$examId, $courseId, $lecturerId, $moduleId, $examType, $ects, $date, $admitUntil, $dropUntil]" in {
-          Logger.info(s"Begin test: $statement with [$examId, $courseId, $lecturerId, $moduleId, $examType, $ects, $date, $admitUntil, $dropUntil]")
+        s"$statement" in {
+          Logger.info(s"Begin test: $statement")
 
           // prepare data
           val testExam = TestDataExam.customizableExam(examId, courseId, lecturerId, moduleId, examType, date, ects, admitUntil, dropUntil)
 
           // forge approval (lecturer)
-          val result = intercept[TransactionExceptionTrait](Logger.debug("initOpResultTest: " + initializeOperation(lecturerId).initiateOperation(lecturerId, "UC4.Exam", "addExam", testExam)))
-          Logger.debug(s"AddInvalidExamTest: $result")
+          val result = intercept[TransactionExceptionTrait](initializeOperation(lecturerId).initiateOperation(lecturerId, "UC4.Exam", "addExam", testExam))
 
           // test
-          // TODO: check specific error
+          TestHelper.testTransactionResult(result, "initiateOperation", "{\"type\":\"HLInsufficientApprovals\",\"title\":\"The approvals present on the ledger do not suffice to execute this transaction\"}")
         }
+      }
+      "deny adding valid Exam with no approvals" in {
+        Logger.info(s"Begin test: deny adding with no approvals")
+
+        // prepare data
+        val testExam = TestDataExam.validFutureExam("C.1", testUser1, testModule1, "Written Exam", 6)
+
+        // implicit approval but not enough
+        val result = intercept[TransactionExceptionTrait](chaincodeConnection.addExam(testExam))
+
+        // test
+        TestHelper.testTransactionResult(result, "addExam", "{\"type\":\"HLInsufficientApprovals\",\"title\":\"The approvals present on the ledger do not suffice to execute this transaction\"}")
       }
     }
 
     "invoked with getExams correctly " should {
-      val allExams = chaincodeConnection.getExams(Seq().toList, Seq().toList, Seq().toList, Seq().toList, Seq().toList, "", "")
-      Logger.debug(s"All Exams: $allExams")
-
       val testData: Seq[(String, Seq[String], Seq[String], Seq[String], Seq[String], Seq[String], String, String)] = Seq(
         ("allow for getting Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
         ("allow for getting Exams2", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),

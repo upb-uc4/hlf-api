@@ -72,6 +72,10 @@ object TestHelper {
     val result = intercept[TransactionExceptionTrait](f.apply())
     result.transactionName should be(transactionName)
   }
+  def testTransactionResult(result: TransactionExceptionTrait, expectedTransactionName: String, expectedError: String): Assertion = {
+    result.transactionName should be(expectedTransactionName)
+    result.payload should be(expectedError)
+  }
 
   def trySetupConnections(actionName: String, fs: (() => Any)*): Unit = {
     fs.foreach(f => {
