@@ -1,4 +1,10 @@
+# <a id="v0.17.4" />[v0.17.4](https://github.com/upb-uc4/hyperledger_api/compare/v0.17.3...v0.17.4) (2021-02-05)
+
+## Usability
+- replace List[T] by Seq[T] at all public methods
+
 # <a id="v0.17.3" />[v0.17.3](https://github.com/upb-uc4/hyperledger_api/compare/v0.17.2...v0.17.3) (2021-02-03)
+
 ## Feature
 - add SLF4J Logger
 
