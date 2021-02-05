@@ -144,7 +144,7 @@ class ExamTests extends TestBase {
         ("allow for getting all Exams via admittableAt", Seq(), Seq(), Seq(), Seq(testModule1), Seq(), TestHelperStrings.getCurrentDate, ""),
         ("allow for getting all Exams via droppableAt", Seq(), Seq(), Seq(), Seq(testModule1), Seq(), "", TestHelperStrings.getCurrentDate),
         ("allow for getting all Written Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Written Exam"), "", ""),
-        // TODO: enable once Oral Exams are supported ("allow for getting all Oral Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Oral Exam"), "", "")
+      // TODO: enable once Oral Exams are supported ("allow for getting all Oral Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Oral Exam"), "", "")
       )
       for (
         (statement: String, examIds: Seq[String], courseIds: Seq[String], lecturerIds: Seq[String], moduleIds: Seq[String],

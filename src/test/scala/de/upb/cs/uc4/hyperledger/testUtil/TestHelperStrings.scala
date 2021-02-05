@@ -48,7 +48,7 @@ object TestHelperStrings {
     operationData.split("\"operationId\":\"").tail.head.split("\"").head
   }
 
-  def getCurrentDate: String={
+  def getCurrentDate: String = {
     val current = Calendar.getInstance()
     new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(current.getTime)
   }
