@@ -69,7 +69,7 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getProposalGetExamAdmissions(certificate: String, affiliation: String = AFFILIATION, admissionIds: List[String], enrollmentId: String, examIds: List[String]): (String, Array[Byte])
+  def getProposalGetExamAdmissions(certificate: String, affiliation: String = AFFILIATION, admissionIds: Seq[String], enrollmentId: String, examIds: Seq[String]): (String, Array[Byte])
 
   /** Submits the "addAdmission" query.
     *
@@ -130,5 +130,5 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
     */
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
-  def getExamAdmissions(admissionIds: List[String], enrollmentId: String, examIds: List[String]): String
+  def getExamAdmissions(admissionIds: Seq[String], enrollmentId: String, examIds: Seq[String]): String
 }
