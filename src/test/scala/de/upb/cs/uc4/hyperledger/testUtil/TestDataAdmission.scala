@@ -27,9 +27,9 @@ object TestDataAdmission {
     fullyCustomizableExamAdmission(s"$enrollmentId:$examId", enrollmentId, examId, timestamp, admissionType)
   def fullyCustomizableExamAdmission(admissionId: String, enrollmentId: String, examId: String, timestamp: String = "", admissionType: String = "Exam"): String = {
     s"""{
+       |  "examId": "$examId",
        |  "admissionId": "$admissionId",
        |  "enrollmentId": "$enrollmentId",
-       |  "examId": "$examId",
        |  "timestamp": "$timestamp",
        |  "type": "$admissionType"
        |}
