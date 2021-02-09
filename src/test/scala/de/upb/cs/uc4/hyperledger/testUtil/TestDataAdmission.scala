@@ -12,4 +12,19 @@ object TestDataAdmission {
   def validAdmissionNoAdmissionId(student: String, course: String, module: String, timestamp: String): String = {
     "{\"enrollmentId\":\"" + student + "\",\"courseId\":\"" + course + "\",\"moduleId\":\"" + module + "\",\"timestamp\":\"" + timestamp + "\"}"
   }
+
+  def validExamAdmission(enrollmentId: String, examId: String): String=
+    customizableExamAdmission(s"$enrollmentId:$examId", enrollmentId, examId, TestHelperStrings.getCurrentDate, "Exam")
+  def customizableExamAdmission(enrollmentId: String, examId: String, timestamp: String = "", admissionType: String = "Exam"): String =
+    fullyCustomizableExamAdmission(s"$enrollmentId:$examId", enrollmentId, examId, TestHelperStrings.getCurrentDate, "Exam")
+  def fullyCustomizableExamAdmission(admissionId: String, enrollmentId: String, examId: String, timestamp: String = "", admissionType: String = "Exam"): String = {
+    s"""{
+       |  "admissionId": "$admissionId",
+       |  "enrollmentId": "$enrollmentId",
+       |  "examId": "$examId",
+       |  "timestamp": "$timestamp",
+       |  "type": "$admissionType"
+       |}
+       |""".stripMargin
+  }
 }

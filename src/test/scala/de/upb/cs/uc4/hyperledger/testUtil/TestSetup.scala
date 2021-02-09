@@ -1,6 +1,6 @@
 package de.upb.cs.uc4.hyperledger.testUtil
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionExamTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
 import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation.testModule
 
 object TestSetup {
@@ -26,6 +26,22 @@ object TestSetup {
     // store on chain
     TestHelper.trySetupConnections("establishGroups", () => {
       groups.foreach(group => connection.addUserToGroup(userName, group))
+    })
+
+    // close
+    connection.close()
+  }
+
+  def establishExams(connection: ConnectionExamTrait, f: (String) => ConnectionOperationTrait, approvalUsers: Seq[String], exams: Seq[String]): Unit = {
+    // store on chain
+    TestHelper.trySetupConnections("establishExams", () => {
+      exams.foreach(exam => {
+        approvalUsers.foreach(user => {
+          f(user).initiateOperation(user, "UC4.Exam", "addExam", exam)
+          connection.addExam(exam)
+        })
+      }
+      )
     })
 
     // close

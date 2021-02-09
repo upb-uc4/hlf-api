@@ -18,9 +18,6 @@ class ExamTests extends TestBase {
   val testModule4: String = testNamePrefix + "_Module_4"
   val testUser1 = "lecturer_1"
   val testUser2 = "lecturer_2"
-  val testUser3 = "admin_1"
-  val testUser4 = "admin_2"
-  val system: String = username
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -28,12 +25,8 @@ class ExamTests extends TestBase {
     TestSetup.setupExaminationRegulations(initializeExaminationRegulation(), testNamePrefix)
     prepareUser(testUser1)
     prepareUser(testUser2)
-    prepareUser(testUser3)
-    prepareUser(testUser4)
     TestSetup.establishGroups(initializeGroup(), testUser1, TestDataGroup.lecturerGroupName)
     TestSetup.establishGroups(initializeGroup(), testUser2, TestDataGroup.lecturerGroupName)
-    TestSetup.establishGroups(initializeGroup(), testUser3, TestDataGroup.adminGroupName)
-    TestSetup.establishGroups(initializeGroup(), testUser4, TestDataGroup.adminGroupName)
   }
 
   override def afterAll(): Unit = {

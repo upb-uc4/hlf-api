@@ -42,4 +42,34 @@ object TestDataExam {
        |}
        |""".stripMargin
   }
+
+  def calculateExamId(examJson: String): String = {
+    val courseIdWithStrings = getInfoFromExam(examJson, "courseId\":")
+    val moduleIdWithStrings = getInfoFromExam(examJson, "moduleId\":")
+    val examTypeWithStrings = getInfoFromExam(examJson, "type\":")
+    val dateWithStrings = getInfoFromExam(examJson, "date\":")
+    val courseId = stripFromStrings(courseIdWithStrings)
+    val moduleId = stripFromStrings(moduleIdWithStrings)
+    val examType = stripFromStrings(examTypeWithStrings)
+    val date = stripFromStrings(dateWithStrings)
+    val examId = s"$courseId:$moduleId:$examType:$date"
+    println(s"EXAMID: $examId")
+
+    examId
+  }
+
+  def stripFromStrings(info:String): String ={
+    val stripFirst: String = info.split("\"").tail.head
+    val stripEnd: String = stripFirst.split("\"").head
+    stripEnd
+  }
+
+
+  def getInfoFromExam(examJson: String, identifier: String): String = {
+    val stripFirst: String = examJson.split(identifier).tail.head
+    if(stripFirst.contains(",")){
+      return stripFirst.split(",").head
+    }
+    return stripFirst.split("}").head
+  }
 }
