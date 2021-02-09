@@ -92,24 +92,24 @@ class AdmissionTests_Exam extends TestBase {
     "invoked with addAdmission in exam context incorrectly " should {
       val testDataDeny: Seq[(String, String, String, String, String, String)] = Seq(
         ("deny adding invalid Exam Admission [empty enrollmentId]", "", examId1, "2021-03-12T12:00:00", "Exam",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.enrollmentId\",\"reason\":\"The given parameter must not be empty\"}]}"),
 
         ("deny adding invalid Exam Admission [empty examId1]", student1, "", "2021-03-12T12:00:00", "Exam",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.examId1\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam Admission [empty date]", student1, examId1, "", "Exam",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.date\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam Admission [empty admissionType]", student1, examId1, "2021-03-12T12:00:00", "",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.admissionType\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam Admission [garbage enrollmentId]", student1, examId1, "2021-03-12T12:00:00", "Exam",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "Some error."),
         ("deny adding invalid Exam Admission [garbage examId]", student1, "Garbage", "2021-03-12T12:00:00", "Exam",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "Some error."),
         ("deny adding invalid Exam Admission [garbage date]", student1, examId1, "GARBAGE", "Exam",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "Some error."),
         ("deny adding invalid Exam Admission [garbage admissionType]", student1, examId1, "2021-03-12T12:00:00", "Garbage",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "Some error."),
         ("deny adding invalid Exam Admission [wrong admissionType]", student1, examId1, "2021-03-12T12:00:00", "Course",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}")
+          "Some error.")
       )
       for ((statement: String, enrollementId: String, examId: String, timestamp: String, admissionType: String, expectedError: String) <- testDataDeny) {
         s"$statement" in {

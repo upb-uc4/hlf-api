@@ -8,10 +8,10 @@ object TestDataAdmission {
 
   def validCourseAdmission(student: String, course: String, module: String, timestamp: String): String = {
     s"""{
-       |  "admissionId": "$student:$course",
-       |  "enrollmentId": "$student",
        |  "courseId": "$course",
        |  "moduleId": "$module",
+       |  "admissionId": "$student:$course",
+       |  "enrollmentId": "$student",
        |  "timestamp": "$timestamp",
        |  "type": "Course"
        |}
