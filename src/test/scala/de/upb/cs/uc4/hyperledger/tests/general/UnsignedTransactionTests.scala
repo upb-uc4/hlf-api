@@ -305,7 +305,7 @@ class UnsignedTransactionTests extends TestBase {
       "print info for addAdmission" in {
         val testUserId = "frontend-signing-tester-info-admission"
         val (privateKey, certificate) = prepareUser(testUserId)
-        val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
+        val inputAdmissionJson = TestDataAdmission.validCourseAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
         val matriculationData = TestDataMatriculation.validMatriculationData4(testUserId)
         initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", matriculationData)
         matriculationConnection.addMatriculationData(matriculationData)
@@ -323,7 +323,7 @@ class UnsignedTransactionTests extends TestBase {
       "print info for dropAdmission" in {
         val testUserId = "frontend-signing-tester-info-admission"
         val (privateKey, certificate) = prepareUser(testUserId)
-        val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
+        val inputAdmissionJson = TestDataAdmission.validCourseAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
         initializeOperation(testUserId).initiateOperation(testUserId, "UC4.Admission", "addAdmission", inputAdmissionJson)
         admissionConnection.addAdmission(inputAdmissionJson)
 

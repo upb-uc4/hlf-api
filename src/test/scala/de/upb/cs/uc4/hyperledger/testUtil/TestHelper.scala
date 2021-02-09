@@ -33,7 +33,7 @@ object TestHelper {
 
   /// Admissions
   def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, student: String, course: String, module: String, timestamp: String): Assertion =
-    testAddAdmissionAccess(connection, TestDataAdmission.validAdmission(student, course, module, timestamp))
+    testAddAdmissionAccess(connection, TestDataAdmission.validCourseAdmission(student, course, module, timestamp))
   def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, admission: String): Assertion = {
     val testResult = connection.addAdmission(admission)
 

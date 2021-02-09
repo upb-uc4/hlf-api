@@ -1,16 +1,24 @@
 package de.upb.cs.uc4.hyperledger.testUtil
 
 object TestDataAdmission {
-  def admission1(studentId: String): String = TestDataAdmission.validAdmission(studentId, "C.1", "Admission_Module_1", "2020-12-31T23:59:59")
-  def admission2(studentId: String): String = TestDataAdmission.validAdmission(studentId, "C.2", "Admission_Module_3", "2020-12-31T23:59:59")
-  def admission_noAdmissionId(studentId: String): String = TestDataAdmission.validAdmissionNoAdmissionId(studentId, "C.2", "Admission_Module_1", "2020-12-31T23:59:59")
-  def admission_noAdmissionId_WithId(studentId: String): String = TestDataAdmission.validAdmission(studentId, "C.2", "Admission_Module_1", "2020-12-31T23:59:59")
+  def courseAdmission1(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, "C.1", "Admission_Module_1", "2020-12-31T23:59:59")
+  def courseAdmission2(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, "C.2", "Admission_Module_3", "2020-12-31T23:59:59")
+  def courseAdmission_noAdmissionId(studentId: String): String = TestDataAdmission.validCourseAdmissionNoAdmissionId(studentId, "C.2", "Admission_Module_1", "2020-12-31T23:59:59")
+  def courseAdmission_noAdmissionId_WithId(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, "C.2", "Admission_Module_1", "2020-12-31T23:59:59")
 
-  def validAdmission(student: String, course: String, module: String, timestamp: String): String = {
-    "{\"admissionId\":\"" + student + ":" + course + "\",\"enrollmentId\":\"" + student + "\",\"courseId\":\"" + course + "\",\"moduleId\":\"" + module + "\",\"timestamp\":\"" + timestamp + "\"}"
+  def validCourseAdmission(student: String, course: String, module: String, timestamp: String): String = {
+    s"""{
+       |  "admissionId": "$student:$course",
+       |  "enrollmentId": "$student",
+       |  "courseId": "$course",
+       |  "moduleId": "$module",
+       |  "timestamp": "$timestamp",
+       |  "type": "Course"
+       |}
+       |""".stripMargin
   }
-  def validAdmissionNoAdmissionId(student: String, course: String, module: String, timestamp: String): String = {
-    "{\"enrollmentId\":\"" + student + "\",\"courseId\":\"" + course + "\",\"moduleId\":\"" + module + "\",\"timestamp\":\"" + timestamp + "\"}"
+  def validCourseAdmissionNoAdmissionId(student: String, course: String, module: String, timestamp: String): String = {
+    "{\"enrollmentId\":\"" + student + "\",\"courseId\":\"" + course + "\",\"moduleId\":\"" + module + "\",\"timestamp\":\"" + timestamp + "\",\"type\":\"Course\"}"
   }
 
   def validExamAdmission(enrollmentId: String, examId: String): String =
