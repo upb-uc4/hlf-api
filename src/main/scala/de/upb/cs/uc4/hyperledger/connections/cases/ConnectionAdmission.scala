@@ -18,6 +18,7 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
     internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "dropAdmission", admissionId)
   }
 
+  @deprecated("This method will be removed. Please use getProposalGetCourseAdmissions()", "v0.17.5")
   override def getProposalGetAdmissions(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String = "", courseId: String = "", moduleId: String = ""): (String, Array[Byte]) = {
     internalApproveAsCurrentAndGetProposalProposeTransaction(certificate, affiliation, "getAdmissions", enrollmentId, courseId, moduleId)
   }
@@ -39,6 +40,7 @@ protected[hyperledger] case class ConnectionAdmission(username: String, channel:
   override def dropAdmission(admissionId: String): String =
     wrapSubmitTransaction(false, "dropAdmission", admissionId)()
 
+  @deprecated("This method will be removed. Please use getCourseAdmissions()", "v0.17.5")
   override def getAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String =
     wrapEvaluateTransaction("getAdmissions", enrollmentId, courseId, moduleId)
 
