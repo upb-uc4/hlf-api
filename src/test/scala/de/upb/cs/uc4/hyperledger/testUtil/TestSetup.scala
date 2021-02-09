@@ -40,8 +40,7 @@ object TestSetup {
           f(user).initiateOperation(user, "UC4.Exam", "addExam", exam)
           connection.addExam(exam)
         })
-      }
-      )
+      })
     })
 
     // close

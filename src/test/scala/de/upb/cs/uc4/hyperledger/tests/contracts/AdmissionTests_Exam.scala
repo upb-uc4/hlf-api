@@ -25,11 +25,11 @@ class AdmissionTests_Exam extends TestBase {
   val student2 = "student_2"
 
   val testExam1: String = TestDataExam.validFutureExam("ExamAdmissionCourse1", lecturer1, testModule1, "Written Exam", 6)
-  val testExam2: String = TestDataExam.validFutureExam("ExamAdmissionCourse1", lecturer1, testModule1, "Written Exam", 5)
-  val testExam3: String = TestDataExam.validFutureExam("ExamAdmissionCourse1", lecturer1, testModule2, "Written Exam", 6)
-  val testExam4: String = TestDataExam.validFutureExam("ExamAdmissionCourse1", lecturer2, testModule3, "Written Exam", 6)
-  val testExam5: String = TestDataExam.validFutureExam("ExamAdmissionCourse1", lecturer2, testModule4, "Written Exam", 6)
-  val testExam6: String = TestDataExam.validFutureExam("ExamAdmissionCourse1", lecturer2, testModule4, "Written Exam", 5)
+  val testExam2: String = TestDataExam.validFutureExam("ExamAdmissionCourse2", lecturer1, testModule2, "Written Exam", 5)
+  val testExam3: String = TestDataExam.validFutureExam("ExamAdmissionCourse3", lecturer1, testModule3, "Written Exam", 6)
+  val testExam4: String = TestDataExam.validFutureExam("ExamAdmissionCourse4", lecturer2, testModule3, "Written Exam", 6)
+  val testExam5: String = TestDataExam.validFutureExam("ExamAdmissionCourse5", lecturer2, testModule4, "Written Exam", 6)
+  val testExam6: String = TestDataExam.validFutureExam("ExamAdmissionCourse6", lecturer2, testModule1, "Written Exam", 5)
 
   val examId1: String = TestDataExam.calculateExamId(testExam1)
   val examId2: String = TestDataExam.calculateExamId(testExam2)
@@ -130,7 +130,7 @@ class AdmissionTests_Exam extends TestBase {
         ("allow for getting all ExamAdmissions", Seq(), "", Seq(), 10),
         ("allow for getting all ExamAdmissions for student", Seq(), student1, Seq(), 6),
         ("allow for getting all ExamAdmissions for examIds", Seq(), "", Seq(examId1, examId2, examId3), 5),
-        ("allow for getting all ExamAdmissions for student", Seq(), student2, Seq(examId1, examId2, examId4, examId5, examId6), 3)
+        ("allow for getting all ExamAdmissions for multiple filters", Seq(), student2, Seq(examId1, examId2, examId4, examId5, examId6), 3)
       )
       for (
         (statement: String, admissionIds: Seq[String], enrollmentId: String, examIds: Seq[String], expectedCount: Int) <- testData

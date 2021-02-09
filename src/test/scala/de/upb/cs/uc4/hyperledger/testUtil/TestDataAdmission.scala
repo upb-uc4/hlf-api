@@ -13,7 +13,7 @@ object TestDataAdmission {
     "{\"enrollmentId\":\"" + student + "\",\"courseId\":\"" + course + "\",\"moduleId\":\"" + module + "\",\"timestamp\":\"" + timestamp + "\"}"
   }
 
-  def validExamAdmission(enrollmentId: String, examId: String): String=
+  def validExamAdmission(enrollmentId: String, examId: String): String =
     customizableExamAdmission(enrollmentId, examId, TestHelperStrings.getCurrentDate, "Exam")
   def customizableExamAdmission(enrollmentId: String, examId: String, timestamp: String = "", admissionType: String = "Exam"): String =
     fullyCustomizableExamAdmission(s"$enrollmentId:$examId", enrollmentId, examId, timestamp, admissionType)
