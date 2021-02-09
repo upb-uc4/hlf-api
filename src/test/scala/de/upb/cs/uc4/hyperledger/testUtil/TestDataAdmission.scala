@@ -22,7 +22,7 @@ object TestDataAdmission {
   }
 
   def validExamAdmission(enrollmentId: String, examId: String): String =
-    customizableExamAdmission(enrollmentId, examId, TestHelperStrings.getCurrentDate, "Exam")
+    customizableExamAdmission(enrollmentId, examId, TestHelperStrings.getCurrentDate)
   def customizableExamAdmission(enrollmentId: String, examId: String, timestamp: String = "", admissionType: String = "Exam"): String =
     fullyCustomizableExamAdmission(s"$enrollmentId:$examId", enrollmentId, examId, timestamp, admissionType)
   def fullyCustomizableExamAdmission(admissionId: String, enrollmentId: String, examId: String, timestamp: String = "", admissionType: String = "Exam"): String = {
