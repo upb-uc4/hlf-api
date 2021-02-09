@@ -137,7 +137,7 @@ class ExamTests extends TestBase {
           val result = intercept[TransactionExceptionTrait](chaincodeConnection.addExam(testExam))
 
           // test
-          TestHelper.testTransactionResult(result, "initiateOperation", expectedError)
+          TestHelper.testTransactionResult(result, "addExam", expectedError)
         }
       }
       "deny adding valid Exam with no approvals" in {
