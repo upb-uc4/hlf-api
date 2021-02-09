@@ -106,7 +106,7 @@ class AdmissionTests extends TestBase {
       for ((statement: String, enrollmentId: String, courseId: String, moduleId: String, admissions: Seq[String]) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          val testResult = chaincodeConnection.getAdmissions(enrollmentId, courseId, moduleId)
+          val testResult = chaincodeConnection.getCourseAdmissions(enrollmentId, courseId, moduleId)
           val expectedResult = TestHelperStrings.getJsonList(admissions)
 
           TestHelperStrings.compareJson(expectedResult, testResult)
@@ -130,7 +130,7 @@ class AdmissionTests extends TestBase {
           testResult should be("")
 
           // check ledger state
-          val ledgerAdmissions = chaincodeConnection.getAdmissions()
+          val ledgerAdmissions = chaincodeConnection.getCourseAdmissions()
           val expectedResult = TestHelperStrings.getJsonList(remainingAdmissions)
           TestHelperStrings.compareJson(expectedResult, ledgerAdmissions)
         }
@@ -186,7 +186,7 @@ class AdmissionTests extends TestBase {
         // result.payload should be("")
 
         // check ledger state
-        val ledgerAdmissions = chaincodeConnection.getAdmissions()
+        val ledgerAdmissions = chaincodeConnection.getCourseAdmissions()
         val expectedResult = TestHelperStrings.getJsonList(Seq(TestDataAdmission.admission_noAdmissionId_WithId(testUser3)))
         TestHelperStrings.compareJson(expectedResult, ledgerAdmissions)
       }
