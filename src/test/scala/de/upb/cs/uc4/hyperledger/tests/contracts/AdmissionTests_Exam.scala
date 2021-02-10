@@ -97,7 +97,7 @@ class AdmissionTests_Exam extends TestBase {
         ("deny adding invalid Exam Admission [empty examId]", student1, "", "2021-03-12T12:00:00", "Exam",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.examId\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam Admission [empty admissionType]", student1, examId1, "2021-03-12T12:00:00", "",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission\",\"reason\":\"The given parameter can not be parsed from json\"}]}"),
         ("deny adding invalid Exam Admission [garbage enrollmentId]", "Garbage", examId1, "2021-03-12T12:00:00", "Exam",
           "Some error."),
         ("deny adding invalid Exam Admission [garbage examId]", student1, "Garbage", "2021-03-12T12:00:00", "Exam",
