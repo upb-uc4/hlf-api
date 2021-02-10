@@ -1,7 +1,6 @@
 package de.upb.cs.uc4.hyperledger.tests.contracts
 
-import com.google.gson.Gson
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionExamTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil._
@@ -71,13 +70,13 @@ class AdmissionTests_Exam extends TestBase {
         ("allow for adding new valid ExamAdmission (Approvals forged)", student2, examId4),
         ("allow for adding new valid ExamAdmission (Approvals forged)", student2, examId5),
       )
-      for ((statement: String, enrollementId: String, examId: String) <- testDataAllow) {
-        s"$statement [$enrollementId, $examId]" in {
-          Logger.info(s"Begin test: $statement [$enrollementId, $examId]")
-          val testAdmission = TestDataAdmission.validExamAdmission(enrollementId, examId)
+      for ((statement: String, enrollmentId: String, examId: String) <- testDataAllow) {
+        s"$statement [$enrollmentId, $examId]" in {
+          Logger.info(s"Begin test: $statement [$enrollmentId, $examId]")
+          val testAdmission = TestDataAdmission.validExamAdmission(enrollmentId, examId)
 
           // forge approval (lecturer)
-          initializeOperation(enrollementId).initiateOperation(enrollementId, "UC4.Admission", "addAdmission", testAdmission)
+          initializeOperation(enrollmentId).initiateOperation(enrollmentId, "UC4.Admission", "addAdmission", testAdmission)
 
           // implicit approval (system, admin)
           val testResult = chaincodeConnection.addAdmission(testAdmission)
@@ -91,32 +90,30 @@ class AdmissionTests_Exam extends TestBase {
 
     "invoked with addAdmission in exam context incorrectly " should {
       val testDataDeny: Seq[(String, String, String, String, String, String)] = Seq(
+        // timestamp should be generated ("deny adding invalid Exam Admission [empty timestamp]", student1, examId1, "", "Exam", "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.date\",\"reason\":\"The given parameter must not be empty\"}]}"),
+        // timestamp should be generated ("deny adding invalid Exam Admission [garbage timestamp]", student1, examId1, "GARBAGE", "Exam", "Some error."),
         ("deny adding invalid Exam Admission [empty enrollmentId]", "", examId1, "2021-03-12T12:00:00", "Exam",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.enrollmentId\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam Admission [empty examId]", student1, "", "2021-03-12T12:00:00", "Exam",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.examId\",\"reason\":\"The given parameter must not be empty\"}]}"),
-        ("deny adding invalid Exam Admission [empty timestamp]", student1, examId1, "", "Exam",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.date\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam Admission [empty admissionType]", student1, examId1, "2021-03-12T12:00:00", "",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.admissionType\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam Admission [garbage enrollmentId]", "Garbage", examId1, "2021-03-12T12:00:00", "Exam",
           "Some error."),
         ("deny adding invalid Exam Admission [garbage examId]", student1, "Garbage", "2021-03-12T12:00:00", "Exam",
           "Some error."),
-        ("deny adding invalid Exam Admission [garbage timestamp]", student1, examId1, "GARBAGE", "Exam",
-          "Some error."),
         ("deny adding invalid Exam Admission [garbage admissionType]", student1, examId1, "2021-03-12T12:00:00", "Garbage",
-          "Some error."),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission\",\"reason\":\"The given parameter can not be parsed from json\"}]}"),
         ("deny adding invalid Exam Admission [wrong admissionType]", student1, examId1, "2021-03-12T12:00:00", "Course",
           "Some error.")
       )
-      for ((statement: String, enrollementId: String, examId: String, timestamp: String, admissionType: String, expectedError: String) <- testDataDeny) {
+      for ((statement: String, enrollmentId: String, examId: String, timestamp: String, admissionType: String, expectedError: String) <- testDataDeny) {
         s"$statement" in {
           Logger.info(s"Begin test: $statement")
-          val testAdmission = TestDataAdmission.customizableExamAdmission(enrollementId, examId, timestamp, admissionType)
+          val testAdmission = TestDataAdmission.customizableExamAdmission(enrollmentId, examId, timestamp, admissionType)
 
           // forge approval (lecturer)
-          val result = intercept[TransactionExceptionTrait](initializeOperation(username).initiateOperation(enrollementId, "UC4.Admission", "addAdmission", testAdmission))
+          val result = intercept[TransactionExceptionTrait](initializeOperation(username).initiateOperation(enrollmentId, "UC4.Admission", "addAdmission", testAdmission))
 
           // test
           TestHelper.testTransactionResult(result, "initiateOperation", expectedError)
@@ -139,7 +136,8 @@ class AdmissionTests_Exam extends TestBase {
 
           // should not throw exception
           val testResult: String = chaincodeConnection.getExamAdmissions(admissionIds.toList, enrollmentId, examIds.toList)
-          val examAdmissions = StringHelper.parameterArrayFromJson(testResult)
+          Logger.debug("ADMISSION GET: " + testResult)
+          val examAdmissions: Array[String] = StringHelper.parameterArrayFromJson(testResult)
 
           examAdmissions.length should be(expectedCount)
         }
