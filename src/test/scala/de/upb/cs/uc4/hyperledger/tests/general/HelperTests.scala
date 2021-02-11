@@ -73,5 +73,14 @@ class HelperTests extends TestBase {
         result should be("[M1, M2]")
       }
     }
+    "parsing object lists" should {
+      "get correct objects " in {
+        val objectListString = "[{\"whatever\":\"bbb\"}, {\"whatever\": \"aaaa\"}]"
+        Logger.debug("objects: " + objectListString)
+        val objectList: Array[Object] = StringHelper.objectArrayFromJson(objectListString)
+        Logger.debug("list: "+ objectList.mkString("Array(", ", ", ")"))
+        objectList.length should be(2)
+      }
+    }
   }
 }
