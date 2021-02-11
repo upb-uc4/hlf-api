@@ -20,14 +20,14 @@
 
 ## Configuration / Initialization
 
-### 1. Dependencies [Maven](https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api)
+### 1. Reference Dependencies from [Maven](https://search.maven.org/artifact/de.upb.cs.uc4/hlf-api) in your build.sbt
 ```sbt
-val hlf_api_version = "0.11.0"
+val hlf_api_version = "0.17.0"
 val hlf_api = "de.upb.cs.uc4" % "hlf-api" % hlf_api_version
 
 lazy val yourProject = (project in file(".")).dependencies(hyperledger_api)
 ```
-### 2. Imports
+### 2. Import Types from the packages in your code
 - the Connections (Class and Trait) you want to access
 ```scala
 import de.upb.cs.uc4.hyperledger.connections.cases.ConnectionMatriculation
@@ -68,8 +68,8 @@ protected val caURL: String = "172.17.0.3:30906" // address of the CA-server.
 
 protected val username: String = "TestUser123" // this should in most cases be the name of the .id file in your wallet directory.
 protected val password: String = "Test123" // a password used to register a user and receive/set a certificate for said user when enrolling.
-protected val organisationId: String = "org1MSP" // the id of the organisation the user belongs to.
-protected val organisationName: String = "org1" // the name of the organisation the user belongs to.
+protected val organisationId: String = "org1MSP" // the id of the organisation the user belongs to. (MSP-ID)
+protected val organisationName: String = "org1" // the name of the organisation the user belongs to. (AFFILIATION)
 
 ```
 
@@ -133,8 +133,8 @@ val signedCertificate: String = EnrollmentManager.enrollSecure(caURL, tlsCert, e
 ### 2. Connection Initialization
 Simply create an object of the connection for the contract that you want to access and provide the credentials for your username in the given wallet.
 ```scala
-def createConnection: ConnectionMatriculationTrait =
-  de.upb.cs.uc4.hyperledger.connections.cases.ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
+val connection: ConnectionMatriculationTrait =
+    de.upb.cs.uc4.hyperledger.connections.cases.ConnectionMatriculation(username, channel, chaincode, walletPath, networkDescriptionPath)
 ```
 
 
