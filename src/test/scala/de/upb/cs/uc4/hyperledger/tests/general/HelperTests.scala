@@ -78,7 +78,7 @@ class HelperTests extends TestBase {
         val objectListString = "[{\"whatever\":\"bbb\"}, {\"whatever\": \"aaaa\"}]"
         Logger.debug("objects: " + objectListString)
         val objectList: Array[Object] = StringHelper.objectArrayFromJson(objectListString)
-        Logger.debug("list: "+ objectList.mkString("Array(", ", ", ")"))
+        Logger.debug("list: " + objectList.mkString("Array(", ", ", ")"))
         objectList.length should be(2)
       }
     }
