@@ -6,7 +6,7 @@ import java.util
 import java.util.concurrent.TimeoutException
 
 import com.google.protobuf.ByteString
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExam, ConnectionExamResult, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, NetworkExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.{ HyperledgerException, NetworkException, TransactionException }
 import de.upb.cs.uc4.hyperledger.utilities.ConnectionManager
@@ -281,6 +281,8 @@ trait ConnectionTrait extends AutoCloseable {
       case "UC4.Admission" => ConnectionAdmission(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
       case "UC4.Certificate" => ConnectionCertificate(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
       case "UC4.ExaminationRegulation" => ConnectionExaminationRegulation(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.Exam" => ConnectionExam(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+      case "UC4.ExamResult" => ConnectionExamResult(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
       case "UC4.Group" => ConnectionGroup(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
       case "UC4.MatriculationData" => ConnectionMatriculation(this.username, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
       // catch the default with a variable so you can print it
