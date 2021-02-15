@@ -1,3 +1,8 @@
+# <a id="v0.18.0" />[v0.18.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.17.4...v0.18.0) (2021-02-12)
+
+## Bugfix
+- accept Exam Contracts for frontend signing as well
+
 # <a id="v0.17.4" />[v0.17.4](https://github.com/upb-uc4/hyperledger_api/compare/v0.17.3...v0.17.4) (2021-02-05)
 
 ## Usability
