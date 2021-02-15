@@ -48,7 +48,7 @@ jobs:
   DeployAndTestDevNetwork:
     env:
       TEST_SET: "*HelperTests *InternalManagerTests *VersionAccessTests"
-      CHAINCODE_TARGET: "v0.17.102"
+      CHAINCODE_TARGET: "v0.17.104"
 
     runs-on: ubuntu-latest
 
