@@ -7,11 +7,11 @@ object TestDataExam {
   def validFutureExam(courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int): String = {
     val current = Calendar.getInstance()
     current.add(Calendar.MONTH, 1)
-    val validAdmittableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(current.getTime)
+    val validAdmittableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
     current.add(Calendar.DAY_OF_MONTH, 2)
-    val validDroppableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(current.getTime)
+    val validDroppableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
     current.add(Calendar.DAY_OF_MONTH, 2)
-    val validDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(current.getTime)
+    val validDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
     validExam(courseId, lecturerId, moduleId, examType, validDate, ects, validAdmittableUntil, validDroppableUntil)
   }
 
@@ -27,8 +27,8 @@ object TestDataExam {
 
   def customizableExam(examId: String, courseId: String, lecturerId: String, moduleId: String, examType: String = "Written Exam",
       date: String = "2021-02-12T10:00:00", ects: Int = 6,
-      admittableUntil: String = "2021-01-12T23:59:59",
-      droppableUntil: String = "2021-02-05T23:59:59"): String = {
+      admittableUntil: String = "2021-01-12T23:59:59.999Z",
+      droppableUntil: String = "2021-02-05T23:59:59.999Z"): String = {
     s"""{
        |  "examId": "$examId",
        |  "courseId": "$courseId",
