@@ -84,19 +84,19 @@ class ExamTests extends TestBase {
         ("deny adding invalid Exam [empty CourseId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.courseId\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam [empty UserId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", "", testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00",
-          ""),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"Thefollowingparametersdonotconformtothespecifiedformat\",\"invalidParams\":[{\"name\":\"exam.lecturerEnrollmentId\",\"reason\":\"The given parameter must not be empty\"},{\"name\":\"exam.lecturerEnrollmentId\",\"reason\":\"The user trying to add an exam is not registered in the system.\"}]}"),
         ("deny adding invalid Exam [empty ModuleId]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, "", "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.moduleId\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam [empty ExamType]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.type\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam [empty date]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "", "2021-03-10T12:00:00", "2021-03-12T12:00:00",
-          ""),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.date\",\"reason\":\"date must be the following format\\\"(\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}\\\",e.g.\\\"2020-12-31T23:59:59\\\"\"}]}"),
         ("deny adding invalid Exam [empty admittableDate]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "", "2021-03-12T12:00:00",
-          ""),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.admittableUntil\",\"reason\":\"admittableUntil must be the following format\\\"(\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}\\\",e.g.\\\"2020-12-31T23:59:59\\\"\"}]}"),
         ("deny adding invalid Exam [empty droppableDate]", s"C.1:$testUser2:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "",
-          ""),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.droppableUntil\",\"reason\":\"droppableUntil must be the following format\\\"(\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}\\\",e.g.\\\"2020-12-31T23:59:59\\\"\"}]}"),
         ("deny adding invalid Exam [garbage UserId]", s"C.1:Garbage:$testModule1:Written Exam:6:2021-03-14T12:00:00", "C.1", "Garbage", testModule1, "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00",
-          ""),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"exam.lecturerEnrollmentId\",\"reason\":\"The user trying to add an exam is not registered in the system.\"}]}"),
         ("deny adding invalid Exam [garbage ModuleId]", s"C.1:$testUser2:Garbage:Written Exam:6:2021-03-14T12:00:00", "C.1", testUser2, "Garbage", "Written Exam", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00",
           ""),
         ("deny adding invalid Exam [garbage ExamType]", s"C.1:$testUser2:$testModule1:Garbage:6:2021-03-14T12:00:00", "C.1", testUser2, testModule1, "Garbage", 6, "2021-03-14T12:00:00", "2021-03-10T12:00:00", "2021-03-12T12:00:00",
@@ -126,10 +126,10 @@ class ExamTests extends TestBase {
           val testExam = TestDataExam.customizableExam(examId, courseId, lecturerId, moduleId, examType, date, ects, admitUntil, dropUntil)
 
           // forge approval (lecturer)
-          val result = intercept[TransactionExceptionTrait](initializeOperation(lecturerId).initiateOperation(lecturerId, "UC4.Exam", "addExam", testExam))
+          val result = intercept[TransactionExceptionTrait](chaincodeConnection.addExam(testExam))
 
           // test
-          TestHelper.testTransactionResult(result, "initiateOperation", expectedError)
+          TestHelper.testTransactionResult(result, "addExam", expectedError)
         }
       }
       "deny adding valid Exam with no approvals" in {
