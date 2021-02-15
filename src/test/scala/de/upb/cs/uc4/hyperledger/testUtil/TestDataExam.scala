@@ -26,7 +26,7 @@ object TestDataExam {
   }
 
   def customizableExam(examId: String, courseId: String, lecturerId: String, moduleId: String, examType: String = "Written Exam",
-      date: String = "2021-02-12T10:00:00", ects: Int = 6,
+      date: String = "2021-02-12T10:00:00.000Z", ects: Int = 6,
       admittableUntil: String = "2021-01-12T23:59:59.999Z",
       droppableUntil: String = "2021-02-05T23:59:59.999Z"): String = {
     s"""{
