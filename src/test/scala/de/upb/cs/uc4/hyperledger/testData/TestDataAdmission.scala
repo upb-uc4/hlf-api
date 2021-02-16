@@ -1,4 +1,6 @@
-package de.upb.cs.uc4.hyperledger.testUtil
+package de.upb.cs.uc4.hyperledger.testData
+
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelperStrings
 
 object TestDataAdmission {
   def courseAdmission1(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, "C.1", "Admission_Module_1", "2020-12-31T23:59:59")

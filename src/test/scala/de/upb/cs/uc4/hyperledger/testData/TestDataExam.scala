@@ -1,4 +1,4 @@
-package de.upb.cs.uc4.hyperledger.testUtil
+package de.upb.cs.uc4.hyperledger.testData
 
 import java.text.SimpleDateFormat
 import java.util.Calendar

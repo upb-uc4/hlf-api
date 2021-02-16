@@ -4,6 +4,7 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionExamTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil._
+import de.upb.cs.uc4.hyperledger.testData.{ TestDataExam, TestDataGroup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class ExamTests extends TestBase {

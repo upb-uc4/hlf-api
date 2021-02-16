@@ -1,7 +1,8 @@
 package de.upb.cs.uc4.hyperledger.testUtil
 
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionExamTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
-import de.upb.cs.uc4.hyperledger.testUtil.TestDataMatriculation.testModule
+import de.upb.cs.uc4.hyperledger.testData.{ TestDataExaminationRegulation, TestDataGroup, TestDataMatriculation }
+import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation.testModule
 
 object TestSetup {
   def setupExaminationRegulations(erConnection: ConnectionExaminationRegulationTrait, testNamePrefix: String): Unit = {

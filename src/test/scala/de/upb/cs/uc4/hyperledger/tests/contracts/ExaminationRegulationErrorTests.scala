@@ -2,7 +2,8 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionExaminationRegulationTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataExaminationRegulation, TestHelper, TestHelperStrings }
+import de.upb.cs.uc4.hyperledger.testData.TestDataExaminationRegulation
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestHelper, TestHelperStrings }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class ExaminationRegulationErrorTests extends TestBase {

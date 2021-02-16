@@ -3,7 +3,8 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionMatriculationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataAdmission, TestDataMatriculation, TestHelper, TestHelperStrings, TestSetup }
+import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataMatriculation }
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestHelper, TestHelperStrings, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 import scala.util.Using
