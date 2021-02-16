@@ -83,8 +83,7 @@ class AdmissionTests_Exam extends TestBase {
           val testResult = chaincodeConnection.addAdmission(testAdmission)
 
           // test
-          val expectedResult = testAdmission
-          TestHelperStrings.compareJson(expectedResult, testResult)
+          TestHelper.compareAdmission(testAdmission, testResult)
         }
       }
     }
