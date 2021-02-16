@@ -105,7 +105,7 @@ class AdmissionTests_Exam extends TestBase {
         ("deny adding invalid Exam Admission [garbage admissionType]", student1, examId1, "2021-03-12T12:00:00", "Garbage",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission\",\"reason\":\"The given parameter can not be parsed from json\"}]}"),
         ("deny adding invalid Exam Admission [wrong admissionType]", student1, examId1, "2021-03-12T12:00:00", "Course",
-          "Some error.")
+          "[{\"type\":\"HLUnprocessableEntity\",\"title\":\"Thefollowingparametersdonotconformtothespecifiedformat\",\"invalidParams\":[{\"name\":\"admission.courseId\",\"reason\":\"Thegivenparametermustnotbeempty\"},{\"name\":\"admission.moduleId\",\"reason\":\"Thegivenparametermustnotbeempty\"},{\"name\":\"admission.enrollmentId\",\"reason\":\"ThestudentisnotmatriculatedinanyexaminationRegulationcontainingthemoduleheistryingtoenrollin\"},{\"name\":\"admission.moduleId\",\"reason\":\"ThestudentisnotmatriculatedinanyexaminationRegulationcontainingthemoduleheistryingtoenrollin\"}]}")
       )
       for ((statement: String, enrollmentId: String, examId: String, timestamp: String, admissionType: String, expectedError: String) <- testDataDeny) {
         s"$statement" in {
