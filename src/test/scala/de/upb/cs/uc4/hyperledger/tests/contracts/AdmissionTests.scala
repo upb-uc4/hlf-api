@@ -78,7 +78,7 @@ class AdmissionTests extends TestBase {
         initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "addAdmission", testData)
 
         val testResult = chaincodeConnection.addAdmission(testData)
-        TestHelper.compareAdmissions(TestDataAdmission.courseAdmission_noAdmissionId_WithId(testUser1), testResult)
+        TestHelper.compareAdmission(TestDataAdmission.courseAdmission_noAdmissionId_WithId(testUser1), testResult)
       }
       "allow for adding new Admission for closed ER" in {
         val testData = TestDataAdmission.courseAdmission2(testUser2)
@@ -110,7 +110,7 @@ class AdmissionTests extends TestBase {
           val testResult = chaincodeConnection.getCourseAdmissions(enrollmentId, courseId, moduleId)
           val expectedResult = TestHelperStrings.getJsonList(admissions)
 
-          TestHelperStrings.compareJson(expectedResult, testResult)
+          TestHelper.compareAdmission(expectedResult, testResult)
         }
       }
     }
@@ -133,7 +133,7 @@ class AdmissionTests extends TestBase {
           // check ledger state
           val ledgerAdmissions = chaincodeConnection.getCourseAdmissions()
           val expectedResult = TestHelperStrings.getJsonList(remainingAdmissions)
-          TestHelperStrings.compareJson(expectedResult, ledgerAdmissions)
+          TestHelper.compareAdmission(expectedResult, ledgerAdmissions)
         }
       }
     }

@@ -91,13 +91,26 @@ class HelperTests extends TestBase {
       "disregard timestamps" in {
         val withTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "2020")
         val withOtherTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "3030")
-        TestHelper.compareAdmissions(withTimestamp, withOtherTimestamp)
+        TestHelper.compareAdmission(withTimestamp, withOtherTimestamp)
       }
       "but regard everything else" in {
         val withTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "2020")
         val withOtherTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "w.1", "2020")
-        val err = intercept[TestFailedException](TestHelper.compareAdmissions(withTimestamp, withOtherTimestamp))
+        val err = intercept[TestFailedException](TestHelper.compareAdmission(withTimestamp, withOtherTimestamp))
         err.toString should include("was not equal to")
+      }
+    }
+    "comparing admissionLists" should {
+      "disregard timestamps" in {
+        val withTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "2020")
+        val withTimestamp2 = TestDataAdmission.validCourseAdmission("test", "c.2", "m.2", "3030")
+
+        val withOtherTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "3030")
+        val withOtherTimestamp2 = TestDataAdmission.validCourseAdmission("test", "c.2", "m.2", "awawa")
+
+        val withTimestampList = TestHelperStrings.getJsonList(Seq(withTimestamp, withTimestamp2))
+        val withOtherTimestampList = TestHelperStrings.getJsonList(Seq(withOtherTimestamp, withOtherTimestamp2))
+        TestHelper.compareAdmission(withTimestampList, withOtherTimestampList)
       }
     }
   }

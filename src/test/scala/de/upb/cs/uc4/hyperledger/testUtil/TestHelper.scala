@@ -38,18 +38,15 @@ object TestHelper {
   def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, admission: String): Assertion = {
     val testResult = connection.addAdmission(admission)
 
-    compareAdmissions(admission, testResult)
+    compareAdmission(admission, testResult)
   }
-  def compareAdmissions(testObject: String, testResult: String): Assertion = {
+  def compareAdmission(testObject: String, testResult: String): Assertion = {
     val timelessTestObject = stripAdmissionOfTimestamp(testObject)
     val timelessTestResult = stripAdmissionOfTimestamp(testResult)
     TestHelperStrings.compareJson(timelessTestObject, timelessTestResult)
   }
   def stripAdmissionOfTimestamp(str: String): String = {
-    val before = str.split("\"timestamp\":").head
-    val after = str.split("\"timestamp\":").tail.head
-    val afterValue = after.substring(after.indexOf(","))
-    before + afterValue
+    str.replaceAll("\"timestamp\":.*,", "")
   }
 
   /// EXAMINATION REGULATIONS
