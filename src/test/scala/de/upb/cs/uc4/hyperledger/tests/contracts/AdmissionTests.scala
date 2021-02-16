@@ -189,7 +189,7 @@ class AdmissionTests extends TestBase {
         // check ledger state
         val ledgerAdmissions = chaincodeConnection.getCourseAdmissions()
         val expectedResult = TestHelperStrings.getJsonList(Seq(TestDataAdmission.courseAdmission_noAdmissionId_WithId(testUser3)))
-        TestHelperStrings.compareJson(expectedResult, ledgerAdmissions)
+        TestHelper.compareAdmission(expectedResult, ledgerAdmissions)
       }
     }
   }
