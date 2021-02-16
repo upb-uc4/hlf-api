@@ -46,8 +46,8 @@ object TestHelper {
     TestHelperStrings.compareJson(timelessTestObject, timelessTestResult)
   }
   def stripAdmissionOfTimestamp(str: String): String = {
-    val before = str.split("\"timestamp\": \"").head
-    val after = str.split("\"timestamp\": \"").tail.head
+    val before = str.split("\"timestamp\":").head
+    val after = str.split("\"timestamp\":").tail.head
     val afterValue = after.substring(after.indexOf(","))
     before + afterValue
   }
