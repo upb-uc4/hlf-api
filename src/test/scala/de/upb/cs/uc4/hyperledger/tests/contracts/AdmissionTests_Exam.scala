@@ -4,7 +4,7 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil._
-import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataExam, TestDataGroup, TestDataMatriculation }
+import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataExam, TestDataExaminationRegulation, TestDataGroup, TestDataMatriculation }
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper }
 
 class AdmissionTests_Exam extends TestBase {
@@ -18,30 +18,45 @@ class AdmissionTests_Exam extends TestBase {
   val testModule3: String = testNamePrefix + "_Module_3"
   val testModule4: String = testNamePrefix + "_Module_4"
 
+  def testModuleItem(testModuleId: String): String = TestDataExaminationRegulation.getModule(testModuleId, testModuleId+"ShortName")
+
+  val testCourse1: String = testNamePrefix + "_Course1"
+  val testCourse2: String = testNamePrefix + "_Course2"
+  val testCourse3: String = testNamePrefix + "_Course3"
+  val testCourse4: String = testNamePrefix + "_Course4"
+  val testCourse5: String = testNamePrefix + "_Course5"
+  val testCourse6: String = testNamePrefix + "_Course6"
+
+  val testExamReg1: String = testNamePrefix + "_ER_Open1"
+  val testExamReg2: String = testNamePrefix + "_ER_Open2"
+
+  val testExamRegItem1: String = TestDataExaminationRegulation.validExaminationRegulation(testExamReg1,
+    Seq(testModuleItem(testModule1), testModuleItem(testModule2)), true)
+  val testExamRegItem2: String = TestDataExaminationRegulation.validExaminationRegulation(testExamReg1,
+    Seq(testModuleItem(testModule3), testModuleItem(testModule4)), true)
+
   val lecturer1: String = testNamePrefix + "lecturer_1"
   val lecturer2: String = testNamePrefix + "lecturer_2"
 
   val student1: String = testNamePrefix + "student_1"
   val student2: String = testNamePrefix + "student_2"
 
-  val testExam1: String = TestDataExam.validFutureExam(testNamePrefix + "Course1", lecturer1, testModule1, "Written Exam", 6)
-  val testExam2: String = TestDataExam.validFutureExam(testNamePrefix + "Course2", lecturer1, testModule2, "Written Exam", 5)
-  val testExam3: String = TestDataExam.validFutureExam(testNamePrefix + "Course3", lecturer1, testModule3, "Written Exam", 6)
-  val testExam4: String = TestDataExam.validFutureExam(testNamePrefix + "Course4", lecturer2, testModule3, "Written Exam", 6)
-  val testExam5: String = TestDataExam.validFutureExam(testNamePrefix + "Course5", lecturer2, testModule4, "Written Exam", 6)
-  val testExam6: String = TestDataExam.validFutureExam(testNamePrefix + "Course6", lecturer2, testModule1, "Written Exam", 5)
+  val testExam1: String = TestDataExam.validFutureExam(testCourse1, lecturer1, testModule1, "Written Exam", 6)
+  val testExam2: String = TestDataExam.validFutureExam(testCourse2, lecturer1, testModule2, "Written Exam", 5)
+  val testExam3: String = TestDataExam.validFutureExam(testCourse3, lecturer1, testModule3, "Written Exam", 6)
+  val testExam4: String = TestDataExam.validFutureExam(testCourse4, lecturer2, testModule3, "Written Exam", 6)
+  val testExam5: String = TestDataExam.validFutureExam(testCourse5, lecturer2, testModule4, "Written Exam", 6)
+  val testExam6: String = TestDataExam.validFutureExam(testCourse6, lecturer2, testModule1, "Written Exam", 5)
 
-  val testMat1: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix + "_ER_Open1")
-  val testMat2: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix + "_ER_Closed1")
-  val testMat3: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix + "_ER_Open1")
-  val testMat4: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix + "_ER_Closed1")
+  def testMat1(studentId: String): String = TestDataMatriculation.validMatriculationDataCustom(studentId, testNamePrefix + "_ER_Open1")
+  def testMat2(studentId: String): String = TestDataMatriculation.validMatriculationDataCustom(studentId, testNamePrefix + "_ER_Closed1")
 
-  def testAdmission1(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course1", testModule1, "")
-  def testAdmission2(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course2", testModule2, "")
-  def testAdmission3(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course3", testModule3, "")
-  def testAdmission4(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course4", testModule3, "")
-  def testAdmission5(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course5", testModule4, "")
-  def testAdmission6(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course6", testModule1, "")
+  def testAdmission1(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse1, testModule1, "")
+  def testAdmission2(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse2, testModule2, "")
+  def testAdmission3(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse3, testModule3, "")
+  def testAdmission4(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse4, testModule3, "")
+  def testAdmission5(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse5, testModule4, "")
+  def testAdmission6(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse6, testModule1, "")
 
   val examId1: String = TestDataExam.calculateExamId(testExam1)
   val examId2: String = TestDataExam.calculateExamId(testExam2)
@@ -53,17 +68,17 @@ class AdmissionTests_Exam extends TestBase {
   override def beforeAll(): Unit = {
     super.beforeAll()
     // TODO: RESET LEDGER
-    TestSetup.setupExaminationRegulations(initializeExaminationRegulation(), testNamePrefix)
     prepareUser(lecturer1)
     prepareUser(lecturer2)
     prepareUser(student1)
     prepareUser(student2)
     TestSetup.establishGroups(initializeGroup(), lecturer1, TestDataGroup.lecturerGroupName)
     TestSetup.establishGroups(initializeGroup(), lecturer2, TestDataGroup.lecturerGroupName)
+    TestSetup.establishExamRegs(initializeExaminationRegulation(), initializeOperation, Seq(), Seq(testExamRegItem1, testExamRegItem2))
     TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer1), Seq(testExam1, testExam2, testExam3))
     TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer2), Seq(testExam4, testExam5, testExam6))
-    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student1), Seq(testMat1, testMat2))
-    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student2), Seq(testMat3, testMat4))
+    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student1), Seq(testMat1(student1), testMat2(student1)))
+    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student1), Seq(testMat1(student2), testMat2(student2)))
     TestSetup.establishCourseAdmissions(initializeAdmission(), initializeOperation, Seq(student1),
       Seq(testAdmission1(student1), testAdmission2(student1), testAdmission3(student1), testAdmission4(student1), testAdmission5(student1), testAdmission6(student1)))
     TestSetup.establishCourseAdmissions(initializeAdmission(), initializeOperation, Seq(student2),

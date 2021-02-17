@@ -33,6 +33,21 @@ object TestSetup {
     connection.close()
   }
 
+  def establishExamRegs(connection: ConnectionExaminationRegulationTrait, getOperationConnection: (String) => ConnectionOperationTrait, approvalUsers: Seq[String], examRegs: Seq[String]): Unit = {
+    // store on chain
+    examRegs.foreach(examReg => {
+      TestHelper.trySetupConnections("establishExams", () => {
+        approvalUsers.foreach(user => {
+          getOperationConnection(user).initiateOperation(user, "UC4.ExaminationRegulation", "addExaminationRegulation", examReg)
+        })
+        connection.addExaminationRegulation(examReg)
+      })
+    })
+
+    // close
+    connection.close()
+  }
+
   def establishExams(connection: ConnectionExamTrait, getOperationConnection: (String) => ConnectionOperationTrait, approvalUsers: Seq[String], exams: Seq[String]): Unit = {
     // store on chain
     exams.foreach(exam => {
