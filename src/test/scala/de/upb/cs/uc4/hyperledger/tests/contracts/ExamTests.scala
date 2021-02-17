@@ -45,8 +45,8 @@ class ExamTests extends TestBase {
         ("allow for adding new valid Exam (Approvals forged)", "C.2", testUser1, testModule2, "Written Exam", 6),
         ("allow for adding new valid Exam (Approvals forged)", "C.2", testUser2, testModule1, "Written Exam", 2),
         ("allow for adding new valid Exam (Approvals forged)", "C.2", testUser1, testModule1, "Written Exam", 0),
-        // Enable once oralExam is allowed (adjust getExamsTest::ExpectedCount) ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 99),
-        // Enable once oralExam is allowed (adjust getExamsTest::ExpectedCount) ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 0),
+      // Enable once oralExam is allowed (adjust getExamsTest::ExpectedCount) ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 99),
+      // Enable once oralExam is allowed (adjust getExamsTest::ExpectedCount) ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 0),
       )
       for ((statement: String, courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int) <- testDataAllow) {
         s"$statement [$courseId, $lecturerId, $moduleId, $examType, $ects]" in {
