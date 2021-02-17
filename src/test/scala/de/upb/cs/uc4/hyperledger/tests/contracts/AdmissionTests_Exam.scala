@@ -136,7 +136,6 @@ class AdmissionTests_Exam extends TestBase {
 
           // should not throw exception
           val testResult: String = chaincodeConnection.getExamAdmissions(admissionIds.toList, enrollmentId, examIds.toList)
-          Logger.debug("ADMISSION GET: " + testResult)
           val examAdmissions: Array[Object] = StringHelper.objectArrayFromJson(testResult)
 
           examAdmissions.length should be(expectedCount)

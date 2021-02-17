@@ -5,7 +5,7 @@ import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil._
 import de.upb.cs.uc4.hyperledger.testData.{ TestDataExam, TestDataGroup }
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper }
 
 class ExamTests extends TestBase {
 
@@ -41,10 +41,12 @@ class ExamTests extends TestBase {
       val testDataAllow: Seq[(String, String, String, String, String, Int)] = Seq(
         ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Written Exam", 6),
         ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Written Exam", 2),
-        ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Written Exam", 0),
-        ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 99),
-        ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 0),
-        ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Garbage", 0)
+        ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser2, testModule1, "Written Exam", 0),
+        ("allow for adding new valid Exam (Approvals forged)", "C.2", testUser1, testModule2, "Written Exam", 6),
+        ("allow for adding new valid Exam (Approvals forged)", "C.2", testUser2, testModule1, "Written Exam", 2),
+        ("allow for adding new valid Exam (Approvals forged)", "C.2", testUser1, testModule1, "Written Exam", 0),
+        // Enable once oralExam is allowed (adjust getExamsTest::ExpectedCount) ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 99),
+        // Enable once oralExam is allowed (adjust getExamsTest::ExpectedCount) ("allow for adding new valid Exam (Approvals forged)", "C.1", testUser1, testModule1, "Oral Exam", 0),
       )
       for ((statement: String, courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int) <- testDataAllow) {
         s"$statement [$courseId, $lecturerId, $moduleId, $examType, $ects]" in {
@@ -148,19 +150,19 @@ class ExamTests extends TestBase {
     }
 
     "invoked with getExams correctly " should {
-      val testData: Seq[(String, Seq[String], Seq[String], Seq[String], Seq[String], Seq[String], String, String)] = Seq(
-        ("allow for getting all Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", ""),
-        ("allow for getting all Exams via courseId", Seq(), Seq("C.1"), Seq(), Seq(), Seq(), "", ""),
-        ("allow for getting all Exams via lecturerId", Seq(), Seq(), Seq(testUser1), Seq(), Seq(), "", ""),
-        ("allow for getting all Exams via moduleId", Seq(), Seq(), Seq(), Seq(testModule1), Seq(), "", ""),
-        ("allow for getting all Exams via admittableAt", Seq(), Seq(), Seq(), Seq(testModule1), Seq(), TestHelperStrings.getCurrentDate, ""),
-        ("allow for getting all Exams via droppableAt", Seq(), Seq(), Seq(), Seq(testModule1), Seq(), "", TestHelperStrings.getCurrentDate),
-        ("allow for getting all Written Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Written Exam"), "", ""),
-      // TODO: enable once Oral Exams are supported ("allow for getting all Oral Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Oral Exam"), "", "")
+      val testData: Seq[(String, Seq[String], Seq[String], Seq[String], Seq[String], Seq[String], String, String, Int)] = Seq(
+        ("allow for getting all Exams", Seq(), Seq(), Seq(), Seq(), Seq(), "", "", 6),
+        ("allow for getting all Exams via courseId", Seq(), Seq("C.1"), Seq(), Seq(), Seq(), "", "", 3),
+        ("allow for getting all Exams via lecturerId", Seq(), Seq(), Seq(testUser1), Seq(), Seq(), "", "", 4),
+        ("allow for getting all Exams via moduleId", Seq(), Seq(), Seq(), Seq(testModule1), Seq(), "", "", 5),
+        ("allow for getting all Exams via admittableAt", Seq(), Seq(), Seq(), Seq(), Seq(), TestHelperStrings.getCurrentDate, "", 6), // TODO change tests to enable meaningful filter
+        ("allow for getting all Exams via droppableAt", Seq(), Seq(), Seq(), Seq(), Seq(), "", TestHelperStrings.getCurrentDate, 6), // TODO change tests to enable meaningful filter
+        ("allow for getting all Written Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Written Exam"), "", "", 6),
+      // TODO: enable once Oral Exams are supported ("allow for getting all Oral Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Oral Exam"), "", "", 7)
       )
       for (
         (statement: String, examIds: Seq[String], courseIds: Seq[String], lecturerIds: Seq[String], moduleIds: Seq[String],
-          types: Seq[String], admittableAt: String, droppableAt: String) <- testData
+          types: Seq[String], admittableAt: String, droppableAt: String, expectedCount: Int) <- testData
       ) {
         s"$statement [$examIds, $courseIds, $lecturerIds, $moduleIds, $types, $admittableAt, $droppableAt]" in {
           Logger.info(s"Begin test: $statement with [$examIds, $courseIds, $lecturerIds, $moduleIds, $types, $admittableAt, $droppableAt]")
@@ -168,9 +170,9 @@ class ExamTests extends TestBase {
           // should not throw exception
           val testResult: String = chaincodeConnection.getExams(examIds.toList, courseIds.toList, lecturerIds.toList, moduleIds.toList,
             types.toList, admittableAt, droppableAt)
-          val allExams: String = chaincodeConnection.getExams(Seq(), Seq(), Seq(), Seq(), Seq(), "", "")
+          val examAdmissions: Array[Object] = StringHelper.objectArrayFromJson(testResult)
 
-          TestHelperStrings.compareJson(allExams, testResult)
+          examAdmissions.length should be(expectedCount)
         }
       }
     }
