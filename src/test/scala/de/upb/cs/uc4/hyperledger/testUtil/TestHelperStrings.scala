@@ -50,6 +50,6 @@ object TestHelperStrings {
 
   def getCurrentDate: String = {
     val current = Calendar.getInstance()
-    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(current.getTime)
+    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
   }
 }
