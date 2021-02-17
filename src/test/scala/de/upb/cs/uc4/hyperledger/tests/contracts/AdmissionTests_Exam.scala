@@ -11,25 +11,25 @@ class AdmissionTests_Exam extends TestBase {
 
   val chaincodeConnection: ConnectionAdmissionTrait = initializeAdmission()
 
-  val testNamePrefix = "ExamTest"
+  val testNamePrefix = "ExamAdmissionTest"
 
   val testModule1: String = testNamePrefix + "_Module_1"
   val testModule2: String = testNamePrefix + "_Module_2"
   val testModule3: String = testNamePrefix + "_Module_3"
   val testModule4: String = testNamePrefix + "_Module_4"
 
-  val lecturer1 = "lecturer_1"
-  val lecturer2 = "lecturer_2"
+  val lecturer1: String = testNamePrefix + "lecturer_1"
+  val lecturer2: String = testNamePrefix + "lecturer_2"
 
-  val student1 = "student_1"
-  val student2 = "student_2"
+  val student1: String = testNamePrefix + "student_1"
+  val student2: String = testNamePrefix + "student_2"
 
-  val testExam1: String = TestDataExam.validFutureExam("ExamAdmissionCourse1", lecturer1, testModule1, "Written Exam", 6)
-  val testExam2: String = TestDataExam.validFutureExam("ExamAdmissionCourse2", lecturer1, testModule2, "Written Exam", 5)
-  val testExam3: String = TestDataExam.validFutureExam("ExamAdmissionCourse3", lecturer1, testModule3, "Written Exam", 6)
-  val testExam4: String = TestDataExam.validFutureExam("ExamAdmissionCourse4", lecturer2, testModule3, "Written Exam", 6)
-  val testExam5: String = TestDataExam.validFutureExam("ExamAdmissionCourse5", lecturer2, testModule4, "Written Exam", 6)
-  val testExam6: String = TestDataExam.validFutureExam("ExamAdmissionCourse6", lecturer2, testModule1, "Written Exam", 5)
+  val testExam1: String = TestDataExam.validFutureExam(testNamePrefix + "Course1", lecturer1, testModule1, "Written Exam", 6)
+  val testExam2: String = TestDataExam.validFutureExam(testNamePrefix + "Course2", lecturer1, testModule2, "Written Exam", 5)
+  val testExam3: String = TestDataExam.validFutureExam(testNamePrefix + "Course3", lecturer1, testModule3, "Written Exam", 6)
+  val testExam4: String = TestDataExam.validFutureExam(testNamePrefix + "Course4", lecturer2, testModule3, "Written Exam", 6)
+  val testExam5: String = TestDataExam.validFutureExam(testNamePrefix + "Course5", lecturer2, testModule4, "Written Exam", 6)
+  val testExam6: String = TestDataExam.validFutureExam(testNamePrefix + "Course6", lecturer2, testModule1, "Written Exam", 5)
 
   val testMat1: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix+"_ER_Open1")
   val testMat2: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix+"_ER_Closed1")
