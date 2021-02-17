@@ -48,7 +48,8 @@ class AdmissionTests_Exam extends TestBase {
     prepareUser(student2)
     TestSetup.establishGroups(initializeGroup(), lecturer1, TestDataGroup.lecturerGroupName)
     TestSetup.establishGroups(initializeGroup(), lecturer2, TestDataGroup.lecturerGroupName)
-    TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer1, lecturer2), Seq(testExam1, testExam2, testExam3, testExam4, testExam5, testExam6))
+    TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer1), Seq(testExam1, testExam2, testExam3))
+    TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer2), Seq(testExam4, testExam5, testExam6))
   }
 
   override def afterAll(): Unit = {
