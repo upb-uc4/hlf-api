@@ -77,7 +77,7 @@ class ExaminationRegulationAccessTests extends TestBase {
           TestDataExaminationRegulation.getModule("M.2", "shortName"),
           TestDataExaminationRegulation.getModule("M.3", "shortName")
         )
-        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = true)
+        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, isOpen = true)
         val expectedResultList = TestHelperStrings.getJsonList(Seq(expectedResult))
 
         // read data
@@ -95,7 +95,7 @@ class ExaminationRegulationAccessTests extends TestBase {
           TestDataExaminationRegulation.getModule("M.2", "shortName"),
           TestDataExaminationRegulation.getModule("M.3", "shortName")
         )
-        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = true)
+        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, isOpen = true)
         val expectedResultList = TestHelperStrings.getJsonList(Seq(expectedResult))
 
         // read data
@@ -120,7 +120,7 @@ class ExaminationRegulationAccessTests extends TestBase {
 
         // read new closed
         val testResultList = chaincodeConnection.getExaminationRegulations(names)
-        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = false)
+        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, isOpen = false)
         val expectedResultList = TestHelperStrings.getJsonList(Seq(expectedResult))
         TestHelperStrings.compareJson(expectedResultList, testResultList)
       }
@@ -137,7 +137,7 @@ class ExaminationRegulationAccessTests extends TestBase {
 
         // read still closed
         val testResultList = chaincodeConnection.getExaminationRegulations(names)
-        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = false)
+        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, isOpen = false)
         val expectedResultList = TestHelperStrings.getJsonList(Seq(expectedResult))
         TestHelperStrings.compareJson(expectedResultList, testResultList)
       }
