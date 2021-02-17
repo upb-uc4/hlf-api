@@ -35,7 +35,7 @@ class AdmissionTests_Exam extends TestBase {
     Seq(testModuleItem(testModule1), testModuleItem(testModule2)), true
   )
   val testExamRegItem2: String = TestDataExaminationRegulation.validExaminationRegulation(
-    testExamReg1,
+    testExamReg2,
     Seq(testModuleItem(testModule3), testModuleItem(testModule4)), true
   )
 

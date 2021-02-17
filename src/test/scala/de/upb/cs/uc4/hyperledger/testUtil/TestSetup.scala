@@ -9,8 +9,8 @@ object TestSetup {
     // prepare data
     val modules1 = Seq(TestDataExaminationRegulation.getModule(testNamePrefix + "_Module_1"), TestDataExaminationRegulation.getModule(testNamePrefix + "_Module_2"))
     val modules2 = Seq(TestDataExaminationRegulation.getModule(testNamePrefix + "_Module_3"), TestDataExaminationRegulation.getModule(testNamePrefix + "_Module_4"))
-    val openER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix + "_ER_Open1", modules1, state = true)
-    val closedER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix + "_ER_Closed1", modules2, state = false)
+    val openER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix + "_ER_Open1", modules1, isOpen = true)
+    val closedER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix + "_ER_Closed1", modules2, isOpen = false)
 
     // store on chain
     TestHelper.trySetupConnections("setupExaminationRegulations", () => {
@@ -125,7 +125,7 @@ object TestSetup {
   private def establishExaminationRegulation(connection: ConnectionExaminationRegulationTrait, name: String): Unit = {
     val existingValue = connection.getExaminationRegulations(TestHelperStrings.getJsonList(Seq("\"" + name + "\"")))
     if (existingValue == "[]") {
-      val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, Seq(testModule("MatriculationTestModule.1"), testModule("MatriculationTestModule.2")), state = true)
+      val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, Seq(testModule("MatriculationTestModule.1"), testModule("MatriculationTestModule.2")), isOpen = true)
       connection.addExaminationRegulation(examinationRegulation)
     }
   }
