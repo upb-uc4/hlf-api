@@ -32,11 +32,11 @@ class AdmissionTests_Exam extends TestBase {
 
   val testExamRegItem1: String = TestDataExaminationRegulation.validExaminationRegulation(
     testExamReg1,
-    Seq(testModuleItem(testModule1), testModuleItem(testModule2)), true
+    Seq(testModuleItem(testModule1), testModuleItem(testModule2)), isOpen = true
   )
   val testExamRegItem2: String = TestDataExaminationRegulation.validExaminationRegulation(
     testExamReg2,
-    Seq(testModuleItem(testModule3), testModuleItem(testModule4)), true
+    Seq(testModuleItem(testModule3), testModuleItem(testModule4)), isOpen = true
   )
 
   val lecturer1: String = testNamePrefix + "lecturer_1"
