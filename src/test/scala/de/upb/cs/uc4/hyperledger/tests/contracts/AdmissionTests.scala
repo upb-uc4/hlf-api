@@ -71,20 +71,20 @@ class AdmissionTests extends TestBase {
       "allow for adding new Admission with admissionId" in {
         val testData = TestDataAdmission.courseAdmission1(testUser1)
         initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "addAdmission", testData)
-        TestHelper.testAddAdmissionAccess(chaincodeConnection, testData)
+        TestHelper.testAddAdmissionAccess(chaincodeConnection, testData)    // C.1 M1
       }
       "allow for adding new Admission without admissionId" in {
         val testData = TestDataAdmission.courseAdmission_noAdmissionId(testUser1)
         initializeOperation(testUser1).initiateOperation(testUser1, chaincodeConnection.contractName, "addAdmission", testData)
 
         val testResult = chaincodeConnection.addAdmission(testData)
-        TestHelper.compareAdmission(TestDataAdmission.courseAdmission_noAdmissionId_WithId(testUser1), testResult)
+        TestHelper.compareAdmission(TestDataAdmission.courseAdmission_noAdmissionId_WithId(testUser1), testResult) // C.2 M2
       }
       "allow for adding new Admission for closed ER" in {
         val testData = TestDataAdmission.courseAdmission2(testUser2)
         initializeOperation(testUser2).initiateOperation(testUser2, chaincodeConnection.contractName, "addAdmission", testData)
 
-        TestHelper.testAddAdmissionAccess(chaincodeConnection, testData)
+        TestHelper.testAddAdmissionAccess(chaincodeConnection, testData) // C.2 M3
       }
     }
 

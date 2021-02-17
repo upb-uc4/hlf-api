@@ -46,7 +46,7 @@ object TestHelper {
     TestHelperStrings.compareJson(timelessTestObject, timelessTestResult)
   }
   def stripAdmissionOfTimestamp(str: String): String = {
-    str.replaceAll("\"timestamp\":.*,", "")
+    str.replaceAll("\"timestamp\":.*?,", "")
   }
 
   /// EXAMINATION REGULATIONS
