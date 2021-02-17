@@ -101,19 +101,19 @@ class AdmissionTests_Exam extends TestBase {
         // timestamp should be generated ("deny adding invalid Exam Admission [empty timestamp]", student1, examId1, "", "Exam", "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.date\",\"reason\":\"The given parameter must not be empty\"}]}"),
         // timestamp should be generated ("deny adding invalid Exam Admission [garbage timestamp]", student1, examId1, "GARBAGE", "Exam", "Some error."),
         ("deny adding invalid Exam Admission [empty enrollmentId]", "", examId1, "2021-03-12T12:00:00", "Exam",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.enrollmentId\",\"reason\":\"The given parameter must not be empty\"}]}"),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.enrollmentId\",\"reason\":\"The given parameter must not be empty\"},{\"name\":\"admission.enrollmentId\",\"reason\":\"The student is not matriculated in any examinationRegulation\"}]}"),
         ("deny adding invalid Exam Admission [empty examId]", student1, "", "2021-03-12T12:00:00", "Exam",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.examId\",\"reason\":\"The given parameter must not be empty\"}]}"),
         ("deny adding invalid Exam Admission [empty admissionType]", student1, examId1, "2021-03-12T12:00:00", "",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission\",\"reason\":\"The given parameter can not be parsed from json\"}]}"),
         ("deny adding invalid Exam Admission [garbage enrollmentId]", "Garbage", examId1, "2021-03-12T12:00:00", "Exam",
-          "Some error."),
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.enrollmentId\",\"reason\":\"The student is not matriculated in any examinationRegulation\"}]}"),
         ("deny adding invalid Exam Admission [garbage examId]", student1, "Garbage", "2021-03-12T12:00:00", "Exam",
           "Some error."),
         ("deny adding invalid Exam Admission [garbage admissionType]", student1, examId1, "2021-03-12T12:00:00", "Garbage",
           "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission\",\"reason\":\"The given parameter can not be parsed from json\"}]}"),
         ("deny adding invalid Exam Admission [wrong admissionType]", student1, examId1, "2021-03-12T12:00:00", "Course",
-          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.courseId\",\"reason\":\"Thegivenparametermustnotbeempty\"},{\"name\":\"admission.moduleId\",\"reason\":\"Thegivenparametermustnotbeempty\"},{\"name\":\"admission.enrollmentId\",\"reason\":\"ThestudentisnotmatriculatedinanyexaminationRegulationcontainingthemoduleheistryingtoenrollin\"},{\"name\":\"admission.moduleId\",\"reason\":\"ThestudentisnotmatriculatedinanyexaminationRegulationcontainingthemoduleheistryingtoenrollin\"}]}")
+          "{\"type\":\"HLUnprocessableEntity\",\"title\":\"The following parameters do not conform to the specified format\",\"invalidParams\":[{\"name\":\"admission.courseId\",\"reason\":\"Thegivenparametermustnotbeempty\"},{\"name\":\"admission.moduleId\",\"reason\":\"Thegivenparametermustnotbeempty\"},{\"name\":\"admission.moduleId\",\"reason\":\"ThestudentisnotmatriculatedinanyexaminationRegulationcontainingthemoduleheistryingtoenrollin\"}]}")
       )
       for ((statement: String, enrollmentId: String, examId: String, timestamp: String, admissionType: String, expectedError: String) <- testDataDeny) {
         s"$statement" in {
