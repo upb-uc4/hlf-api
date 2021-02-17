@@ -18,7 +18,7 @@ class AdmissionTests_Exam extends TestBase {
   val testModule3: String = testNamePrefix + "_Module_3"
   val testModule4: String = testNamePrefix + "_Module_4"
 
-  def testModuleItem(testModuleId: String): String = TestDataExaminationRegulation.getModule(testModuleId, testModuleId+"ShortName")
+  def testModuleItem(testModuleId: String): String = TestDataExaminationRegulation.getModule(testModuleId, testModuleId + "ShortName")
 
   val testCourse1: String = testNamePrefix + "_Course1"
   val testCourse2: String = testNamePrefix + "_Course2"
@@ -30,10 +30,14 @@ class AdmissionTests_Exam extends TestBase {
   val testExamReg1: String = testNamePrefix + "_ER_Open1"
   val testExamReg2: String = testNamePrefix + "_ER_Open2"
 
-  val testExamRegItem1: String = TestDataExaminationRegulation.validExaminationRegulation(testExamReg1,
-    Seq(testModuleItem(testModule1), testModuleItem(testModule2)), true)
-  val testExamRegItem2: String = TestDataExaminationRegulation.validExaminationRegulation(testExamReg1,
-    Seq(testModuleItem(testModule3), testModuleItem(testModule4)), true)
+  val testExamRegItem1: String = TestDataExaminationRegulation.validExaminationRegulation(
+    testExamReg1,
+    Seq(testModuleItem(testModule1), testModuleItem(testModule2)), true
+  )
+  val testExamRegItem2: String = TestDataExaminationRegulation.validExaminationRegulation(
+    testExamReg1,
+    Seq(testModuleItem(testModule3), testModuleItem(testModule4)), true
+  )
 
   val lecturer1: String = testNamePrefix + "lecturer_1"
   val lecturer2: String = testNamePrefix + "lecturer_2"
