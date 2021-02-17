@@ -48,6 +48,21 @@ object TestSetup {
     connection.close()
   }
 
+  def establishMatriculations(connection: ConnectionMatriculationTrait, getOperationConnection: (String) => ConnectionOperationTrait, approvalUsers: Seq[String], mats: Seq[String]): Unit = {
+    // store on chain
+    mats.foreach(mat => {
+      TestHelper.trySetupConnections("establishMatriculations", () => {
+        approvalUsers.foreach(user => {
+          getOperationConnection(user).initiateOperation(user, "UC4.MatriculationData", "addMatriculationData", mat)
+        })
+        connection.addMatriculationData(mat)
+      })
+    })
+
+    // close
+    connection.close()
+  }
+
   def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, operationConnection: ConnectionOperationTrait, existingMatriculationId: String): Unit = {
     // prepare data
     val mat1 = TestDataMatriculation.validMatriculationData1(existingMatriculationId)

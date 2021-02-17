@@ -4,7 +4,7 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil._
-import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataExam, TestDataGroup }
+import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataExam, TestDataGroup, TestDataMatriculation }
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper }
 
 class AdmissionTests_Exam extends TestBase {
@@ -31,6 +31,11 @@ class AdmissionTests_Exam extends TestBase {
   val testExam5: String = TestDataExam.validFutureExam("ExamAdmissionCourse5", lecturer2, testModule4, "Written Exam", 6)
   val testExam6: String = TestDataExam.validFutureExam("ExamAdmissionCourse6", lecturer2, testModule1, "Written Exam", 5)
 
+  val testMat1: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix+"_ER_Open1")
+  val testMat2: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix+"_ER_Closed1")
+  val testMat3: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix+"_ER_Open1")
+  val testMat4: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix+"_ER_Closed1")
+
   val examId1: String = TestDataExam.calculateExamId(testExam1)
   val examId2: String = TestDataExam.calculateExamId(testExam2)
   val examId3: String = TestDataExam.calculateExamId(testExam3)
@@ -50,6 +55,8 @@ class AdmissionTests_Exam extends TestBase {
     TestSetup.establishGroups(initializeGroup(), lecturer2, TestDataGroup.lecturerGroupName)
     TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer1), Seq(testExam1, testExam2, testExam3))
     TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer2), Seq(testExam4, testExam5, testExam6))
+    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student1), Seq(testMat1, testMat2))
+    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student2), Seq(testMat3, testMat4))
   }
 
   override def afterAll(): Unit = {
