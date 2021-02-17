@@ -63,6 +63,21 @@ object TestSetup {
     connection.close()
   }
 
+  def establishCourseAdmissions(connection: ConnectionAdmissionTrait, getOperationConnection: (String) => ConnectionOperationTrait, approvalUsers: Seq[String], admissions: Seq[String]): Unit = {
+    // store on chain
+    admissions.foreach(admission => {
+      TestHelper.trySetupConnections("establishMatriculations", () => {
+        approvalUsers.foreach(user => {
+          getOperationConnection(user).initiateOperation(user, "UC4.Admission", "addAdmission", admission)
+        })
+        connection.addAdmission(admission)
+      })
+    })
+
+    // close
+    connection.close()
+  }
+
   def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, operationConnection: ConnectionOperationTrait, existingMatriculationId: String): Unit = {
     // prepare data
     val mat1 = TestDataMatriculation.validMatriculationData1(existingMatriculationId)

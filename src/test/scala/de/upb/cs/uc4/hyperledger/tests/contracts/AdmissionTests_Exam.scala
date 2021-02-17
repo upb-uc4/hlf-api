@@ -36,6 +36,13 @@ class AdmissionTests_Exam extends TestBase {
   val testMat3: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix + "_ER_Open1")
   val testMat4: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix + "_ER_Closed1")
 
+  def testAdmission1(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course1", testModule1, "")
+  def testAdmission2(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course2", testModule2, "")
+  def testAdmission3(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course3", testModule3, "")
+  def testAdmission4(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course4", testModule3, "")
+  def testAdmission5(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course5", testModule4, "")
+  def testAdmission6(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testNamePrefix + "Course6", testModule1, "")
+
   val examId1: String = TestDataExam.calculateExamId(testExam1)
   val examId2: String = TestDataExam.calculateExamId(testExam2)
   val examId3: String = TestDataExam.calculateExamId(testExam3)
@@ -57,6 +64,10 @@ class AdmissionTests_Exam extends TestBase {
     TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer2), Seq(testExam4, testExam5, testExam6))
     TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student1), Seq(testMat1, testMat2))
     TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student2), Seq(testMat3, testMat4))
+    TestSetup.establishCourseAdmissions(initializeAdmission(), initializeOperation, Seq(student1),
+      Seq(testAdmission1(student1), testAdmission2(student1), testAdmission3(student1), testAdmission4(student1), testAdmission5(student1), testAdmission6(student1)))
+    TestSetup.establishCourseAdmissions(initializeAdmission(), initializeOperation, Seq(student2),
+      Seq(testAdmission1(student2), testAdmission2(student2), testAdmission3(student2), testAdmission4(student2), testAdmission5(student2), testAdmission6(student2)))
   }
 
   override def afterAll(): Unit = {
