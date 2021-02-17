@@ -31,10 +31,10 @@ class AdmissionTests_Exam extends TestBase {
   val testExam5: String = TestDataExam.validFutureExam(testNamePrefix + "Course5", lecturer2, testModule4, "Written Exam", 6)
   val testExam6: String = TestDataExam.validFutureExam(testNamePrefix + "Course6", lecturer2, testModule1, "Written Exam", 5)
 
-  val testMat1: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix+"_ER_Open1")
-  val testMat2: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix+"_ER_Closed1")
-  val testMat3: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix+"_ER_Open1")
-  val testMat4: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix+"_ER_Closed1")
+  val testMat1: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix + "_ER_Open1")
+  val testMat2: String = TestDataMatriculation.validMatriculationDataCustom(student1, testNamePrefix + "_ER_Closed1")
+  val testMat3: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix + "_ER_Open1")
+  val testMat4: String = TestDataMatriculation.validMatriculationDataCustom(student2, testNamePrefix + "_ER_Closed1")
 
   val examId1: String = TestDataExam.calculateExamId(testExam1)
   val examId2: String = TestDataExam.calculateExamId(testExam2)
