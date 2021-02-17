@@ -83,10 +83,10 @@ object TestHelper {
     TestHelperStrings.compareJson(expectedError, result.payload)
   }
 
-  def trySetupConnections(actionName: String, fs: (() => Any)*): Unit = {
-    fs.foreach(f => {
+  def trySetupConnections(actionName: String, functions: (() => Any)*): Unit = {
+    functions.foreach(function => {
       try {
-        f.apply()
+        function.apply()
       }
       catch {
         case e: Throwable => Logger.err(s"Error during $actionName: ", e)
