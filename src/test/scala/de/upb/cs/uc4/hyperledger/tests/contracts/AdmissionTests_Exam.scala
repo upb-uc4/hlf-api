@@ -52,8 +52,8 @@ class AdmissionTests_Exam extends TestBase {
   val testExam5: String = TestDataExam.validFutureExam(testCourse5, lecturer2, testModule4, "Written Exam", 6)
   val testExam6: String = TestDataExam.validFutureExam(testCourse6, lecturer2, testModule1, "Written Exam", 5)
 
-  def testMat1: String = TestDataMatriculation.validMatriculationDataCustom_MultipleExamRegs(student1, Seq(testExamReg1, testExamRegItem2))
-  def testMat2: String = TestDataMatriculation.validMatriculationDataCustom_MultipleExamRegs(student2, Seq(testExamReg1, testExamRegItem2))
+  def testMat1: String = TestDataMatriculation.validMatriculationDataCustom_MultipleExamRegs(student1, Seq(testExamReg1, testExamReg2))
+  def testMat2: String = TestDataMatriculation.validMatriculationDataCustom_MultipleExamRegs(student2, Seq(testExamReg1, testExamReg2))
 
   def testAdmission1(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse1, testModule1, "")
   def testAdmission2(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse2, testModule2, "")
