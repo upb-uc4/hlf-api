@@ -81,8 +81,8 @@ class AdmissionTests_Exam extends TestBase {
     TestSetup.establishExamRegs(initializeExaminationRegulation(), initializeOperation, Seq(), Seq(testExamRegItem1, testExamRegItem2))
     TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer1), Seq(testExam1, testExam2, testExam3))
     TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer2), Seq(testExam4, testExam5, testExam6))
-    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student1), Seq(testMat1))
-    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student2), Seq(testMat2))
+    TestSetup.establishMatriculation(initializeMatriculation(), initializeOperation, Seq(student1), testMat1)
+    TestSetup.establishMatriculation(initializeMatriculation(), initializeOperation, Seq(student2), testMat2)
     TestSetup.establishCourseAdmissions(initializeAdmission(), initializeOperation, Seq(student1),
       Seq(testAdmission1(student1), testAdmission2(student1), testAdmission3(student1), testAdmission4(student1), testAdmission5(student1), testAdmission6(student1)))
     TestSetup.establishCourseAdmissions(initializeAdmission(), initializeOperation, Seq(student2),
