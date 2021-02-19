@@ -52,8 +52,8 @@ class AdmissionTests_Exam extends TestBase {
   val testExam5: String = TestDataExam.validFutureExam(testCourse5, lecturer2, testModule4, "Written Exam", 6)
   val testExam6: String = TestDataExam.validFutureExam(testCourse6, lecturer2, testModule1, "Written Exam", 5)
 
-  def testMat1(studentId: String): String = TestDataMatriculation.validMatriculationDataCustom(studentId, testExamReg1)
-  def testMat2(studentId: String): String = TestDataMatriculation.validMatriculationDataCustom(studentId, testExamReg2)
+  def testMat1: String = TestDataMatriculation.validMatriculationDataCustom_MultipleExamRegs(student1, Seq(testExamReg1, testExamRegItem2))
+  def testMat2: String = TestDataMatriculation.validMatriculationDataCustom_MultipleExamRegs(student2, Seq(testExamReg1, testExamRegItem2))
 
   def testAdmission1(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse1, testModule1, "")
   def testAdmission2(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, testCourse2, testModule2, "")
@@ -81,8 +81,8 @@ class AdmissionTests_Exam extends TestBase {
     TestSetup.establishExamRegs(initializeExaminationRegulation(), initializeOperation, Seq(), Seq(testExamRegItem1, testExamRegItem2))
     TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer1), Seq(testExam1, testExam2, testExam3))
     TestSetup.establishExams(initializeExam(), initializeOperation, Seq(lecturer2), Seq(testExam4, testExam5, testExam6))
-    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student1), Seq(testMat1(student1), testMat2(student1)))
-    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student1), Seq(testMat1(student2), testMat2(student2)))
+    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student1), Seq(testMat1))
+    TestSetup.establishMatriculations(initializeMatriculation(), initializeOperation, Seq(student2), Seq(testMat2))
     TestSetup.establishCourseAdmissions(initializeAdmission(), initializeOperation, Seq(student1),
       Seq(testAdmission1(student1), testAdmission2(student1), testAdmission3(student1), testAdmission4(student1), testAdmission5(student1), testAdmission6(student1)))
     TestSetup.establishCourseAdmissions(initializeAdmission(), initializeOperation, Seq(student2),

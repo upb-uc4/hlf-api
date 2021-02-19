@@ -222,7 +222,7 @@ class UnsignedTransactionTests extends TestBase {
 
         // Log proposal
         val (_, proposalBytes) = matriculationConnection.getProposalAddEntriesToMatriculationData(certificate, organisationId, testUserId,
-          TestDataMatriculation.validMatriculationEntry)
+          TestDataMatriculation.validMatriculationEntry
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"AddEntriesToMatriculationDataApprovalProposal:: $proposalInfo")
 

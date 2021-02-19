@@ -33,7 +33,7 @@ object TestSetup {
     connection.close()
   }
 
-  def establishExamRegs(connection: ConnectionExaminationRegulationTrait, getOperationConnection: (String) => ConnectionOperationTrait, approvalUsers: Seq[String], examRegs: Seq[String]): Unit = {
+  def establishExamRegs(connection: ConnectionExaminationRegulationTrait, getOperationConnection: String => ConnectionOperationTrait, approvalUsers: Seq[String], examRegs: Seq[String]): Unit = {
     // store on chain
     examRegs.foreach(examReg => {
       TestHelper.trySetupConnections("establishExams", () => {
@@ -48,7 +48,7 @@ object TestSetup {
     connection.close()
   }
 
-  def establishExams(connection: ConnectionExamTrait, getOperationConnection: (String) => ConnectionOperationTrait, approvalUsers: Seq[String], exams: Seq[String]): Unit = {
+  def establishExams(connection: ConnectionExamTrait, getOperationConnection: String => ConnectionOperationTrait, approvalUsers: Seq[String], exams: Seq[String]): Unit = {
     // store on chain
     exams.foreach(exam => {
       TestHelper.trySetupConnections("establishExams", () => {
@@ -63,22 +63,20 @@ object TestSetup {
     connection.close()
   }
 
-  def establishMatriculations(connection: ConnectionMatriculationTrait, getOperationConnection: (String) => ConnectionOperationTrait, approvalUsers: Seq[String], mats: Seq[String]): Unit = {
+  def establishMatriculation(connection: ConnectionMatriculationTrait, getOperationConnection: String => ConnectionOperationTrait, approvalUsers: Seq[String], mat: String): Unit = {
     // store on chain
-    mats.foreach(mat => {
-      TestHelper.trySetupConnections("establishMatriculations", () => {
-        approvalUsers.foreach(user => {
-          getOperationConnection(user).initiateOperation(user, "UC4.MatriculationData", "addMatriculationData", mat)
-        })
-        connection.addMatriculationData(mat)
+    TestHelper.trySetupConnections("establishMatriculation", () => {
+      approvalUsers.foreach(user => {
+        getOperationConnection(user).initiateOperation(user, "UC4.MatriculationData", "addMatriculationData", mat)
       })
+      connection.addMatriculationData(mat)
     })
 
     // close
     connection.close()
   }
 
-  def establishCourseAdmissions(connection: ConnectionAdmissionTrait, getOperationConnection: (String) => ConnectionOperationTrait, approvalUsers: Seq[String], admissions: Seq[String]): Unit = {
+  def establishCourseAdmissions(connection: ConnectionAdmissionTrait, getOperationConnection: String => ConnectionOperationTrait, approvalUsers: Seq[String], admissions: Seq[String]): Unit = {
     // store on chain
     admissions.foreach(admission => {
       TestHelper.trySetupConnections("establishMatriculations", () => {

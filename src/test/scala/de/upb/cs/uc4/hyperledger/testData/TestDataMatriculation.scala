@@ -6,7 +6,10 @@ object TestDataMatriculation {
   def validMatriculationData3(id: String): String = "{\"enrollmentId\":\"" + id + "\",\"matriculationStatus\":[{\"fieldOfStudy\":\"Media Sciences\",\"semesters\":[\"WS2020/21\"]},{\"fieldOfStudy\":\"Mathematics\",\"semesters\":[\"WS2020/21\",\"SS2018\"]}]}"
   def validMatriculationData4(id: String): String = "{\"enrollmentId\":\"" + id + "\",\"matriculationStatus\":[{\"fieldOfStudy\":\"Media Sciences\",\"semesters\":[\"WS2020/21\"]},{\"fieldOfStudy\":\"Mathematics\",\"semesters\":[\"WS2020/21\",\"SS2018\"]}]}"
   def validMatriculationDataCustom(id: String, examinationRegulation: String): String =
-    "{\n  \"enrollmentId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"" + examinationRegulation + "\",\n      \"semesters\": [\n        \"SS2020\"\n      ]\n    }\n  ]\n}"
+    validMatriculationDataCustom_MultipleExamRegs(id, Seq(examinationRegulation))
+  def validMatriculationDataCustom_MultipleExamRegs(id: String, examinationRegulations: Seq[String]): String =
+    "{\n  \"enrollmentId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    " +
+      examinationRegulations.map(examReg => validMatriculationListEntry(examReg)).mkString(",") + "  ]\n}"
 
   def invalidMatriculationJsonNoSemester(id: String): String = "{\n  \"enrollmentId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"fieldOfStudy\": \"Computer Science\",\n        }\n  ]\n}"
   def invalidMatriculationJsonNoFieldOfStudy(id: String): String = "{\n  \"enrollmentId\": \"" + id + "\",\n  \"matriculationStatus\": [\n    {\n      \"semesters\": [\n        \"SS2020\"\n      ]\n    }\n  ]\n}"
@@ -22,7 +25,8 @@ object TestDataMatriculation {
   def getSubjectMatriculationList(fieldOfStudy: String, semester: String): String = {
     "[{\"fieldOfStudy\":\"" + fieldOfStudy + "\", \"semesters\": [\"" + semester + "\"]}]"
   }
-  def validMatriculationEntry: String = "[{\"fieldOfStudy\":\"Computer Science\",\"semesters\":[\"SS2022\"]}]"
+  def validMatriculationEntry: String = s"[${validMatriculationListEntry("Computer Science")}]"
+  def validMatriculationListEntry(fosName: String): String = s"{\"fieldOfStudy\":\"$fosName\",\"semesters\":[\"SS2022\"]}"
 
   def testModule(id: String): String = TestDataExaminationRegulation.getModule(id, id)
 }
