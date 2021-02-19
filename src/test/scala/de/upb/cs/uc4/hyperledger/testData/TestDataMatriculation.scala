@@ -26,7 +26,7 @@ object TestDataMatriculation {
     "[{\"fieldOfStudy\":\"" + fieldOfStudy + "\", \"semesters\": [\"" + semester + "\"]}]"
   }
   def validMatriculationEntry: String = s"[${validMatriculationListEntry("Computer Science")}]"
-  def validMatriculationListEntry(fosName: String): String = s"{\"fieldOfStudy\":\"$fosName\",\"semesters\":[\"SS2022\"]}"
+  def validMatriculationListEntry(fosName: String): String = "{\"fieldOfStudy\":\"" + fosName + "\",\"semesters\":[\"SS2022\"]}"
 
   def testModule(id: String): String = TestDataExaminationRegulation.getModule(id, id)
 }
