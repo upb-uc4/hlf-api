@@ -20,6 +20,7 @@ on:
     # except for these files
     paths-ignore:
       - '**.md'
+      - '**.JPG'
       - LICENSE
       - .github/workflows/production_network_test.yml
       - .github/workflows/no_network_test.yml
@@ -34,6 +35,7 @@ on:
     # except for these files
     paths-ignore:
       - '**.md'
+      - '**.JPG'
       - LICENSE
       - .github/workflows/production_network_test.yml
       - .github/workflows/no_network_test.yml
