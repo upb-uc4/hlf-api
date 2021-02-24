@@ -4,8 +4,8 @@ import java.nio.file.Path
 import java.security.PrivateKey
 
 import de.upb.cs.uc4.hyperledger.testUtil.{ TestHelperCrypto, TestSetup }
-import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
+import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExam, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
+import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExamTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
 import org.hyperledger.fabric.gateway.Wallet
@@ -35,13 +35,13 @@ class TestBase extends TestBaseTrait {
       TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     }
   }
-
-  def initializeMatriculation(userName: String = this.username): ConnectionMatriculationTrait = ConnectionMatriculation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-  def initializeCertificate(userName: String = this.username): ConnectionCertificateTrait = ConnectionCertificate(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-  def initializeGroup(userName: String = this.username): ConnectionGroupTrait = ConnectionGroup(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-  def initializeOperation(userName: String = this.username): ConnectionOperationTrait = ConnectionOperation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
-  def initializeExaminationRegulation(userName: String = this.username): ConnectionExaminationRegulationTrait = ConnectionExaminationRegulation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeAdmission(userName: String = this.username): ConnectionAdmissionTrait = ConnectionAdmission(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeCertificate(userName: String = this.username): ConnectionCertificateTrait = ConnectionCertificate(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeExaminationRegulation(userName: String = this.username): ConnectionExaminationRegulationTrait = ConnectionExaminationRegulation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeExam(userName: String = this.username): ConnectionExamTrait = ConnectionExam(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeGroup(userName: String = this.username): ConnectionGroupTrait = ConnectionGroup(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeMatriculation(userName: String = this.username): ConnectionMatriculationTrait = ConnectionMatriculation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
+  def initializeOperation(userName: String = this.username): ConnectionOperationTrait = ConnectionOperation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
 
   def tryRegisterAndEnrollTestUser(enrollmentId: String, affiliation: String): X509IdentityImpl = {
     try {

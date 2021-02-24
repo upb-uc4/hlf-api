@@ -2,8 +2,10 @@ package de.upb.cs.uc4.hyperledger.tests.general
 
 import com.google.gson.Gson
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataMatriculation, TestHelperStrings }
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestHelper, TestHelperStrings }
+import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataMatriculation }
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper, TransactionHelper }
+import org.scalatest.exceptions.TestFailedException
 
 class HelperTests extends TestBase {
 
@@ -71,6 +73,44 @@ class HelperTests extends TestBase {
       "create a valid json List two" in {
         val result = TestHelperStrings.getJsonList(Seq("M1", "M2"))
         result should be("[M1, M2]")
+      }
+    }
+    "parsing object lists" should {
+      "get correct objects " in {
+        val objectListString = "[{\"whatever\":\"bbb\"}, {\"whatever\": \"aaaa\"}]"
+        Logger.debug("objects: " + objectListString)
+        val objectList: Array[Object] = StringHelper.objectArrayFromJson(objectListString)
+        Logger.debug("list: " + objectList.mkString("Array(", ", ", ")"))
+        objectList.length should be(2)
+      }
+    }
+  }
+
+  "The AdmissionTestHelper" when {
+    "comparing admissions" should {
+      "disregard timestamps" in {
+        val withTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "2020")
+        val withOtherTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "3030")
+        TestHelper.compareAdmission(withTimestamp, withOtherTimestamp)
+      }
+      "but regard everything else" in {
+        val withTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "2020")
+        val withOtherTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "w.1", "2020")
+        val err = intercept[TestFailedException](TestHelper.compareAdmission(withTimestamp, withOtherTimestamp))
+        err.toString should include("was not equal to")
+      }
+    }
+    "comparing admissionLists" should {
+      "disregard timestamps" in {
+        val withTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "2020")
+        val withTimestamp2 = TestDataAdmission.validCourseAdmission("test", "c.2", "m.2", "3030")
+
+        val withOtherTimestamp = TestDataAdmission.validCourseAdmission("test", "c.1", "m.1", "3030")
+        val withOtherTimestamp2 = TestDataAdmission.validCourseAdmission("test", "c.2", "m.2", "awawa")
+
+        val withTimestampList = TestHelperStrings.getJsonList(Seq(withTimestamp, withTimestamp2))
+        val withOtherTimestampList = TestHelperStrings.getJsonList(Seq(withOtherTimestamp, withOtherTimestamp2))
+        TestHelper.compareAdmission(withTimestampList, withOtherTimestampList)
       }
     }
   }

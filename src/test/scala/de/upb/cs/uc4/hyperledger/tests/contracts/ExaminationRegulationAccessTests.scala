@@ -2,7 +2,8 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionExaminationRegulationTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataExaminationRegulation, TestHelper, TestHelperStrings }
+import de.upb.cs.uc4.hyperledger.testData.TestDataExaminationRegulation
+import de.upb.cs.uc4.hyperledger.testUtil.{ TestHelper, TestHelperStrings }
 
 class ExaminationRegulationAccessTests extends TestBase {
 
@@ -76,7 +77,7 @@ class ExaminationRegulationAccessTests extends TestBase {
           TestDataExaminationRegulation.getModule("M.2", "shortName"),
           TestDataExaminationRegulation.getModule("M.3", "shortName")
         )
-        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = true)
+        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, isOpen = true)
         val expectedResultList = TestHelperStrings.getJsonList(Seq(expectedResult))
 
         // read data
@@ -94,7 +95,7 @@ class ExaminationRegulationAccessTests extends TestBase {
           TestDataExaminationRegulation.getModule("M.2", "shortName"),
           TestDataExaminationRegulation.getModule("M.3", "shortName")
         )
-        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = true)
+        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, isOpen = true)
         val expectedResultList = TestHelperStrings.getJsonList(Seq(expectedResult))
 
         // read data
@@ -119,7 +120,7 @@ class ExaminationRegulationAccessTests extends TestBase {
 
         // read new closed
         val testResultList = chaincodeConnection.getExaminationRegulations(names)
-        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = false)
+        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, isOpen = false)
         val expectedResultList = TestHelperStrings.getJsonList(Seq(expectedResult))
         TestHelperStrings.compareJson(expectedResultList, testResultList)
       }
@@ -136,7 +137,7 @@ class ExaminationRegulationAccessTests extends TestBase {
 
         // read still closed
         val testResultList = chaincodeConnection.getExaminationRegulations(names)
-        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, state = false)
+        val expectedResult = TestDataExaminationRegulation.validExaminationRegulation(name, modules, isOpen = false)
         val expectedResultList = TestHelperStrings.getJsonList(Seq(expectedResult))
         TestHelperStrings.compareJson(expectedResultList, testResultList)
       }

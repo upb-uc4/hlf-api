@@ -1,8 +1,11 @@
-package de.upb.cs.uc4.hyperledger.testUtil
+package de.upb.cs.uc4.hyperledger.testData
+
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelperStrings
 
 object TestDataGroup {
   val adminGroupName = "Admin"
   val systemGroupName = "System"
+  val lecturerGroupName = "Lecturer"
 
   val userList1: String = TestHelperStrings.getJsonList(Seq[String]("100", "101").map(s => {
     "\"" + s + "\""
