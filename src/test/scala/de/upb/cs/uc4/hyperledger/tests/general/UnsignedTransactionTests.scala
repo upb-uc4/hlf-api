@@ -7,6 +7,7 @@ import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, 
 import de.upb.cs.uc4.hyperledger.exceptions.traits.{ HyperledgerExceptionTrait, TransactionExceptionTrait }
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil._
+import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataExaminationRegulation, TestDataMatriculation }
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper }
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
@@ -305,7 +306,7 @@ class UnsignedTransactionTests extends TestBase {
       "print info for addAdmission" in {
         val testUserId = "frontend-signing-tester-info-admission"
         val (privateKey, certificate) = prepareUser(testUserId)
-        val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
+        val inputAdmissionJson = TestDataAdmission.validCourseAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
         val matriculationData = TestDataMatriculation.validMatriculationData4(testUserId)
         initializeOperation(testUserId).initiateOperation(testUserId, "UC4.MatriculationData", "addMatriculationData", matriculationData)
         matriculationConnection.addMatriculationData(matriculationData)
@@ -323,7 +324,7 @@ class UnsignedTransactionTests extends TestBase {
       "print info for dropAdmission" in {
         val testUserId = "frontend-signing-tester-info-admission"
         val (privateKey, certificate) = prepareUser(testUserId)
-        val inputAdmissionJson = TestDataAdmission.validAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
+        val inputAdmissionJson = TestDataAdmission.validCourseAdmission(testUserId, "C1", "MatriculationTestModule.1", "2020-12-31T23:59:59")
         initializeOperation(testUserId).initiateOperation(testUserId, "UC4.Admission", "addAdmission", inputAdmissionJson)
         admissionConnection.addAdmission(inputAdmissionJson)
 
@@ -342,7 +343,7 @@ class UnsignedTransactionTests extends TestBase {
         val (privateKey, certificate) = prepareUser(testUserId)
 
         // Log proposal
-        val (_, proposalBytes) = admissionConnection.getProposalGetAdmissions(certificate, organisationId, testUserId, "C1", "MatriculationTestModule.1")
+        val (_, proposalBytes) = admissionConnection.getProposalGetCourseAdmissions(certificate, organisationId, testUserId, "C1", "MatriculationTestModule.1")
         val proposalInfo = new String(Base64.getEncoder.encode(proposalBytes), StandardCharsets.UTF_8)
         Logger.debug(s"GetAdmissionProposal:: $proposalInfo")
 

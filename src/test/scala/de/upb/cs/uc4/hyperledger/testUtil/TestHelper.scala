@@ -2,6 +2,7 @@ package de.upb.cs.uc4.hyperledger.testUtil
 
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
+import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataExaminationRegulation }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
 import org.hyperledger.fabric.protos.peer.TransactionPackage.Transaction
@@ -33,14 +34,19 @@ object TestHelper {
 
   /// Admissions
   def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, student: String, course: String, module: String, timestamp: String): Assertion =
-    testAddAdmissionAccess(connection, TestDataAdmission.validAdmission(student, course, module, timestamp))
+    testAddAdmissionAccess(connection, TestDataAdmission.validCourseAdmission(student, course, module, timestamp))
   def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, admission: String): Assertion = {
     val testResult = connection.addAdmission(admission)
 
-    compareAdmissions(admission, testResult)
+    compareAdmission(admission, testResult)
   }
-  def compareAdmissions(testObject: String, testResult: String): Assertion = {
-    TestHelperStrings.compareJson(testObject, testResult)
+  def compareAdmission(testObject: String, testResult: String): Assertion = {
+    val timelessTestObject = stripAdmissionOfTimestamp(testObject)
+    val timelessTestResult = stripAdmissionOfTimestamp(testResult)
+    TestHelperStrings.compareJson(timelessTestObject, timelessTestResult)
+  }
+  def stripAdmissionOfTimestamp(str: String): String = {
+    str.replaceAll("\"timestamp\":.*?,", "")
   }
 
   /// EXAMINATION REGULATIONS
@@ -72,11 +78,15 @@ object TestHelper {
     val result = intercept[TransactionExceptionTrait](f.apply())
     result.transactionName should be(transactionName)
   }
+  def testTransactionResult(result: TransactionExceptionTrait, expectedTransactionName: String, expectedError: String): Assertion = {
+    result.transactionName should be(expectedTransactionName)
+    TestHelperStrings.compareJson(expectedError, result.payload)
+  }
 
-  def trySetupConnections(actionName: String, fs: (() => Any)*): Unit = {
-    fs.foreach(f => {
+  def trySetupConnections(actionName: String, functions: (() => Any)*): Unit = {
+    functions.foreach(function => {
       try {
-        f.apply()
+        function.apply()
       }
       catch {
         case e: Throwable => Logger.err(s"Error during $actionName: ", e)

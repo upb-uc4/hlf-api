@@ -41,4 +41,7 @@ object StringHelper {
   def parameterArrayFromJson(json: String): Array[String] = {
     new Gson().fromJson(json, classOf[Array[String]])
   }
+  def objectArrayFromJson(json: String): Array[Object] = {
+    new Gson().fromJson(json, classOf[Array[Object]])
+  }
 }

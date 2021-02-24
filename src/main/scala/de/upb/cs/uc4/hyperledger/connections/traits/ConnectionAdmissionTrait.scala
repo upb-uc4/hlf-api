@@ -39,6 +39,7 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return Proposal and transactionId
     */
+  @deprecated("This method will be removed. Please use getProposalGetCourseAdmissions()", "v0.17.5")
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getProposalGetAdmissions(certificate: String, affiliation: String = AFFILIATION, enrollmentId: String = "", courseId: String = "", moduleId: String = ""): (String, Array[Byte])
@@ -102,6 +103,7 @@ trait ConnectionAdmissionTrait extends ConnectionTrait {
     * @throws HyperledgerExceptionTrait if hlf-framework throws an exception.
     * @return list of admissions matching the filters.
     */
+  @deprecated("This method will be removed. Please use getCourseAdmissions()", "v0.17.5")
   @throws[HyperledgerExceptionTrait]
   @throws[TransactionExceptionTrait]
   def getAdmissions(enrollmentId: String = "", courseId: String = "", moduleId: String = ""): String

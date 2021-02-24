@@ -2,7 +2,8 @@ package de.upb.cs.uc4.hyperledger.tests.contracts
 
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionGroupTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestDataGroup, TestHelperStrings }
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelperStrings
+import de.upb.cs.uc4.hyperledger.testData.TestDataGroup
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 
 class GroupTests extends TestBase {
