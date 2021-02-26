@@ -150,6 +150,6 @@ try {
 
 ### [4. All Connections and Transactions](https://github.com/upb-uc4/api/tree/develop/hlf/scala)
 
-### [5. Executing Tests Locally](./src/test/README.md)
+### [5. Executing Tests Locally](./docs/test/README.md)
 
-### [6. Setting up a new Release](./release/how_to.md)
+### [6. Setting up a new Release](./docs/release/README.md)

@@ -19,9 +19,9 @@ on:
   push:
     # except for these files
     paths-ignore:
-      - README.md
+      - '**.md'
+      - '**.JPG'
       - LICENSE
-      - CHANGELOG.md
       - .github/workflows/dev_network_test.yml
       - .github/workflows/no_network_test.yml
       - .github/workflows/style_check.yaml
@@ -34,9 +34,9 @@ on:
       - main
     # except for these files
     paths-ignore:
-      - README.md
+      - '**.md'
+      - '**.JPG'
       - LICENSE
-      - CHANGELOG.md
       - .github/workflows/dev_network_test.yml
       - .github/workflows/no_network_test.yml
       - .github/workflows/style_check.yaml
