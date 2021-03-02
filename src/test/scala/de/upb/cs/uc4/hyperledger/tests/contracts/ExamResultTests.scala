@@ -1,5 +1,7 @@
 package de.upb.cs.uc4.hyperledger.tests.contracts
 
+import java.util.{ Calendar, Date }
+
 import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionExamResultTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData._
@@ -35,6 +37,9 @@ class ExamResultTests extends TestBase {
   val student3: String = testNamePrefix + "_Student_3"
   val student4: String = testNamePrefix + "_Student_4"
 
+  val current: Calendar = Calendar.getInstance()
+  current.add(Calendar.MINUTE, 10)
+  val examTime: Date = current.getTime
   val testExam1: String = TestDataExam.validFutureExam(testCourse1, lecturer1, testModule1, "Written Exam", 6)
   val testExam2: String = TestDataExam.validFutureExam(testCourse2, lecturer1, testModule1, "Written Exam", 5)
   val testExam3: String = TestDataExam.validFutureExam(testCourse3, lecturer2, testModule2, "Written Exam", 4)
@@ -87,6 +92,10 @@ class ExamResultTests extends TestBase {
         testCourseAdmission1(student4), testCourseAdmission2(student4), testCourseAdmission3(student4), testCourseAdmission4(student4),
         testExamAdmission(student4, examId3), testExamAdmission(student4, examId4)
       ))
+    val currentTime = Calendar.getInstance().getTime
+    val diffMillis = examTime.getTime - currentTime.getTime
+    Logger.debug("DiffMillis: " + diffMillis)
+    Thread.sleep(diffMillis)
   }
 
   override def afterAll(): Unit = {

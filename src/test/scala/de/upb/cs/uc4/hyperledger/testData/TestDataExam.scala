@@ -6,11 +6,11 @@ import java.util.Calendar
 object TestDataExam {
   def validFutureExam(courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int): String = {
     val current = Calendar.getInstance()
-    current.add(Calendar.MONTH, 1)
+    current.add(Calendar.MINUTE, 10)
     val validAdmittableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
-    current.add(Calendar.DAY_OF_MONTH, 2)
+    current.add(Calendar.SECOND, 1)
     val validDroppableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
-    current.add(Calendar.DAY_OF_MONTH, 2)
+    current.add(Calendar.SECOND, 1)
     val validDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
     validExam(courseId, lecturerId, moduleId, examType, validDate, ects, validAdmittableUntil, validDroppableUntil)
   }
