@@ -62,7 +62,7 @@ class ExamResultTests extends TestBase {
   override def beforeAll(): Unit = {
     super.beforeAll()
     // TODO: RESET LEDGER
-    prepareUsers(lecturer1, lecturer2, student1, student2, student3, student4)
+    prepareUsers(Seq(lecturer1, lecturer2, student1, student2, student3, student4))
     TestSetup.establishGroups(initializeGroup(), lecturer1, TestDataGroup.lecturerGroupName)
     TestSetup.establishGroups(initializeGroup(), lecturer2, TestDataGroup.lecturerGroupName)
     TestSetup.establishExamRegs(initializeExaminationRegulation(), initializeOperation, Seq(), Seq(testExamRegItem1))
