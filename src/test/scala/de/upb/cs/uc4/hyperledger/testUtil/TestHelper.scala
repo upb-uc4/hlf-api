@@ -32,6 +32,11 @@ object TestHelper {
       .replace("\\", "")
   }
 
+  /// ExamResults
+  def compareExamResults(testObject: String, testResult: String): Assertion = {
+    TestHelperStrings.compareJson(testResult, testObject)
+  }
+
   /// Admissions
   def testAddAdmissionAccess(connection: ConnectionAdmissionTrait, student: String, course: String, module: String, timestamp: String): Assertion =
     testAddAdmissionAccess(connection, TestDataAdmission.validCourseAdmission(student, course, module, timestamp))
