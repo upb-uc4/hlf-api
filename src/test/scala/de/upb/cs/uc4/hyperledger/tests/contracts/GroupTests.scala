@@ -30,7 +30,7 @@ class GroupTests extends TestBase {
       for ((statement: String, enrollmentId: String, groupId: String) <- testData) {
         s"$statement" in {
           Logger.info("Begin test: " + statement)
-          tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
+          prepareUser(enrollmentId)
           chaincodeConnection.addUserToGroup(enrollmentId, groupId)
         }
       }
