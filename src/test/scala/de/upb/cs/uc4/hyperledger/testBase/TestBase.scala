@@ -64,7 +64,6 @@ class TestBase extends TestBaseTrait {
     }
   }
 
-
   protected def prepareUsers(userName: Seq[String]): Unit = userName.foreach(name => prepareUser(name))
   protected def prepareUser(userName: String): (PrivateKey, String) = {
     Logger.info(s"prepare User:: $userName")
@@ -80,9 +79,10 @@ class TestBase extends TestBaseTrait {
     Ensures the user in question is enrolled - enrolls them manually if not
    */
   def ensureEnrolled(enrollmentId: String, affiliation: String): X509Identity = {
-    if(WalletManager.containsIdentity(this.walletPath, enrollmentId)){
+    if (WalletManager.containsIdentity(this.walletPath, enrollmentId)) {
       WalletManager.getX509Identity(this.walletPath, enrollmentId)
-    } else {
+    }
+    else {
       val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentId, username, walletPath, affiliation)
       EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
       WalletManager.getX509Identity(this.walletPath, enrollmentId)
