@@ -4,9 +4,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 object TestDataExam {
-  def validFutureExam(courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int): String = {
+  def validFutureExam(courseId: String, lecturerId: String, moduleId: String, examType: String, ects: Int, minutesInTheFuture: Int = 10): String = {
     val current = Calendar.getInstance()
-    current.add(Calendar.MINUTE, 10)
+    current.add(Calendar.MINUTE, minutesInTheFuture)
     val validAdmittableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
     current.add(Calendar.SECOND, 1)
     val validDroppableUntil = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
@@ -56,6 +56,19 @@ object TestDataExam {
     println(s"EXAMID: $examId")
 
     examId
+  }
+
+  def getExamDate(examJson: String): String = {
+    val courseIdWithStrings = getInfoFromExam(examJson, "courseId\":")
+    val moduleIdWithStrings = getInfoFromExam(examJson, "moduleId\":")
+    val examTypeWithStrings = getInfoFromExam(examJson, "type\":")
+    val dateWithStrings = getInfoFromExam(examJson, "date\":")
+    val courseId = stripFromStrings(courseIdWithStrings)
+    val moduleId = stripFromStrings(moduleIdWithStrings)
+    val examType = stripFromStrings(examTypeWithStrings)
+    val date = stripFromStrings(dateWithStrings)
+
+    date
   }
 
   def stripFromStrings(info: String): String = {
