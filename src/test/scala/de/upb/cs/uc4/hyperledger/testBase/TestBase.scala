@@ -8,7 +8,7 @@ import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, Connec
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExamResultTrait, ConnectionExamTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
-import org.hyperledger.fabric.gateway.{ Wallet, X509Identity }
+import org.hyperledger.fabric.gateway.Wallet
 import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 
 class TestBase extends TestBaseTrait {
@@ -44,6 +44,18 @@ class TestBase extends TestBaseTrait {
   def initializeMatriculation(userName: String = this.username): ConnectionMatriculationTrait = ConnectionMatriculation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeOperation(userName: String = this.username): ConnectionOperationTrait = ConnectionOperation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
 
+  def tryRegisterAndEnrollTestUser(enrollmentId: String, affiliation: String): X509IdentityImpl = {
+    try {
+      val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentId, username, walletPath, affiliation)
+      EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
+    }
+    catch {
+      case e: Throwable => Logger.err(s"Register and Enroll test user '$enrollmentId' failed.", e)
+    }
+    val wallet: Wallet = WalletManager.getWallet(this.walletPath)
+    wallet.get(enrollmentId).asInstanceOf[X509IdentityImpl]
+  }
+
   protected[hyperledger] def tryAdminEnrollment(
       caURL: String,
       caCert: Path,
@@ -65,28 +77,17 @@ class TestBase extends TestBaseTrait {
     }
   }
 
-
-  protected def prepareUsers(userName: Seq[String]): Unit = userName.foreach(name => prepareUser(name))
   protected def prepareUser(userName: String): (PrivateKey, String) = {
     Logger.info(s"prepare User:: $userName")
     // get testUser certificate and private key
-    val testUserIdentity: X509Identity = ensureEnrolled(userName, organisationId)
+    val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(userName, organisationId)
     val privateKey: PrivateKey = testUserIdentity.getPrivateKey
     val certificatePem: String = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
 
     (privateKey, certificatePem)
   }
 
-  /*
-    Ensures the user in question is enrolled - enrolls them manually if not
-   */
-  def ensureEnrolled(enrollmentId: String, affiliation: String): X509Identity = {
-    if(WalletManager.containsIdentity(this.walletPath, enrollmentId)){
-      WalletManager.getX509Identity(this.walletPath, enrollmentId)
-    } else {
-      val testUserPw = RegistrationManager.register(caURL, tlsCert, enrollmentId, username, walletPath, affiliation)
-      EnrollmentManager.enroll(caURL, tlsCert, walletPath, enrollmentId, testUserPw, organisationId, channel, chaincode, networkDescriptionPath)
-      WalletManager.getX509Identity(this.walletPath, enrollmentId)
-    }
+  protected def prepareUsers(userName: String*): Unit = {
+    userName.foreach(name => prepareUser(name))
   }
 }

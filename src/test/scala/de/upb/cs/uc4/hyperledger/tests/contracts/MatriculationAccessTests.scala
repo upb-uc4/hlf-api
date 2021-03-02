@@ -16,7 +16,7 @@ class MatriculationAccessTests extends TestBase {
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
 
     // prepare testUser
-    prepareUser(testUserId)
+    tryRegisterAndEnrollTestUser(testUserId, organisationId)
   }
 
   override def beforeEach(): Unit = {

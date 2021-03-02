@@ -9,7 +9,7 @@ import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil._
 import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataExaminationRegulation, TestDataMatriculation }
 import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper }
-import org.hyperledger.fabric.gateway.X509Identity
+import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
 import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 
@@ -28,7 +28,7 @@ class UnsignedTransactionTests extends TestBase {
     admissionConnection = initializeAdmission()
     operationConnection = initializeOperation()
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
-    prepareUser("701")
+    tryRegisterAndEnrollTestUser("701", organisationId)
     TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation("701"), "701")
   }
 
@@ -77,9 +77,11 @@ class UnsignedTransactionTests extends TestBase {
     "getting a proposal for a faulty transaction " should {
       "deny getting the proposal and throw a matching exception" in {
         val enrollmentId = "frontend-signing-tester-updateCertTest-denyTransaction"
-        val (_, certificatePem) = prepareUser(enrollmentId)
+        val testUserIdentity: X509IdentityImpl = tryRegisterAndEnrollTestUser(enrollmentId, organisationId)
+        val certificate = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
         val exception = intercept[TransactionExceptionTrait](certificateConnection.getProposalAddCertificate(
-          certificatePem, organisationId, enrollmentId, certificatePem
+          certificate,
+          organisationId, enrollmentId, certificate
         ))
         exception.transactionName should be("initiateOperation")
         exception.payload should include("HLConflict")
