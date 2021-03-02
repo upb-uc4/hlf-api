@@ -24,7 +24,8 @@ class ExamResultTests extends TestBase {
   val testExamReg1: String = testNamePrefix + "_ER_Open1"
 
   val testExamRegItem1: String = TestDataExaminationRegulation.validExaminationRegulation(
-    testExamReg1, Seq(testModuleItem(testModule1), testModuleItem(testModule2)), isOpen = true )
+    testExamReg1, Seq(testModuleItem(testModule1), testModuleItem(testModule2)), isOpen = true
+  )
 
   val lecturer1: String = testNamePrefix + "lecturer_1"
   val lecturer2: String = testNamePrefix + "lecturer_2"
