@@ -27,13 +27,13 @@ class ExamResultTests extends TestBase {
     testExamReg1, Seq(testModuleItem(testModule1), testModuleItem(testModule2)), isOpen = true
   )
 
-  val lecturer1: String = testNamePrefix + "lecturer_1"
-  val lecturer2: String = testNamePrefix + "lecturer_2"
+  val lecturer1: String = testNamePrefix + "_Lecturer_1"
+  val lecturer2: String = testNamePrefix + "_Lecturer_2"
 
-  val student1: String = testNamePrefix + "student_1"
-  val student2: String = testNamePrefix + "student_2"
-  val student3: String = testNamePrefix + "student_3"
-  val student4: String = testNamePrefix + "student_4"
+  val student1: String = testNamePrefix + "_Student_1"
+  val student2: String = testNamePrefix + "_Student_2"
+  val student3: String = testNamePrefix + "_Student_3"
+  val student4: String = testNamePrefix + "_Student_4"
 
   val testExam1: String = TestDataExam.validFutureExam(testCourse1, lecturer1, testModule1, "Written Exam", 6)
   val testExam2: String = TestDataExam.validFutureExam(testCourse2, lecturer1, testModule1, "Written Exam", 5)
@@ -75,7 +75,7 @@ class ExamResultTests extends TestBase {
     TestSetup.establishAdmissions(initializeAdmission(), initializeOperation, Seq(student2),
       Seq(
         testCourseAdmission1(student2), testCourseAdmission2(student2), testCourseAdmission3(student2), testCourseAdmission4(student2),
-        testExamAdmission(student2, examId1), testExamAdmission(student2, examId2), testExamAdmission(student1, examId3)
+        testExamAdmission(student2, examId1), testExamAdmission(student2, examId2), testExamAdmission(student2, examId3)
       ))
     TestSetup.establishAdmissions(initializeAdmission(), initializeOperation, Seq(student3),
       Seq(
