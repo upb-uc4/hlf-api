@@ -14,6 +14,9 @@ object Commons {
     scalacOptions += "-feature",
     // testOption for test-reports
     testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test_reports/" + project),
+    //coverage threshold
+    coverageMinimum := 70,
+    coverageFailOnMinimum := true,
     // build info
     buildInfoKeys := Seq[BuildInfoKey](organization, name, version, scalaVersion, sbtVersion),
     buildInfoPackage := s"${organization.value}.hyperledger"
