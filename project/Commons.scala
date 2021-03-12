@@ -1,6 +1,7 @@
 import sbt.Keys.{ testOptions, _ }
 import sbt.{ Developer, TestFrameworks, Tests, url }
 import sbtbuildinfo.BuildInfoPlugin.autoImport.{ BuildInfoKey, buildInfoKeys, buildInfoPackage }
+import scoverage.ScoverageKeys.{ coverageFailOnMinimum, coverageMinimum }
 
 // format: OFF    <-- this directive disables formatting from this point
 object Commons {
