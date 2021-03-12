@@ -24,7 +24,6 @@ class AdmissionTests extends TestBase {
   val mat2: String = TestDataMatriculation.validMatriculationDataCustom(testUser2, examReg2)
   val mat3: String = TestDataMatriculation.validMatriculationDataCustom(testUser3, examReg1)
 
-
   override def beforeAll(): Unit = {
     super.beforeAll()
     chaincodeConnection = initializeAdmission()
