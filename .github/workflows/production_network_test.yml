@@ -146,6 +146,7 @@ jobs:
     # Upload Coverage Report
     - name: Upload coverage report
       uses: actions/upload-artifact@v1
+      if: always()
       with:
         name: code-coverage
         path: target/scoverage-report
