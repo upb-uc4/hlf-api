@@ -73,6 +73,7 @@ jobs:
         what-to-test: $TEST_SET
       env:
         UC4_TESTBASE_TARGET: 'not relevant'
+        COVERAGE_MINIMUM: '15'
 
     # Combine reports
     - name: Scalatest multiproject HTML merger

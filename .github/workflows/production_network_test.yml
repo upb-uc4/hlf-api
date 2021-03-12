@@ -126,6 +126,7 @@ jobs:
         what-to-test: $TEST_SET
       env:
         UC4_TESTBASE_TARGET: 'PRODUCTION_NETWORK'
+        COVERAGE_MINIMUM: '80'
 
     # Combine reports
     - name: Scalatest multiproject HTML merger

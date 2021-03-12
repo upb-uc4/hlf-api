@@ -16,7 +16,7 @@ object Commons {
     // testOption for test-reports
     testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test_reports/" + project),
     //coverage threshold
-    coverageMinimum := 70,
+    coverageMinimum := sys.env.getOrElse("COVERAGE_MINIMUM", 15).asInstanceOf[Double],
     coverageFailOnMinimum := true,
     // build info
     buildInfoKeys := Seq[BuildInfoKey](organization, name, version, scalaVersion, sbtVersion),
