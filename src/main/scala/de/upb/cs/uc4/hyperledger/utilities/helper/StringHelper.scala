@@ -1,5 +1,8 @@
 package de.upb.cs.uc4.hyperledger.utilities.helper
 
+import java.text.SimpleDateFormat
+import java.util.Calendar
+
 import com.google.gson.Gson
 
 object StringHelper {
@@ -34,14 +37,19 @@ object StringHelper {
     (contractName, transactionName, transactionParamsArray.toSeq)
   }
 
+  def parameterArrayToJson(params: Seq[String]): String = parameterArrayToJson(params.toArray)
   def parameterArrayToJson(params: Array[String]): String = {
     new Gson().toJson(params)
   }
-
   def parameterArrayFromJson(json: String): Array[String] = {
     new Gson().fromJson(json, classOf[Array[String]])
   }
   def objectArrayFromJson(json: String): Array[Object] = {
     new Gson().fromJson(json, classOf[Array[Object]])
+  }
+
+  def getCurrentDate: String = {
+    val current = Calendar.getInstance()
+    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
   }
 }

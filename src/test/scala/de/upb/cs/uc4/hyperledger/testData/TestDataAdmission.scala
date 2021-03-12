@@ -1,6 +1,7 @@
 package de.upb.cs.uc4.hyperledger.testData
 
 import de.upb.cs.uc4.hyperledger.testUtil.TestHelperStrings
+import de.upb.cs.uc4.hyperledger.utilities.helper.StringHelper
 
 object TestDataAdmission {
   def courseAdmission1(studentId: String): String = TestDataAdmission.validCourseAdmission(studentId, "C.1", "Admission_Module_1", "2020-12-31T23:59:59")
@@ -24,7 +25,7 @@ object TestDataAdmission {
   }
 
   def validExamAdmission(enrollmentId: String, examId: String): String =
-    customizableExamAdmission(enrollmentId, examId, TestHelperStrings.getCurrentDate)
+    customizableExamAdmission(enrollmentId, examId, StringHelper.getCurrentDate)
   def customizableExamAdmission(enrollmentId: String, examId: String, timestamp: String = "", admissionType: String = "Exam"): String =
     fullyCustomizableExamAdmission(s"$enrollmentId:$examId", enrollmentId, examId, timestamp, admissionType)
   def fullyCustomizableExamAdmission(admissionId: String, enrollmentId: String, examId: String, timestamp: String = "", admissionType: String = "Exam"): String = {

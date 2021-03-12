@@ -11,11 +11,13 @@ class MatriculationErrorTests extends TestBase {
   var chaincodeConnection: ConnectionMatriculationTrait = _
   val existingMatriculationId = "501"
 
+  val mat1 = TestDataMatriculation.validMatriculationData1(existingMatriculationId)
+
   override def beforeAll(): Unit = {
     super.beforeAll()
     prepareUser(existingMatriculationId)
     TestSetup.establishExaminationRegulations(initializeExaminationRegulation())
-    TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation(existingMatriculationId), existingMatriculationId)
+    TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation(existingMatriculationId), existingMatriculationId, mat1)
   }
 
   override def beforeEach(): Unit = {

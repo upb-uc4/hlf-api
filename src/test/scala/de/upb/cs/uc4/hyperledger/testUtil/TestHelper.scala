@@ -11,6 +11,7 @@ import org.scalatest.matchers.should.Matchers._
 
 object TestHelper {
 
+  /// TEST TRANSACTION-PROTOBUFF
   def testTransactionBytesContainsInfo(transactionBytes: Array[Byte], contents: Seq[String]): Unit = {
     val transaction = Transaction.parseFrom(transactionBytes).toString
     TestHelper.testProtobufContainsInfo(transaction, contents)
@@ -51,7 +52,7 @@ object TestHelper {
     TestHelperStrings.compareJson(timelessTestObject, timelessTestResult)
   }
   def stripAdmissionOfTimestamp(str: String): String = {
-    str.replaceAll("\"timestamp\":.*?,", "")
+    str.replaceAll("\"timestamp\": \".*?,", "")
   }
 
   /// EXAMINATION REGULATIONS
@@ -86,16 +87,5 @@ object TestHelper {
   def testTransactionResult(result: TransactionExceptionTrait, expectedTransactionName: String, expectedError: String): Assertion = {
     result.transactionName should be(expectedTransactionName)
     TestHelperStrings.compareJson(expectedError, result.payload)
-  }
-
-  def trySetupConnections(actionName: String, functions: (() => Any)*): Unit = {
-    functions.foreach(function => {
-      try {
-        function.apply()
-      }
-      catch {
-        case e: Throwable => Logger.err(s"Error during $actionName: ", e)
-      }
-    })
   }
 }

@@ -1,13 +1,11 @@
 package de.upb.cs.uc4.hyperledger.tests.contracts
 
-import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionMatriculationTrait }
+import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionAdmissionTrait
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataMatriculation }
 import de.upb.cs.uc4.hyperledger.testUtil.{ TestHelper, TestHelperStrings, TestSetup }
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
-
-import scala.util.Using
 
 class AdmissionTests extends TestBase {
 
@@ -22,42 +20,24 @@ class AdmissionTests extends TestBase {
   val testUser2 = "AdmissionStudent_2"
   val testUser3 = "AdmissionStudent_3"
 
+  val mat1: String = TestDataMatriculation.validMatriculationDataCustom(testUser1, examReg1)
+  val mat2: String = TestDataMatriculation.validMatriculationDataCustom(testUser2, examReg2)
+  val mat3: String = TestDataMatriculation.validMatriculationDataCustom(testUser3, examReg1)
+
+
   override def beforeAll(): Unit = {
     super.beforeAll()
     chaincodeConnection = initializeAdmission()
     // TODO: RESET LEDGER
     TestSetup.setupExaminationRegulations(initializeExaminationRegulation(), testNamePrefix)
-    setupMatriculations()
-  }
-
-  def setupMatriculations(): Unit = {
-    Using(initializeMatriculation()) {
-      matConnection: ConnectionMatriculationTrait =>
-        {
-          // prepare users
-          prepareUser(testUser1)
-          prepareUser(testUser2)
-          prepareUser(testUser3)
-
-          // prepare data
-          val mat1 = TestDataMatriculation.validMatriculationDataCustom(testUser1, examReg1)
-          val mat2 = TestDataMatriculation.validMatriculationDataCustom(testUser2, examReg2)
-          val mat3 = TestDataMatriculation.validMatriculationDataCustom(testUser3, examReg1)
-
-          // approve as Users
-          initializeOperation(testUser1).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat1)
-          initializeOperation(testUser2).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat2)
-          initializeOperation(testUser3).initiateOperation(username, "UC4.MatriculationData", "addMatriculationData", mat3)
-
-          // store on chain
-          TestHelper.trySetupConnections(
-            "setupMatriculations",
-            () => { matConnection.addMatriculationData(mat1) },
-            () => { matConnection.addMatriculationData(mat2) },
-            () => { matConnection.addMatriculationData(mat3) }
-          )
-        }
-    }
+    // prepare users
+    prepareUser(testUser1)
+    prepareUser(testUser2)
+    prepareUser(testUser3)
+    // prepare Matriculations
+    TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation(testUser1), testUser1, mat1)
+    TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation(testUser2), testUser2, mat2)
+    TestSetup.establishExistingMatriculation(initializeMatriculation(), initializeOperation(testUser3), testUser3, mat3)
   }
 
   override def afterAll(): Unit = {

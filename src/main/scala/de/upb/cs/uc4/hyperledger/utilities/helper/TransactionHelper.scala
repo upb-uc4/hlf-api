@@ -143,9 +143,7 @@ protected[hyperledger] object TransactionHelper {
     val networkConfigFile: File = networkDescriptionPath.toFile
     val networkConfig: NetworkConfig = NetworkConfig.fromYamlFile(networkConfigFile)
     val hfClient: HFClient = HFClient.createNewInstance()
-    val crypto: CryptoPrimitives = new CryptoPrimitives()
-    val securityLevel: Integer = 256
-    ReflectionHelper.safeCallPrivateMethod(crypto)("setSecurityLevel")(securityLevel)
+    val crypto: CryptoPrimitives = CryptoHelper.getCryptoPrimitives
     hfClient.setCryptoSuite(crypto)
     hfClient.setUserContext(user)
     val channelObj: Channel = hfClient.loadChannelFromConfig(channelName, networkConfig)
