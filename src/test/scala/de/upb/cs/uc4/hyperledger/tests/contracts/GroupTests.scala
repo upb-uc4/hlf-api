@@ -4,7 +4,7 @@ import de.upb.cs.uc4.hyperledger.connections.traits.ConnectionGroupTrait
 import de.upb.cs.uc4.hyperledger.testBase.TestBase
 import de.upb.cs.uc4.hyperledger.testUtil.TestHelperStrings
 import de.upb.cs.uc4.hyperledger.testData.TestDataGroup
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper }
 
 class GroupTests extends TestBase {
 
@@ -47,7 +47,7 @@ class GroupTests extends TestBase {
     }
     "invoking the getGroupsForUser transaction" should {
       "return the User's Groups" in {
-        TestHelperStrings.compareJson(TestHelperStrings.getJsonList(Seq[String]("\"someGroup\"")), chaincodeConnection.getGroupsForUser("100"))
+        TestHelperStrings.compareJson(StringHelper.parameterArrayToJson(Seq[String]("someGroup")), chaincodeConnection.getGroupsForUser("100"))
       }
     }
     "invoking the removeUserFromGroup transaction " should {

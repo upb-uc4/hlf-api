@@ -1,6 +1,7 @@
 import sbt.Keys.{ testOptions, _ }
 import sbt.{ Developer, TestFrameworks, Tests, url }
 import sbtbuildinfo.BuildInfoPlugin.autoImport.{ BuildInfoKey, buildInfoKeys, buildInfoPackage }
+import scoverage.ScoverageKeys.{ coverageFailOnMinimum, coverageMinimum }
 
 // format: OFF    <-- this directive disables formatting from this point
 object Commons {
@@ -14,6 +15,9 @@ object Commons {
     scalacOptions += "-feature",
     // testOption for test-reports
     testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test_reports/" + project),
+    //coverage threshold
+    coverageMinimum := sys.env.getOrElse("COVERAGE_MINIMUM", "100").toDouble,
+    coverageFailOnMinimum := true,
     // build info
     buildInfoKeys := Seq[BuildInfoKey](organization, name, version, scalaVersion, sbtVersion),
     buildInfoPackage := s"${organization.value}.hyperledger"

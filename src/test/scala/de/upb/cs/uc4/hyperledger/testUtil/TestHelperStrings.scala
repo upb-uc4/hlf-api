@@ -1,8 +1,5 @@
 package de.upb.cs.uc4.hyperledger.testUtil
 
-import java.text.SimpleDateFormat
-import java.util.Calendar
-
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers._
 
@@ -46,10 +43,5 @@ object TestHelperStrings {
 
   def getOperationIdFromOperationData(operationData: String): String = {
     operationData.split("\"operationId\":\"").tail.head.split("\"").head
-  }
-
-  def getCurrentDate: String = {
-    val current = Calendar.getInstance()
-    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(current.getTime)
   }
 }

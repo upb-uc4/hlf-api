@@ -1,12 +1,11 @@
-package de.upb.cs.uc4.hyperledger.testUtil
+package de.upb.cs.uc4.hyperledger.utilities.helper
 
 import java.security.cert.X509Certificate
 import java.util.Base64
 
-import de.upb.cs.uc4.hyperledger.utilities.helper.ReflectionHelper
 import org.hyperledger.fabric.sdk.security.CryptoPrimitives
 
-object TestHelperCrypto {
+object CryptoHelper {
   def toPemString(certificate: X509Certificate): String = {
     import sun.security.provider.X509Factory
     s"${X509Factory.BEGIN_CERT}\n${Base64.getEncoder.encodeToString(certificate.getEncoded).replaceAll(".{64}", "$0\n")}\n${X509Factory.END_CERT}\n"

@@ -3,13 +3,12 @@ package de.upb.cs.uc4.hyperledger.testBase
 import java.nio.file.Path
 import java.security.PrivateKey
 
-import de.upb.cs.uc4.hyperledger.testUtil.{ TestHelperCrypto, TestSetup }
+import de.upb.cs.uc4.hyperledger.testUtil.TestSetup
 import de.upb.cs.uc4.hyperledger.connections.cases.{ ConnectionAdmission, ConnectionCertificate, ConnectionExam, ConnectionExamResult, ConnectionExaminationRegulation, ConnectionGroup, ConnectionMatriculation, ConnectionOperation }
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExamResultTrait, ConnectionExamTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
-import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ CryptoHelper, Logger }
 import de.upb.cs.uc4.hyperledger.utilities.{ EnrollmentManager, RegistrationManager, WalletManager }
-import org.hyperledger.fabric.gateway.{ Wallet, X509Identity }
-import org.hyperledger.fabric.gateway.impl.identity.X509IdentityImpl
+import org.hyperledger.fabric.gateway.X509Identity
 
 class TestBase extends TestBaseTrait {
   private val testBase: TestBaseTrait = sys.env.getOrElse("UC4_TESTBASE_TARGET", "not relevant").trim() match {
@@ -35,6 +34,8 @@ class TestBase extends TestBaseTrait {
       TestSetup.establishAdminAndSystemGroup(initializeGroup(), username)
     }
   }
+
+  /// initialize methods
   def initializeAdmission(userName: String = this.username): ConnectionAdmissionTrait = ConnectionAdmission(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeCertificate(userName: String = this.username): ConnectionCertificateTrait = ConnectionCertificate(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
   def initializeExaminationRegulation(userName: String = this.username): ConnectionExaminationRegulationTrait = ConnectionExaminationRegulation(userName, this.channel, this.chaincode, this.walletPath, this.networkDescriptionPath)
@@ -71,7 +72,7 @@ class TestBase extends TestBaseTrait {
     // get testUser certificate and private key
     val testUserIdentity: X509Identity = ensureEnrolled(userName, organisationId)
     val privateKey: PrivateKey = testUserIdentity.getPrivateKey
-    val certificatePem: String = TestHelperCrypto.toPemString(testUserIdentity.getCertificate)
+    val certificatePem: String = CryptoHelper.toPemString(testUserIdentity.getCertificate)
 
     (privateKey, certificatePem)
   }

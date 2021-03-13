@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.testUtil
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionExamTrait, ConnectionExaminationRegulationTrait, ConnectionGroupTrait, ConnectionMatriculationTrait, ConnectionOperationTrait }
 import de.upb.cs.uc4.hyperledger.testData.{ TestDataExaminationRegulation, TestDataGroup, TestDataMatriculation }
 import de.upb.cs.uc4.hyperledger.testData.TestDataMatriculation.testModule
+import de.upb.cs.uc4.hyperledger.utilities.helper.{ Logger, StringHelper }
 
 object TestSetup {
   def setupExaminationRegulations(erConnection: ConnectionExaminationRegulationTrait, testNamePrefix: String): Unit = {
@@ -13,7 +14,7 @@ object TestSetup {
     val closedER = TestDataExaminationRegulation.validExaminationRegulation(testNamePrefix + "_ER_Closed1", modules2, isOpen = false)
 
     // store on chain
-    TestHelper.trySetupConnections("setupExaminationRegulations", () => {
+    trySetupConnections("setupExaminationRegulations", () => {
       erConnection.addExaminationRegulation(openER)
       erConnection.addExaminationRegulation(closedER)
     })
@@ -25,7 +26,7 @@ object TestSetup {
     establishGroups(connection, userName, TestDataGroup.adminGroupName, TestDataGroup.systemGroupName)
   def establishGroups(connection: ConnectionGroupTrait, userName: String, groups: String*): Unit = {
     // store on chain
-    TestHelper.trySetupConnections("establishGroups", () => {
+    trySetupConnections("establishGroups", () => {
       groups.foreach(group => connection.addUserToGroup(userName, group))
     })
 
@@ -36,7 +37,7 @@ object TestSetup {
   def establishExamRegs(connection: ConnectionExaminationRegulationTrait, getOperationConnection: String => ConnectionOperationTrait, approvalUsers: Seq[String], examRegs: Seq[String]): Unit = {
     // store on chain
     examRegs.foreach(examReg => {
-      TestHelper.trySetupConnections("establishExams", () => {
+      trySetupConnections("establishExams", () => {
         approvalUsers.foreach(user => {
           getOperationConnection(user).initiateOperation(user, "UC4.ExaminationRegulation", "addExaminationRegulation", examReg)
         })
@@ -51,7 +52,7 @@ object TestSetup {
   def establishExams(connection: ConnectionExamTrait, getOperationConnection: String => ConnectionOperationTrait, approvalUsers: Seq[String], exams: Seq[String]): Unit = {
     // store on chain
     exams.foreach(exam => {
-      TestHelper.trySetupConnections("establishExams", () => {
+      trySetupConnections("establishExams", () => {
         approvalUsers.foreach(user => {
           getOperationConnection(user).initiateOperation(user, "UC4.Exam", "addExam", exam)
         })
@@ -65,7 +66,7 @@ object TestSetup {
 
   def establishMatriculation(connection: ConnectionMatriculationTrait, getOperationConnection: String => ConnectionOperationTrait, approvalUsers: Seq[String], mat: String): Unit = {
     // store on chain
-    TestHelper.trySetupConnections("establishMatriculation", () => {
+    trySetupConnections("establishMatriculation", () => {
       approvalUsers.foreach(user => {
         getOperationConnection(user).initiateOperation(user, "UC4.MatriculationData", "addMatriculationData", mat)
       })
@@ -79,7 +80,7 @@ object TestSetup {
   def establishAdmissions(connection: ConnectionAdmissionTrait, getOperationConnection: String => ConnectionOperationTrait, approvalUsers: Seq[String], admissions: Seq[String]): Unit = {
     // store on chain
     admissions.foreach(admission => {
-      TestHelper.trySetupConnections("establishCourseAdmissions", () => {
+      trySetupConnections("establishCourseAdmissions", () => {
         approvalUsers.foreach(user => {
           getOperationConnection(user).initiateOperation(user, "UC4.Admission", "addAdmission", admission)
         })
@@ -91,16 +92,13 @@ object TestSetup {
     connection.close()
   }
 
-  def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, operationConnection: ConnectionOperationTrait, existingMatriculationId: String): Unit = {
-    // prepare data
-    val mat1 = TestDataMatriculation.validMatriculationData1(existingMatriculationId)
-
+  def establishExistingMatriculation(matConnection: ConnectionMatriculationTrait, operationConnection: ConnectionOperationTrait, matriculationTarget: String, matriculationData: String): Unit = {
     // approvals
-    operationConnection.initiateOperation(existingMatriculationId, "UC4.MatriculationData", "addMatriculationData", mat1)
+    operationConnection.initiateOperation(matriculationTarget, "UC4.MatriculationData", "addMatriculationData", matriculationData)
 
     // store on chain
-    TestHelper.trySetupConnections("establishExistingMatriculation", () => {
-      matConnection.addMatriculationData(mat1)
+    trySetupConnections("establishExistingMatriculation", () => {
+      matConnection.addMatriculationData(matriculationData)
     })
 
     matConnection.close()
@@ -112,7 +110,7 @@ object TestSetup {
 
     // store on chain
     for (name: String <- names) {
-      TestHelper.trySetupConnections("establishExaminationRegulation", () => {
+      trySetupConnections("establishExaminationRegulation", () => {
         this.establishExaminationRegulation(connection, name)
       })
     }
@@ -121,10 +119,21 @@ object TestSetup {
   }
 
   private def establishExaminationRegulation(connection: ConnectionExaminationRegulationTrait, name: String): Unit = {
-    val existingValue = connection.getExaminationRegulations(TestHelperStrings.getJsonList(Seq("\"" + name + "\"")))
+    val existingValue = connection.getExaminationRegulations(StringHelper.parameterArrayToJson(Seq("\"" + name + "\"")))
     if (existingValue == "[]") {
       val examinationRegulation = TestDataExaminationRegulation.validExaminationRegulation(name, Seq(testModule("MatriculationTestModule.1"), testModule("MatriculationTestModule.2")), isOpen = true)
       connection.addExaminationRegulation(examinationRegulation)
     }
+  }
+
+  def trySetupConnections(actionName: String, functions: (() => Any)*): Unit = {
+    functions.foreach(function => {
+      try {
+        function.apply()
+      }
+      catch {
+        case e: Throwable => Logger.err(s"Error during $actionName: ", e)
+      }
+    })
   }
 }
