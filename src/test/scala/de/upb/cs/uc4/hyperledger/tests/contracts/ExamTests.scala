@@ -164,8 +164,8 @@ class ExamTests extends TestBase {
         ("allow for getting all Exams via moduleId", Seq(), Seq(), Seq(), Seq(testModule2), Seq(), "", "", 2),
         ("allow for getting all Written Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Written Exam"), "", "", 12),
         ("allow for getting all Oral Exams via examType", Seq(), Seq(), Seq(), Seq(), Seq("Oral Exam"), "", "", 2),
-        ("allow for getting all Exams via admittableAt", Seq(), Seq(), Seq(), Seq(), Seq(), TestHelperStrings.getCurrentDate, "", 14), // TODO change tests to enable meaningful filter
-        ("allow for getting all Exams via droppableAt", Seq(), Seq(), Seq(), Seq(), Seq(), "", TestHelperStrings.getCurrentDate, 14) // TODO change tests to enable meaningful filter
+        ("allow for getting all Exams via admittableAt", Seq(), Seq(), Seq(), Seq(), Seq(), StringHelper.getCurrentDate, "", 14), // TODO change tests to enable meaningful filter
+        ("allow for getting all Exams via droppableAt", Seq(), Seq(), Seq(), Seq(), Seq(), "", StringHelper.getCurrentDate, 14) // TODO change tests to enable meaningful filter
       )
       for (
         (statement: String, examIds: Seq[String], courseIds: Seq[String], lecturerIds: Seq[String], moduleIds: Seq[String],

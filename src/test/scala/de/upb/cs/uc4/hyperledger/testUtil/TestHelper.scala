@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.testUtil
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataExaminationRegulation }
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelperStrings.removeNewLinesAndSpaces
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
 import org.hyperledger.fabric.protos.peer.TransactionPackage.Transaction
@@ -11,6 +12,7 @@ import org.scalatest.matchers.should.Matchers._
 
 object TestHelper {
 
+  /// TEST TRANSACTION-PROTOBUFF
   def testTransactionBytesContainsInfo(transactionBytes: Array[Byte], contents: Seq[String]): Unit = {
     val transaction = Transaction.parseFrom(transactionBytes).toString
     TestHelper.testProtobufContainsInfo(transaction, contents)
@@ -46,8 +48,8 @@ object TestHelper {
     compareAdmission(admission, testResult)
   }
   def compareAdmission(testObject: String, testResult: String): Assertion = {
-    val timelessTestObject = stripAdmissionOfTimestamp(testObject)
-    val timelessTestResult = stripAdmissionOfTimestamp(testResult)
+    val timelessTestObject = stripAdmissionOfTimestamp(TestHelperStrings.removeNewLinesAndSpaces(testObject))
+    val timelessTestResult = stripAdmissionOfTimestamp(TestHelperStrings.removeNewLinesAndSpaces(testResult))
     TestHelperStrings.compareJson(timelessTestObject, timelessTestResult)
   }
   def stripAdmissionOfTimestamp(str: String): String = {
@@ -86,16 +88,5 @@ object TestHelper {
   def testTransactionResult(result: TransactionExceptionTrait, expectedTransactionName: String, expectedError: String): Assertion = {
     result.transactionName should be(expectedTransactionName)
     TestHelperStrings.compareJson(expectedError, result.payload)
-  }
-
-  def trySetupConnections(actionName: String, functions: (() => Any)*): Unit = {
-    functions.foreach(function => {
-      try {
-        function.apply()
-      }
-      catch {
-        case e: Throwable => Logger.err(s"Error during $actionName: ", e)
-      }
-    })
   }
 }
