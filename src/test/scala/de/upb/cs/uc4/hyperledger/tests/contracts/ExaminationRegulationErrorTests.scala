@@ -33,7 +33,7 @@ class ExaminationRegulationErrorTests extends TestBase {
         ("throw an exception for ExaminationRegulations with empty Name", Some(""), Some(Seq(validTestModule("1"))), false)
       )
       for ((testDescription: String, name: Option[String], modules: Option[Seq[String]], open: Boolean) <- testData) {
-        s"$testDescription [${name.orNull}][${StringHelper.parameterArrayToJson(modules.orNull)}][$open]" in {
+        s"$testDescription [${name.orNull}][${TestHelperStrings.getJsonList(modules.orNull)}][$open]" in {
           Logger.info("Begin test: " + testDescription)
           val examinationRegulation: String = TestDataExaminationRegulation.validExaminationRegulation(name.orNull, modules.orNull, open)
           TestHelper.testTransactionException(

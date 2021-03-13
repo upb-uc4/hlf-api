@@ -3,6 +3,7 @@ package de.upb.cs.uc4.hyperledger.testUtil
 import de.upb.cs.uc4.hyperledger.connections.traits.{ ConnectionAdmissionTrait, ConnectionCertificateTrait, ConnectionExaminationRegulationTrait }
 import de.upb.cs.uc4.hyperledger.exceptions.traits.TransactionExceptionTrait
 import de.upb.cs.uc4.hyperledger.testData.{ TestDataAdmission, TestDataExaminationRegulation }
+import de.upb.cs.uc4.hyperledger.testUtil.TestHelperStrings.removeNewLinesAndSpaces
 import de.upb.cs.uc4.hyperledger.utilities.helper.Logger
 import org.hyperledger.fabric.protos.peer.ProposalPackage.Proposal
 import org.hyperledger.fabric.protos.peer.TransactionPackage.Transaction
@@ -47,12 +48,12 @@ object TestHelper {
     compareAdmission(admission, testResult)
   }
   def compareAdmission(testObject: String, testResult: String): Assertion = {
-    val timelessTestObject = stripAdmissionOfTimestamp(testObject)
-    val timelessTestResult = stripAdmissionOfTimestamp(testResult)
+    val timelessTestObject = stripAdmissionOfTimestamp(TestHelperStrings.removeNewLinesAndSpaces(testObject))
+    val timelessTestResult = stripAdmissionOfTimestamp(TestHelperStrings.removeNewLinesAndSpaces(testResult))
     TestHelperStrings.compareJson(timelessTestObject, timelessTestResult)
   }
   def stripAdmissionOfTimestamp(str: String): String = {
-    str.replaceAll("\"timestamp\": \".*?,", "")
+    str.replaceAll("\"timestamp\":.*?,", "")
   }
 
   /// EXAMINATION REGULATIONS
