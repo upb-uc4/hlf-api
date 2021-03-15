@@ -1,3 +1,9 @@
+# <a id="v1.0.0" />[v1.0.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.18.0...v1.0.0) (2021-03-15)
+
+## Usability
+- fail tests when coverage insufficient
+- additional Tests for ExamAdmissions and ExamResults
+
 # <a id="v0.18.0" />[v0.18.0](https://github.com/upb-uc4/hyperledger_api/compare/v0.17.4...v0.18.0) (2021-02-12)
 
 ## Bugfix
