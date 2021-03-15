@@ -43,7 +43,7 @@ class ExamResultTests extends TestBase {
   val testExam2: String = TestDataExam.validFutureExam(testCourse2, lecturer1, testModule1, "Written Exam", 5, setupDuration)
   val testExam3: String = TestDataExam.validFutureExam(testCourse3, lecturer2, testModule2, "Written Exam", 4, setupDuration)
   val testExam4: String = TestDataExam.validFutureExam(testCourse4, lecturer2, testModule2, "Written Exam", 3, setupDuration)
-  val examTime: Date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(TestDataExam.getExamDate(testExam4))
+  val examTime: Date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(TestDataExam.getExamDate(testExam4))
 
   def testMat(studentId: String): String = TestDataMatriculation.validMatriculationDataCustom_MultipleExamRegs(studentId, Seq(testExamReg1))
 
