@@ -7,28 +7,48 @@ on:
   # manual trigger
   workflow_dispatch:
     inputs:
+      chaincode_target:
+        description: 'Chaincode Target Version (empty = latest Release)'
+        required: true
+        default: ''
       test_set:
         description: 'Define which tests to run'
         required: true
-        default: '*RegistrationTests *EnrollmentTests *ManagerTests *CourseAccessTests *CourseErrorTests *MatriculationErrorTests *MatriculationAccessTests'
+        default: '*AdmissionTests *AdmissionTests_Exam *CertificateAccessTests *CertificateErrorTests *ExamTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *ExamResultTests *GroupTests *HelperTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *OperationTests *VersionAccessTests *UserManagementTests *UnsignedTransactionTests'
   # on push event
   push:
     # except for these files
     paths-ignore:
-      - README.md
+      - '**.md'
+      - '**.JPG'
       - LICENSE
-      - CHANGELOG.md
       - .github/workflows/dev_network_test.yml
+      - .github/workflows/no_network_test.yml
       - .github/workflows/style_check.yaml
+      - .github/workflows/publish_to_sonatype.yaml
+      - .github/actions/dev_network_setup/action.yml
   # on pull request to protected branches
   pull_request:
     branches: 
       - develop
-      - master
+      - main
+    # except for these files
+    paths-ignore:
+      - '**.md'
+      - '**.JPG'
+      - LICENSE
+      - .github/workflows/dev_network_test.yml
+      - .github/workflows/no_network_test.yml
+      - .github/workflows/style_check.yaml
+      - .github/workflows/publish_to_sonatype.yaml
+      - .github/actions/dev_network_setup/action.yml
 
 jobs:
 
   DeployAndTestProductionNetwork:
+    env:
+      TEST_SET: '*AdmissionTests *AdmissionTests_Exam *CertificateAccessTests *CertificateErrorTests *ExamTests *ExaminationRegulationAccessTests *ExaminationRegulationErrorTests *ExamResultTests *GroupTests *HelperTests *InternalManagerTests *MatriculationErrorTests *MatriculationAccessTests *OperationTests *VersionAccessTests *UserManagementTests *UnsignedTransactionTests'
+      CHAINCODE_TARGET: ""
 
     runs-on: ubuntu-latest
 
@@ -37,7 +57,12 @@ jobs:
     # Rewrite test_Set if started manually
     - name: rewrite test_set if manual invocation
       if: github.event.inputs.test_set != ''
-      run: echo "::set-env name=TEST_SET::${{ github.event.inputs.test_set }}"
+      run: echo "TEST_SET=${{ github.event.inputs.test_set }}" >> $GITHUB_ENV
+
+    # Rewrite chaincodeTarget if started manually
+    - name: rewrite chaincodeTarget if manual invocation
+      if: github.event.inputs.chaincode_target != ''
+      run: echo "CHAINCODE_TARGET=${{ github.event.inputs.chaincode_target }}" >> $GITHUB_ENV
     # ################### ENV VARS ############################################################ #
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -59,44 +84,49 @@ jobs:
         ref: 'develop'
         path: 'hlf-network'
         
-    # Prepare for mounts
-    - name: Create folder for mounts
+    # Prepare mounts
+    - name: Create folder for mounts of default cluster
       run: |
-        pushd hlf-network
-        source ./env.sh
-        sudo mkdir -p $HL_MOUNT
-        sudo chmod -R 777 $K8S_MOUNT
-        popd
+          sudo mkdir -p /data/development/hyperledger
+          sudo chmod -R 777 /data/development
 
-    # Generate files
-    - name: Generate files from templates
-      run: |
-        pushd hlf-network
-        ./scripts/setMountFolder.sh
-        popd
-
-    # Start KIND
-    - name: Start KinD
-      uses: engineerd/setup-kind@v0.4.0
+    # start kind
+    - name: Start KinD with default cluster config
+      uses: engineerd/setup-kind@v0.5.0
       with:
-        version: "v0.7.0"
-        config: hlf-network/kind.yaml
+          version: "v0.7.0"
+          config: hlf-network/assets/kind.yaml
+    
+    # install faketime
+    - name: (Temporary) install faketime to prevent clockdrifts
+      run: sudo apt-get install faketime
 
     # Setup Network
     - name: setup production network
       uses: ./.github/actions/production_network_setup
       with:
         network_folder: 'hlf-network'
+        chaincode_branch: $CHAINCODE_TARGET
+
+    # check nodes
+    - name: Check kubernetes nodes
+      run: kubectl get nodes -o wide
+
+    # check kind worker ip
+    - name: Check kind worker ip
+      run: |
+        printf "Using worker node at: %s\n" $UC4_KIND_NODE_IP
     # ################### PRODUCTION NETWORK ############ #
 
     # ################### TEST WITH REPORTS ############# #
     # Run Tests
     - name: run tests with coverage and reports
-      uses: NikoBergemann/action-sbt-test-report@v1
+      uses: NikoBergemann/action-sbt-test-report@v3
       with:
         what-to-test: $TEST_SET
       env:
-        Target: 'ProductionNetwork'
+        UC4_TESTBASE_TARGET: 'PRODUCTION_NETWORK'
+        COVERAGE_MINIMUM: '70'
 
     # Combine reports
     - name: Scalatest multiproject HTML merger
@@ -116,7 +146,8 @@ jobs:
     # Upload Coverage Report
     - name: Upload coverage report
       uses: actions/upload-artifact@v1
+      if: always()
       with:
         name: code-coverage
-        path: target/scala-2.13/scoverage-report
+        path: target/scoverage-report
     # ################### TEST WITH REPORTS ############# #

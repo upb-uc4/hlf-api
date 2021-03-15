@@ -6,30 +6,36 @@ inputs:
     description: 'path to the network where we can find the startNetwork.sh and installChaincode.sh scripts.'
     required: true
     default: 'hlf-network'
+  chaincode_branch:
+    description: 'branch of the chaincode repo you want to checkout.'
+    required: true
+    default: ''
 
 runs:
     using: "composite"
     
-    steps:    
+    steps: 
     # start network
     - name: Start Network
       run: |
         pushd ${{ inputs.network_folder }}
         echo "##########################"
-        echo "#  start network script  #"
+        echo "#  start deploy script   #"
         echo "##########################"
-        ./startNetwork.sh
-        echo "##########################"
-        echo "# started network script #"
-        echo "##########################"
-        popd
-      shell:
-        bash
-
-    - name: Install Chaincode
-      run: |
-        pushd ${{ inputs.network_folder }}
-        ./installChaincode.sh
+        echo "ChaincodeBranch=${{ inputs.chaincode_branch }}"
+        if [[ ${{ inputs.chaincode_branch }} == "" ]]
+        then
+            ./deploy.sh -t
+        else
+            ./deploy.sh -b ${{ inputs.chaincode_branch }} -t
+        fi
+        export NODE_IP=$(source ./scripts/util.sh && get_worker_ip)
+        
+        # set env var for subsequent actions
+        echo "UC4_KIND_NODE_IP=$NODE_IP" >> $GITHUB_ENV
+        #echo "::set-env name=UC4_KIND_NODE_IP::$NODE_IP"
+        #echo "NODE_IP=$NODE_IP"
+        #echo "UC4_KIND_NODE_IP=$UC4_KIND_NODE_IP"
         popd
       shell: 
         bash

@@ -2,6 +2,7 @@
 *.log
 .idea
 .vs
+sbt.json
 /target
 /project/project
 /project/target
