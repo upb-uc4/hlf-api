@@ -7,8 +7,8 @@ object Dependencies {
   private val scalaTest = "org.scalatest" %% "scalatest" % "3.2.6" % Test
   private val flexmark = "com.vladsch.flexmark" % "flexmark-all" % "0.35.10" % Test
   private val slf4jApi = "org.slf4j" % "slf4j-api" % "1.7.30"
-  private val slf4jLog = "ch.qos.logback" % "logback-core" % "1.2.3"
-  private val slf4jClassic = "ch.qos.logback" % "logback-classic" % "1.2.3"
+  private val slf4jLog = "ch.qos.logback" % "logback-core" % "1.2.9"
+  private val slf4jClassic = "ch.qos.logback" % "logback-classic" % "1.2.9"
 
   // dependency groups
   val hyperledgerDependencies = Seq(hyperledgerSDK, hyperledgerGateway)
