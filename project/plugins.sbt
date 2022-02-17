@@ -3,7 +3,7 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0")
 // Scala auto formatting tool
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.3")
 // buildinfo
-addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.10.0")
+addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.11.0")
 // ---------------------------
 // release plugin
 addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.5")
