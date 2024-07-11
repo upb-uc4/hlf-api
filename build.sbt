@@ -16,4 +16,4 @@ libraryDependencies ++= Dependencies.slf4j
 enablePlugins(GitVersioning, BuildInfoPlugin)
 
 // make tests sequential
-parallelExecution in Test := false
+(Test / parallelExecution) := false
